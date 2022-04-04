@@ -1,0 +1,16 @@
+version: '3.7'
+
+services:   
+  postgres:
+    image: postgres:12.10
+    restart: always
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "123456"
+      POSTGRES_DB: "TUNAP"
+      FORCE_SSL: "TRUE"
+    ports:
+      - "5432:5432"
+    volumes:
+      # - ./dados:/var/lib/postgresql/data
+      - ./postgres.sql:/docker-entrypoint-initdb.d/init.sql
