@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  tunap_postgres:
+    image: postgres:12.10
+    restart: unless-stopped
+    environment:
+      POSTGRES_USERNAME: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    volumes:
+      - ./laravel_docker/postgres-data:/var/lib/postgresql/data
+      - ./../create_database/postgres.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - '54322:5432'
+    networks:
+      - default
+  tunap_mongodb:
+    image: mongo:4.4
+    container_name: 'tunap_mongodb'
+    restart: unless-stopped
+    volumes:
+      - ./laravel_docker/mongo-data:/data/db
+    ports:
+      - "57017:27017"
+    networks:
+      - default
+  tunap_php_apache:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    command: 'php artisan serve --host=0.0.0.0'
+    volumes:
+      - ./:/var/www/tunap/api
+    ports:
+      - 8082:8000
+    networks:
+      - default
+    depends_on:
+      - tunap_postgres
+      - tunap_mongodb
+  tunap_php_websockets:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    command: 'php artisan websockets:serve'
+    volumes:
+      - ./:/var/www/tunap/api
+    ports:
+      - ${LARAVEL_WEBSOCKETS_PORT}:6001
+    networks:
+      - default
+    depends_on:
+      - tunap_postgres
+      - tunap_mongodb
+  tunap_php_queue:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    command: 'php artisan queue:listen'
+    volumes:
+      - ./:/var/www/tunap/api
+    networks:
+      - default
+    depends_on:
+      - tunap_postgres
+      - tunap_mongodb
