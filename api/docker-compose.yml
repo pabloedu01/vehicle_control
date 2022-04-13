@@ -19,6 +19,9 @@ services:
     image: mongo:4.4
     container_name: 'tunap_mongodb'
     restart: unless-stopped
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${DB_MONGO_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_MONGO_PASSWORD}
     volumes:
       - ./laravel_docker/mongo-data:/data/db
     ports:
@@ -30,9 +33,10 @@ services:
       context: ./
       dockerfile: Dockerfile
     restart: unless-stopped
-    command: 'composer install && php artisan serve --host=0.0.0.0'
+    command: 'php artisan serve --host=0.0.0.0'
     volumes:
       - ./:/var/www/tunap/api
+      - /var/www/tunap/api/vendor
     ports:
       - 8082:8000
     networks:
@@ -45,9 +49,10 @@ services:
       context: ./
       dockerfile: Dockerfile
     restart: unless-stopped
-    command: 'composer install && php artisan websockets:serve'
+    command: 'php artisan websockets:serve'
     volumes:
       - ./:/var/www/tunap/api
+      - /var/www/tunap/api/vendor
     ports:
       - ${LARAVEL_WEBSOCKETS_PORT}:6001
     networks:
@@ -55,16 +60,19 @@ services:
     depends_on:
       - tunap_postgres
       - tunap_mongodb
+      - tunap_php_apache
   tunap_php_queue:
     build:
       context: ./
       dockerfile: Dockerfile
     restart: unless-stopped
-    command: 'composer install && php artisan queue:listen'
+    command: 'php artisan queue:listen'
     volumes:
       - ./:/var/www/tunap/api
+      - /var/www/tunap/api/vendor
     networks:
       - default
     depends_on:
       - tunap_postgres
       - tunap_mongodb
+      - tunap_php_apache
