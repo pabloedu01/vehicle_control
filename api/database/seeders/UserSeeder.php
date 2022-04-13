@@ -28,6 +28,26 @@ class UserSeeder extends Seeder
                                                 'created_at' => date('Y-m-d H:i:s'),
                                                 'updated_at' => date('Y-m-d H:i:s'),
                                             ],
+                                            [
+                                                'username'       => 'pablo',
+                                                'name'      => 'Pablo',
+                                                'password' => bcrypt(123456),
+                                                'email' => 'pablo@gmail.com',
+                                                'phone' => null,
+                                                'active' => true,
+                                                'created_at' => date('Y-m-d H:i:s'),
+                                                'updated_at' => date('Y-m-d H:i:s'),
+                                            ],
+                                            [
+                                                'username'       => 'junior',
+                                                'name'      => 'Junior',
+                                                'password' => bcrypt(123456),
+                                                'email' => 'junior@gmail.com',
+                                                'phone' => null,
+                                                'active' => true,
+                                                'created_at' => date('Y-m-d H:i:s'),
+                                                'updated_at' => date('Y-m-d H:i:s'),
+                                            ],
                                         ]);
         }
     }

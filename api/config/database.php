@@ -93,6 +93,7 @@ return [
 
         'mongodb' => [
             'driver' => 'mongodb',
+            //'dsn' => env('DB_URI', 'mongodb+srv://'.env('DB_MONGO_USERNAME', 'homestead').':'.env('DB_MONGO_PASSWORD', 'secret').'@'.env('DB_MONGO_HOST', '127.0.0.1').':'.env('DB_MONGO_PORT', 27017).'/'.env('DB_MONGO_DATABASE', 'homestead').'?retryWrites=true&w=majority'),
             'host' => env('DB_MONGO_HOST', '127.0.0.1'),
             'port' => env('DB_MONGO_PORT', 27017),
             'database' => env('DB_MONGO_DATABASE', 'homestead'),
@@ -102,7 +103,7 @@ return [
                 // here you can pass more settings to the Mongo Driver Manager
                 // see https://www.php.net/manual/en/mongodb-driver-manager.construct.php under "Uri Options" for a list of complete parameters that you can use
         
-                'database' => env('DB_MONGO_DATABASE', 'homestead'), // required with Mongo 3+
+                'database' => env('DB_MONGO_AUTH_DATABASE', env('DB_MONGO_DATABASE', 'admin')), // required with Mongo 3+
             ],
         ],
 

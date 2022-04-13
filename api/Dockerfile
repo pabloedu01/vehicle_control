@@ -39,6 +39,9 @@ RUN apt-get update \
 
 WORKDIR /var/www/tunap/api
 
+RUN apt-get update
+RUN apt-get install -y libcurl4-openssl-dev pkg-config libssl-dev
+
 RUN pecl install mongodb && docker-php-ext-enable mongodb
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -50,7 +53,7 @@ COPY . .
 RUN chown -R www-data:www-data /var/www
 RUN chmod 755 /var/www
 
-#RUN composer install
+RUN composer install
 
 #CMD cat /etc/apache2/mods-available/rewrite.load
 CMD php artisan key:generate
