@@ -30,7 +30,7 @@ services:
       context: ./
       dockerfile: Dockerfile
     restart: unless-stopped
-    command: 'php artisan serve --host=0.0.0.0'
+    command: 'composer install && php artisan serve --host=0.0.0.0'
     volumes:
       - ./:/var/www/tunap/api
     ports:
@@ -45,7 +45,7 @@ services:
       context: ./
       dockerfile: Dockerfile
     restart: unless-stopped
-    command: 'php artisan websockets:serve'
+    command: 'composer install && php artisan websockets:serve'
     volumes:
       - ./:/var/www/tunap/api
     ports:
@@ -60,7 +60,7 @@ services:
       context: ./
       dockerfile: Dockerfile
     restart: unless-stopped
-    command: 'php artisan queue:listen'
+    command: 'composer install && php artisan queue:listen'
     volumes:
       - ./:/var/www/tunap/api
     networks:

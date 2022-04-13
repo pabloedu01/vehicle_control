@@ -50,7 +50,7 @@ COPY . .
 RUN chown -R www-data:www-data /var/www
 RUN chmod 755 /var/www
 
-RUN composer install
+#RUN composer install
 
 #CMD cat /etc/apache2/mods-available/rewrite.load
 CMD php artisan key:generate
