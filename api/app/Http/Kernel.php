@@ -58,6 +58,8 @@ class Kernel extends HttpKernel
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'jwt.verify' => \App\Http\Middleware\JwtMiddleware::class,
         'user' => \App\Http\Middleware\UserMiddleware::class,
+        'user.company' => \App\Http\Middleware\UserCompanyPermissionMiddleware::class,
+        'company.product' => \App\Http\Middleware\CompanyProductPermissionMiddleware::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,

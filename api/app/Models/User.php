@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Casts\Bcrypt;
 use App\Observers\LogObserver;
+use App\Observers\ModelObserver;
 use App\Observers\UserObserver;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -44,8 +45,9 @@ class User extends Authenticatable implements JWTSubject
     {
         parent::boot();
         
-        self::observe(LogObserver::class, 0);
-        self::observe(UserObserver::class, 1);
+        self::observe(ModelObserver::class, 0);
+        self::observe(LogObserver::class, 1);
+        self::observe(UserObserver::class, 2);
     }
     
     public static function getTableName()

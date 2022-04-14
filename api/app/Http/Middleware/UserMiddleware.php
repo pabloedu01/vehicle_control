@@ -33,6 +33,10 @@ class UserMiddleware extends BaseMiddleware
             return response()->json(['msg' => 'Token is Expired'], Response::HTTP_UNAUTHORIZED);
         }
         
+        if(!is_null(\Auth::user()->deleted_at) || !\Auth::user()->active){
+            return response()->json(['msg' => '¡Unauthorized!'], Response::HTTP_UNAUTHORIZED);
+        }
+        
         return $next($request);
     }
 }

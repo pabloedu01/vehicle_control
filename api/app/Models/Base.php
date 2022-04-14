@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Observers\LogObserver;
+use App\Observers\ModelObserver;
 use App\Traits\RelationshipsTrait;
 use App\Traits\SoftDeleteTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -29,7 +30,8 @@ class Base extends Model
         parent::boot();
         
         if(self::getHasLogs()){
-            self::observe(LogObserver::class, 0);
+            self::observe(ModelObserver::class, 0);
+            self::observe(LogObserver::class, 1);
         }
     }
     
@@ -58,11 +60,25 @@ class Base extends Model
         );
     }*/
     
+    public function getAppliedChanges(){
+        $except = ['updated_at'];
+        $after = \Arr::except($this->getDirty(), $except);
+        $before = \Arr::only($this->getOriginal(),array_keys($after));
+    
+        return ['before' => $before, 'after' => $after];
+    }
+    
+    public function hasAppliedChanges(){
+        $appliedChanges = $this->getAppliedChanges();
+        
+        return count($appliedChanges['before']) || count($appliedChanges['after']);
+    }
+    
     #has many
     public function logs()
     {
         //cuando sea necesario hacer uso de ésta relacion, colocar "use HybridRelations;" en el modelo como un trait
         
-        return $this->hasMany('App\Models\Log', 'register_id', self::getKeyName(), false)->where('table', '=', self::getTable())->orderBy('date', 'desc');
+        return $this->hasMany('App\Models\Log', 'register_id', self::getKeyName())->where('table', '=', self::getTable())->orderBy('date', 'desc');
     }
 }
