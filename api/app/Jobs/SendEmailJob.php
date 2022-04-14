@@ -25,7 +25,7 @@ class SendEmailJob implements ShouldQueue
     {
         $email = new $this->emailClass(collect($this->data)->except(['to', 'cc', 'bcc'])->toArray());
         
-        \Mail::to(env('APP_DEBUG') ? env('MAIL_FROM_ADDRESS_DEBUG') : $this->data['to'])
+        \Mail::to(env('APP_DEBUG', true) ? env('MAIL_FROM_ADDRESS_DEBUG', $this->data['to']) : $this->data['to'])
              ->send($email);
     }
 }

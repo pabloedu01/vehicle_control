@@ -102,7 +102,7 @@ return [
             'options' => [
                 // here you can pass more settings to the Mongo Driver Manager
                 // see https://www.php.net/manual/en/mongodb-driver-manager.construct.php under "Uri Options" for a list of complete parameters that you can use
-        
+                'ssl' => env('DB_MONGO_SSL', false),
                 'database' => env('DB_MONGO_AUTH_DATABASE', env('DB_MONGO_DATABASE', 'admin')), // required with Mongo 3+
             ],
         ],
