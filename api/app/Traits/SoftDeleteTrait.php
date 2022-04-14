@@ -12,7 +12,7 @@ trait SoftDeleteTrait
         
         $this->deleted_at = null;
         
-        $result = secureUpdate($this);
+        $result = secureSave($this);
         
         $this->fireModelEvent('restored', false);
         
