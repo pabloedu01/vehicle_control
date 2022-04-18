@@ -60,6 +60,7 @@ class Kernel extends HttpKernel
         'user' => \App\Http\Middleware\UserMiddleware::class,
         'user.company' => \App\Http\Middleware\UserCompanyPermissionMiddleware::class,
         'company.product' => \App\Http\Middleware\CompanyProductPermissionMiddleware::class,
+        'company.tireBrand' => \App\Http\Middleware\CompanyTireBrandPermissionMiddleware::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,

@@ -16,3 +16,6 @@ yarn-error.log
 _ide_helper.php
 _ide_helper_models.php
 /laravel_docker
+app/Http/Controllers/ExampleController.php
+app/Http/Routes/ExampleRoute.php
+app/Models/ExampleModel.php
