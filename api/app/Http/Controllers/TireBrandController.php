@@ -2,40 +2,40 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
+use App\Models\TireBrand;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class ProductController extends Controller
+class TireBrandController extends Controller
 {
     public function index(Request $request)
     {
-        $products = Product::where('company_id', '=', $request->company_id)
-                           ->whereNull('deleted_at')
-                           ->get();
-        
+        $tireBrands = TireBrand::where('company_id', '=', $request->company_id)
+                               ->whereNull('deleted_at')
+                               ->get();
+    
         return response()->json([
                                     'msg'  => '¡Success!',
-                                    'data' => $products,
+                                    'data' => $tireBrands,
                                 ], Response::HTTP_OK
         );
     }
     
     public function show(Request $request)
     {
-        $product = Product::where('id', '=', $request->id)
-                           ->first();
+        $tireBrand = TireBrand::where('id', '=', $request->id)
+                              ->first();
         
         return response()->json([
                                     'msg'  => '¡Success!',
-                                    'data' => $product,
+                                    'data' => $tireBrand,
                                 ], Response::HTTP_OK
         );
     }
     
     public function store(Request $request)
     {
-        $validator = validate($request->all(), Product::rules(null, $request->company_id));
+        $validator = validate($request->all(), TireBrand::rules(null, $request->company_id));
         
         if($validator->fails())
         {
@@ -46,13 +46,13 @@ class ProductController extends Controller
             );
         }
         
-        $product = new Product($request->only(Product::getFillables()));
+        $tireBrand = new TireBrand($request->only(TireBrand::getFillables()));
         
-        if(secureSave($product))
+        if(secureSave($tireBrand))
         {
             return response()->json([
                                         'msg'  => '¡Success!',
-                                        'data' => $product,
+                                        'data' => $tireBrand,
                                     ], Response::HTTP_CREATED
             );
         }
@@ -67,9 +67,9 @@ class ProductController extends Controller
     
     public function update(Request $request)
     {
-        $product = Product::where('id', '=', $request->id)->first();
+        $tireBrand = TireBrand::where('id', '=', $request->id)->first();
         
-        $validator = validate($request->all(), Product::rules($product->id, $product->company_id));
+        $validator = validate($request->all(), TireBrand::rules($tireBrand->id, $tireBrand->company_id));
         
         if($validator->fails())
         {
@@ -80,13 +80,13 @@ class ProductController extends Controller
             );
         }
         
-        $product->fill(collect($request->except([ 'company_id' ]))->only(Product::getFillables())->toArray());
+        $tireBrand->fill(collect($request->except([ 'company_id' ]))->only(TireBrand::getFillables())->toArray());
         
-        if(!$product->hasAppliedChanges() || secureSave($product))
+        if(!$tireBrand->hasAppliedChanges() || secureSave($tireBrand))
         {
             return response()->json([
                                         'msg'  => '¡Success!',
-                                        'data' => $product,
+                                        'data' => $tireBrand,
                                     ], Response::HTTP_OK
             );
         }
@@ -101,9 +101,9 @@ class ProductController extends Controller
     
     public function destroy(Request $request)
     {
-        $product = Product::where('id', '=', $request->id)->first();
+        $tireBrand = TireBrand::where('id', '=', $request->id)->first();
         
-        if(secureDelete($product))
+        if(secureDelete($tireBrand))
         {
             return response()->json([
                                         'msg' => '¡Success!',

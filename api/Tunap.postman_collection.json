@@ -1,0 +1,603 @@
+{
+	"info": {
+		"_postman_id": "e41fd3ca-a4c2-4e2e-b1c3-8eb8746206c6",
+		"name": "Tunap",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "mcontreras",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "123456",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/login",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Broadcasting",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/broadcasting/auth",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"broadcasting",
+								"auth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "Bearer {{token}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "Authorization",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth-uid",
+								"value": "mcontreras2",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "x-auth-id",
+								"value": "1",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/logout",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "cpf",
+									"value": "073715170-67",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "cnpj",
+									"value": "68.119.835/0001-07",
+									"type": "text"
+								},
+								{
+									"key": "birthday",
+									"value": "02/10/2022",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "name",
+									"value": "Miguel Contreras",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "migueljosecontreras2@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "mcontreras2",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "123456",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/register",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"register"
+							],
+							"query": [
+								{
+									"key": "cpf",
+									"value": "sdfsdfdsf",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User verification code",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "code",
+									"value": "0axEmxj2DimSd2dW",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/user-verification-code",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"user-verification-code"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/product",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/product/5",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"product",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "company_id",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "test",
+									"type": "text"
+								},
+								{
+									"key": "product_code",
+									"value": "test",
+									"type": "text"
+								},
+								{
+									"key": "sale_value",
+									"value": "10",
+									"type": "text"
+								},
+								{
+									"key": "guarantee_value",
+									"value": "10",
+									"type": "text"
+								},
+								{
+									"key": "unique_code",
+									"value": "test",
+									"type": "text"
+								},
+								{
+									"key": "active",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/product",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "test",
+									"type": "text"
+								},
+								{
+									"key": "product_code",
+									"value": "test",
+									"type": "text"
+								},
+								{
+									"key": "sale_value",
+									"value": "14",
+									"type": "text"
+								},
+								{
+									"key": "guarantee_value",
+									"value": "10",
+									"type": "text"
+								},
+								{
+									"key": "unique_code",
+									"value": "test",
+									"type": "text"
+								},
+								{
+									"key": "active",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/product/5",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"product",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/product/5",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"product",
+								"5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tire Brand",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/tire-brand?company_id=3",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"tire-brand"
+							],
+							"query": [
+								{
+									"key": "company_id",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/tire-brand/2",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"tire-brand",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "company_id",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "test",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/tire-brand",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"tire-brand"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "test",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/tire-brand/2",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"tire-brand",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/tire-brand/2",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"tire-brand",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Test",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/test",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"test"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "localhost",
+			"value": ""
+		},
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "host",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "production",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

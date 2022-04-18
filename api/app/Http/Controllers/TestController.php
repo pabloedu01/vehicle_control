@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\SendEmailJob;
 use App\Mail\WelcomeEmail;
+use App\Models\Log;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -20,6 +21,8 @@ class TestController extends Controller
         /*dispatch(new SendEmailJob([
                                       'to' => 'migueljosecontreras@gmail.com', 'code' => 'codigo'
                                   ], WelcomeEmail::class));*/
+        
+        dd(Log::get()->toArray());
         
         return response()->json([
                                     'msg'  => '¡Success!',

@@ -4,22 +4,12 @@ namespace App\Models;
 
 use Illuminate\Validation\Rule;
 
-class Product extends Base
+class TireBrand extends Base
 {
-    protected $table = 'products';
-    
-    protected $casts = [
-        'active' => 'boolean'
-    ];
+    protected $table = 'tire_brands';
     
     protected $fillable = [
-        'company_id',
-        'name',
-        'product_code',
-        'sale_value',
-        'guarantee_value',
-        'unique_code',
-        'active',
+        'company_id', 'name'
     ];
     
     public static function getFillables()
@@ -31,13 +21,13 @@ class Product extends Base
     {
         if(!is_null($company_id) && !is_null($id))
         {
-            $uniqueRule = Rule::unique('products')->ignore($id, 'id')->where('company_id', $company_id);
+            $uniqueRule = Rule::unique('tire_brands')->ignore($id, 'id')->where('company_id', $company_id);
         }
         else
         {
             if(!is_null($company_id))
             {
-                $uniqueRule = Rule::unique('products')->where('company_id', $company_id);
+                $uniqueRule = Rule::unique('tire_brands')->where('company_id', $company_id);
             }
             else
             {
@@ -46,15 +36,10 @@ class Product extends Base
         }
         
         return [
-            'name'            => 'required|string|max:100',
-            'product_code'    => 'required|string|max:100',
-            'sale_value'      => 'required|numeric',
-            'guarantee_value' => 'required|numeric',
-            'unique_code'     => [
+            'name'     => [
                 'nullable', 'string' , 'max:100',
                 $uniqueRule,
             ],
-            'active'          => 'required|boolean',
         ];
     }
     
