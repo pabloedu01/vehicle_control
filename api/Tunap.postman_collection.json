@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "e41fd3ca-a4c2-4e2e-b1c3-8eb8746206c6",
+		"_postman_id": "0e9156d3-0689-475f-9521-96122ec0b615",
 		"name": "Tunap",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -230,13 +230,19 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/product",
+							"raw": "{{host}}/api/product?company_id=1",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"product"
+							],
+							"query": [
+								{
+									"key": "company_id",
+									"value": "1"
+								}
 							]
 						}
 					},
@@ -390,6 +396,336 @@
 							"path": [
 								"api",
 								"product",
+								"5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Service",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/service?company_id=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"service"
+							],
+							"query": [
+								{
+									"key": "company_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/service/5",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"service",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "company_id",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "service_code",
+									"value": "24",
+									"type": "text"
+								},
+								{
+									"key": "integration_code",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "test",
+									"type": "text"
+								},
+								{
+									"key": "standard_quantity",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "standard_value",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "active",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/service",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"service"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "company_id",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "service_code",
+									"value": "24",
+									"type": "text"
+								},
+								{
+									"key": "integration_code",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "test",
+									"type": "text"
+								},
+								{
+									"key": "standard_quantity",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "standard_value",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "active",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/service/5",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"service",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/service/5",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"service",
+								"5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Claim Service",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/claim-service",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"claim-service"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/claim-service/5",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"claim-service",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "company_id",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "integration_code",
+									"value": "1",
+									"type": "default"
+								},
+								{
+									"key": "description",
+									"value": "test",
+									"type": "default"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/claim-service",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"claim-service"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "company_id",
+									"value": "2",
+									"type": "default"
+								},
+								{
+									"key": "integration_code",
+									"value": "1",
+									"type": "default"
+								},
+								{
+									"key": "description",
+									"value": "test",
+									"type": "default"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/claim-service/5",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"claim-service",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/claim-service/5",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"claim-service",
 								"5"
 							]
 						}
@@ -583,7 +919,7 @@
 	"variable": [
 		{
 			"key": "localhost",
-			"value": ""
+			"value": "http://localhost:8082"
 		},
 		{
 			"key": "token",
@@ -591,7 +927,7 @@
 		},
 		{
 			"key": "host",
-			"value": "",
+			"value": "{{localhost}}",
 			"type": "string"
 		},
 		{
