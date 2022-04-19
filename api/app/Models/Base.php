@@ -25,6 +25,11 @@ class Base extends Model
         parent::__construct($attributes);
     }
     
+    public static function getFillables()
+    {
+        return with(new static)->getFillable();
+    }
+    
     public static function boot()
     {
         parent::boot();

@@ -61,6 +61,8 @@ class Kernel extends HttpKernel
         'user.company' => \App\Http\Middleware\UserCompanyPermissionMiddleware::class,
         'company.product' => \App\Http\Middleware\CompanyProductPermissionMiddleware::class,
         'company.tireBrand' => \App\Http\Middleware\CompanyTireBrandPermissionMiddleware::class,
+        'company.serviceClaim' => \App\Http\Middleware\CompanyClaimServicePermissionMiddleware::class,
+        'company.service' => \App\Http\Middleware\CompanyServicePermissionMiddleware::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,

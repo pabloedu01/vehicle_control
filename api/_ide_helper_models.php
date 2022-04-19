@@ -12,6 +12,34 @@
 
 namespace App\Models{
 /**
+ * App\Models\ClaimService
+ *
+ * @property int $id
+ * @property int $company_id
+ * @property int|null $integration_code
+ * @property string $description
+ * @property string|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Company $company
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Log[] $logs
+ * @property-read int|null $logs_count
+ * @method static \Illuminate\Database\Eloquent\Builder|ClaimService newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ClaimService newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ClaimService query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ClaimService whereCompanyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClaimService whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClaimService whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClaimService whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClaimService whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClaimService whereIntegrationCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClaimService whereUpdatedAt($value)
+ */
+	class ClaimService extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * App\Models\Company
  *
  * @property int $id
@@ -61,7 +89,7 @@ namespace App\Models{
  * @property string $product_code
  * @property float $sale_value
  * @property float $guarantee_value
- * @property string $unique_code
+ * @property string|null $unique_code
  * @property bool $active
  * @property string|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -85,6 +113,68 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereUpdatedAt($value)
  */
 	class Product extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * App\Models\Service
+ *
+ * @property int $id
+ * @property int $company_id
+ * @property string $service_code
+ * @property string|null $integration_code
+ * @property string|null $description
+ * @property float $standard_quantity
+ * @property float $standard_value
+ * @property bool $active
+ * @property string|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Company $company
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Log[] $logs
+ * @property-read int|null $logs_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Service newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Service newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Service query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Service whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Service whereCompanyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Service whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Service whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Service whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Service whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Service whereIntegrationCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Service whereServiceCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Service whereStandardQuantity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Service whereStandardValue($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Service whereUpdatedAt($value)
+ */
+	class Service extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * App\Models\TireBrand
+ *
+ * @property int $id
+ * @property int $company_id
+ * @property string $name
+ * @property string|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Company $company
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Log[] $logs
+ * @property-read int|null $logs_count
+ * @method static \Illuminate\Database\Eloquent\Builder|TireBrand newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|TireBrand newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|TireBrand query()
+ * @method static \Illuminate\Database\Eloquent\Builder|TireBrand whereCompanyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TireBrand whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TireBrand whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TireBrand whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TireBrand whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TireBrand whereUpdatedAt($value)
+ */
+	class TireBrand extends \Eloquent {}
 }
 
 namespace App\Models{
