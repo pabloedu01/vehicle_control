@@ -26,7 +26,7 @@ Route::group([
     });
     
     Route::group([
-                     'middleware' => [ 'company.product'],
+                     'middleware' => [ 'company.service'],
                  ], function(){
     
         Route::get('{id}', [

@@ -14,11 +14,6 @@ class ClaimService extends Base
         'description',
     ];
     
-    public static function getFillables()
-    {
-        return with(new static)->getFillable();
-    }
-    
     public static function rules($id = null, $company_id = null)
     {
         if(!is_null($company_id) && !is_null($id))

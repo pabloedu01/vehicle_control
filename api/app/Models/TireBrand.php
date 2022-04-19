@@ -12,11 +12,6 @@ class TireBrand extends Base
         'company_id', 'name'
     ];
     
-    public static function getFillables()
-    {
-        return with(new static)->getFillable();
-    }
-    
     public static function rules($id = null, $company_id = null)
     {
         if(!is_null($company_id) && !is_null($id))

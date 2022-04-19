@@ -143,6 +143,7 @@ return [
     'ignored_models' => [
         'App\Models\Log',
         'App\Models\Base',
+        'App\Models\ExampleModel',
     ],
 
     /*

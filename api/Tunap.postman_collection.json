@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "0e9156d3-0689-475f-9521-96122ec0b615",
+		"_postman_id": "1eab3792-a71b-4aa8-841c-73a13d90bd5b",
 		"name": "Tunap",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -413,7 +413,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/service?company_id=1",
+							"raw": "{{host}}/api/service?company_id=3",
 							"host": [
 								"{{host}}"
 							],
@@ -424,7 +424,7 @@
 							"query": [
 								{
 									"key": "company_id",
-									"value": "1"
+									"value": "3"
 								}
 							]
 						}
@@ -437,14 +437,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/service/5",
+							"raw": "{{host}}/api/service/1",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"service",
-								"5"
+								"1"
 							]
 						}
 					},
@@ -460,22 +460,22 @@
 							"urlencoded": [
 								{
 									"key": "company_id",
-									"value": "2",
+									"value": "3",
 									"type": "text"
 								},
 								{
 									"key": "service_code",
-									"value": "24",
+									"value": "25",
 									"type": "text"
 								},
 								{
 									"key": "integration_code",
-									"value": "2",
+									"value": "4",
 									"type": "text"
 								},
 								{
 									"key": "description",
-									"value": "test",
+									"value": "test2",
 									"type": "text"
 								},
 								{
@@ -517,11 +517,6 @@
 							"mode": "urlencoded",
 							"urlencoded": [
 								{
-									"key": "company_id",
-									"value": "2",
-									"type": "text"
-								},
-								{
 									"key": "service_code",
 									"value": "24",
 									"type": "text"
@@ -554,14 +549,14 @@
 							]
 						},
 						"url": {
-							"raw": "{{host}}/api/service/5",
+							"raw": "{{host}}/api/service/1",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"service",
-								"5"
+								"1"
 							]
 						}
 					},
@@ -577,14 +572,14 @@
 							"urlencoded": []
 						},
 						"url": {
-							"raw": "{{host}}/api/service/5",
+							"raw": "{{host}}/api/service/1",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"service",
-								"5"
+								"1"
 							]
 						}
 					},
@@ -619,14 +614,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/claim-service/5",
+							"raw": "{{host}}/api/claim-service/1",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"claim-service",
-								"5"
+								"1"
 							]
 						}
 					},
@@ -679,11 +674,6 @@
 							"mode": "urlencoded",
 							"urlencoded": [
 								{
-									"key": "company_id",
-									"value": "2",
-									"type": "default"
-								},
-								{
 									"key": "integration_code",
 									"value": "1",
 									"type": "default"
@@ -696,14 +686,14 @@
 							]
 						},
 						"url": {
-							"raw": "{{host}}/api/claim-service/5",
+							"raw": "{{host}}/api/claim-service/1",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"claim-service",
-								"5"
+								"1"
 							]
 						}
 					},
@@ -719,14 +709,14 @@
 							"urlencoded": []
 						},
 						"url": {
-							"raw": "{{host}}/api/claim-service/5",
+							"raw": "{{host}}/api/claim-service/1",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"claim-service",
-								"5"
+								"1"
 							]
 						}
 					},
