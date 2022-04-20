@@ -13,44 +13,44 @@ class ProductController extends Controller
         $products = Product::where('company_id', '=', $request->company_id)
                            ->whereNull('deleted_at')
                            ->get();
-        
-        return response()->json([
-                                    'msg'  => '¡Success!',
-                                    'data' => $products,
-                                ], Response::HTTP_OK
+
+        return response()->json(                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             [
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              'msg'  => '¡Success!',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              'data' => $products,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ], Response::HTTP_OK
         );
     }
-    
-    public function show(Request $request)
+
+    public function show(Request $request, $id)
     {
-        $product = Product::where('id', '=', $request->id)
-                           ->first();
-        
-        return response()->json([
+        $product = Product::where('id', '=', $id)
+                          ->first();
+
+        return response()->json(   [
                                     'msg'  => '¡Success!',
                                     'data' => $product,
                                 ], Response::HTTP_OK
         );
     }
-    
+
     public function store(Request $request)
     {
         $validator = validate($request->all(), Product::rules(null, $request->company_id));
-        
+
         if($validator->fails())
         {
-            return response()->json([
+            return response()->json(   [
                                         'msg'    => '¡Invalid Data!',
                                         'errors' => $validator->errors(),
                                     ], Response::HTTP_BAD_REQUEST
             );
         }
-        
+
         $product = new Product($request->only(Product::getFillables()));
-        
+
         if(secureSave($product))
         {
-            return response()->json([
+            return response()->json(   [
                                         'msg'  => '¡Success!',
                                         'data' => $product,
                                     ], Response::HTTP_CREATED
@@ -58,33 +58,33 @@ class ProductController extends Controller
         }
         else
         {
-            return response()->json([
+            return response()->json(   [
                                         'msg' => '¡Error!',
                                     ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }
-    
-    public function update(Request $request)
+
+    public function update(Request $request, $id)
     {
-        $product = Product::where('id', '=', $request->id)->first();
-        
+        $product = Product::where('id', '=', $id)->first();
+
         $validator = validate($request->all(), Product::rules($product->id, $product->company_id));
-        
+
         if($validator->fails())
         {
-            return response()->json([
+            return response()->json(   [
                                         'msg'    => '¡Invalid Data!',
                                         'errors' => $validator->errors(),
                                     ], Response::HTTP_BAD_REQUEST
             );
         }
-        
+
         $product->fill(collect($request->except([ 'company_id' ]))->only(Product::getFillables())->toArray());
-        
+
         if(!$product->hasAppliedChanges() || secureSave($product))
         {
-            return response()->json([
+            return response()->json(   [
                                         'msg'  => '¡Success!',
                                         'data' => $product,
                                     ], Response::HTTP_OK
@@ -92,27 +92,27 @@ class ProductController extends Controller
         }
         else
         {
-            return response()->json([
+            return response()->json(   [
                                         'msg' => '¡Error!',
                                     ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }
-    
-    public function destroy(Request $request)
+
+    public function destroy(Request $request, $id)
     {
-        $product = Product::where('id', '=', $request->id)->first();
-        
+        $product = Product::where('id', '=', $id)->first();
+
         if(secureDelete($product))
         {
-            return response()->json([
+            return response()->json(   [
                                         'msg' => '¡Success!',
                                     ], Response::HTTP_OK
             );
         }
         else
         {
-            return response()->json([
+            return response()->json(   [
                                         'msg' => '¡Error!',
                                     ], Response::HTTP_INTERNAL_SERVER_ERROR
             );

@@ -13,44 +13,44 @@ class ServiceController extends Controller
         $services = Service::where('company_id', '=', $request->company_id)
                            ->whereNull('deleted_at')
                            ->get();
-        
-        return response()->json([
-                                    'msg'  => '¡Success!',
-                                    'data' => $services,
-                                ], Response::HTTP_OK
+
+        return response()->json(                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             [
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              'msg'  => '¡Success!',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              'data' => $services,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ], Response::HTTP_OK
         );
     }
-    
-    public function show(Request $request)
+
+    public function show(Request $request, $id)
     {
-        $service = Service::where('id', '=', $request->id)
-                           ->first();
-        
-        return response()->json([
+        $service = Service::where('id', '=', $id)
+                          ->first();
+
+        return response()->json(   [
                                     'msg'  => '¡Success!',
                                     'data' => $service,
                                 ], Response::HTTP_OK
         );
     }
-    
+
     public function store(Request $request)
     {
         $validator = validate($request->all(), Service::rules(null, $request->company_id));
-        
+
         if($validator->fails())
         {
-            return response()->json([
+            return response()->json(   [
                                         'msg'    => '¡Invalid Data!',
                                         'errors' => $validator->errors(),
                                     ], Response::HTTP_BAD_REQUEST
             );
         }
-        
+
         $service = new Service($request->only(Service::getFillables()));
-        
+
         if(secureSave($service))
         {
-            return response()->json([
+            return response()->json(   [
                                         'msg'  => '¡Success!',
                                         'data' => $service,
                                     ], Response::HTTP_CREATED
@@ -58,33 +58,33 @@ class ServiceController extends Controller
         }
         else
         {
-            return response()->json([
+            return response()->json(   [
                                         'msg' => '¡Error!',
                                     ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }
-    
-    public function update(Request $request)
+
+    public function update(Request $request, $id)
     {
-        $service = Service::where('id', '=', $request->id)->first();
-        
+        $service = Service::where('id', '=', $id)->first();
+
         $validator = validate($request->all(), Service::rules($service->id, $service->company_id));
-        
+
         if($validator->fails())
         {
-            return response()->json([
+            return response()->json(   [
                                         'msg'    => '¡Invalid Data!',
                                         'errors' => $validator->errors(),
                                     ], Response::HTTP_BAD_REQUEST
             );
         }
-        
+
         $service->fill(collect($request->except([ 'company_id' ]))->only(Service::getFillables())->toArray());
-        
+
         if(!$service->hasAppliedChanges() || secureSave($service))
         {
-            return response()->json([
+            return response()->json(   [
                                         'msg'  => '¡Success!',
                                         'data' => $service,
                                     ], Response::HTTP_OK
@@ -92,27 +92,27 @@ class ServiceController extends Controller
         }
         else
         {
-            return response()->json([
+            return response()->json(   [
                                         'msg' => '¡Error!',
                                     ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }
-    
-    public function destroy(Request $request)
+
+    public function destroy(Request $request, $id)
     {
-        $service = Service::where('id', '=', $request->id)->first();
-        
+        $service = Service::where('id', '=', $id)->first();
+
         if(secureDelete($service))
         {
-            return response()->json([
+            return response()->json(   [
                                         'msg' => '¡Success!',
                                     ], Response::HTTP_OK
             );
         }
         else
         {
-            return response()->json([
+            return response()->json(   [
                                         'msg' => '¡Error!',
                                     ], Response::HTTP_INTERNAL_SERVER_ERROR
             );

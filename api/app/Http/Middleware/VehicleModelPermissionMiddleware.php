@@ -2,12 +2,12 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Company;
+use App\Models\VehicleModel;
 use Closure;
 use Symfony\Component\HttpFoundation\Response;
 use Tymon\JWTAuth\Http\Middleware\BaseMiddleware;
 
-class UserCompanyPermissionMiddleware extends BaseMiddleware
+class VehicleModelPermissionMiddleware extends BaseMiddleware
 {
     /**
      * Handle an incoming request.
@@ -20,13 +20,23 @@ class UserCompanyPermissionMiddleware extends BaseMiddleware
      *
      * @throws \Illuminate\Auth\AuthenticationException
      */
-    
+
     public function handle($request, Closure $next)
     {
-        $validator = validate($request->all(), [
-            'company_id' => 'required|integer',
+        $data = array_merge($request->only([ 'id', 'model_id', 'vehicle_model_id' ]), collect($request->route()->parameters())->only([ 'id', 'model_id', 'vehicle_model_id' ])->toArray());
+
+        if(isset($data['model_id'])){
+            $data['id'] = $data['model_id'];
+        }
+
+        if(isset($data['vehicle_model_id'])){
+            $data['id'] = $data['vehicle_model_id'];
+        }
+
+        $validator = validate($data, [
+            'id' => 'required|integer',
         ]);
-        
+
         if($validator->fails())
         {
             return response()->json([
@@ -35,25 +45,28 @@ class UserCompanyPermissionMiddleware extends BaseMiddleware
                                     ], Response::HTTP_BAD_REQUEST
             );
         }
-    
-        if(!Company::where('id', '=', $request->company_id)->whereNull('deleted_at')->exists())
+
+        if(!VehicleModel::where('id', '=', $data['id'])->whereNull('deleted_at')->exists())
         {
             return response()->json([
                                         'msg' => '¡Not Found!',
                                     ], Response::HTTP_NOT_FOUND
             );
         }
-        
+
         if(
-        !\DB::table('company_user')
-            ->where('user_id', '=', \Auth::user()->id)
-            ->where('company_id', '=', $request->company_id)
-            ->exists()
+        !VehicleModel::whereHas('brand', function($query){
+            return $query->whereHas('company', function($query){
+                return $query->whereHas('users', function($query){
+                    return $query->where('users.id', '=', \Auth::user()->id);
+                })->whereNull('companies.deleted_at');
+            })->whereNull('vehicle_brands.deleted_at');
+        })->where('id', '=', $data['id'])->exists()
         )
         {
             return response()->json([ 'msg' => '¡Unauthorized!' ], Response::HTTP_UNAUTHORIZED);
         }
-        
+
         return $next($request);
     }
 }

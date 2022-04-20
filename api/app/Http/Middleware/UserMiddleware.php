@@ -19,7 +19,7 @@ class UserMiddleware extends BaseMiddleware
      *
      * @throws \Illuminate\Auth\AuthenticationException
      */
-    
+
     public function handle($request, Closure $next)
     {
         if(
@@ -32,11 +32,13 @@ class UserMiddleware extends BaseMiddleware
         ){
             return response()->json(['msg' => 'Token is Expired'], Response::HTTP_UNAUTHORIZED);
         }
-        
-        if(\Auth::user() && !is_null(\Auth::user()->deleted_at) || !\Auth::user()->active){
+
+        $user = \Auth::user();
+
+        if(!$user || !is_null($user->deleted_at) || !$user->active){
             return response()->json(['msg' => '¡Unauthorized!'], Response::HTTP_UNAUTHORIZED);
         }
-        
+
         return $next($request);
     }
 }

@@ -267,3 +267,95 @@ namespace App\Models{
 	class UserVerificationCode extends \Eloquent {}
 }
 
+namespace App\Models{
+/**
+ * App\Models\Vehicle
+ *
+ * @property int $id
+ * @property int $company_id
+ * @property int $model_id
+ * @property string $name
+ * @property int $model_year
+ * @property bool $active
+ * @property string|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\VehicleModel $brand
+ * @property-read \App\Models\Company $company
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Log[] $logs
+ * @property-read int|null $logs_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Vehicle newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Vehicle newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Vehicle query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Vehicle whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vehicle whereCompanyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vehicle whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vehicle whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vehicle whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vehicle whereModelId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vehicle whereModelYear($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vehicle whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vehicle whereUpdatedAt($value)
+ */
+	class Vehicle extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * App\Models\VehicleBrand
+ *
+ * @property int $id
+ * @property int $company_id
+ * @property string $name
+ * @property bool $active
+ * @property string|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Company $company
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Log[] $logs
+ * @property-read int|null $logs_count
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleBrand newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleBrand newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleBrand query()
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleBrand whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleBrand whereCompanyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleBrand whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleBrand whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleBrand whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleBrand whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleBrand whereUpdatedAt($value)
+ */
+	class VehicleBrand extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * App\Models\VehicleModel
+ *
+ * @property int $id
+ * @property int $company_id
+ * @property int $brand_id
+ * @property string $name
+ * @property bool $active
+ * @property string|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\VehicleBrand $brand
+ * @property-read \App\Models\Company $company
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Log[] $logs
+ * @property-read int|null $logs_count
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleModel newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleModel newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleModel query()
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleModel whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleModel whereBrandId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleModel whereCompanyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleModel whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleModel whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleModel whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleModel whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleModel whereUpdatedAt($value)
+ */
+	class VehicleModel extends \Eloquent {}
+}
+

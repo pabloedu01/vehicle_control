@@ -2,40 +2,40 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ClaimService;
+use App\Models\VehicleBrand;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class ClaimServiceController extends Controller
+class VehicleBrandController extends Controller
 {
     public function index(Request $request)
     {
-        $claimsService = ClaimService::where('company_id', '=', $request->company_id)
+        $vehicleBrands = VehicleBrand::where('company_id', '=', $request->company_id)
                                      ->whereNull('deleted_at')
                                      ->get();
 
         return response()->json(                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             [
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               'msg'  => '¡Success!',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              'data' => $claimsService,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              'data' => $vehicleBrands,
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ], Response::HTTP_OK
         );
     }
 
     public function show(Request $request, $id)
     {
-        $claimService = ClaimService::where('id', '=', $id)
+        $vehicleBrand = VehicleBrand::where('id', '=', $id)
                                     ->first();
 
         return response()->json(   [
                                     'msg'  => '¡Success!',
-                                    'data' => $claimService,
+                                    'data' => $vehicleBrand,
                                 ], Response::HTTP_OK
         );
     }
 
     public function store(Request $request)
     {
-        $validator = validate($request->all(), ClaimService::rules(null, $request->company_id));
+        $validator = validate($request->all(), VehicleBrand::rules(null, $request->company_id));
 
         if($validator->fails())
         {
@@ -46,13 +46,13 @@ class ClaimServiceController extends Controller
             );
         }
 
-        $claimService = new ClaimService($request->only(ClaimService::getFillables()));
+        $vehicleBrand = new VehicleBrand($request->only(VehicleBrand::getFillables()));
 
-        if(secureSave($claimService))
+        if(secureSave($vehicleBrand))
         {
             return response()->json(   [
                                         'msg'  => '¡Success!',
-                                        'data' => $claimService,
+                                        'data' => $vehicleBrand,
                                     ], Response::HTTP_CREATED
             );
         }
@@ -67,9 +67,9 @@ class ClaimServiceController extends Controller
 
     public function update(Request $request, $id)
     {
-        $claimService = ClaimService::where('id', '=', $id)->first();
+        $vehicleBrand = VehicleBrand::where('id', '=', $id)->first();
 
-        $validator = validate($request->all(), ClaimService::rules($claimService->id, $claimService->company_id));
+        $validator = validate($request->all(), VehicleBrand::rules($vehicleBrand->id, $vehicleBrand->company_id));
 
         if($validator->fails())
         {
@@ -80,13 +80,13 @@ class ClaimServiceController extends Controller
             );
         }
 
-        $claimService->fill(collect($request->except([ 'company_id' ]))->only(ClaimService::getFillables())->toArray());
+        $vehicleBrand->fill(collect($request->except([ 'company_id' ]))->only(VehicleBrand::getFillables())->toArray());
 
-        if(!$claimService->hasAppliedChanges() || secureSave($claimService))
+        if(!$vehicleBrand->hasAppliedChanges() || secureSave($vehicleBrand))
         {
             return response()->json(   [
                                         'msg'  => '¡Success!',
-                                        'data' => $claimService,
+                                        'data' => $vehicleBrand,
                                     ], Response::HTTP_OK
             );
         }
@@ -101,9 +101,9 @@ class ClaimServiceController extends Controller
 
     public function destroy(Request $request, $id)
     {
-        $claimService = ClaimService::where('id', '=', $id)->first();
+        $vehicleBrand = VehicleBrand::where('id', '=', $id)->first();
 
-        if(secureDelete($claimService))
+        if(secureDelete($vehicleBrand))
         {
             return response()->json(   [
                                         'msg' => '¡Success!',
