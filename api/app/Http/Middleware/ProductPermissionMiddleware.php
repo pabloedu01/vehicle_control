@@ -7,7 +7,7 @@ use Closure;
 use Symfony\Component\HttpFoundation\Response;
 use Tymon\JWTAuth\Http\Middleware\BaseMiddleware;
 
-class CompanyProductPermissionMiddleware extends BaseMiddleware
+class ProductPermissionMiddleware extends BaseMiddleware
 {
     /**
      * Handle an incoming request.
@@ -20,15 +20,19 @@ class CompanyProductPermissionMiddleware extends BaseMiddleware
      *
      * @throws \Illuminate\Auth\AuthenticationException
      */
-    
+
     public function handle($request, Closure $next)
     {
-        $data = array_merge($request->all(), $request->route()->parameters());
-        
+        $data = array_merge($request->only([ 'id', 'product_id' ]), collect($request->route()->parameters())->only([ 'id', 'product_id' ])->toArray());
+
+        if(isset($data['product_id'])){
+            $data['id'] = $data['product_id'];
+        }
+
         $validator = validate($data, [
             'id' => 'required|integer',
         ]);
-        
+
         if($validator->fails())
         {
             return response()->json([
@@ -37,7 +41,7 @@ class CompanyProductPermissionMiddleware extends BaseMiddleware
                                     ], Response::HTTP_BAD_REQUEST
             );
         }
-        
+
         if(!Product::where('id', '=', $data['id'])->whereNull('deleted_at')->exists())
         {
             return response()->json([
@@ -45,7 +49,7 @@ class CompanyProductPermissionMiddleware extends BaseMiddleware
                                     ], Response::HTTP_NOT_FOUND
             );
         }
-    
+
         if(
         !Product::whereHas('company', function($query){
             return $query->whereHas('users', function($query){
@@ -56,7 +60,7 @@ class CompanyProductPermissionMiddleware extends BaseMiddleware
         {
             return response()->json([ 'msg' => '¡Unauthorized!' ], Response::HTTP_UNAUTHORIZED);
         }
-        
+
         return $next($request);
     }
 }

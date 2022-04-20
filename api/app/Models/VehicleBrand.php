@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Validation\Rule;
 
-class Product extends Base
+class VehicleBrand extends Base
 {
-    protected $table = 'products';
+    protected $table = 'vehicle_brands';
     
     protected $casts = [
         'active' => 'boolean'
@@ -15,10 +15,6 @@ class Product extends Base
     protected $fillable = [
         'company_id',
         'name',
-        'product_code',
-        'sale_value',
-        'guarantee_value',
-        'unique_code',
         'active',
     ];
     
@@ -41,15 +37,11 @@ class Product extends Base
         }
         
         return [
-            'name'            => 'required|string|max:100',
-            'product_code'    => 'required|string|max:100',
-            'sale_value'      => 'required|numeric',
-            'guarantee_value' => 'required|numeric',
-            'unique_code'     => [
-                'nullable', 'string' , 'max:100',
+            'name'    => [
+                'required', 'string' , 'max:100',
                 $uniqueRule,
             ],
-            'active'          => 'required|boolean',
+            'active'      => 'required|boolean',
         ];
     }
     

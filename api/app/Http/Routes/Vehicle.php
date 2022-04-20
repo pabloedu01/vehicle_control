@@ -3,42 +3,42 @@
 use Illuminate\Support\Facades\Route;
 
 Route::group([
-    'prefix' => 'service',
+    'prefix' => 'vehicle',
                  'middleware' => [ 'jwt.verify', 'user' ],
              ], function(){
 
     Route::group([
-                     'middleware' => [ 'company'],
+                     'middleware' => [ 'vehicleModel'],
                  ], function(){
 
 
 
 
         Route::get('/', [
-            'uses' => 'ServiceController@index',
+            'uses' => 'VehicleController@index',
         ]);
 
         Route::post('/', [
-            'uses' => 'ServiceController@store',
+            'uses' => 'VehicleController@store',
         ]);
 
 
     });
 
     Route::group([
-                     'middleware' => [ 'service'],
+                     'middleware' => [ 'vehicle'],
                  ], function(){
 
         Route::get('{id}', [
-            'uses' => 'ServiceController@show',
+            'uses' => 'VehicleController@show',
         ]);
 
         Route::put('{id}', [
-            'uses' => 'ServiceController@update',
+            'uses' => 'VehicleController@update',
         ]);
 
         Route::delete('{id}', [
-            'uses' => 'ServiceController@destroy',
+            'uses' => 'VehicleController@destroy',
         ]);
     });
 

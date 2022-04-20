@@ -13,44 +13,44 @@ class TireBrandController extends Controller
         $tireBrands = TireBrand::where('company_id', '=', $request->company_id)
                                ->whereNull('deleted_at')
                                ->get();
-    
-        return response()->json([
-                                    'msg'  => '¡Success!',
-                                    'data' => $tireBrands,
-                                ], Response::HTTP_OK
+
+        return response()->json(                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             [
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              'msg'  => '¡Success!',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              'data' => $tireBrands,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ], Response::HTTP_OK
         );
     }
-    
-    public function show(Request $request)
+
+    public function show(Request $request, $id)
     {
-        $tireBrand = TireBrand::where('id', '=', $request->id)
+        $tireBrand = TireBrand::where('id', '=', $id)
                               ->first();
-        
-        return response()->json([
+
+        return response()->json(   [
                                     'msg'  => '¡Success!',
                                     'data' => $tireBrand,
                                 ], Response::HTTP_OK
         );
     }
-    
+
     public function store(Request $request)
     {
         $validator = validate($request->all(), TireBrand::rules(null, $request->company_id));
-        
+
         if($validator->fails())
         {
-            return response()->json([
+            return response()->json(   [
                                         'msg'    => '¡Invalid Data!',
                                         'errors' => $validator->errors(),
                                     ], Response::HTTP_BAD_REQUEST
             );
         }
-        
+
         $tireBrand = new TireBrand($request->only(TireBrand::getFillables()));
-        
+
         if(secureSave($tireBrand))
         {
-            return response()->json([
+            return response()->json(   [
                                         'msg'  => '¡Success!',
                                         'data' => $tireBrand,
                                     ], Response::HTTP_CREATED
@@ -58,33 +58,33 @@ class TireBrandController extends Controller
         }
         else
         {
-            return response()->json([
+            return response()->json(   [
                                         'msg' => '¡Error!',
                                     ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }
-    
-    public function update(Request $request)
+
+    public function update(Request $request, $id)
     {
-        $tireBrand = TireBrand::where('id', '=', $request->id)->first();
-        
+        $tireBrand = TireBrand::where('id', '=', $id)->first();
+
         $validator = validate($request->all(), TireBrand::rules($tireBrand->id, $tireBrand->company_id));
-        
+
         if($validator->fails())
         {
-            return response()->json([
+            return response()->json(   [
                                         'msg'    => '¡Invalid Data!',
                                         'errors' => $validator->errors(),
                                     ], Response::HTTP_BAD_REQUEST
             );
         }
-        
+
         $tireBrand->fill(collect($request->except([ 'company_id' ]))->only(TireBrand::getFillables())->toArray());
-        
+
         if(!$tireBrand->hasAppliedChanges() || secureSave($tireBrand))
         {
-            return response()->json([
+            return response()->json(   [
                                         'msg'  => '¡Success!',
                                         'data' => $tireBrand,
                                     ], Response::HTTP_OK
@@ -92,27 +92,27 @@ class TireBrandController extends Controller
         }
         else
         {
-            return response()->json([
+            return response()->json(   [
                                         'msg' => '¡Error!',
                                     ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }
-    
-    public function destroy(Request $request)
+
+    public function destroy(Request $request, $id)
     {
-        $tireBrand = TireBrand::where('id', '=', $request->id)->first();
-        
+        $tireBrand = TireBrand::where('id', '=', $id)->first();
+
         if(secureDelete($tireBrand))
         {
-            return response()->json([
+            return response()->json(   [
                                         'msg' => '¡Success!',
                                     ], Response::HTTP_OK
             );
         }
         else
         {
-            return response()->json([
+            return response()->json(   [
                                         'msg' => '¡Error!',
                                     ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
