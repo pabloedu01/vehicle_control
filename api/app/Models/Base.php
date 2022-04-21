@@ -35,8 +35,8 @@ class Base extends Model
     {
         parent::boot();
 
+        //self::observe(ModelObserver::class, 0);
         if(self::getHasLogs()){
-            self::observe(ModelObserver::class, 0);
             self::observe(LogObserver::class, 1);
         }
     }
