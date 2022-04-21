@@ -3,15 +3,13 @@
 use Illuminate\Support\Facades\Route;
 
 Route::group([
-    'prefix' => 'vehicle',
+                 'prefix'     => 'vehicle',
                  'middleware' => [ 'jwt.verify', 'user' ],
              ], function(){
 
     Route::group([
-                     'middleware' => [ 'vehicleModel'],
+                     'middleware' => [ 'vehicleModel' ],
                  ], function(){
-
-
 
 
         Route::get('/', [
@@ -26,7 +24,7 @@ Route::group([
     });
 
     Route::group([
-                     'middleware' => [ 'vehicle'],
+                     'middleware' => [ 'vehicle' ],
                  ], function(){
 
         Route::get('{id}', [
@@ -41,11 +39,6 @@ Route::group([
             'uses' => 'VehicleController@destroy',
         ]);
     });
-
-
-
-
-
 
 
 });
