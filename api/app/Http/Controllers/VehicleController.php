@@ -11,20 +11,18 @@ class VehicleController extends Controller
 {
     public function index(Request $request)
     {
-        $vehicle = Vehicle::where('model_id', '=', $request->model_id)
-                          ->whereNull('deleted_at')
-                          ->get();
+        $vehicles = Vehicle::with('model', 'model.brand')
+                           ->where('model_id', '=', $request->model_id)
+                           ->whereNull('deleted_at')
+                           ->get();
 
-        return response()->json(                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        [
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         'msg'  => '¡Success!',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         'data' => $vehicle,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ], Response::HTTP_OK
-        );
+        return response()->json([ 'msg' => '¡Success!', 'data' => $vehicles, ], Response::HTTP_OK);
     }
 
     public function show(Request $request, $id)
     {
-        $vehicle = Vehicle::where('id', '=', $id)
+        $vehicle = Vehicle::with('model', 'model.brand')
+                          ->where('id', '=', $id)
                           ->first();
 
         return response()->json(   [
@@ -53,15 +51,15 @@ class VehicleController extends Controller
 
         if(secureSave($vehicle))
         {
-            return response()->json(   [
-                                        'msg'  => '¡Success!',
-                                        'data' => $vehicle,
-                                    ], Response::HTTP_CREATED
+            return response()->json(                                 [
+                                                                      'msg'  => '¡Success!',
+                                                                      'data' => $vehicle,
+                                                                  ], Response::HTTP_CREATED
             );
         }
         else
         {
-            return response()->json(   [
+            return response()->json([
                                         'msg' => '¡Error!',
                                     ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
@@ -95,7 +93,7 @@ class VehicleController extends Controller
         }
         else
         {
-            return response()->json(   [
+            return response()->json([
                                         'msg' => '¡Error!',
                                     ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
@@ -108,14 +106,14 @@ class VehicleController extends Controller
 
         if(secureDelete($vehicle))
         {
-            return response()->json(   [
+            return response()->json([
                                         'msg' => '¡Success!',
                                     ], Response::HTTP_OK
             );
         }
         else
         {
-            return response()->json(   [
+            return response()->json([
                                         'msg' => '¡Error!',
                                     ], Response::HTTP_INTERNAL_SERVER_ERROR
             );

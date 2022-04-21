@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Validation\Rule;
-
 class Vehicle extends Base
 {
     protected $table = 'vehicles';
@@ -22,28 +20,12 @@ class Vehicle extends Base
 
     public static function rules($id = null, $model_id = null, $year = null)
     {
-        if(!is_null($model_id) && !is_null($id) && !is_null($year))
-        {
-            $uniqueRule = Rule::unique(self::getTableName())->ignore($id, 'id')->where('model_id', $model_id)->where('model_year', $year);
-        }
-        else
-        {
-            if(!is_null($model_id) && !is_null($year))
-            {
-                $uniqueRule = Rule::unique(self::getTableName())->where('model_id', $model_id)->where('model_year', $year);
-            }
-            else
-            {
-                $uniqueRule = '';
-            }
-        }
-
         return [
             'name'       => [
                 'required',
                 'string',
                 'max:100',
-                $uniqueRule,
+                self::getUniqueRule($id, ['model_id' => $model_id, 'model_year' => $year]),
             ],
             'model_year' => 'required|integer',
             'active'     => 'required|boolean',
