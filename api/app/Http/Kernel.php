@@ -64,6 +64,7 @@ class Kernel extends HttpKernel
         'vehicleBrand' => \App\Http\Middleware\VehicleBrandPermissionMiddleware::class,
         'vehicleModel' => \App\Http\Middleware\VehicleModelPermissionMiddleware::class,
         'vehicle' => \App\Http\Middleware\VehiclePermissionMiddleware::class,
+        'client' => \App\Http\Middleware\ClientPermissionMiddleware::class,
         'claimService' => \App\Http\Middleware\ClaimServicePermissionMiddleware::class,
         'company.service' => \App\Http\Middleware\ServicePermissionMiddleware::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,

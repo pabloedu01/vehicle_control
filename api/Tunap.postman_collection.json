@@ -277,7 +277,7 @@
 							"urlencoded": [
 								{
 									"key": "company_id",
-									"value": "2",
+									"value": "3",
 									"type": "text"
 								},
 								{
@@ -303,7 +303,8 @@
 								{
 									"key": "unique_code",
 									"value": "test",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "active",
@@ -397,6 +398,169 @@
 								"api",
 								"product",
 								"5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Client",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/client?company_id=4",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"client"
+							],
+							"query": [
+								{
+									"key": "company_id",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/client/2",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"client",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "company_id",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "test",
+									"type": "text"
+								},
+								{
+									"key": "active",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "document",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "test",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/client",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"client"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "test",
+									"type": "text"
+								},
+								{
+									"key": "active",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "document",
+									"value": "12",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "test",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/client/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"client",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/client/2",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"client",
+								"2"
 							]
 						}
 					},
@@ -723,14 +887,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/vehicle/5",
+							"raw": "{{host}}/api/vehicle/4",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"vehicle",
-								"5"
+								"4"
 							]
 						}
 					},
@@ -756,7 +920,7 @@
 								},
 								{
 									"key": "model_year",
-									"value": "2022",
+									"value": "2023",
 									"type": "text"
 								},
 								{
@@ -788,23 +952,13 @@
 							"mode": "urlencoded",
 							"urlencoded": [
 								{
-									"key": "company_id",
-									"value": "2",
-									"type": "text"
-								},
-								{
-									"key": "model_id",
-									"value": "1",
-									"type": "text"
-								},
-								{
 									"key": "name",
 									"value": "test",
 									"type": "text"
 								},
 								{
 									"key": "model_year",
-									"value": "2022",
+									"value": "2023",
 									"type": "text"
 								},
 								{
@@ -815,14 +969,14 @@
 							]
 						},
 						"url": {
-							"raw": "{{host}}/api/vehicle/5",
+							"raw": "{{host}}/api/vehicle/3",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"vehicle",
-								"5"
+								"3"
 							]
 						}
 					},
@@ -838,14 +992,14 @@
 							"urlencoded": []
 						},
 						"url": {
-							"raw": "{{host}}/api/vehicle/5",
+							"raw": "{{host}}/api/vehicle/3",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"vehicle",
-								"5"
+								"3"
 							]
 						}
 					},
@@ -1045,13 +1199,19 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/claim-service",
+							"raw": "{{host}}/api/claim-service?company_id=3",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"claim-service"
+							],
+							"query": [
+								{
+									"key": "company_id",
+									"value": "3"
+								}
 							]
 						}
 					},
@@ -1086,12 +1246,12 @@
 							"urlencoded": [
 								{
 									"key": "company_id",
-									"value": "2",
+									"value": "4",
 									"type": "text"
 								},
 								{
 									"key": "integration_code",
-									"value": "1",
+									"value": "2",
 									"type": "default"
 								},
 								{
@@ -1299,6 +1459,36 @@
 								"api",
 								"tire-brand",
 								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Company",
+			"item": [
+				{
+					"name": "Vehicles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/company/vehicles?company_id=3",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"company",
+								"vehicles"
+							],
+							"query": [
+								{
+									"key": "company_id",
+									"value": "3"
+								}
 							]
 						}
 					},
