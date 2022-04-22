@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use App\Observers\LogObserver;
-use App\Observers\ModelObserver;
 use App\Traits\RelationshipsTrait;
 use App\Traits\SoftDeleteTrait;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
 
@@ -13,7 +13,9 @@ class Base extends Model
 {
     use SoftDeleteTrait, RelationshipsTrait;
 
-    public $hasLogs = true;
+    static $hasLogs = true;
+
+    static $hasSoftDeletes = true;
 
     protected $hidden = [
         'deleted_at',
@@ -36,13 +38,20 @@ class Base extends Model
         parent::boot();
 
         //self::observe(ModelObserver::class, 0);
-        if(self::getHasLogs()){
+        if(self::$hasLogs){
             self::observe(LogObserver::class, 1);
+        }
+
+        if(self::$hasSoftDeletes){
+            static::addGlobalScope('softDelete', function (Builder $builder) {
+                $builder->whereNull('deleted_at');
+            });
         }
     }
 
-    public static function getHasLogs(){
-        return with(new static)->hasLogs;
+    public function scopeOnlyDeletes(Builder $builder)
+    {
+        return $builder->whereNotNull('deleted_at');
     }
 
     public static function getTableName()
