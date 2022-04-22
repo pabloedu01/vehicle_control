@@ -47,7 +47,7 @@ class TireBrandPermissionMiddleware extends BaseMiddleware
             );
         }
 
-        if(!TireBrand::where('id', '=', $data['id'])->whereNull('deleted_at')->exists())
+        if(!TireBrand::where('id', '=', $data['id'])->exists())
         {
             return response()->json([
                                         'msg' => '¡Not Found!',
@@ -59,7 +59,7 @@ class TireBrandPermissionMiddleware extends BaseMiddleware
         !TireBrand::whereHas('company', function($query){
             return $query->whereHas('users', function($query){
                 return $query->where('users.id', '=', \Auth::user()->id);
-            })->whereNull('companies.deleted_at');
+            });
         })->where('id', '=', $data['id'])->exists()
         )
         {

@@ -3,25 +3,39 @@
 namespace App\Models;
 
 use App\Observers\LogObserver;
-use App\Traits\RelationshipsTrait;
-use App\Traits\SoftDeleteTrait;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Validation\Rule;
 
 class Base extends Model
 {
-    use SoftDeleteTrait, RelationshipsTrait;
+    use SoftDeletes;
 
-    static $hasLogs = true;
-
-    static $hasSoftDeletes = true;
+    public $hasLogs = true;
 
     protected $hidden = [
         'deleted_at',
         'created_at',
         'updated_at',
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        //self::observe(ModelObserver::class, 0);
+        if(self::getHasLogs()){
+            self::observe(LogObserver::class, 1);
+        }
+    }
+
+    public static function bootSoftDeletes()
+    {
+        if(self::getHasSoftDeletes()){
+            static::addGlobalScope(new SoftDeletingScope);
+        }
+    }
 
     public function __construct(array $attributes = [])
     {
@@ -33,25 +47,14 @@ class Base extends Model
         return with(new static)->getFillable();
     }
 
-    public static function boot()
+    public static function getHasLogs()
     {
-        parent::boot();
-
-        //self::observe(ModelObserver::class, 0);
-        if(self::$hasLogs){
-            self::observe(LogObserver::class, 1);
-        }
-
-        if(self::$hasSoftDeletes){
-            static::addGlobalScope('softDelete', function (Builder $builder) {
-                $builder->whereNull('deleted_at');
-            });
-        }
+        return with(new static)->hasLogs;
     }
 
-    public function scopeOnlyDeletes(Builder $builder)
+    public static function getHasSoftDeletes()
     {
-        return $builder->whereNotNull('deleted_at');
+        return with(new static)->forceDeleting == false;
     }
 
     public static function getTableName()

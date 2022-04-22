@@ -13,7 +13,6 @@ class VehicleController extends Controller
     {
         $vehicles = Vehicle::with('model', 'model.brand')
                            ->where('model_id', '=', $request->model_id)
-                           ->whereNull('deleted_at')
                            ->get();
 
         return response()->json([ 'msg' => '¡Success!', 'data' => $vehicles, ], Response::HTTP_OK);

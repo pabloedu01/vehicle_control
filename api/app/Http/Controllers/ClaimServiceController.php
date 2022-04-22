@@ -11,7 +11,6 @@ class ClaimServiceController extends Controller
     public function index(Request $request)
     {
         $claimsService = ClaimService::where('company_id', '=', $request->company_id)
-                                     ->whereNull('deleted_at')
                                      ->get();
 
         return response()->json(                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             [

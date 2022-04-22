@@ -11,7 +11,6 @@ class TireBrandController extends Controller
     public function index(Request $request)
     {
         $tireBrands = TireBrand::where('company_id', '=', $request->company_id)
-                               ->whereNull('deleted_at')
                                ->get();
 
         return response()->json(                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             [

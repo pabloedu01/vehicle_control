@@ -42,7 +42,7 @@ class CompanyPermissionMiddleware extends BaseMiddleware
             );
         }
 
-        if(!Company::where('id', '=', $data['id'])->whereNull('deleted_at')->exists())
+        if(!Company::where('id', '=', $data['id'])->exists())
         {
             return response()->json([
                                         'msg' => '¡Not Found!',

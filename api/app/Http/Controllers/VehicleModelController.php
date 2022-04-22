@@ -12,7 +12,6 @@ class VehicleModelController extends Controller
     public function index(Request $request)
     {
         $vehicleModels = VehicleModel::where('brand_id', '=', $request->brand_id)
-                                     ->whereNull('deleted_at')
                                      ->get();
 
         return response()->json(                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  [

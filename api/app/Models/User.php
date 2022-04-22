@@ -4,15 +4,18 @@ namespace App\Models;
 
 use App\Casts\Bcrypt;
 use App\Observers\LogObserver;
-use App\Observers\ModelObserver;
 use App\Observers\UserObserver;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
+    use SoftDeletes;
+
     protected $table = 'users';
-    
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -25,7 +28,7 @@ class User extends Authenticatable implements JWTSubject
         'created_at',
         'updated_at',
     ];
-    
+
     protected $fillable = [
         'user_id',
         'username',
@@ -36,31 +39,31 @@ class User extends Authenticatable implements JWTSubject
         'birthday',
         'active'
     ];
-    
+
     protected $casts = [
         'password' => Bcrypt::class,
     ];
-    
+
     public static function boot()
     {
         parent::boot();
-        
-        self::observe(ModelObserver::class, 0);
+
+        //self::observe(ModelObserver::class, 0);
         self::observe(LogObserver::class, 1);
         self::observe(UserObserver::class, 2);
     }
-    
+
     public static function getTableName()
     {
         return with(new static)->getTable();
     }
-    
+
     #has many
     public function logs()
     {
         return $this->hasMany('App\Models\Log', 'register_id', self::getKeyName())->where('table', '=', self::getTable())->orderBy('date', 'desc');
     }
-    
+
     #has many
     public function tokens()
     {
@@ -68,24 +71,37 @@ class User extends Authenticatable implements JWTSubject
                     ->where('type', '=', 'user')
                     ->where('from', '=', 'myself');
     }
-    
+
     #many to many
     public function companies()
     {
         return $this->belongsToMany('App\Models\Company', 'company_user', 'user_id', 'company_id')
                     ->withPivot([ 'role' ])
-                    ->whereNull('companies.deleted_at')
                     ->orderBy('company_user.created_at', 'desc')
                     ->withTimestamps();
     }
-    
+
     public function getJWTIdentifier()
     {
         return $this->getKey();
     }
-    
+
     public function getJWTCustomClaims()
     {
         return ['username' => $this->username, 'name' => $this->name, 'id' => $this->id, 'email' => $this->email];
+    }
+
+    public function getAppliedChanges(){
+        $except = ['updated_at'];
+        $after = \Arr::except($this->getDirty(), $except);
+        $before = \Arr::only($this->getOriginal(),array_keys($after));
+
+        return ['before' => $before, 'after' => $after];
+    }
+
+    public function hasAppliedChanges(){
+        $appliedChanges = $this->getAppliedChanges();
+
+        return count($appliedChanges['before']) || count($appliedChanges['after']);
     }
 }

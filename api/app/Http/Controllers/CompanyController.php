@@ -12,7 +12,6 @@ class CompanyController extends Controller
     {
         $vehicles = Vehicle::with('model', 'model.brand')
                            ->where('company_id', '=', $request->company_id)
-                           ->whereNull('deleted_at')
                            ->get();
 
         return response()->json(                                 [

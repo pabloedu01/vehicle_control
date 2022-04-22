@@ -11,7 +11,6 @@ class ClientController extends Controller
     public function index(Request $request)
     {
         $clients = Client::where('company_id', '=', $request->company_id)
-                         ->whereNull('deleted_at')
                          ->get();
 
         return response()->json([
