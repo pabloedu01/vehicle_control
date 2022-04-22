@@ -13,20 +13,19 @@ class TestController extends Controller
     public function test(Request $request)
     {
         /*$email = new SendEmail('test subject', 'test message');
-        
+
         dd(\Mail::to('migueljosecontreras@gmail.com')
                 ->send($email));*/
-        
-        
+
+
         /*dispatch(new SendEmailJob([
                                       'to' => 'migueljosecontreras@gmail.com', 'code' => 'codigo'
                                   ], WelcomeEmail::class));*/
-        
-        dd(Log::get()->toArray());
-        
+
+
         return response()->json([
                                     'msg'  => '¡Success!',
-                                    'data' => [],
+                                    'data' => Log::limit(10)->get()->toArray(),
                                 ], Response::HTTP_OK
         );
     }

@@ -8,6 +8,8 @@ class Token extends Base
 
     public $timestamps = false;
 
-    static $hasLogs = false;
+    public $hasLogs = false;
+
+    public $forceDeleting = true;
 }
 

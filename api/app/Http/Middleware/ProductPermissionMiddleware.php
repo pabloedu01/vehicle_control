@@ -42,7 +42,7 @@ class ProductPermissionMiddleware extends BaseMiddleware
             );
         }
 
-        if(!Product::where('id', '=', $data['id'])->whereNull('deleted_at')->exists())
+        if(!Product::where('id', '=', $data['id'])->exists())
         {
             return response()->json([
                                         'msg' => '¡Not Found!',
@@ -54,7 +54,7 @@ class ProductPermissionMiddleware extends BaseMiddleware
         !Product::whereHas('company', function($query){
             return $query->whereHas('users', function($query){
                 return $query->where('users.id', '=', \Auth::user()->id);
-            })->whereNull('companies.deleted_at');
+            });
         })->where('id', '=', $data['id'])->exists()
         )
         {

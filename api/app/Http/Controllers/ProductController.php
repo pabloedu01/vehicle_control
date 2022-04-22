@@ -11,13 +11,13 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $products = Product::where('company_id', '=', $request->company_id)
-                           ->whereNull('deleted_at')
                            ->get();
 
-        return response()->json(                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             [
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              'msg'  => '¡Success!',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              'data' => $products,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ], Response::HTTP_OK
+        return response()->json([
+                                    'msg'  => '¡Success!',
+                                    'data' => $products,
+                                ],
+                                Response::HTTP_OK
         );
     }
 

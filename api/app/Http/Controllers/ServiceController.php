@@ -11,7 +11,6 @@ class ServiceController extends Controller
     public function index(Request $request)
     {
         $services = Service::where('company_id', '=', $request->company_id)
-                           ->whereNull('deleted_at')
                            ->get();
 
         return response()->json(                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             [

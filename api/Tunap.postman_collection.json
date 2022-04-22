@@ -230,7 +230,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/product?company_id=1",
+							"raw": "{{host}}/api/product?company_id=3",
 							"host": [
 								"{{host}}"
 							],
@@ -241,7 +241,7 @@
 							"query": [
 								{
 									"key": "company_id",
-									"value": "1"
+									"value": "3"
 								}
 							]
 						}
@@ -254,14 +254,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/product/5",
+							"raw": "{{host}}/api/product/3",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"product",
-								"5"
+								"3"
 							]
 						}
 					},
@@ -390,14 +390,14 @@
 							"urlencoded": []
 						},
 						"url": {
-							"raw": "{{host}}/api/product/5",
+							"raw": "{{host}}/api/product/6",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"product",
-								"5"
+								"6"
 							]
 						}
 					},
@@ -414,7 +414,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/client?company_id=4",
+							"raw": "{{host}}/api/client?company_id=3",
 							"host": [
 								"{{host}}"
 							],
@@ -425,7 +425,7 @@
 							"query": [
 								{
 									"key": "company_id",
-									"value": "4"
+									"value": "3"
 								}
 							]
 						}
