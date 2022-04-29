@@ -5,12 +5,14 @@ namespace App\Models;
 class UserVerificationCode extends Base
 {
     protected $table = 'user_verification_codes';
-    
+
+    protected $forceDeleting = true;
+
     protected $fillable = [
         'user_id',
         'code'
     ];
-    
+
     #belongs to
     public function user()
     {
