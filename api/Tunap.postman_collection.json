@@ -230,7 +230,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/product?company_id=3",
+							"raw": "{{host}}/api/product?company_id=1",
 							"host": [
 								"{{host}}"
 							],
@@ -241,7 +241,7 @@
 							"query": [
 								{
 									"key": "company_id",
-									"value": "3"
+									"value": "1"
 								}
 							]
 						}
@@ -277,34 +277,33 @@
 							"urlencoded": [
 								{
 									"key": "company_id",
-									"value": "3",
+									"value": "1",
 									"type": "text"
 								},
 								{
 									"key": "name",
-									"value": "test",
+									"value": "Harina Pan",
 									"type": "text"
 								},
 								{
 									"key": "product_code",
-									"value": "test",
+									"value": "harina-pan",
 									"type": "text"
 								},
 								{
 									"key": "sale_value",
-									"value": "10",
+									"value": "1",
 									"type": "text"
 								},
 								{
 									"key": "guarantee_value",
-									"value": "10",
+									"value": "11",
 									"type": "text"
 								},
 								{
 									"key": "unique_code",
-									"value": "test",
-									"type": "text",
-									"disabled": true
+									"value": "harina-pan",
+									"type": "text"
 								},
 								{
 									"key": "active",
@@ -414,7 +413,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/client?company_id=3",
+							"raw": "{{host}}/api/client?company_id=1",
 							"host": [
 								"{{host}}"
 							],
@@ -425,7 +424,7 @@
 							"query": [
 								{
 									"key": "company_id",
-									"value": "3"
+									"value": "1"
 								}
 							]
 						}
@@ -438,14 +437,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/client/2",
+							"raw": "{{host}}/api/client/1",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"client",
-								"2"
+								"1"
 							]
 						}
 					},
@@ -461,12 +460,12 @@
 							"urlencoded": [
 								{
 									"key": "company_id",
-									"value": "4",
+									"value": "1",
 									"type": "text"
 								},
 								{
 									"key": "name",
-									"value": "test",
+									"value": "Miguel Contreras",
 									"type": "text"
 								},
 								{
@@ -476,12 +475,12 @@
 								},
 								{
 									"key": "document",
-									"value": "1",
+									"value": "20916310",
 									"type": "text"
 								},
 								{
 									"key": "address",
-									"value": "test",
+									"value": "Tipuro",
 									"type": "text"
 								}
 							]
@@ -577,7 +576,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/vehicle-brand?company_id=3",
+							"raw": "{{host}}/api/vehicle-brand?company_id=1",
 							"host": [
 								"{{host}}"
 							],
@@ -588,7 +587,7 @@
 							"query": [
 								{
 									"key": "company_id",
-									"value": "3"
+									"value": "1"
 								}
 							]
 						}
@@ -624,12 +623,12 @@
 							"urlencoded": [
 								{
 									"key": "company_id",
-									"value": "4",
+									"value": "1",
 									"type": "text"
 								},
 								{
 									"key": "name",
-									"value": "test2",
+									"value": "Chevrolet",
 									"type": "text"
 								},
 								{
@@ -720,7 +719,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/vehicle-model?brand_id=2",
+							"raw": "{{host}}/api/vehicle-model?brand_id=1",
 							"host": [
 								"{{host}}"
 							],
@@ -731,7 +730,7 @@
 							"query": [
 								{
 									"key": "brand_id",
-									"value": "2"
+									"value": "1"
 								}
 							]
 						}
@@ -772,7 +771,7 @@
 								},
 								{
 									"key": "name",
-									"value": "test2",
+									"value": "Aveo",
 									"type": "text"
 								},
 								{
@@ -887,14 +886,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/vehicle/4",
+							"raw": "{{host}}/api/vehicle/1",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"vehicle",
-								"4"
+								"1"
 							]
 						}
 					},
@@ -915,12 +914,12 @@
 								},
 								{
 									"key": "name",
-									"value": "test",
+									"value": "1.6",
 									"type": "text"
 								},
 								{
 									"key": "model_year",
-									"value": "2023",
+									"value": "2008",
 									"type": "text"
 								},
 								{
@@ -1008,26 +1007,51 @@
 			]
 		},
 		{
-			"name": "Service",
+			"name": "Technical Consultant",
 			"item": [
+				{
+					"name": "Available Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/technical-consultant/available-users?company_id=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"technical-consultant",
+								"available-users"
+							],
+							"query": [
+								{
+									"key": "company_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "List",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/service?company_id=3",
+							"raw": "{{host}}/api/technical-consultant?company_id=1",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
-								"service"
+								"technical-consultant"
 							],
 							"query": [
 								{
 									"key": "company_id",
-									"value": "3"
+									"value": "1"
 								}
 							]
 						}
@@ -1040,13 +1064,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/service/1",
+							"raw": "{{host}}/api/technical-consultant/1",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
-								"service",
+								"technical-consultant",
 								"1"
 							]
 						}
@@ -1063,32 +1087,12 @@
 							"urlencoded": [
 								{
 									"key": "company_id",
-									"value": "3",
+									"value": "1",
 									"type": "text"
 								},
 								{
-									"key": "service_code",
-									"value": "25",
-									"type": "text"
-								},
-								{
-									"key": "integration_code",
-									"value": "4",
-									"type": "text"
-								},
-								{
-									"key": "description",
-									"value": "test2",
-									"type": "text"
-								},
-								{
-									"key": "standard_quantity",
+									"key": "user_id",
 									"value": "2",
-									"type": "text"
-								},
-								{
-									"key": "standard_value",
-									"value": "4",
 									"type": "text"
 								},
 								{
@@ -1099,13 +1103,13 @@
 							]
 						},
 						"url": {
-							"raw": "{{host}}/api/service",
+							"raw": "{{host}}/api/technical-consultant",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
-								"service"
+								"technical-consultant"
 							]
 						}
 					},
@@ -1120,68 +1124,20 @@
 							"mode": "urlencoded",
 							"urlencoded": [
 								{
-									"key": "service_code",
-									"value": "24",
-									"type": "text"
-								},
-								{
-									"key": "integration_code",
-									"value": "2",
-									"type": "text"
-								},
-								{
-									"key": "description",
-									"value": "test",
-									"type": "text"
-								},
-								{
-									"key": "standard_quantity",
-									"value": "2",
-									"type": "text"
-								},
-								{
-									"key": "standard_value",
-									"value": "4",
-									"type": "text"
-								},
-								{
 									"key": "active",
-									"value": "1",
+									"value": "0",
 									"type": "text"
 								}
 							]
 						},
 						"url": {
-							"raw": "{{host}}/api/service/1",
+							"raw": "{{host}}/api/technical-consultant/1",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
-								"service",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": []
-						},
-						"url": {
-							"raw": "{{host}}/api/service/1",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"service",
+								"technical-consultant",
 								"1"
 							]
 						}
@@ -1199,7 +1155,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/claim-service?company_id=3",
+							"raw": "{{host}}/api/claim-service?company_id=1",
 							"host": [
 								"{{host}}"
 							],
@@ -1210,7 +1166,7 @@
 							"query": [
 								{
 									"key": "company_id",
-									"value": "3"
+									"value": "1"
 								}
 							]
 						}
@@ -1246,17 +1202,17 @@
 							"urlencoded": [
 								{
 									"key": "company_id",
-									"value": "4",
+									"value": "1",
 									"type": "text"
 								},
 								{
 									"key": "integration_code",
-									"value": "2",
+									"value": "1023",
 									"type": "default"
 								},
 								{
 									"key": "description",
-									"value": "test",
+									"value": "Descripción de prueba",
 									"type": "default"
 								}
 							]
@@ -1475,7 +1431,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/company/vehicles?company_id=3",
+							"raw": "{{host}}/api/company/vehicles?company_id=1",
 							"host": [
 								"{{host}}"
 							],
@@ -1487,8 +1443,345 @@
 							"query": [
 								{
 									"key": "company_id",
-									"value": "3"
+									"value": "1"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/company",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"company"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Service",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/service?company_id=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"service"
+							],
+							"query": [
+								{
+									"key": "company_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/service/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"service",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "company_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "service_code",
+									"value": "25",
+									"type": "text"
+								},
+								{
+									"key": "integration_code",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "test2",
+									"type": "text"
+								},
+								{
+									"key": "standard_quantity",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "standard_value",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "active",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/service",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"service"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "service_code",
+									"value": "24",
+									"type": "text"
+								},
+								{
+									"key": "integration_code",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "test",
+									"type": "text"
+								},
+								{
+									"key": "standard_quantity",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "standard_value",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "active",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/service/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"service",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/service/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"service",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Service Schedule",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/service-schedule?company_id=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"service-schedule"
+							],
+							"query": [
+								{
+									"key": "company_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/service-schedule/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"service-schedule",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code\": \"test\",\n    \"promised_date\": \"2022-04-29 16:30:00\",\n    \"technical_consultant_id\": 2,\n    \"client_id\": 1,\n    \"vehicle_id\": 1,\n    \"company_id\": 1,\n    \"claims_service\": [\n        {\n            \"claim_service_id\": 1,\n            \"services\": [\n                {\n                    \"service_id\": 1,\n                    \"price\": \"000\",\n                    \"products\": [\n                        {\n                            \"product_id\": 1,\n                            \"price\": \"000\"\n                        }\n                    ]\n                }\n            ]\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/service-schedule",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"service-schedule"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code\": \"test2\",\n    \"promised_date\": \"2022-04-29 16:30:00\",\n    \"technical_consultant_id\": 2,\n    \"client_id\": 1,\n    \"vehicle_id\": 1,\n    \"company_id\": 1,\n    \"claims_service\": [\n        {\n            \"claim_service_id\": 1,\n            \"services\": [\n                {\n                    \"service_id\": 1,\n                    \"price\": \"50.2\",\n                    \"products\": [\n                        {\n                            \"product_id\": 1,\n                            \"price\": \"000\"\n                        }\n                    ]\n                }\n            ]\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/service-schedule/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"service-schedule",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/service-schedule/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"service-schedule",
+								"1"
 							]
 						}
 					},
