@@ -126,7 +126,7 @@ return [
     'uuid' => 'The :attribute must be a valid UUID.',
     'cpf' => 'The :attribute must be a valid CPF.',
     'cnpj' => 'The :attribute must be a valid CNPJ.',
-
+    'serviceClaimsOfServiceSchedule' => 'The :attribute contains wrong information.',
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines

@@ -19,7 +19,7 @@ class AuthController extends Controller
             'username' => 'required|max:20',
             'password' => 'required|max:20',
         ]);
-        
+
         if($validator->fails())
         {
             return response()->json([
@@ -28,24 +28,27 @@ class AuthController extends Controller
                                     ], Response::HTTP_BAD_REQUEST
             );
         }
-        
+
         $loginField = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
-        
+
+        //$jwtToken = auth()->guard()->setTTL(60*24*365*10)->attempt([ $loginField => $request->username, 'password' => $request->password, 'active' => true ]);
         $jwtToken = auth()->attempt([ $loginField => $request->username, 'password' => $request->password, 'active' => true ]);
+
+
         $user     = \Auth::user();
-        
+
         if($jwtToken && $user)
         {
             if(is_null($user->deleted_at))
             {
                 $token = new Token();
-                
+
                 $token->token   = $jwtToken;
                 $token->user_id = $user->id;
                 $token->type    = 'user';
                 $token->from    = 'myself';
                 $token->date    = date('Y-m-d H:i:s');
-                
+
                 if(secureSave($token))
                 {
                     return response()
@@ -65,26 +68,26 @@ class AuthController extends Controller
                 }
             }
         }
-        
+
         return response()->json([
                                     'msg' => '¡Unauthorized!',
                                 ], Response::HTTP_UNAUTHORIZED
         );
     }
-    
+
     public function logout(Request $request)
     {
         $user = \Auth::user();
-        
+
         $user->tokens()->delete();
-        
+
         return response()
             ->json([
                        'msg' => '¡Success!',
                    ], Response::HTTP_OK
             );
     }
-    
+
     public function broadcasting(Request $request)
     {
         if(\Auth::check())
@@ -98,7 +101,7 @@ class AuthController extends Controller
                                     ], Response::HTTP_UNAUTHORIZED);
         }
     }
-    
+
     public function register(Request $request)
     {
         $validator = validate($request->all(), [
@@ -110,7 +113,7 @@ class AuthController extends Controller
             'username' => 'required|string|unique:users,username',
             'password' => 'required|string|min:6|max:12',
         ]);
-        
+
         if($validator->fails())
         {
             return response()->json([
@@ -119,7 +122,7 @@ class AuthController extends Controller
                                     ], Response::HTTP_BAD_REQUEST
             );
         }
-        
+
         $user = new User($request->only([
                                             'user_id',
                                             'username',
@@ -129,16 +132,16 @@ class AuthController extends Controller
                                             'phone',
                                             'birthday',
                                         ]));
-        
+
         $company = new Company($request->only([
                                                   'cnpj',
                                                   'cpf',
                                               ]));
-        
+
         if(secureSave($user) && secureSave($company))
         {
             $user->companies()->attach($company->id, [ 'role' => 'owner' ]);
-            
+
             return response()
                 ->json([
                            'msg'     => '¡Success!',
@@ -156,16 +159,16 @@ class AuthController extends Controller
                 );
         }
     }
-    
+
     public function userVerificationCode(Request $request)
     {
         $userVerificationCode = UserVerificationCode::where('code', '=', $request->code)->first();
-        
+
         if($userVerificationCode)
         {
             $user = $userVerificationCode->user;
             $userVerificationCode->delete();
-            
+
             if($user->update([ 'active' => true ]))
             {
                 return response()

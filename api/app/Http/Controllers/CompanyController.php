@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,5 +20,39 @@ class CompanyController extends Controller
                                                                   'data' => $vehicles,
                                                               ], Response::HTTP_OK
         );
+    }
+
+    public function store(Request $request)
+    {
+        $validator = validate($request->all(), Company::rules());
+
+        if($validator->fails())
+        {
+            return response()->json(   [
+                                           'msg'    => '¡Invalid Data!',
+                                           'errors' => $validator->errors(),
+                                       ], Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        $company = new Company($request->only(Company::getFillables()));
+
+        if(secureSave($company))
+        {
+            $company->users()->attach(\Auth::user(), ['role' => 'owner']);
+
+            return response()->json(   [
+                                           'msg'  => '¡Success!',
+                                           'data' => $company,
+                                       ], Response::HTTP_CREATED
+            );
+        }
+        else
+        {
+            return response()->json(   [
+                                           'msg' => '¡Error!',
+                                       ], Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
     }
 }

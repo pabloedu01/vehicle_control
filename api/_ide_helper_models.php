@@ -18,7 +18,7 @@ namespace App\Models{
  * @property int $company_id
  * @property int|null $integration_code
  * @property string $description
- * @property string|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Company $company
@@ -40,6 +40,38 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * App\Models\Client
+ *
+ * @property int $id
+ * @property int $company_id
+ * @property string $name
+ * @property string $document
+ * @property string $address
+ * @property bool $active
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Company $company
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Log[] $logs
+ * @property-read int|null $logs_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Client newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Client newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Client query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Client whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Client whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Client whereCompanyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Client whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Client whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Client whereDocument($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Client whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Client whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Client whereUpdatedAt($value)
+ */
+	class Client extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * App\Models\Company
  *
  * @property int $id
@@ -51,7 +83,7 @@ namespace App\Models{
  * @property string|null $province
  * @property string|null $address_1
  * @property string|null $address_2
- * @property string|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Log[] $logs
@@ -81,6 +113,27 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * App\Models\Permission
+ *
+ * @property int $id
+ * @property string $name
+ * @property string|null $description
+ * @property string $code
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Log[] $logs
+ * @property-read int|null $logs_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Permission newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Permission newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Permission query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Permission whereCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Permission whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Permission whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Permission whereName($value)
+ */
+	class Permission extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * App\Models\Product
  *
  * @property int $id
@@ -91,7 +144,7 @@ namespace App\Models{
  * @property float $guarantee_value
  * @property string|null $unique_code
  * @property bool $active
- * @property string|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Company $company
@@ -127,7 +180,7 @@ namespace App\Models{
  * @property float $standard_quantity
  * @property float $standard_value
  * @property bool $active
- * @property string|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Company $company
@@ -153,12 +206,80 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * App\Models\ServiceSchedule
+ *
+ * @property int $id
+ * @property int $company_id
+ * @property int $vehicle_id
+ * @property int|null $technical_consultant_id
+ * @property int|null $client_id
+ * @property string|null $code
+ * @property string $promised_date
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ClaimService[] $claimsService
+ * @property-read int|null $claims_service_count
+ * @property-read \App\Models\Client|null $client
+ * @property-read \App\Models\Company $company
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Log[] $logs
+ * @property-read int|null $logs_count
+ * @property-read \App\Models\TechnicalConsultant|null $technicalConsultant
+ * @property-read \App\Models\Vehicle $vehicle
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceSchedule newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceSchedule newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceSchedule query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceSchedule whereClientId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceSchedule whereCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceSchedule whereCompanyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceSchedule whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceSchedule whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceSchedule whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceSchedule wherePromisedDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceSchedule whereTechnicalConsultantId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceSchedule whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceSchedule whereVehicleId($value)
+ */
+	class ServiceSchedule extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * App\Models\TechnicalConsultant
+ *
+ * @property int $id
+ * @property int $company_id
+ * @property int $user_id
+ * @property bool $active
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Company $company
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Log[] $logs
+ * @property-read int|null $logs_count
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|TechnicalConsultant newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|TechnicalConsultant newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|TechnicalConsultant query()
+ * @method static \Illuminate\Database\Eloquent\Builder|TechnicalConsultant whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TechnicalConsultant whereCompanyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TechnicalConsultant whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TechnicalConsultant whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TechnicalConsultant whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TechnicalConsultant whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TechnicalConsultant whereUserId($value)
+ */
+	class TechnicalConsultant extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * App\Models\TireBrand
  *
  * @property int $id
  * @property int $company_id
  * @property string $name
- * @property string|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Company $company
@@ -215,17 +336,20 @@ namespace App\Models{
  * @property string|null $phone
  * @property string|null $birthday
  * @property bool $active
- * @property string|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Company[] $companies
  * @property-read int|null $companies_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Log[] $logs
  * @property-read int|null $logs_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\TechnicalConsultant[] $technicalConsultants
+ * @property-read int|null $technical_consultants_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Token[] $tokens
  * @property-read int|null $tokens_count
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
+ * @method static \Illuminate\Database\Query\Builder|User onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|User query()
  * @method static \Illuminate\Database\Eloquent\Builder|User whereActive($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereBirthday($value)
@@ -239,6 +363,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUsername($value)
+ * @method static \Illuminate\Database\Query\Builder|User withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|User withoutTrashed()
  */
 	class User extends \Eloquent implements \Tymon\JWTAuth\Contracts\JWTSubject {}
 }
@@ -277,13 +403,13 @@ namespace App\Models{
  * @property string $name
  * @property int $model_year
  * @property bool $active
- * @property string|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\VehicleModel $brand
  * @property-read \App\Models\Company $company
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Log[] $logs
  * @property-read int|null $logs_count
+ * @property-read \App\Models\VehicleModel $model
  * @method static \Illuminate\Database\Eloquent\Builder|Vehicle newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Vehicle newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Vehicle query()
@@ -308,7 +434,7 @@ namespace App\Models{
  * @property int $company_id
  * @property string $name
  * @property bool $active
- * @property string|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Company $company
@@ -337,7 +463,7 @@ namespace App\Models{
  * @property int $brand_id
  * @property string $name
  * @property bool $active
- * @property string|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\VehicleBrand $brand
