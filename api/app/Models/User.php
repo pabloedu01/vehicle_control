@@ -81,6 +81,12 @@ class User extends Authenticatable implements JWTSubject
                     ->withTimestamps();
     }
 
+    #has many
+    public function technicalConsultants()
+    {
+        return $this->hasMany('App\Models\TechnicalConsultant', 'user_id', 'id');
+    }
+
     public function getJWTIdentifier()
     {
         return $this->getKey();

@@ -8,6 +8,10 @@ Route::group([
                  'middleware' => [ 'jwt.verify', 'user' ],
              ], function(){
 
+    Route::post('/', [
+        'uses' => 'CompanyController@store',
+    ]);
+
     Route::group([
                      'middleware' => [ 'company' ],
                  ], function(){

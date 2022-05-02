@@ -11,11 +11,11 @@ class Log extends Model
     protected $connection = 'mongodb';
     protected $collection = 'logs';
     public    $timestamps = false;
-    
+
     protected $casts = [
         'data' => Json::class
     ];
-    
+
     protected $hidden = [
         '_id'
     ];

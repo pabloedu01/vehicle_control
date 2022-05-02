@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\Company;
+use App\Models\Permission;
 use Closure;
 use Symfony\Component\HttpFoundation\Response;
 use Tymon\JWTAuth\Http\Middleware\BaseMiddleware;
@@ -52,7 +53,26 @@ class CompanyPermissionMiddleware extends BaseMiddleware
 
         if(
             !Company::whereHas('users', function($query){
-                return $query->where('users.id', '=', \Auth::user()->id);
+                $query = $query->where('users.id', '=', \Auth::user()->id);
+
+                $routeName = \Route::currentRouteName();
+
+                if(!is_null($routeName))
+                {
+                    $permission = Permission::where('code', '=', $routeName)->first();
+
+                    if(!is_null($permission))
+                    {
+                        $query = $query->where(function($query) use ($permission){
+                            return $query->whereIn('company_user.role', [ 'owner' ])
+                                         ->orWhereRaw($permission->id.' = ANY ( ARRAY(SELECT json_array_elements_text( company_user.permissions ))::int[])');
+                        });
+                    }
+                } else {
+                    //todo: validar que mi invitado no tenga permisos vacios, porque independientemente si tiene la empresa compartida, pero no han fijado sus accesos, entonces que no pueda hacer nada en la empresa
+                }
+
+                return $query;
             })->where('id', '=', $data['id'])->exists()
         )
         {
