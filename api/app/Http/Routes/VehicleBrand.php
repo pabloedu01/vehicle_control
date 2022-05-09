@@ -31,6 +31,10 @@ Route::group([
             'uses' => 'VehicleBrandController@show',
         ]);
 
+        Route::get('{id}/checklist/{version_id?}', [
+            'uses' => 'VehicleBrandController@checklist',
+        ]);
+
         Route::put('{id}', [
             'uses' => 'VehicleBrandController@update',
         ]);

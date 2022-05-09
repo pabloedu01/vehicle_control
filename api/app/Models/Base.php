@@ -20,13 +20,23 @@ class Base extends Model
         'updated_at',
     ];
 
+    protected $changingColumns = [];
+
     public static function boot()
     {
         parent::boot();
 
         //self::observe(ModelObserver::class, 0);
-        if(self::getHasLogs()){
+        if(self::getHasLogs())
+        {
             self::observe(LogObserver::class, 1);
+        }
+
+        if(self::getHasTimestamps())
+        {
+            static::addGlobalScope('orderByCreatedAt', function($query){
+                return $query->orderBy('created_at', 'desc');
+            });
         }
     }
 
@@ -52,6 +62,11 @@ class Base extends Model
         return with(new static)->hasLogs;
     }
 
+    public static function getHasTimestamps()
+    {
+        return with(new static)->timestamps;
+    }
+
     public static function getHasSoftDeletes()
     {
         return with(new static)->forceDeleting == false;
@@ -60,6 +75,11 @@ class Base extends Model
     public static function getTableName()
     {
         return with(new static)->getTable();
+    }
+
+    public static function getChangingColumns()
+    {
+        return with(new static)->changingColumns;
     }
 
     public static function getUniqueRule($id, $conditions = [])
@@ -123,6 +143,42 @@ class Base extends Model
         $appliedChanges = $this->getAppliedChanges();
 
         return count($appliedChanges['before']) || count($appliedChanges['after']);
+    }
+
+    public static function changeFillablesColumns(){
+        $columns = array_flip(self::getChangingColumns());
+        $fillables = self::getFillables();
+
+        $newFillables = [];
+
+        foreach($fillables as $fillable)
+        {
+            if( isset($columns[$fillable]) ){
+                $newFillables[] = $columns[$fillable];
+            } else {
+                $newFillables[] = $fillable;
+            }
+        }
+
+        return $newFillables;
+    }
+
+    public static function changeDataColumns($array){
+        $availableColumns = self::getChangingColumns();
+
+        $newArray = [];
+
+        foreach($array as $key_1 => $data)
+        {
+            if(isset($availableColumns[$key_1]))
+            {
+                $newArray[$availableColumns[$key_1]] = $data;
+            } else{
+                $newArray[$key_1] = $data;
+            }
+        }
+
+        return $newArray;
     }
 
     #has many

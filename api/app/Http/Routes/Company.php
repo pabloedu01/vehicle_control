@@ -21,5 +21,9 @@ Route::group([
             'uses' => 'CompanyController@vehicles',
         ]);
 
+        Route::get('checklist-versions', [
+            'uses' => 'CompanyController@vehicleBrandChecklistVersions',
+        ]);
+
     });
 });

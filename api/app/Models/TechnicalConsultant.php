@@ -18,9 +18,22 @@ class TechnicalConsultant extends Base
         'active',
     ];
 
-    public static function getFillables()
+    public static function boot(){
+        parent::boot();
+
+        self::bootJoinToData();
+    }
+
+    public static function bootJoinToData()
     {
-        return with(new static)->getFillable();
+        static::addGlobalScope('joinToData', function($query){
+            return $query->select([
+                                      'technical_consultants.*',
+                                      'users.name',
+                                      'users.email',
+                                  ])
+                         ->join('users', 'users.id', '=', 'technical_consultants.user_id', 'inner');
+        });
     }
 
     public static function rules($company_id = null)
