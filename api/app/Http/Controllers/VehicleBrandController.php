@@ -5,9 +5,35 @@ namespace App\Http\Controllers;
 use App\Models\VehicleBrand;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Models\VehicleBrandChecklistVersion as Version;
 
 class VehicleBrandController extends Controller
 {
+    public function checklist(Request $request, $id, $version_id = null)
+    {
+        $version = Version::with([ 'brand', 'items' ])
+                          ->version($id,$version_id)
+                          ->first();
+
+        if($version)
+        {
+            return response()->json([
+                                        'msg'  => '¡Success!',
+                                        'data' => $version,
+                                    ],
+                                    Response::HTTP_OK
+            );
+        }
+        else
+        {
+            return response()->json([
+                                        'msg' => '¡Not Found!',
+                                    ],
+                                    Response::HTTP_NOT_FOUND
+            );
+        }
+    }
+
     public function index(Request $request)
     {
         $vehicleBrands = VehicleBrand::where('company_id', '=', $request->company_id)

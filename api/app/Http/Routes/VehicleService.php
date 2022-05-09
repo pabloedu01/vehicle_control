@@ -3,42 +3,37 @@
 use Illuminate\Support\Facades\Route;
 
 Route::group([
-                 'prefix'     => 'product',
+    'prefix' => 'vehicle-service',
                  'middleware' => [ 'jwt.verify', 'user' ],
              ], function(){
+
 
     Route::group([
                      'middleware' => [ 'company' ],
                  ], function(){
-
-
         Route::get('/', [
-            'uses' => 'ProductController@index',
+            'uses' => 'VehicleServiceController@index',
         ]);
 
         Route::post('/', [
-            'uses' => 'ProductController@store',
+            'uses' => 'VehicleServiceController@store',
         ]);
-
-
     });
 
     Route::group([
-                     'middleware' => [ 'product' ],
+                     'middleware' => [ 'vehicleService' ],
                  ], function(){
 
         Route::get('{id}', [
-            'uses' => 'ProductController@show',
+            'uses' => 'VehicleServiceController@show',
         ]);
 
         Route::put('{id}', [
-            'uses' => 'ProductController@update',
+            'uses' => 'VehicleServiceController@update',
         ]);
 
         Route::delete('{id}', [
-            'uses' => 'ProductController@destroy',
+            'uses' => 'VehicleServiceController@destroy',
         ]);
     });
-
-
 });

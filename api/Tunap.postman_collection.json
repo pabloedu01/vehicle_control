@@ -614,6 +614,26 @@
 					"response": []
 				},
 				{
+					"name": "Checklist",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/vehicle-brand/1/checklist",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"vehicle-brand",
+								"1",
+								"checklist"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Store",
 					"request": {
 						"method": "POST",
@@ -1451,6 +1471,31 @@
 					"response": []
 				},
 				{
+					"name": "Checklist Versions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/company/checklist-versions?company_id=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"company",
+								"checklist-versions"
+							],
+							"query": [
+								{
+									"key": "company_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Store",
 					"request": {
 						"method": "POST",
@@ -1460,6 +1505,36 @@
 							"urlencoded": [
 								{
 									"key": "name",
+									"value": "test",
+									"type": "text"
+								},
+								{
+									"key": "cnpj",
+									"value": "68.119.835/0001-05",
+									"type": "text"
+								},
+								{
+									"key": "country",
+									"value": "venezuela",
+									"type": "text"
+								},
+								{
+									"key": "city",
+									"value": "maturin",
+									"type": "text"
+								},
+								{
+									"key": "province",
+									"value": "nose",
+									"type": "text"
+								},
+								{
+									"key": "address_1",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "address_2",
 									"value": "",
 									"type": "text"
 								}
@@ -1781,6 +1856,378 @@
 							"path": [
 								"api",
 								"service-schedule",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Checklist Item",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/checklist-item",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"checklist-item"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/checklist-item/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"checklist-item",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"is_default\": 0,\n    \"name\": \"test\",\n    \"description\": null,\n    \"code\": \"test\",\n    \"active\": 1,\n    \"validation\": {\n        \"type\": \"string\",\n        \"rule\": \"required|string\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/checklist-item",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"checklist-item"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"is_default\": 1,\n    \"name\": \"test\",\n    \"description\": null,\n    \"code\": \"test\",\n    \"active\": 1,\n    \"validation\": {\n        \"type\": \"string\",\n        \"rule\": \"required|integer|min:0|max:100\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/checklist-item/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"checklist-item",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/checklist-item/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"checklist-item",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Checklist Version",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/checklist-version?brand_id=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"checklist-version"
+							],
+							"query": [
+								{
+									"key": "brand_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/checklist-version/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"checklist-version",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"brand_id\": 1,\n    \"code\": \"v1\",\n    \"name\": \"Versión 1\",\n    \"description\": null,\n    \"active\": 1,\n    \"checklist\": [1]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/checklist-version",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"checklist-version"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"brand_id\": 1,\n    \"code\": \"v1\",\n    \"name\": \"Versión 1\",\n    \"description\": null,\n    \"active\": 1,\n    \"checklist\": [\n        1\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/checklist-version/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"checklist-version",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/checklist-version/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"checklist-version",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Vehicle Service",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/vehicle-service?company_id=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"vehicle-service"
+							],
+							"query": [
+								{
+									"key": "company_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/vehicle-service/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"vehicle-service",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"company_id\": 1,\n    \"version_id\": null,\n    \"service_schedule_id\": null,\n    \"technical_consultant_id\": 2,\n    \"brand_id\": 1,\n    \"client_id\": null,\n    \"client_name\": \"Carmen\",\n    \"client_signature\": null,\n    \"client_signature_date\": null,\n    \"technical_consultant_signature\": null,\n    \"technical_consultant_signature_date\": null,\n    \"plate\": null,\n    \"fuel\": null,\n    \"mileage\": null,\n    \"checklist\": [\n        {\n            \"id\": 1,\n            \"value\": 25\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/vehicle-service",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"vehicle-service"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"company_id\": 1,\n    \"service_schedule_id\": null,\n    \"technical_consultant_id\": 2,\n    \"client_id\": null,\n    \"client_name\": \"Miguel\",\n    \"client_signature\": null,\n    \"client_signature_date\": null,\n    \"technical_consultant_signature\": null,\n    \"technical_consultant_signature_date\": null,\n    \"plate\": null,\n    \"fuel\": null,\n    \"mileage\": null,\n    \"checklist\": [\n        {\n            \"id\": 1,\n            \"value\": 15\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/vehicle-service/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"vehicle-service",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/vehicle-service/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"vehicle-service",
 								"1"
 							]
 						}

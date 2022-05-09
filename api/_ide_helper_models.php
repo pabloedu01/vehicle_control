@@ -12,6 +12,39 @@
 
 namespace App\Models{
 /**
+ * App\Models\ChecklistItem
+ *
+ * @property int $id
+ * @property string $name
+ * @property string|null $description
+ * @property string|null $code
+ * @property bool $active
+ * @property |null $validation
+ * @property bool $is_default
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Log[] $logs
+ * @property-read int|null $logs_count
+ * @method static \Illuminate\Database\Eloquent\Builder|ChecklistItem newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ChecklistItem newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ChecklistItem query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ChecklistItem whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ChecklistItem whereCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ChecklistItem whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ChecklistItem whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ChecklistItem whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ChecklistItem whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ChecklistItem whereIsDefault($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ChecklistItem whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ChecklistItem whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ChecklistItem whereValidation($value)
+ */
+	class ChecklistItem extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * App\Models\ClaimService
  *
  * @property int $id
@@ -36,6 +69,31 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|ClaimService whereUpdatedAt($value)
  */
 	class ClaimService extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * App\Models\ClaimServiceServiceSchedule
+ *
+ * @property int $id
+ * @property int $service_schedule_id
+ * @property int $claim_service_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Log[] $logs
+ * @property-read int|null $logs_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ServiceClaimServiceServiceSchedule[] $services
+ * @property-read int|null $services_count
+ * @method static \Illuminate\Database\Eloquent\Builder|ClaimServiceServiceSchedule newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ClaimServiceServiceSchedule newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ClaimServiceServiceSchedule query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ClaimServiceServiceSchedule whereClaimServiceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClaimServiceServiceSchedule whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClaimServiceServiceSchedule whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClaimServiceServiceSchedule whereServiceScheduleId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClaimServiceServiceSchedule whereUpdatedAt($value)
+ */
+	class ClaimServiceServiceSchedule extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -170,6 +228,31 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * App\Models\ProductServiceClaimServiceServiceSchedule
+ *
+ * @property int $id
+ * @property int $service_claim_service_service_schedule_id
+ * @property int $product_id
+ * @property float $price
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Log[] $logs
+ * @property-read int|null $logs_count
+ * @method static \Illuminate\Database\Eloquent\Builder|ProductServiceClaimServiceServiceSchedule newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ProductServiceClaimServiceServiceSchedule newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ProductServiceClaimServiceServiceSchedule query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ProductServiceClaimServiceServiceSchedule whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProductServiceClaimServiceServiceSchedule whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProductServiceClaimServiceServiceSchedule wherePrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProductServiceClaimServiceServiceSchedule whereProductId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProductServiceClaimServiceServiceSchedule whereServiceClaimServiceServiceScheduleId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProductServiceClaimServiceServiceSchedule whereUpdatedAt($value)
+ */
+	class ProductServiceClaimServiceServiceSchedule extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * App\Models\Service
  *
  * @property int $id
@@ -206,6 +289,33 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * App\Models\ServiceClaimServiceServiceSchedule
+ *
+ * @property int $id
+ * @property int $claim_service_service_schedule_id
+ * @property int $service_id
+ * @property float $price
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Log[] $logs
+ * @property-read int|null $logs_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProductServiceClaimServiceServiceSchedule[] $products
+ * @property-read int|null $products_count
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceClaimServiceServiceSchedule newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceClaimServiceServiceSchedule newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceClaimServiceServiceSchedule query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceClaimServiceServiceSchedule whereClaimServiceServiceScheduleId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceClaimServiceServiceSchedule whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceClaimServiceServiceSchedule whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceClaimServiceServiceSchedule wherePrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceClaimServiceServiceSchedule whereServiceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceClaimServiceServiceSchedule whereUpdatedAt($value)
+ */
+	class ServiceClaimServiceServiceSchedule extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * App\Models\ServiceSchedule
  *
  * @property int $id
@@ -218,7 +328,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ClaimService[] $claimsService
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ClaimServiceServiceSchedule[] $claimsService
  * @property-read int|null $claims_service_count
  * @property-read \App\Models\Client|null $client
  * @property-read \App\Models\Company $company
@@ -452,6 +562,44 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|VehicleBrand whereUpdatedAt($value)
  */
 	class VehicleBrand extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * App\Models\VehicleBrandChecklistVersion
+ *
+ * @property int $id
+ * @property int $company_id
+ * @property int $brand_id
+ * @property string $code
+ * @property string $name
+ * @property string|null $description
+ * @property bool $active
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\VehicleBrand $brand
+ * @property-read \App\Models\Company $company
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ChecklistItem[] $items
+ * @property-read int|null $items_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Log[] $logs
+ * @property-read int|null $logs_count
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleBrandChecklistVersion newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleBrandChecklistVersion newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleBrandChecklistVersion query()
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleBrandChecklistVersion version($version_id = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleBrandChecklistVersion whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleBrandChecklistVersion whereBrandId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleBrandChecklistVersion whereCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleBrandChecklistVersion whereCompanyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleBrandChecklistVersion whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleBrandChecklistVersion whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleBrandChecklistVersion whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleBrandChecklistVersion whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleBrandChecklistVersion whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VehicleBrandChecklistVersion whereUpdatedAt($value)
+ */
+	class VehicleBrandChecklistVersion extends \Eloquent {}
 }
 
 namespace App\Models{

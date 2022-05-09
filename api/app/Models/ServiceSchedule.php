@@ -15,12 +15,6 @@ class ServiceSchedule extends Base
         'vehicle_id',
     ];
 
-    public static function getFillables()
-    {
-        return with(new static)->getFillable();
-    }
-
-
     #belongs to
     public function company()
     {

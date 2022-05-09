@@ -23,9 +23,13 @@ class TechnicalConsultantPermissionMiddleware extends BaseMiddleware
 
     public function handle($request, Closure $next)
     {
-        $data = array_merge($request->only([ 'id', 'technical_consultant_id' ]), collect($request->route()->parameters())->only([ 'id', 'technical_consultant_id' ])->toArray());
+        $data = array_merge($request->only([ 'id', 'technical_consultant_id' ]), collect($request->route()->parameters())->only([
+                                                                                                                                    'id',
+                                                                                                                                    'technical_consultant_id',
+                                                                                                                                ])->toArray());
 
-        if(isset($data['technical_consultant_id'])){
+        if(isset($data['technical_consultant_id']))
+        {
             $data['id'] = $data['technical_consultant_id'];
         }
 
@@ -35,27 +39,28 @@ class TechnicalConsultantPermissionMiddleware extends BaseMiddleware
 
         if($validator->fails())
         {
-            return response()->json([
+            return response()->json(   [
                                         'msg'    => '¡Invalid Data!',
                                         'errors' => $validator->errors(),
                                     ], Response::HTTP_BAD_REQUEST
             );
         }
 
-        if(!TechnicalConsultant::where('id', '=', $data['id'])->exists())
+        if(!TechnicalConsultant::withoutGlobalScope('joinToData')
+                               ->where('id', '=', $data['id'])->exists())
         {
-            return response()->json([
+            return response()->json(   [
                                         'msg' => '¡Not Found!',
                                     ], Response::HTTP_NOT_FOUND
             );
         }
 
         if(
-        !TechnicalConsultant::whereHas('company', function($query){
-            return $query->whereHas('users', function($query){
-                return $query->where('users.id', '=', \Auth::user()->id);
-            });
-        })->where('id', '=', $data['id'])->exists()
+            !TechnicalConsultant::withoutGlobalScope('joinToData')->whereHas('company', function($query){
+                return $query->whereHas('users', function($query){
+                    return $query->where('users.id', '=', \Auth::user()->id);
+                });
+            })->where('id', '=', $data['id'])->exists()
         )
         {
             return response()->json([ 'msg' => '¡Unauthorized!' ], Response::HTTP_UNAUTHORIZED);
