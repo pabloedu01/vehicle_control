@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendEmailJob;
+use App\Mail\RecoverPasswordEmail;
 use App\Models\Company;
 use App\Models\Token;
 use App\Models\User;
@@ -22,10 +24,10 @@ class AuthController extends Controller
 
         if($validator->fails())
         {
-            return response()->json([
-                                        'msg'    => '¡Invalid Data!',
-                                        'errors' => $validator->errors(),
-                                    ], Response::HTTP_BAD_REQUEST
+            return response()->json(                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   [
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        'msg'    => '¡Invalid Data!',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        'errors' => $validator->errors(),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ], Response::HTTP_BAD_REQUEST
             );
         }
 
@@ -35,7 +37,7 @@ class AuthController extends Controller
         $jwtToken = auth()->attempt([ $loginField => $request->username, 'password' => $request->password, 'active' => true ]);
 
 
-        $user     = \Auth::user();
+        $user = \Auth::user();
 
         if($jwtToken && $user)
         {
@@ -52,7 +54,7 @@ class AuthController extends Controller
                 if(secureSave($token))
                 {
                     return response()
-                        ->json([
+                        ->json(   [
                                    'msg'   => '¡Success!',
                                    'token' => $token->token,
                                ], Response::HTTP_CREATED
@@ -61,7 +63,7 @@ class AuthController extends Controller
                 else
                 {
                     return response()
-                        ->json([
+                        ->json(   [
                                    'msg' => '¡Error!',
                                ], Response::HTTP_INTERNAL_SERVER_ERROR
                         );
@@ -69,7 +71,7 @@ class AuthController extends Controller
             }
         }
 
-        return response()->json([
+        return response()->json(   [
                                     'msg' => '¡Unauthorized!',
                                 ], Response::HTTP_UNAUTHORIZED
         );
@@ -82,7 +84,7 @@ class AuthController extends Controller
         $user->tokens()->delete();
 
         return response()
-            ->json([
+            ->json(   [
                        'msg' => '¡Success!',
                    ], Response::HTTP_OK
             );
@@ -96,7 +98,7 @@ class AuthController extends Controller
         }
         else
         {
-            return response()->json([
+            return response()->json(   [
                                         'msg' => '¡Unauthorized!',
                                     ], Response::HTTP_UNAUTHORIZED);
         }
@@ -104,19 +106,14 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        $validator = validate($request->all(), [
-            'cnpj'     => [ 'nullable', 'prohibits:cpf', new CNPJ, 'unique:companies,cnpj' ],
-            'cpf'      => [ 'required_without:cnpj', new CPF, 'unique:companies,cpf' ],
-            'birthday' => 'nullable|date_format:d/m/Y',
-            'name'     => 'required|string',
-            'email'    => 'required|email|unique:users,email',
-            'username' => 'required|string|unique:users,username',
-            'password' => 'required|string|min:6|max:12',
-        ]);
+        $validator = validate($request->all(), array_merge(   [
+                                                               'cnpj' => [ 'nullable', 'prohibits:cpf', new CNPJ, 'unique:companies,cnpj' ],
+                                                               'cpf'  => [ 'required_without:cnpj', new CPF, 'unique:companies,cpf' ],
+                                                           ], User::rules()));
 
         if($validator->fails())
         {
-            return response()->json([
+            return response()->json(   [
                                         'msg'    => '¡Invalid Data!',
                                         'errors' => $validator->errors(),
                                     ], Response::HTTP_BAD_REQUEST
@@ -143,9 +140,9 @@ class AuthController extends Controller
             $user->companies()->attach($company->id, [ 'role' => 'owner' ]);
 
             return response()
-                ->json([
+                ->json(   [
                            'msg'     => '¡Success!',
-                           'user'    => $user,
+                           'user' => $user,
                            'company' => $company,
                        ], Response::HTTP_CREATED
                 );
@@ -153,7 +150,7 @@ class AuthController extends Controller
         else
         {
             return response()
-                ->json([
+                ->json(   [
                            'msg' => '¡Error!',
                        ], Response::HTTP_INTERNAL_SERVER_ERROR
                 );
@@ -162,19 +159,158 @@ class AuthController extends Controller
 
     public function userVerificationCode(Request $request)
     {
-        $userVerificationCode = UserVerificationCode::where('code', '=', $request->code)->first();
+        $result = UserVerificationCode::validate($request->code);
 
-        if($userVerificationCode)
-        {
+        if($result instanceof UserVerificationCode){
+            return response()
+                ->json(   [
+                              'msg' => '¡Success!',
+                          ], Response::HTTP_OK
+                );
+        } else {
+            return $result;
+        }
+    }
+
+    public function activateUser(Request $request)
+    {
+        $result = UserVerificationCode::validate($request->code);
+
+        if($result instanceof UserVerificationCode){
+            $userVerificationCode = $result;
+
             $user = $userVerificationCode->user;
             $userVerificationCode->delete();
 
-            if($user->update([ 'active' => true ]))
+            $user->active = true;
+
+            if(secureSave($user))
+            {
+                return response()
+                    ->json(   [
+                                  'msg' => '¡Success!',
+                              ], Response::HTTP_OK
+                    );
+            }
+            else
+            {
+                return response()
+                    ->json(   [
+                                  'msg' => '¡Error!',
+                              ], Response::HTTP_INTERNAL_SERVER_ERROR
+                    );
+            }
+        } else {
+            return $result;
+        }
+    }
+
+    public function recoverPassword(Request $request)
+    {
+        $validator = validate($request->all(), [
+            'email' => 'required|string|email',
+        ]);
+
+        if($validator->fails())
+        {
+            return response()->json(                                                                                                                                                                                                                              [
+                                                                                                                                                                                                                                                                   'msg'    => '¡Invalid Data!',
+                                                                                                                                                                                                                                                                   'errors' => $validator->errors(),
+                                                                                                                                                                                                                                                               ], Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        $user = User::where('email', '=', $request->email)->first();
+
+        if($user)
+        {
+            if($user->active)
+            {
+                $code = \Str::random();
+
+                if(UserVerificationCode::create([
+                                                    'code'    => $code,
+                                                    'user_id' => $user->id,
+                                                ]))
+                {
+                    dispatch(new SendEmailJob([
+                                                  'to'   => $user->email,
+                                                  'code' => $code,
+                                                  'user' => $user,
+                                              ],
+                                              RecoverPasswordEmail::class));
+
+                    return response()
+                        ->json([
+                                   'msg' => '¡Success!',
+                               ],
+                               Response::HTTP_CREATED
+                        );
+                }
+                else
+                {
+                    return response()
+                        ->json([
+                                   'msg' => '¡Error!',
+                               ],
+                               Response::HTTP_INTERNAL_SERVER_ERROR
+                        );
+                }
+            }
+            else
+            {
+                return response()->json([
+                                            'msg' => '¡User not active!',
+                                        ],
+                                        Response::HTTP_BAD_REQUEST
+                );
+            }
+        }
+        else
+        {
+            return response()->json([
+                                        'msg' => '¡Not Found!',
+                                    ],
+                                    Response::HTTP_NOT_FOUND
+            );
+        }
+    }
+
+    public function changePasswordByCode(Request $request)
+    {
+        $result = UserVerificationCode::validate($request->code);
+
+        if($result instanceof UserVerificationCode)
+        {
+            $validator = validate($request->all(), [
+                'password'        => 'required|string|min:6|max:12',
+                'repeat_password' => 'required|same:password',
+            ]);
+
+            if($validator->fails())
+            {
+                return response()->json([
+                                            'msg'    => '¡Invalid Data!',
+                                            'errors' => $validator->errors(),
+                                        ],
+                                        Response::HTTP_BAD_REQUEST
+                );
+            }
+
+            $userVerificationCode = $result;
+
+            $user = $userVerificationCode->user;
+            $userVerificationCode->delete();
+
+            $user->password = $request->password;
+
+            if(secureSave($user))
             {
                 return response()
                     ->json([
                                'msg' => '¡Success!',
-                           ], Response::HTTP_CREATED
+                           ],
+                           Response::HTTP_OK
                     );
             }
             else
@@ -182,16 +318,14 @@ class AuthController extends Controller
                 return response()
                     ->json([
                                'msg' => '¡Error!',
-                           ], Response::HTTP_INTERNAL_SERVER_ERROR
+                           ],
+                           Response::HTTP_INTERNAL_SERVER_ERROR
                     );
             }
         }
         else
         {
-            return response()->json([
-                                        'msg' => '¡Not Found!',
-                                    ], Response::HTTP_NOT_FOUND
-            );
+            return $result;
         }
     }
 }

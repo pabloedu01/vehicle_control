@@ -1,6 +1,6 @@
 <?php
 
-function compareArrayWithDatabase(\Illuminate\Support\Collection $ids, $modelClass){
+function compareArrayWithDatabase($ids, $modelClass){
     if($ids->count() > 0 && $ids->count() != $modelClass::whereIn('id', $ids->toArray())
                                                         ->count()){
         return false;
