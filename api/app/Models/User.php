@@ -44,6 +44,18 @@ class User extends Authenticatable implements JWTSubject
         'password' => Bcrypt::class,
     ];
 
+    public static function rules()
+    {
+        return [
+            'birthday' => 'nullable|date_format:d/m/Y',
+            'name'     => 'required|string',
+            'phone'    => 'nullable|string',
+            'email'    => 'required|email|unique:users,email',
+            'username' => 'required|string|unique:users,username',
+            'password' => 'required|string|min:6|max:12',
+        ];
+    }
+
     public static function boot()
     {
         parent::boot();
@@ -90,6 +102,11 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTIdentifier()
     {
         return $this->getKey();
+    }
+
+    public static function getFillables()
+    {
+        return with(new static)->getFillable();
     }
 
     public function getJWTCustomClaims()
