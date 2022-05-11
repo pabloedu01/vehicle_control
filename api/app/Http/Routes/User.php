@@ -11,4 +11,8 @@ Route::group([
     Route::post('/', [
         'uses' => 'UserController@store',
     ]);
+
+    Route::post('whoami', [
+        'uses' => 'UserController@whoami',
+    ]);
 });

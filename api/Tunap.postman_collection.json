@@ -42,6 +42,72 @@
 					"response": []
 				},
 				{
+					"name": "Recover Password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "migueljosecontreras@gmail.com",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/recover-password",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"recover-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "code",
+									"value": "4zcq2lH7alz4G7yu",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "123456",
+									"type": "text"
+								},
+								{
+									"key": "repeat_password",
+									"value": "123456",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/change-password",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"change-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Broadcasting",
 					"request": {
 						"auth": {
@@ -192,6 +258,34 @@
 					"response": []
 				},
 				{
+					"name": "Activate User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "code",
+									"value": "gabKdFq3CorIEDGc",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/activate-user",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"activate-user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "User verification code",
 					"request": {
 						"method": "POST",
@@ -201,7 +295,7 @@
 							"urlencoded": [
 								{
 									"key": "code",
-									"value": "0axEmxj2DimSd2dW",
+									"value": "4zcq2lH7alz4G7yu",
 									"type": "text"
 								}
 							]
@@ -1510,7 +1604,7 @@
 								},
 								{
 									"key": "cnpj",
-									"value": "68.119.835/0001-05",
+									"value": "68.119.835/0001-08",
 									"type": "text"
 								},
 								{
@@ -2229,6 +2323,110 @@
 								"api",
 								"vehicle-service",
 								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "birthday",
+									"value": "02/10/2022",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "name",
+									"value": "Miguel Contreras",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "migueljosecontreras2@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "mcontreras2",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "123456",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/user",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Whoami",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "birthday",
+									"value": "02/10/2022",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "name",
+									"value": "Miguel Contreras",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "migueljosecontreras2@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "mcontreras2",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "123456",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/user/whoami",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"whoami"
 							]
 						}
 					},

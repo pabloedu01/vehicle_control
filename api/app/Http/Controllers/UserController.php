@@ -44,4 +44,14 @@ class UserController extends Controller
                 );
         }
     }
+
+    public function whoami(){
+        return response()
+            ->json([
+                       'msg'  => '¡Success!',
+                       'user' => \Auth::user()->toArray(),
+                   ],
+                   Response::HTTP_CREATED
+            );
+    }
 }
