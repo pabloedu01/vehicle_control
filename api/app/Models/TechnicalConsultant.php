@@ -8,6 +8,8 @@ class TechnicalConsultant extends Base
 {
     protected $table = 'technical_consultants';
 
+    protected $appends = ['name'];
+
     protected $casts = [
         'active' => 'boolean'
     ];
@@ -16,42 +18,26 @@ class TechnicalConsultant extends Base
         'company_id',
         'user_id',
         'active',
+        'name'
     ];
 
-    public static function boot(){
-        parent::boot();
-
-        self::bootJoinToData();
+    public static function rules($company_id, $id = null)
+    {
+        return [
+            'user_id' => [
+                'nullable', 'integer',
+                Rule::exists('company_user', 'user_id')->where('company_id', $company_id),
+                self::getUniqueRule($id, ['company_id' => $company_id])
+            ],
+            'active' => 'required|boolean',
+            'name' => 'required_without:user_id|nullable|string'
+        ];
     }
 
-    public static function bootJoinToData()
-    {
-        static::addGlobalScope('joinToData', function($query){
-            return $query->select([
-                                      'technical_consultants.*',
-                                      'users.name',
-                                      'users.email',
-                                  ])
-                         ->join('users', 'users.id', '=', 'technical_consultants.user_id', 'inner');
-        });
-    }
+    public function getNameAttribute(){
+        $user = $this->user;
 
-    public static function rules($company_id = null)
-    {
-        if($company_id){
-            return [
-                'user_id' => [
-                    'required', 'integer',
-                    Rule::exists('company_user', 'user_id')->where('company_id', $company_id)
-                ],
-                'active' => 'required|boolean',
-            ];
-        }
-        else {
-            return [
-                'active' => 'required|boolean',
-            ];
-        }
+        return $user ? $user->name : $this->getAttributeFromArray('name');
     }
 
     #belongs to
