@@ -10,9 +10,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ServiceScheduleController extends Controller
 {
+    private static $with = ['vehicle', 'client', 'technicalConsultant', 'technicalConsultant.user', 'claimsService','claimsService.services','claimsService.services.products'];
+
     public function index(Request $request)
     {
-        $serviceSchedules = ServiceSchedule::with('vehicle', 'client', 'technicalConsultant', 'claimsService','claimsService.services','claimsService.services.products')
+        $serviceSchedules = ServiceSchedule::with(collect(self::$with)->take(4))
                                            ->where('company_id', '=', $request->company_id)
                                            ->get();
 
@@ -26,7 +28,7 @@ class ServiceScheduleController extends Controller
 
     public function show(Request $request, $id)
     {
-        $serviceSchedule = ServiceSchedule::with('vehicle', 'client', 'technicalConsultant', 'claimsService','claimsService.services','claimsService.services.products')
+        $serviceSchedule = ServiceSchedule::with(self::$with)
                                           ->where('id', '=', $id)
                                           ->first();
 
@@ -46,7 +48,7 @@ class ServiceScheduleController extends Controller
         {
             $this->saveClaimsService($serviceSchedule, $request->claims_service);
 
-            $serviceSchedule->load('claimsService','claimsService.services','claimsService.services.products');
+            $serviceSchedule->load(self::$with);
 
             return response()->json(   [
                                         'msg'  => '¡Success!',
@@ -120,7 +122,7 @@ class ServiceScheduleController extends Controller
         {
             $this->saveClaimsService($serviceSchedule, $request->claims_service);
 
-            $serviceSchedule->load('claimsService','claimsService.services','claimsService.services.products');
+            $serviceSchedule->load(self::$with);
 
             return response()->json(   [
                                         'msg'  => '¡Success!',

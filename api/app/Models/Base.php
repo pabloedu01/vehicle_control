@@ -35,7 +35,7 @@ class Base extends Model
         if(self::getHasTimestamps())
         {
             static::addGlobalScope('orderByCreatedAt', function($query){
-                return $query->orderBy('created_at', 'desc');
+                return $query->orderBy(self::getTableName().'.created_at', 'desc');
             });
         }
     }
