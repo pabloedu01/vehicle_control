@@ -91,7 +91,7 @@ class TechnicalConsultantController extends Controller
     {
         $technicalConsultant = TechnicalConsultant::where('id', '=', $id)->first();
 
-        $validator = validate($request->all(), TechnicalConsultant::rules());
+        $validator = validate($request->all(), TechnicalConsultant::rules($technicalConsultant->company_id, $technicalConsultant->id));
 
         if($validator->fails())
         {
@@ -102,7 +102,7 @@ class TechnicalConsultantController extends Controller
             );
         }
 
-        $technicalConsultant->fill(collect($request->except(['company_id', 'user_id']))->only(TechnicalConsultant::getFillables())->toArray());
+        $technicalConsultant->fill(collect($request->except(['company_id']))->only(TechnicalConsultant::getFillables())->toArray());
 
         if(!$technicalConsultant->hasAppliedChanges() || secureSave($technicalConsultant))
         {
