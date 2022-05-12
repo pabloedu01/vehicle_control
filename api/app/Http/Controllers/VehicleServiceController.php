@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class VehicleServiceController extends Controller
 {
-    private static $with = [ 'brand', 'version', 'client', 'technicalConsultant' ];
+    private static $with = [ 'brand', 'version', 'client', 'technicalConsultant', 'technicalConsultant.user' ];
 
     public function index(Request $request)
     {
@@ -64,7 +64,7 @@ class VehicleServiceController extends Controller
             })->toArray());
 
             #se vuelve a solicitar el vehicle, para que venga con el global scope integrado
-            $vehicleService = VehicleService::with(self::$with)->find($vehicleService->id);
+            $vehicleService = VehicleService::with(array_merge(self::$with, ['items']))->find($vehicleService->id);
 
             return response()->json([
                                         'msg'  => '¡Success!',
@@ -102,7 +102,7 @@ class VehicleServiceController extends Controller
             })->toArray());
 
             #se vuelve a solicitar el vehicle, para que venga con el global scope integrado
-            $vehicleService = VehicleService::with(self::$with)->find($vehicleService->id);
+            $vehicleService = VehicleService::with(array_merge(self::$with, ['items']))->find($vehicleService->id);
 
             return response()->json([
                                         'msg'  => '¡Success!',
