@@ -99,5 +99,8 @@
     "flow-bin": "^0.153.0",
     "prettier": "2.3.1",
     "redux-saga-test-plan": "^4.0.1"
+  },
+  "engines": {
+    "node": "14.x"
   }
 }
