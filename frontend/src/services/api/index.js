@@ -4,6 +4,7 @@ const baseUrl = 'http://localhost:8082/api'; //
 const request = async (method, endpoint, params, token = null, taketwo = null) => {
     try {
         method = method.toLowerCase();
+        console.log(token)
         let fullUrl = `${baseUrl}${endpoint}`;
         let body = null;
         switch (method) {
@@ -66,6 +67,16 @@ export default () => {
         },
         signup: async (data) => {
             let json = await request('post', '/register', data, {});
+            return json;
+        },
+        getSchedules: async () => {
+            let token = localStorage.getItem('token');
+            let json = await request('get', '/service-schedule' ,"company_id=1", token);
+            return json;
+        },
+        delSchedules: async (id) => {
+            let token = localStorage.getItem('token');
+            let json = await request('get', `/service-schedule/${id}` , {}, token);
             return json;
         },
     };
