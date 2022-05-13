@@ -32,7 +32,8 @@ const CRMManagement = React.lazy(() => import('../pages/apps/CRM/Management'));
 const CRMClients = React.lazy(() => import('../pages/apps/CRM/Clients'));
 const CRMOrderList = React.lazy(() => import('../pages/apps/CRM/OrderList'));
 
-//Ducs
+//Services Schedules
+const ServiceSchedule = React.lazy(() => import('../pages/ServiceSchedule'));
 
 
 
@@ -148,7 +149,7 @@ const AllRoutes = () => {
                             ],
                         },
                         {
-                            path: 'DUC',
+                            path: 'schedule',
                             children: [
                                 {
                                     path: 'dashboard',
@@ -161,6 +162,10 @@ const AllRoutes = () => {
                                 {
                                     path: 'lista',
                                     element: <LoadComponent component={CRMProjects} />,
+                                },
+                                {
+                                    path: 'services',
+                                    element: <LoadComponent component={ServiceSchedule} />,
                                 },
                             ],
                         },

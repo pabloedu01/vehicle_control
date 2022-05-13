@@ -19,8 +19,8 @@ const MENU_ITEMS = [
 
     {
         key: 'uil-money-withdrawal',
-        label: 'DUC',
-        url: '/apps/duc/list',
+        label: 'Services Scheduler',
+        url: '/apps/schedule/services',
         parentKey: 'apps-crm',
         icon: 'uil-tachometer-fast',
        
