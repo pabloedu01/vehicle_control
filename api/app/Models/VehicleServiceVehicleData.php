@@ -10,10 +10,12 @@ class VehicleServiceVehicleData extends Base
 
     protected $fillable = [
         'vehicle_service_id',
+        'vehicle_id',
         'brand_id',
         'plate',
         'fuel',
         'mileage',
+        'chasis',
     ];
 
     #belongs to

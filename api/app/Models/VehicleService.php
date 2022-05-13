@@ -88,7 +88,7 @@ class VehicleService extends Base
     public function items()
     {
         return $this->belongsToMany('App\Models\ChecklistItem', 'checklist_item_vehicle_service', 'vehicle_service_id', 'checklist_item_id')
-            ->withPivot([ 'value' ]);
+            ->withPivot([ 'value', 'evidence' ]);
     }
 
     #has one

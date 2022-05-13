@@ -65,6 +65,10 @@ class VehicleBrandChecklistVersion extends Base
     #many to many
     public function items()
     {
+        /*
+         * todo:
+         * hay que colocar la posición del item, y el lugar en que vaya ubicado y probablemente el tipo de cómo se vaya a mostrar
+         */
         return $this->belongsToMany('App\Models\ChecklistItem', 'checklist_item_vehicle_brand_checklist_version', 'version_id', 'item_id');
     }
 }

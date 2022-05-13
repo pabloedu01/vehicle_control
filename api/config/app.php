@@ -177,6 +177,7 @@ return [
 
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         Jenssegers\Mongodb\MongodbServiceProvider::class,
+        Superbalist\LaravelGoogleCloudStorage\GoogleCloudStorageServiceProvider::class,
 
     ],
 
