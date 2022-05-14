@@ -52,11 +52,37 @@ class ChecklistResults implements Rule
             {
                 $item = $itemsGroupById[$checklist['id']][0];
 
-                $validator = validate([ 'xxxxx' => $checklist['value'] ], [ 'xxxxx' => $item->validation['rule'] ]);
+                $validator = validate([
+                                          'valuexxxxx'    => @$checklist['value'],
+                                          'evidencexxxxx' => @$checklist['evidence'],
+                                      ],
+                                      [
+                                          'valuexxxxx'    => $item->validation['rule'],
+                                          'evidencexxxxx' => [
+                                              'nullable',
+                                              'array',
+                                              new MultipleTemporalFiles,
+                                          ],
+                                      ]);
 
                 if($validator->fails())
                 {
-                    $errors[] = [ $item->name => str_replace('xxxxx', $item->name, collect($validator->errors()->getMessages())->first()[0]) ];
+                    $keys = [
+                        'evidencexxxxx' => \Str::slug($item->name, '_', 'es').'_evidence',
+                        'valuexxxxx' => \Str::slug($item->name, '_', 'es').'_value',
+                    ];
+
+                    $items = [
+                        'evidencexxxxx' => $item->name.' ('.trans('general.evidence').')',
+                        'valuexxxxx' => $item->name.' ('.trans('general.value').')',
+                    ];
+
+                    $messages = $validator->errors()->getMessages();
+                    foreach($messages as $key => $message){
+                        $errors[ $keys[$key] ] = array_map(function($data) use ($key,$items){
+                            return str_replace($key, $items[$key], $data);
+                        },$message);
+                    }
                 }
             }
 
