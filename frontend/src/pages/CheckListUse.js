@@ -1,11 +1,13 @@
 // @flow
 import React, { useState, useEffect } from 'react';
-import { Button, Card, Col,  Row} from 'react-bootstrap';
+import { Badge, Button, Card, Col, Form, Row, Table } from 'react-bootstrap';
 import useApi from '../services/api';
 import { useNavigate } from 'react-router-dom';
+import Creatable from 'react-select/creatable';
 
 // component
 import PageTitle from '../components/PageTitle';
+import { FormInput } from '../components';
 import MUIDataTable from 'mui-datatables';
 
 const OrderList = () => {
@@ -16,6 +18,11 @@ const OrderList = () => {
     const [tableBodyMaxHeight, setTableBodyMaxHeight] = useState('');
     const [loading, setLoading] = useState(true);
     const [list, setList] = useState([]);
+    const [visible, setVisible] = useState(false);
+    const [visibleReason, setVisibleReason] = useState(false);
+    const [listReasons, setListReasons] = useState([]);
+    const [optionValue, setOptionValue] = useState('');
+    const [reasonValue, setReasonValue] = useState('');
 
     const fields = [
         {
@@ -102,21 +109,32 @@ const OrderList = () => {
         onRowClick: (row, index) => {
             goSchedule(row[0]);
         },
-        onRowsDelete: (e) => deleteSelectedServiceScheduler(e),
+        onRowsDelete: (e) => deleteSelectedDuc(e),
     };
 
- 
+    // fprmat data to ptbr
+    const formatDate = (datainfo) => {
+
+            let dataString = datainfo;
+            if (datainfo > "" ) {
+                let data =  datainfo.split("-");
+                let dia = data[2];
+                let mes = data[1];
+                let ano = data[0];
+                dataString = data[2]+"/"+data[1]+"/"+data[0];
+            }
+            return dataString
+        }
         
     const getList = async () => {
         setLoading(true);
-        const result = await api.getSchedules();
-     
+        const result = await api.getDucs();
         setLoading(false);
-        if (result.msg == "¡Success!") {
+        if (result.error == "¡Success!") {
             let data = result.data.map((tasks) => ({
                 id: tasks.id,
-                promised_date:  tasks.promised_date, 
-                technical_consultant:'',
+                promised_date: formatDate(tasks.promised_date), 
+                technical_consultant: tasks.technical_consultant.name,
                 client: tasks.client.name,
                 vehicle: tasks.vehicle.name,
                 plate: tasks.client.document,
@@ -128,36 +146,70 @@ const OrderList = () => {
             alert(result.error);
         }
     };
-
-    const deleteSelectedServiceScheduler = async (e) => {
+    const getReason = async () => {
+        const result = await api.getReasons();
+        if (result.error === '') {
+            let data = result.list.map((reasons) => ({
+                label: reasons.description,
+                value: reasons.id_reason,
+            }));
+            let firstvcalue = [{ label: 'select value', value: null }];
+            let newdata = firstvcalue.concat(data);
+            console.log(newdata);
+            setListReasons(newdata);
+        } else {
+            console.log(result.error);
+        }
+    };
+   
+    const deleteSelectedDuc = async (e) => {
         let array = e.data;
         for (let index = 0; index < array.length; index++) {
             let element = array[index].index;
-            let idServiceScheduler = list[element].id_ServiceScheduler;
-            await api.delSchedules(idServiceScheduler);
+            let idduc = list[element].id_duc;
+            console.log(idduc);
+            console.log(element);
+            await api.deleteDuc(idduc);
         }
+
+        console.log(e);
     };
 
-    const goSchedule = (id_ServiceScheduler) => {
-        const id = id_ServiceScheduler;
+    const goSchedule = (id_duc) => {
+        const id = id_duc;
         history(`/apps/schedule/detail?id=${id}&type=edit`);
     };
- 
-    const newSchedule = () => {
+    const searchStringInArray = (str, strArray) => {
+        for (var j = 0; j < strArray.length; j++) {
+            if (strArray[j].match(str)) return j;
+        }
+        return -1;
+    };
+    const checkCreation = (created) => {
+        // se o valor bate com algum item da listagem prossegue normalemnte so coloca no state o value
+        if (searchStringInArray(created, listReasons)) {
+            setOptionValue(created);
+        } else {
+            // se não envia pro endpoint para cadastrar e o usestate setvalue para alterar o valor da id
+            setOptionValue(created);
+        }
+    };
+    const newDuc = () => {
         history(`/apps/schedule/detail?id=null&type=new`);
     };
     useEffect(() => {
         getList();
+        getReason();
     }, []);
 
     return (
         <>
             <PageTitle
                 breadCrumbItems={[
-                    { label: 'Service Scheduler', path: '/apps/crm/orders' },
-                    { label: 'Service Scheduler List', path: '/apps/crm/orders', active: true },
+                    { label: 'Duc', path: '/apps/crm/orders' },
+                    { label: 'Duc List', path: '/apps/crm/orders', active: true },
                 ]}
-                title={'Service Scheduler List'}
+                title={'Duc List'}
             />
 
             <Row>
@@ -170,8 +222,8 @@ const OrderList = () => {
                                 </Col>
                                 <Col xl={4}>
                                     <div className="text-xl-end mt-xl-0 mt-2">
-                                        <Button variant="danger" className="mb-2 me-2" onClick={() => newSchedule()}>
-                                            <i className="mdi mdi-basket me-1"></i> New Service Scheduler
+                                        <Button variant="danger" className="mb-2 me-2" onClick={() => newDuc()}>
+                                            <i className="mdi mdi-basket me-1"></i> New DUC
                                         </Button>
                                     </div>
                                 </Col>

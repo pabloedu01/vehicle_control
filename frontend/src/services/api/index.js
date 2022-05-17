@@ -4,7 +4,6 @@ const baseUrl = 'http://localhost:8082/api'; //
 const request = async (method, endpoint, params, token = null, taketwo = null) => {
     try {
         method = method.toLowerCase();
-        console.log(token)
         let fullUrl = `${baseUrl}${endpoint}`;
         let body = null;
         switch (method) {
@@ -79,5 +78,52 @@ export default () => {
             let json = await request('get', `/service-schedule/${id}` , {}, token);
             return json;
         },
+        ///api/client?company_id=1
+        getClients: async () => {
+            let token = localStorage.getItem('token');
+            let json = await request('get', '/client' ,"company_id=1", token);
+            return json;
+        },
+        ///api/technical-consultant?company_id=1
+        getTechnicalConsultant: async () => {
+            let token = localStorage.getItem('token');
+            let json = await request('get', '/technical-consultant' ,"company_id=1", token);
+            return json;
+        },
+        ///api/vehicle?company_id=1
+        getVehicles: async () => {
+            let token = localStorage.getItem('token');
+            let json = await request('get', '/vehicle' ,"company_id=1", token);
+            return json;
+        },
+        ///api/vehicle-brand?company_id=1
+        getVehicleBrand: async () => {
+            let token = localStorage.getItem('token');
+            let json = await request('get', '/vehicle-brand' ,"company_id=1", token);
+            return json;
+        },
+        ///api/vehicle-model?brand_id=1
+        getVehicleModel: async () => {
+            let token = localStorage.getItem('token');
+            let json = await request('get', `/vehicle-model` ,"brand_id=1", token);
+            return json;
+        },
+        ///api/checklist-version?brand_id=1
+        getChecklistVersion: async (id) => {
+            let token = localStorage.getItem('token');
+            let json = await request('get', `/checklist-version` ,"brand_id=1", token);
+            return json;
+        },
+       ///api/vehicle?model_id=1
+        getVehicle: async () => {
+            let token = localStorage.getItem('token');
+            let json = await request('get', `/vehicle` ,"model_id=1", token);
+            return json;
+        }
+        
+        
+
+        
+
     };
 };
