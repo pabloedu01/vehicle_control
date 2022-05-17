@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class VehicleServiceController extends Controller
 {
-    private static $with = [ 'brand', 'version', 'client', 'technicalConsultant', 'technicalConsultant.user' ];
+    private static $with = [ 'brand', 'version', 'client', 'technicalConsultant', 'technicalConsultant.user', 'serviceSchedule' ];
 
     public function index(Request $request)
     {
@@ -60,7 +60,7 @@ class VehicleServiceController extends Controller
             $vehicleService->vehicleData()->create($request->only(VehicleData::getFillables()));
 
             $vehicleService->items()->sync(collect($request->checklist)->keyBy('id')->map(function($item){
-                return [ 'value' => $item['value'] ];
+                return [ 'value' => @$item['value'], 'evidence' => @$item['evidence'] ];
             })->toArray());
 
             #se vuelve a solicitar el vehicle, para que venga con el global scope integrado
@@ -98,7 +98,7 @@ class VehicleServiceController extends Controller
             $vehicleService->vehicleData->update($request->only(VehicleData::getFillables()));
 
             $vehicleService->items()->sync(collect($request->checklist)->keyBy('id')->map(function($item){
-                return ['value' => $item['value']];
+                return [ 'value' => @$item['value'], 'evidence' => @$item['evidence'] ];
             })->toArray());
 
             #se vuelve a solicitar el vehicle, para que venga con el global scope integrado

@@ -28,10 +28,6 @@ class ServiceSchedule extends FormRequest
      */
     public function rules()
     {
-        /*
-         * todo: debería de filtrar el arreglo de claims_service por si hay registros que no estén correctos
-         */
-
         $company_id = @$this->request->get('company_id');
 
         return [
@@ -51,8 +47,14 @@ class ServiceSchedule extends FormRequest
             'code' => [
                 'nullable', 'string'
             ],
+            'chasis' => [
+                'nullable', 'string'
+            ],
+            'plate' => [
+                'nullable', 'string'
+            ],
             'promised_date' => [
-                'required', 'date_format:Y-m-d H:i:s'
+                'required', 'date_format:Y-m-d\TH:i:sP'
             ],
             'claims_service' => [
                 'nullable', 'array', new ServiceClaimsOfServiceSchedule($company_id)
