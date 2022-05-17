@@ -35,6 +35,7 @@ const CRMOrderList = React.lazy(() => import('../pages/apps/CRM/OrderList'));
 //Services Schedules
 const ServiceSchedule = React.lazy(() => import('../pages/ServiceSchedule'));
 
+const ScheduleDetail = React.lazy(() => import('../pages/ScheduleDetail'));
 
 
 // Users Manager
@@ -166,6 +167,10 @@ const AllRoutes = () => {
                                 {
                                     path: 'services',
                                     element: <LoadComponent component={ServiceSchedule} />,
+                                },
+                                {
+                                    path: 'detail',
+                                    element: <LoadComponent component={ScheduleDetail} />,
                                 },
                             ],
                         },
