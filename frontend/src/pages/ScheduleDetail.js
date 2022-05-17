@@ -186,7 +186,6 @@ const OrderList = () => {
             console.log('Veicle:', result.msg);
         }
     };
-
     useEffect(() => {
         getListClients();
         getListTechinicalConsultor();
