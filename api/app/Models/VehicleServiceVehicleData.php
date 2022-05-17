@@ -12,10 +12,10 @@ class VehicleServiceVehicleData extends Base
         'vehicle_service_id',
         'vehicle_id',
         'brand_id',
-        'plate',
+        /*'plate',*/
         'fuel',
         'mileage',
-        'chasis',
+        /*'chasis',*/
     ];
 
     #belongs to

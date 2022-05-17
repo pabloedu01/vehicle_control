@@ -38,9 +38,10 @@ class VehicleService extends Base
                                       'vehicle_service_technical_consultant_data.signature_date as technical_consultant_signature_date',
 
                                       'vehicle_service_vehicle_data.brand_id',
-                                      'vehicle_service_vehicle_data.plate',
+                                      /*'vehicle_service_vehicle_data.plate',*/
                                       'vehicle_service_vehicle_data.fuel',
                                       'vehicle_service_vehicle_data.mileage',
+                                      /*'vehicle_service_vehicle_data.chasis'*/
                                   ])
                          ->join('vehicle_service_client_data', 'vehicle_services.id', '=', 'vehicle_service_client_data.vehicle_service_id', 'inner')
                          ->join('vehicle_service_technical_consultant_data', 'vehicle_services.id', '=', 'vehicle_service_technical_consultant_data.vehicle_service_id', 'inner')
@@ -58,6 +59,12 @@ class VehicleService extends Base
     public function company()
     {
         return $this->belongsTo('App\Models\Company', 'company_id', 'id');
+    }
+
+    #belongs to
+    public function serviceSchedule()
+    {
+        return $this->belongsTo('App\Models\ServiceSchedule', 'service_schedule_id', 'id');
     }
 
     #belongs to
@@ -88,7 +95,9 @@ class VehicleService extends Base
     public function items()
     {
         return $this->belongsToMany('App\Models\ChecklistItem', 'checklist_item_vehicle_service', 'vehicle_service_id', 'checklist_item_id')
-            ->withPivot([ 'value', 'evidence' ]);
+            ->withPivot([ 'value', 'evidence' ])
+            ->withTimestamps()
+            ->using('App\Pivots\ChecklistItemVehicleService');
     }
 
     #has one

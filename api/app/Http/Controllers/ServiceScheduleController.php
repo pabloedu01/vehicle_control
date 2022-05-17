@@ -14,7 +14,7 @@ class ServiceScheduleController extends Controller
 
     public function index(Request $request)
     {
-        $serviceSchedules = ServiceSchedule::with(collect(self::$with)->take(4))
+        $serviceSchedules = ServiceSchedule::with(collect(self::$with)->take(4)->toArray())
                                            ->where('company_id', '=', $request->company_id)
                                            ->get();
 

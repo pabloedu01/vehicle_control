@@ -70,17 +70,17 @@ class VehicleService extends FormRequest
                 'nullable', 'string'
             ],
             'client_signature_date' => [
-                'nullable', 'date_format:Y-m-d H:i:s'
+                'nullable', 'date_format:Y-m-d\TH:i:sP'
             ],
             'technical_consultant_signature' => [
                 'nullable', 'string'
             ],
             'technical_consultant_signature_date' => [
-                'nullable', 'date_format:Y-m-d H:i:s'
+                'nullable', 'date_format:Y-m-d\TH:i:sP'
             ],
-            'plate' => [
+            /*'plate' => [
                 'nullable', 'string'
-            ],
+            ],*/
             'fuel' => [
                 'nullable', 'integer'
             ],

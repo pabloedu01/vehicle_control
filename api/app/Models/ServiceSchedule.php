@@ -13,6 +13,8 @@ class ServiceSchedule extends Base
         'technical_consultant_id',
         'client_id',
         'vehicle_id',
+        'chasis',
+        'plate'
     ];
 
     #belongs to
