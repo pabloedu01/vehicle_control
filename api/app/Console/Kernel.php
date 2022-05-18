@@ -24,8 +24,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
-        
+        #todos los días a las 2am
+        $schedule->command('delete-temporal-files')
+                 ->cron('0 2 * * *');
+
         //todo: eliminar logs de tokens generados diario
         //todo: eliminar logs anualmente
         //todo: eliminar tokens ya con más de 1 día de generación

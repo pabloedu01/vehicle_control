@@ -46,8 +46,7 @@ class TechnicalConsultantPermissionMiddleware extends BaseMiddleware
             );
         }
 
-        if(!TechnicalConsultant::withoutGlobalScope('joinToData')
-                               ->where('id', '=', $data['id'])->exists())
+        if(!TechnicalConsultant::where('id', '=', $data['id'])->exists())
         {
             return response()->json(   [
                                         'msg' => '¡Not Found!',
@@ -56,7 +55,7 @@ class TechnicalConsultantPermissionMiddleware extends BaseMiddleware
         }
 
         if(
-            !TechnicalConsultant::withoutGlobalScope('joinToData')->whereHas('company', function($query){
+            !TechnicalConsultant::whereHas('company', function($query){
                 return $query->whereHas('users', function($query){
                     return $query->where('users.id', '=', \Auth::user()->id);
                 });

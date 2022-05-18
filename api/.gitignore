@@ -19,3 +19,4 @@ _ide_helper_models.php
 app/Http/Controllers/ExampleController.php
 app/Http/Routes/ExampleRoute.php
 app/Models/ExampleModel.php
+config/google-cloud.json
