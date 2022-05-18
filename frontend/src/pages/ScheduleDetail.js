@@ -1,17 +1,42 @@
 // @flow
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Card, Form, Button, ProgressBar } from 'react-bootstrap';
+import { Row, Col, Card, Form, Button, ProgressBar, Tab, Nav, Table, Modal } from 'react-bootstrap';
 import useApi from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import { Wizard, Steps, Step } from 'react-albus';
 import { useForm } from 'react-hook-form';
 import { FormInput } from '../components/';
 import HyperDatepicker from '../components/Datepicker';
-
-// component
 import PageTitle from '../components/PageTitle';
 
+// dummy records
+const records = [
+    { id: 1, firstName: 'Mark', lastName: 'Otto', username: '@mdo' },
+    { id: 2, firstName: 'Jacob', lastName: 'Thornton', username: '@fat' },
+    { id: 3, firstName: 'Dave', lastName: 'G', username: '@dave' },
+    { id: 4, firstName: 'Nik', lastName: 'N', username: '@nikn' },
+    { id: 5, firstName: 'Shreyu', lastName: 'Navadiya', username: '@sn' },
+];
+// component
+
 const OrderList = () => {
+    /*
+     * Defaults Table
+     */
+    const [claimTable, setClaimTable] = useState([]);
+    const [serviceTable, setServiceTable] = useState([]);
+    const [serviceValue, setServiceValue] = useState([]);
+    /*
+     * modal methods
+     */
+    const [modal2, setModal2] = useState(false);
+    const [comment, setComment] = useState('');
+    const toggle2 = () => {
+        setModal2(!modal2);
+    };
+    const clearModal2 = () => {
+        toggle2();
+    };
     /*
      * form methods
      */
@@ -186,14 +211,173 @@ const OrderList = () => {
             console.log('Veicle:', result.msg);
         }
     };
+
+    //getClaims
+    const [claimList, setClaimList] = useState([]);
+    const [actualClaim, setActualClaim] = useState('');
+    const [claims, setClaims] = useState('');
+    const getClaims = async () => {
+        const result = await api.getClaims();
+        if (result.msg == '¡Success!') {
+            const CompFormSelect = (
+                <FormInput
+                    name="claim_name"
+                    label="Nome do Reclamação"
+                    type="select"
+                    containerClass="mb-3"
+                    className="form-select"
+                    register={register}
+                    key="select"
+                    onChange={(e) => {
+                        setActualClaim(e.target.value);
+                        console.log(e.target.value);
+                    }}
+                    errors={errors}
+                    control={control}>
+                    {result.data.map((item, index) => {
+                        return (
+                            <option key={index} value={index}>
+                                {item.description}
+                            </option>
+                        );
+                    })}
+                </FormInput>
+            );
+            setClaimList(result.data);
+            setClaims(CompFormSelect);
+        } else {
+            alert(result.msg);
+        }
+    };
+    const [intable, setInTable] = useState([]);
+    const newClaim = async () => {
+        if (actualClaim != '') {
+            let table = [];
+            const data = [
+                {
+                    id: claimList[actualClaim].id,
+                    description: claimList[actualClaim].description,
+                    service: '',
+                    products: '',
+                    serviceValue: '',
+                    productsValue: '',
+                },
+            ];
+            let newtable = claimTable.concat(data);
+            setClaimTable(newtable);
+            console.log(newtable);
+        } else {
+            alert('selecione uma reclamação');
+        }
+    };
+    const [serviceList, setServiceList] = useState([]);
+    const [actualService, setActualService] = useState('');
+    const [services, setServices] = useState('');
+    const getServices = async () => {
+        const result = await api.getServices();
+        if (result.msg == '¡Success!') {
+
+            let otions = [{id:'',description:''}];
+            let optdata = otions.concat(result.data)
+            const CompFormSelect = (
+                <FormInput
+                    name="service_name"
+                    label="Nome do Serviço"
+                    type="select"
+                    containerClass="mb-3"
+                    className="form-select"
+                    register={register}
+                    key="select"
+                    errors={errors}
+                    control={control}
+                    onChange={(e) => {
+                        setActualService(e.target.options.selectedIndex -1);
+                        console.log(e.target.options.selectedIndex);
+                    }}>
+                    {optdata.map((item, index) => {
+                        return (
+                            <option key={index} value={item.id}>
+                                {item.description}
+                            </option>
+                        );
+                    })}
+                </FormInput>
+            );
+            setServiceList(result.data);
+            setServices(CompFormSelect);
+        } else {
+            alert(result.msg);
+        }
+    };
+    const [products, setProducts] = useState('');
+    const getProducts = async () => {
+        const result = await api.getProducts();
+        if (result.msg == '¡Success!') {
+            const CompFormSelect = (
+                <FormInput
+                    name="product_name"
+                    label="Nome do Produto"
+                    type="select"
+                    containerClass="mb-3"
+                    className="form-select"
+                    register={register}
+                    key="select"
+                    errors={errors}
+                    control={control}>
+                    {result.data.map((item, index) => {
+                        return (
+                            <option key={index} value={item.id}>
+                                {item.name}
+                            </option>
+                        );
+                    })}
+                </FormInput>
+            );
+            setProducts(CompFormSelect);
+        } else {
+            alert(result.msg);
+        }
+    };
+
     useEffect(() => {
         getListClients();
         getListTechinicalConsultor();
         getVehicleBrand();
         getVehicleModels();
         getVehicle();
+        getClaims();
+        getServices();
+        getProducts();
     }, []);
 
+    const newService = async () => {
+        if (actualService != '') {
+            let table = [];
+            const data = [
+                {
+                    id: serviceList[actualService].id,
+                    actual_service: serviceList[actualService].id,
+                    description: serviceList[actualService].description,
+                    service: '',
+                    products: [],
+                    serviceValue: serviceValue,
+                    productsValue: '',
+                },
+            ];
+            let newtable = serviceTable.concat(data);
+            setServiceTable(newtable);
+            console.log(newtable);
+        } else {
+            alert('selecione um serviço');
+        }
+    };
+    const addService = async () => {
+        await newService();
+        setServiceValue('');
+    };
+    const addProducts = async () => {
+
+    }
     return (
         <>
             <PageTitle
@@ -303,13 +487,79 @@ const OrderList = () => {
                                                                 id="claims"
                                                                 render={({ next, previous }) => (
                                                                     <Form>
+                                                                        <Row>
+                                                                            <Col md={10}>{claims}</Col>
+                                                                            <Col md={2}>
+                                                                                <Button
+                                                                                    onClick={(e) => {
+                                                                                        newClaim();
+                                                                                        toggle2();
+                                                                                    }}>
+                                                                                    Novo Serviço
+                                                                                </Button>
+                                                                            </Col>
+                                                                        </Row>
                                                                         <Form.Group as={Row} className="mb-3">
                                                                             <Row>
-                                                                                <Col md={8}></Col>
-                                                                                <Col md={4}  style={{ textAlign: 'right' }}><Button>Novo Serviço</Button></Col>
+                                                                                <Col md={8}>
+                                                                                    <Table className="mb-0">
+                                                                                        <thead>
+                                                                                            <tr>
+                                                                                                <th>#</th>
+                                                                                                <th>Reclamação</th>
+                                                                                                <th>Serviço</th>
+                                                                                                <th>Peças</th>
+                                                                                                <th>
+                                                                                                    Valor de Serviços
+                                                                                                </th>
+                                                                                                <th>Valor de Peças</th>
+                                                                                            </tr>
+                                                                                        </thead>
+                                                                                        <tbody>
+                                                                                            {claimTable.map(
+                                                                                                (record, index) => {
+                                                                                                    return (
+                                                                                                        <tr key={index}>
+                                                                                                            <th scope="row">
+                                                                                                                {
+                                                                                                                    record.id
+                                                                                                                }
+                                                                                                            </th>
+                                                                                                            <td>
+                                                                                                                {
+                                                                                                                    record.description
+                                                                                                                }
+                                                                                                            </td>
 
+                                                                                                            <td>
+                                                                                                                {
+                                                                                                                    record.service
+                                                                                                                }
+                                                                                                            </td>
+                                                                                                            <td>
+                                                                                                                {
+                                                                                                                    record.products
+                                                                                                                }
+                                                                                                            </td>
+                                                                                                            <td>
+                                                                                                                {
+                                                                                                                    record.serviceValue
+                                                                                                                }
+                                                                                                            </td>
+                                                                                                            <td>
+                                                                                                                {
+                                                                                                                    record.productsValue
+                                                                                                                }
+                                                                                                            </td>
+                                                                                                        </tr>
+                                                                                                    );
+                                                                                                }
+                                                                                            )}
+                                                                                        </tbody>
+                                                                                    </Table>
+                                                                                </Col>
+                                                                                
                                                                             </Row>
-                                                                           
                                                                         </Form.Group>
 
                                                                         <ul className="list-inline wizard mb-0">
@@ -396,6 +646,81 @@ const OrderList = () => {
                     </Card>
                 </Col>
             </Row>
+            <Modal show={modal2} onHide={clearModal2}>
+                <Modal.Header onHide={clearModal2} closeButton>
+                    <h4 className="modal-title"> Service Managers</h4>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form.Group as={Col} controlId="formGridState">
+                        <Row>
+                            <Col>
+                                <Card>
+                                    <Card.Body>
+                                        <Row>
+                                            <Col md={6}>{services}</Col>
+                                            <Col md={4}>
+                                                <FormInput
+                                                    label="Valor Serv"
+                                                    name="serviceValue"
+                                                    value={serviceValue}
+                                                    onChange={(e) => setServiceValue(e.target.value)}
+                                                />
+                                            </Col>
+                                            <Col md={2} className="align-items-center text-center pt-3">
+                                                <Button
+                                                    onClick={(e) => {
+                                                        addService();
+                                                    }}>
+                                                    <i className="mdi mdi-plus me-1" />
+                                                </Button>
+                                            </Col>
+                                        </Row>
+                                        <Table className="mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Nome Serviço</th>
+                                                    <th>Valor</th>
+                                                    <th>Produtos</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {serviceTable.map((record, index) => {
+                                                    return (
+                                                        <tr key={index}>
+                                                            <th scope="row">{record.id}</th>
+                                                            <td>{record.description}</td>
+                                                            <td>
+                                                               
+                                                                {record.serviceValue}
+                                                            </td>
+                                                            <td>
+                                                                <Button
+                                                                    onClick={(e) => {
+                                                                        addProducts();
+                                                                    }}>
+                                                                    <i className="mdi mdi-plus me-1" />
+                                                                </Button> {' '} {record.products}</td>
+                                                        </tr>
+                                                    );
+                                                })}
+                                            </tbody>
+                                        </Table>
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                        </Row>
+                    </Form.Group>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="light" onClick={clearModal2}>
+                        Close
+                    </Button>{' '}
+                    <Button variant="primary" onClick={(e) => handleSubmit()}>
+                        Autorizar
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </>
     );
 };

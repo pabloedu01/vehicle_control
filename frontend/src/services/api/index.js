@@ -119,9 +119,24 @@ export default () => {
             let token = localStorage.getItem('token');
             let json = await request('get', `/vehicle` ,"model_id=1", token);
             return json;
+        },
+        //Fecthc route: /api/claim-service?company_id=1
+        getClaims: async () => {
+            let token = localStorage.getItem('token');
+            let json = await request('get', `/claim-service` ,"company_id=1", token);
+            return json;
+        },
+        // get /api/service?company_id=1
+        getServices: async () => {
+            let token = localStorage.getItem('token');
+            let json = await request('get', `/service` ,"company_id=1", token);
+            return json;
+        },
+        getProducts: async () => {
+            let token = localStorage.getItem('token');
+            let json = await request('get', `/product` ,"company_id=1", token);
+            return json;
         }
-        
-        
 
         
 
