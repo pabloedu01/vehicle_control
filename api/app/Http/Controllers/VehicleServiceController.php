@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class VehicleServiceController extends Controller
 {
-    private static $with = [ 'brand', 'version', 'client', 'technicalConsultant' ];
+    private static $with = [ 'brand', 'version', 'client', 'technicalConsultant', 'technicalConsultant.user', 'serviceSchedule' ];
 
     public function index(Request $request)
     {
@@ -60,11 +60,11 @@ class VehicleServiceController extends Controller
             $vehicleService->vehicleData()->create($request->only(VehicleData::getFillables()));
 
             $vehicleService->items()->sync(collect($request->checklist)->keyBy('id')->map(function($item){
-                return [ 'value' => $item['value'] ];
+                return [ 'value' => @$item['value'], 'evidence' => @$item['evidence'] ];
             })->toArray());
 
             #se vuelve a solicitar el vehicle, para que venga con el global scope integrado
-            $vehicleService = VehicleService::with(self::$with)->find($vehicleService->id);
+            $vehicleService = VehicleService::with(array_merge(self::$with, ['items']))->find($vehicleService->id);
 
             return response()->json([
                                         'msg'  => '¡Success!',
@@ -98,11 +98,11 @@ class VehicleServiceController extends Controller
             $vehicleService->vehicleData->update($request->only(VehicleData::getFillables()));
 
             $vehicleService->items()->sync(collect($request->checklist)->keyBy('id')->map(function($item){
-                return ['value' => $item['value']];
+                return [ 'value' => @$item['value'], 'evidence' => @$item['evidence'] ];
             })->toArray());
 
             #se vuelve a solicitar el vehicle, para que venga con el global scope integrado
-            $vehicleService = VehicleService::with(self::$with)->find($vehicleService->id);
+            $vehicleService = VehicleService::with(array_merge(self::$with, ['items']))->find($vehicleService->id);
 
             return response()->json([
                                         'msg'  => '¡Success!',

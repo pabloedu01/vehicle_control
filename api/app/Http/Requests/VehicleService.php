@@ -31,7 +31,9 @@ class VehicleService extends FormRequest
     {
         $vehicleService = @$this->route('id') ? \App\Models\VehicleService::withoutGlobalScope('joinToData')->find($this->route('id')) : null;
         $company_id = @$this->request->get('company_id');
+        $vehicle_id = @$this->request->get('vehicle_id');
         $brand_id = @$this->request->get('brand_id');
+        #todo: si no viene el brand_id, entonces tomar el brand_id del vehicle_id
 
         $checklistVersion = ChecklistVersion::version($brand_id, @$this->request->get('version_id') ?? @$vehicleService->version_id)->first();
 
@@ -68,17 +70,17 @@ class VehicleService extends FormRequest
                 'nullable', 'string'
             ],
             'client_signature_date' => [
-                'nullable', 'date_format:Y-m-d H:i:s'
+                'nullable', 'date_format:Y-m-d\TH:i:sP'
             ],
             'technical_consultant_signature' => [
                 'nullable', 'string'
             ],
             'technical_consultant_signature_date' => [
-                'nullable', 'date_format:Y-m-d H:i:s'
+                'nullable', 'date_format:Y-m-d\TH:i:sP'
             ],
-            'plate' => [
+            /*'plate' => [
                 'nullable', 'string'
-            ],
+            ],*/
             'fuel' => [
                 'nullable', 'integer'
             ],
