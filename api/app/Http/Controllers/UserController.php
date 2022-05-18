@@ -2,12 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
 {
+    public function companies()
+    {
+        $companies = Company::whereHas('users', function($query){
+            return $query->where('users.id', '=', \Auth::user()->id);
+        })
+                            ->get();
+
+        return response()->json([
+                                    'msg'  => '¡Success!',
+                                    'data' => $companies,
+                                ],
+                                Response::HTTP_OK
+        );
+    }
+
     public function store(Request $request)
     {
         $validator = validate($request->all(), User::rules());
@@ -45,7 +61,8 @@ class UserController extends Controller
         }
     }
 
-    public function whoami(){
+    public function whoami()
+    {
         return response()
             ->json([
                        'msg'  => '¡Success!',

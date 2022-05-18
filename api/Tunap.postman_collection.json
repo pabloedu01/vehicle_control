@@ -2451,6 +2451,25 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Companies",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/user/companies",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"companies"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
