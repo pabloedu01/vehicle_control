@@ -13,6 +13,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/toyota', function () {
+
+    $pdf = \PDF::loadView('reports.vehicle-service.toyota');
+    return $pdf->download('archivo-pdf.pdf');
+});
+
+Route::get('/toyota-view', function () {
+
+    return view('reports.vehicle-service.toyota');
 });

@@ -37,21 +37,21 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::pattern('id', '[0-9]+');
         Route::pattern('slug', '[0-9a-zA-Z_-]+');
-        
+
         $this->configureRateLimiting();
 
         $this->routes(function () {
-            
+
             $this->mapCustomApiRoutes();
-            
+
             Route::prefix('api')
                 ->middleware('api')
                 ->namespace($this->namespace)
                 ->group(base_path('routes/api.php'));
 
-            /*Route::middleware('web')
+            Route::middleware('web')
                 ->namespace($this->namespace)
-                ->group(base_path('routes/web.php'));*/
+                ->group(base_path('routes/web.php'));
         });
     }
 
@@ -66,11 +66,11 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perMinute(60)->by(optional($request->user())->id ?: $request->ip());
         });
     }
-    
+
     protected function mapCustomApiRoutes($path = null)
     {
         $routes_path = is_null($path) ? app_path('Http/Routes').DIRECTORY_SEPARATOR : $path;
-        
+
         foreach(scandir($routes_path) as $file)
         {
             if(is_file($routes_path.$file))
