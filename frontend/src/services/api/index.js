@@ -28,7 +28,11 @@ const request = async (method, endpoint, params, token = null, taketwo = null) =
             headers.Authorization = `Bearer ${token}`;
         }
         let req = await fetch(fullUrl, { method, headers, body });
+
         let json = await req.json();
+
+        json['httpCode'] = req.status;
+
         return json;
     } catch (error) {
         return { error: 'Erro de Conexão com API' };
