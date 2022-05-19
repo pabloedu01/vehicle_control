@@ -1,12 +1,14 @@
 // @flow
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Navigate, Link } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { Navigate, Link, useNavigate } from 'react-router-dom';
 import { Button, Alert, Row, Col } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import useApi from '../services/api';
+import classNames from 'classnames';
 
 //actions
 import { resetAuth, signupUser } from '../redux/actions';
@@ -24,9 +26,9 @@ const BottomLink = () => {
         <Row className="mt-3">
             <Col className="text-center">
                 <p className="text-muted">
-                    {t('Already have account?')}{' '}
+                    Já tem conta?
                     <Link to={'/login'} className="text-muted ms-1">
-                        <b>{t('Log In')}</b>
+                        <b>Login</b>
                     </Link>
                 </p>
             </Col>
@@ -37,12 +39,15 @@ const BottomLink = () => {
 const Register = () => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
+    const history = useNavigate();
     const api = useApi();
     const { loading, userSignUp, error } = useSelector((state) => ({
         loading: state.Auth.loading,
         error: state.Auth.error,
         userSignUp: state.Auth.userSignUp,
     }));
+    const [activeCpf, setActiveCpf] = useState(false);
+    const [activeCpnj, setActiveCpnj] = useState(true);
 
     useEffect(() => {
         dispatch(resetAuth());
@@ -53,29 +58,76 @@ const Register = () => {
      */
     const schemaResolver = yupResolver(
         yup.object().shape({
-            fullname: yup.string().required(t('Please enter Fullname')),
-            email: yup.string().required('Please enter Email').email('Please enter valid Email'),
-            password: yup.string().required(t('Please enter Password')),
+            name: yup.string().required(t('Por favor, digite Nome Completo')),
+            username: yup.string().required(t('Por favor, digite Usuário')),
+            email: yup.string().required('Por favor, digite Email').email('Por favor insira um e-mail válido'),
+            password: yup.string().required(t('Por favor, digite Senha')),
         })
     );
 
     /*
+     * form methods
+     */
+    const methods = useForm({ resolver: schemaResolver, defaultValues: {} });
+
+    /*
      * handle form submission
      */
-    const onSubmit = (formData) => {
+    const onSubmit = async (formData) => {
         const data = {
-            cnpj: formData['cnpj'],
             name: formData['name'],
             email: formData['email'],
             username: formData['username'],
             password: formData['password'],
         };
-        const result = api.signup(data);
-        if(result.msg == "¡Success!"){
-            dispatch(signupUser(formData['fullname'], formData['email'], formData['password']));
-        }else {
-            alert(result.msg);
+
+        if(activeCpf){
+            data.cpf = formData['cpf'];
+        } else {
+            if(activeCpnj){
+                data.cnpj = formData['cnpj'];
+            }
         }
+
+        const result = await api.signup(data);
+
+        if(result.httpCode === 201){
+            alert('Activa tu cuenta desde el mensaje que enviamos al correo.');
+
+            history('/login');
+        }else {
+            if(result.hasOwnProperty('errors')){
+                for(let fieldName in result.errors){
+                    if(result.errors.hasOwnProperty(fieldName)){
+                        if(activeCpf && fieldName === 'cpnj'){
+                            continue;
+                        }
+
+                        if(activeCpnj && fieldName === 'cpf'){
+                            continue;
+                        }
+
+                        methods.setError(fieldName, {type: 'custom', message: result.errors[fieldName].join('<br>')});
+                    }
+                }
+            }
+        }
+    };
+
+    const onActiveCpnj = () => {
+        methods.setValue('cpf', null);
+        methods.clearErrors('cpf');
+
+        setActiveCpnj(true);
+        setActiveCpf(false);
+    };
+
+    const onActiveCpf = () => {
+        methods.setValue('cnpj', null);
+        methods.clearErrors('cnpj');
+
+        setActiveCpf(true);
+        setActiveCpnj(false);
     };
 
     return (
@@ -84,9 +136,9 @@ const Register = () => {
 
             <AccountLayout bottomLinks={<BottomLink />}>
                 <div className="text-center w-75 m-auto">
-                    <h4 className="text-dark-50 text-center mt-0 fw-bold">{t('Free Sign Up')}</h4>
+                    <h4 className="text-dark-50 text-center mt-0 fw-bold">Cadastro</h4>
                     <p className="text-muted mb-4">
-                        {t("Don't have an account? Create your account, it takes less than a minute.")}
+                        Não tem uma conta? Crie sua conta, leva menos de um minuto.
                     </p>
                 </div>
 
@@ -96,52 +148,59 @@ const Register = () => {
                     </Alert>
                 )}
 
-                <VerticalForm onSubmit={onSubmit} resolver={schemaResolver} defaultValues={{}}>
+                <VerticalForm onSubmit={onSubmit} customMethods={methods} resolver={schemaResolver} defaultValues={{}}>
                     <FormInput
-                        label={t('CNPJ')}
+                        label="CNPJ"
                         type="text"
                         name="cnpj"
-                        placeholder={t('Digite o CNPJ')}
+                        placeholder="Digite seu CNPJ"
                         containerClass={'mb-3'}
+                        className={classNames({ 'd-none': activeCpf })}
+                        labelClassName={classNames({ 'd-none': activeCpf })}
+                        smallHtml={<a href="#" className={classNames({'d-flex' : activeCpnj, 'd-none': activeCpf})} onClick={onActiveCpf}>CPF</a>}
+                    />
+                    <FormInput
+                        label="CPF"
+                        type="text"
+                        name="cpf"
+                        placeholder="Digite seu CPF"
+                        containerClass={'mb-3'}
+                        className={classNames({ 'd-none': activeCpnj })}
+                        labelClassName={classNames({ 'd-none': activeCpnj })}
+                        smallHtml={<a href="#" className={classNames({'d-flex' : activeCpf, 'd-none': activeCpnj})} onClick={onActiveCpnj}>CPNJ</a>}
                     />
                      <FormInput
-                        label={t('Nome')}
+                        label="Nome"
                         type="text"
                         name="name"
-                        placeholder={t('Enter your name')}
+                        placeholder="Digite seu Nome"
                         containerClass={'mb-3'}
                     />
                     <FormInput
-                        label={t('Email address')}
+                        label="Email"
                         type="email"
                         name="email"
-                        placeholder={t('Enter your email')}
+                        placeholder="Digite seu Email"
                         containerClass={'mb-3'}
                     />
                     <FormInput
-                        label={t('username')}
+                        label="Usuário"
                         type="text"
                         name="username"
-                        placeholder={t('Enter your username')}
+                        placeholder="Digite seu Usuário"
                         containerClass={'mb-3'}
                     />
                     <FormInput
-                        label={t('Password')}
+                        label="Senha"
                         type="password"
                         name="password"
-                        placeholder={t('Enter your password')}
+                        placeholder="Digite seu Senha"
                         containerClass={'mb-3'}
-                    />
-                    <FormInput
-                        label={t('I accept Terms and Conditions')}
-                        type="checkbox"
-                        name="checkboxsignup"
-                        containerClass={'mb-3 text-muted'}
                     />
 
                     <div className="mb-3 mb-0 text-center">
                         <Button variant="primary" type="submit" disabled={loading}>
-                            {t('Sign Up')}
+                            Cadastro
                         </Button>
                     </div>
                 </VerticalForm>

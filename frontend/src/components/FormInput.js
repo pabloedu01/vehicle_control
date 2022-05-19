@@ -52,6 +52,7 @@ type FormInputProps = {
     containerClass?: string,
     refCallback?: any,
     children?: any,
+    smallHtml?: any,
 };
 
 const FormInput = ({
@@ -66,6 +67,7 @@ const FormInput = ({
     containerClass,
     refCallback,
     children,
+    smallHtml,
     ...otherProps
 }: FormInputProps): React$Element<React$FragmentType> => {
     // handle input type
@@ -97,7 +99,7 @@ const FormInput = ({
 
                                 {errors && errors[name] ? (
                                     <Form.Control.Feedback type="invalid" className="d-block">
-                                        {errors[name]['message']}
+                                        <span dangerouslySetInnerHTML={{__html: errors[name]['message']}}/>
                                     </Form.Control.Feedback>
                                 ) : null}
                             </Form.Group>
@@ -127,7 +129,7 @@ const FormInput = ({
 
                                         {errors && errors[name] ? (
                                             <Form.Control.Feedback type="invalid">
-                                                {errors[name]['message']}
+                                                <span dangerouslySetInnerHTML={{__html: errors[name]['message']}}/>
                                             </Form.Control.Feedback>
                                         ) : null}
                                     </Form.Group>
@@ -153,7 +155,7 @@ const FormInput = ({
 
                                                 {errors && errors[name] ? (
                                                     <Form.Control.Feedback type="invalid">
-                                                        {errors[name]['message']}
+                                                        <span dangerouslySetInnerHTML={{__html: errors[name]['message']}}/>
                                                     </Form.Control.Feedback>
                                                 ) : null}
                                             </Form.Group>
@@ -181,9 +183,10 @@ const FormInput = ({
 
                                             {errors && errors[name] ? (
                                                 <Form.Control.Feedback type="invalid">
-                                                    {errors[name]['message']}
+                                                    <span dangerouslySetInnerHTML={{__html: errors[name]['message']}}/>
                                                 </Form.Control.Feedback>
                                             ) : null}
+                                            {smallHtml ? smallHtml : null}
                                         </Form.Group>
                                     )}
                                 </>

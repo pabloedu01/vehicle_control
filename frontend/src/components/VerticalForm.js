@@ -7,6 +7,7 @@ type VerticalFromProps = {
     resolver?: any,
     children?: any,
     onSubmit?: (value: any) => void,
+    customMethods?: any,
     formClass?: string,
 };
 
@@ -15,12 +16,19 @@ const VerticalForm = ({
     resolver,
     children,
     onSubmit,
+    customMethods,
     formClass,
 }: VerticalFromProps): React$Element<any> => {
     /*
      * form methods
      */
-    const methods = useForm({ defaultValues, resolver });
+
+    let methods = useForm({ defaultValues, resolver });
+
+    if(customMethods){
+        methods = customMethods;
+    }
+
     const {
         handleSubmit,
         register,
@@ -29,7 +37,7 @@ const VerticalForm = ({
     } = methods;
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className={formClass} noValidate>
+        <form onSubmit={handleSubmit(onSubmit, (e) => {console.log(e);})} className={formClass} noValidate>
             {Array.isArray(children)
                 ? children.map((child) => {
                       return child.props && child.props.name

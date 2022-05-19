@@ -26,7 +26,7 @@ const BottomLink = () => {
             <p className="text-muted">
                 {t("Don't have an account?")}{' '}
                 <Link to={'/account/register'} className="text-muted ms-1">
-                    <b>{t('Sign Up')}</b>
+                    <b>{t('Cadastro')}</b>
                 </Link>
             </p>
         </footer>
@@ -65,7 +65,7 @@ const Login2 = () => {
                 const result = await api.login(data);
                 setLoading(false);
 
-                if (result.msg === "¡Success!") {
+                if (result.httpCode === 200) {
                     localStorage.setItem('token', result.token);
                     console.log(result)
                     history('/');
