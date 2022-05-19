@@ -1,15 +1,46 @@
+@page { margin: 0 0; }
+body{
+    margin: 15px 25px;
+}
+
+
+.fa {
+    display: inline;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 1;
+    font-family: "FontAwesome";
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
 body{
     font-family: sans-serif;
     font-size: 10px;
 }
+label{
+    font-size: 10px;
+}
 table{
     width: 100%;
+    border-collapse:collapse;
 }
 table tbody tr td{
     vertical-align: middle;
     width: 100%;
+    border: none;
 }
 
+.w-1{
+    width: 1%;
+}
+.w-2{
+    width: 2%;
+}
 .w-15{
     width: 15%;
 }
@@ -19,18 +50,93 @@ table tbody tr td{
 .w-25{
     width: 25%;
 }
+.w-30{
+    width: 30%;
+}
+.w-third{
+    width: 33.33%;
+}
+.w-35{
+    width: 35%;
+}
+.w-38{
+    width: 38%;
+}
+.w-40{
+    width: 40%;
+}
 .w-50{
     width: 50%;
 }
 .w-60{
     width: 60%;
 }
+.w-61{
+    width: 60%;
+}
+.w-62{
+    width: 62%;
+}
+.w-65{
+    width: 65%;
+}
+.w-70{
+    width: 70%;
+}
 .w-100{
     width: 100%;
+}
+.h-1{
+    height: 1px;
+}
+.h-25{
+    height: 25px !important;
+}
+.h-30{
+    height: 30px;
+}
+.h-40{
+    height: 40px;
+}
+
+.full-height{
+    height: 100%;
+}
+
+.mb-1{
+    margin-bottom: 1px;
+}
+.mb-2{
+    margin-bottom: 2px;
+}
+
+.pb-2{
+    padding-bottom: 2px;
 }
 
 .text-center{
     text-align: center;
+}
+
+.bg-white{
+    background-color: #fff;
+}
+
+.bg-success{
+    background-color: #198754;
+}
+
+.bg-warning{
+    background-color: #ffc107;
+}
+
+.bg-danger{
+    background-color: #dc3545;
+}
+
+.bg-navy{
+    background-color: #2d3748;
+    color: white;
 }
 
 .title-3{
@@ -38,3 +144,47 @@ table tbody tr td{
     font-weight: bold;
 }
 
+.table-container{
+    width: 100%;
+}
+
+.table-column{
+    float: left;
+}
+
+.table-column-separator{
+    float: left;
+    height: 1px;
+}
+
+.d-block{
+ display: block;
+}
+
+.d-table{
+    display: table;
+}
+
+.d-table-cell{
+    display: table-cell;
+}
+
+.vertical-align-middle{
+    vertical-align: middle;
+}
+
+.float-right{
+    float:right;
+}
+
+.border-black{
+    border-radius: 2px;border: solid .5px #000;
+}
+
+.border-radius{
+    border-radius: 2px;
+}
+
+.table-cell-text-center tbody tr td{
+    text-align: center;
+}

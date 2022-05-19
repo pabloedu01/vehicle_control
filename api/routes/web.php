@@ -15,11 +15,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/toyota', function () {
 
-    $pdf = \PDF::loadView('reports.vehicle-service.toyota');
+    $pdf = \PDF::loadView('reports.vehicle-service.toyota.index');
     return $pdf->download('archivo-pdf.pdf');
 });
 
 Route::get('/toyota-view', function () {
 
-    return view('reports.vehicle-service.toyota');
+    return view('reports.vehicle-service.toyota.index');
 });

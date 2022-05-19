@@ -2,11 +2,12 @@
 <head>
     <meta charset="utf-8">
     <title>Marca</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+
     <link href="{{ public_path('assets/css/reports/styles.css') }}" rel="stylesheet" type="text/css"/>
     <link href="{{ public_path('assets/css/reports/toyota.css') }}" rel="stylesheet" type="text/css"/>
 </head>
 <body>
-
 <table>
     <tbody>
     <tr>
@@ -44,6 +45,48 @@
         <td class="text-center">
             FOLHA DE INSPEÇÃO - CONDIÇÕES DE ENTRADA E SAíDA DO VEíCULO - SUV
         </td>
+    </tr>
+    </tbody>
+</table>
+
+<table id="color-legend" style="">
+    <tbody>
+    <tr>
+        <td class="bg-success"><span>OK/SUBSTITUÍDO</span></td>
+        <td class="bg-warning">REQUER TROCA/REPARO FUTURO</td>
+        <td class="bg-danger">REQUER TROCA/REPARO IMEDIATO</td>
+    </tr>
+    </tbody>
+</table>
+
+<table class="w-100">
+    <tbody>
+    <tr>
+        <td class="w-38">
+            @include('reports.vehicle-service.toyota.section-1')
+        </td>
+        <td class="w-1 h-1">
+
+        </td>
+        <td class="w-61">
+
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<table>
+    <tbody>
+    <tr>
+
+    </tr>
+    </tbody>
+</table>
+
+<table>
+    <tbody>
+    <tr>
+
     </tr>
     </tbody>
 </table>
