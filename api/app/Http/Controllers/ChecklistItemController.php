@@ -13,7 +13,7 @@ class ChecklistItemController extends Controller
         $checklistItems = ChecklistItem::get();
 
         return response()->json([
-                                    'msg'  => '¡Success!',
+                                    'msg' => trans('general.msg.success'),
                                     'data' => $checklistItems,
                                 ],
                                 Response::HTTP_OK
@@ -27,7 +27,7 @@ class ChecklistItemController extends Controller
 
         if($checklistItem){
             return response()->json([
-                                        'msg'  => '¡Success!',
+                                        'msg' => trans('general.msg.success'),
                                         'data' => $checklistItem,
                                     ],
                                     Response::HTTP_OK
@@ -36,7 +36,7 @@ class ChecklistItemController extends Controller
         else
         {
             return response()->json([
-                                        'msg' => '¡Not Found!',
+                                        'msg' => trans('general.msg.notFound'),
                                     ],
                                     Response::HTTP_NOT_FOUND
             );
@@ -51,7 +51,7 @@ class ChecklistItemController extends Controller
         if($validator->fails())
         {
             return response()->json([
-                                        'msg'    => '¡Invalid Data!',
+                                        'msg' => trans('general.msg.invalidData'),
                                         'errors' => $validator->errors(),
                                     ],
                                     Response::HTTP_BAD_REQUEST
@@ -63,7 +63,7 @@ class ChecklistItemController extends Controller
         if(secureSave($checklistItem))
         {
             return response()->json([
-                                        'msg'  => '¡Success!',
+                                        'msg' => trans('general.msg.success'),
                                         'data' => $checklistItem,
                                     ],
                                     Response::HTTP_CREATED
@@ -72,7 +72,7 @@ class ChecklistItemController extends Controller
         else
         {
             return response()->json([
-                                        'msg' => '¡Error!',
+                                        'msg' => trans('general.msg.error'),
                                     ],
                                     Response::HTTP_INTERNAL_SERVER_ERROR
             );
@@ -90,7 +90,7 @@ class ChecklistItemController extends Controller
             if($validator->fails())
             {
                 return response()->json([
-                                            'msg'    => '¡Invalid Data!',
+                                            'msg' => trans('general.msg.invalidData'),
                                             'errors' => $validator->errors(),
                                         ],
                                         Response::HTTP_BAD_REQUEST
@@ -102,7 +102,7 @@ class ChecklistItemController extends Controller
             if(!$checklistItem->hasAppliedChanges() || secureSave($checklistItem))
             {
                 return response()->json([
-                                            'msg'  => '¡Success!',
+                                            'msg' => trans('general.msg.success'),
                                             'data' => $checklistItem,
                                         ],
                                         Response::HTTP_OK
@@ -111,7 +111,7 @@ class ChecklistItemController extends Controller
             else
             {
                 return response()->json([
-                                            'msg' => '¡Error!',
+                                            'msg' => trans('general.msg.error'),
                                         ],
                                         Response::HTTP_INTERNAL_SERVER_ERROR
                 );
@@ -120,7 +120,7 @@ class ChecklistItemController extends Controller
         else
         {
             return response()->json([
-                                        'msg' => '¡Not Found!',
+                                        'msg' => trans('general.msg.notFound'),
                                     ],
                                     Response::HTTP_NOT_FOUND
             );
@@ -136,7 +136,7 @@ class ChecklistItemController extends Controller
             if(secureDelete($checklistItem))
             {
                 return response()->json([
-                                            'msg' => '¡Success!',
+                                            'msg' => trans('general.msg.success'),
                                         ],
                                         Response::HTTP_OK
                 );
@@ -144,7 +144,7 @@ class ChecklistItemController extends Controller
             else
             {
                 return response()->json([
-                                            'msg' => '¡Error!',
+                                            'msg' => trans('general.msg.error'),
                                         ],
                                         Response::HTTP_INTERNAL_SERVER_ERROR
                 );
@@ -153,7 +153,7 @@ class ChecklistItemController extends Controller
         else
         {
             return response()->json([
-                                        'msg' => '¡Not Found!',
+                                        'msg' => trans('general.msg.notFound'),
                                     ],
                                     Response::HTTP_NOT_FOUND
             );

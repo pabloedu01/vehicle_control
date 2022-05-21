@@ -23,7 +23,7 @@ class RedirectIfAuthenticated
         #tomando data de las cabeceras del header
         $token    = $request->header('x-auth-token');
         $username = $request->header('x-auth-uid');
-        
+
         if($token && $username)
         {
             if(
@@ -35,12 +35,12 @@ class RedirectIfAuthenticated
             )
             {
                 return response()->json([
-                                            'msg' => '¡Unauthorized, only guest has access!',
+                                            'msg' => trans('general.msg.unauthorizedOnlyGuest'),
                                         ], Response::HTTP_UNAUTHORIZED
                 );
             }
         }
-        
+
         return $next($request);
     }
 }

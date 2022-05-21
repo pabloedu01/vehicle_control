@@ -9,6 +9,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import useApi from '../services/api';
 import classNames from 'classnames';
+import {toastService} from "../services/toast";
 
 //actions
 import { resetAuth, signupUser } from '../redux/actions';
@@ -17,6 +18,7 @@ import { resetAuth, signupUser } from '../redux/actions';
 import { VerticalForm, FormInput } from '../components/';
 
 import AccountLayout from './AccountLayout';
+import {loadingService} from "../services/loading";
 
 /* bottom link */
 const BottomLink = () => {
@@ -92,11 +94,11 @@ const Register = () => {
         const result = await api.signup(data);
 
         if(result.httpCode === 201){
-            alert('Activa tu cuenta desde el mensaje que enviamos al correo.');
+            toastService.show('success', 'Ative sua conta a partir da mensagem que enviamos para o e-mail.');
 
             history('/login');
         }else {
-            if(result.hasOwnProperty('errors')){
+            if(result.httpCode === 400 && result.hasOwnProperty('errors')){
                 for(let fieldName in result.errors){
                     if(result.errors.hasOwnProperty(fieldName)){
                         if(activeCpf && fieldName === 'cpnj'){

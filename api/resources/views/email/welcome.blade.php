@@ -5,6 +5,6 @@
     <title>Email</title>
 </head>
 <body>
-    Welcome to {{ env('APP_NAME') }}. <a href="{{ $code }}">Click here</a> to complete the register ({{ $code }})
+    Welcome to {{ env('APP_NAME') }}. <a href="{{ $url }}">Click here</a> to complete the register ({{ $url }})
 </body>
 </html>

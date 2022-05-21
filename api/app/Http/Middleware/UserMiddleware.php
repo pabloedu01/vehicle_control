@@ -36,7 +36,7 @@ class UserMiddleware extends BaseMiddleware
         $user = \Auth::user();
 
         if(!$user || !is_null($user->deleted_at) || !$user->active){
-            return response()->json(['msg' => '¡Unauthorized!'], Response::HTTP_UNAUTHORIZED);
+            return response()->json(['msg' => trans('general.msg.unauthorized')], Response::HTTP_UNAUTHORIZED);
         }
 
         return $next($request);

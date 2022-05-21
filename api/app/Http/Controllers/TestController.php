@@ -23,7 +23,7 @@ class TestController extends Controller
                                   ], WelcomeEmail::class));*/
 
         return response()->json([
-                                    'msg'  => '¡Success!',
+                                    'msg' => trans('general.msg.success'),
                                     'data' => Log::limit(10)->orderBy('_id','desc')->get(),
                                 ], Response::HTTP_OK
         );
@@ -37,13 +37,13 @@ class TestController extends Controller
 
         if(secureSave($log)){
             return response()->json([
-                                        'msg'  => '¡Success!',
+                                        'msg' => trans('general.msg.success'),
                                         'data' => $log,
                                     ], Response::HTTP_OK
             );
         } else {
             return response()->json([
-                                        'msg'  => '¡Error!',
+                                        'msg' => trans('general.msg.error'),
                                     ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
