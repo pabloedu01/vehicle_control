@@ -14,7 +14,7 @@ class VehicleBrandChecklistVersionController extends Controller
         $versions = Version::with(['brand','items'])->where('brand_id', '=', $request->brand_id)->get();
 
         return response()->json([
-                                    'msg'  => '¡Success!',
+                                    'msg' => trans('general.msg.success'),
                                     'data' => $versions,
                                 ],
                                 Response::HTTP_OK
@@ -27,7 +27,7 @@ class VehicleBrandChecklistVersionController extends Controller
                           ->first();
 
         return response()->json([
-                                    'msg'  => '¡Success!',
+                                    'msg' => trans('general.msg.success'),
                                     'data' => $version,
                                 ],
                                 Response::HTTP_OK
@@ -41,7 +41,7 @@ class VehicleBrandChecklistVersionController extends Controller
         if($validator->fails())
         {
             return response()->json([
-                                        'msg'    => '¡Invalid Data!',
+                                        'msg' => trans('general.msg.invalidData'),
                                         'errors' => $validator->errors(),
                                     ],
                                     Response::HTTP_BAD_REQUEST
@@ -57,7 +57,7 @@ class VehicleBrandChecklistVersionController extends Controller
             $version->load(['brand','items']);
 
             return response()->json([
-                                        'msg'  => '¡Success!',
+                                        'msg' => trans('general.msg.success'),
                                         'data' => $version,
                                     ],
                                     Response::HTTP_CREATED
@@ -66,7 +66,7 @@ class VehicleBrandChecklistVersionController extends Controller
         else
         {
             return response()->json([
-                                        'msg' => '¡Error!',
+                                        'msg' => trans('general.msg.error'),
                                     ],
                                     Response::HTTP_INTERNAL_SERVER_ERROR
             );
@@ -82,7 +82,7 @@ class VehicleBrandChecklistVersionController extends Controller
         if($validator->fails())
         {
             return response()->json(                                                                                                                                                                     [
-                                                                                                                                                                                                          'msg'    => '¡Invalid Data!',
+                                                                                                                                                                                                          'msg' => trans('general.msg.invalidData'),
                                                                                                                                                                                                           'errors' => $validator->errors(),
                                                                                                                                                                                                       ], Response::HTTP_BAD_REQUEST
             );
@@ -96,7 +96,7 @@ class VehicleBrandChecklistVersionController extends Controller
             $version->load(['brand','items']);
 
             return response()->json([
-                                        'msg'  => '¡Success!',
+                                        'msg' => trans('general.msg.success'),
                                         'data' => $version,
                                     ],
                                     Response::HTTP_OK
@@ -105,7 +105,7 @@ class VehicleBrandChecklistVersionController extends Controller
         else
         {
             return response()->json([
-                                        'msg' => '¡Error!',
+                                        'msg' => trans('general.msg.error'),
                                     ],
                                     Response::HTTP_INTERNAL_SERVER_ERROR
             );
@@ -119,14 +119,14 @@ class VehicleBrandChecklistVersionController extends Controller
         if(secureDelete($version))
         {
             return response()->json([
-                                        'msg' => '¡Success!',
+                                        'msg' => trans('general.msg.success'),
                                     ], Response::HTTP_OK
             );
         }
         else
         {
             return response()->json([
-                                        'msg' => '¡Error!',
+                                        'msg' => trans('general.msg.error'),
                                     ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }

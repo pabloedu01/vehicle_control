@@ -9,10 +9,10 @@ use Illuminate\Queue\SerializesModels;
 class WelcomeEmail extends Mailable
 {
     use Queueable, SerializesModels;
-    
+
     protected $data;
-    
-    
+
+
     public function __construct($data)
     {
         $this->data = $data;
@@ -26,7 +26,7 @@ class WelcomeEmail extends Mailable
     public function build()
     {
         return $this->subject('Welcome to our website')
-                    ->with($this->data)
+                    ->with(array_merge($this->data, ['url' => env('APP_URL_FRONTEND', '').'/account/activate-user/'.$this->data['code']]))
                     ->view('email.welcome');
     }
 }

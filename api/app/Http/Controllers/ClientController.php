@@ -14,7 +14,7 @@ class ClientController extends Controller
                          ->get();
 
         return response()->json([
-                                    'msg'  => '¡Success!',
+                                    'msg' => trans('general.msg.success'),
                                     'data' => $clients,
                                 ],
                                 Response::HTTP_OK);
@@ -26,7 +26,7 @@ class ClientController extends Controller
                         ->first();
 
         return response()->json([
-                                    'msg'  => '¡Success!',
+                                    'msg' => trans('general.msg.success'),
                                     'data' => $client,
                                 ],
                                 Response::HTTP_OK
@@ -40,7 +40,7 @@ class ClientController extends Controller
         if($validator->fails())
         {
             return response()->json([
-                                        'msg'    => '¡Invalid Data!',
+                                        'msg' => trans('general.msg.invalidData'),
                                         'errors' => $validator->errors(),
                                     ],
                                     Response::HTTP_BAD_REQUEST
@@ -52,7 +52,7 @@ class ClientController extends Controller
         if(secureSave($client))
         {
             return response()->json([
-                                        'msg'  => '¡Success!',
+                                        'msg' => trans('general.msg.success'),
                                         'data' => $client,
                                     ],
                                     Response::HTTP_CREATED
@@ -61,7 +61,7 @@ class ClientController extends Controller
         else
         {
             return response()->json([
-                                        'msg' => '¡Error!',
+                                        'msg' => trans('general.msg.error'),
                                     ],
                                     Response::HTTP_INTERNAL_SERVER_ERROR
             );
@@ -77,7 +77,7 @@ class ClientController extends Controller
         if($validator->fails())
         {
             return response()->json([
-                                        'msg'    => '¡Invalid Data!',
+                                        'msg' => trans('general.msg.invalidData'),
                                         'errors' => $validator->errors(),
                                     ],
                                     Response::HTTP_BAD_REQUEST
@@ -89,7 +89,7 @@ class ClientController extends Controller
         if(!$client->hasAppliedChanges() || secureSave($client))
         {
             return response()->json([
-                                        'msg'  => '¡Success!',
+                                        'msg' => trans('general.msg.success'),
                                         'data' => $client,
                                     ],
                                     Response::HTTP_OK
@@ -98,7 +98,7 @@ class ClientController extends Controller
         else
         {
             return response()->json([
-                                        'msg' => '¡Error!',
+                                        'msg' => trans('general.msg.error'),
                                     ],
                                     Response::HTTP_INTERNAL_SERVER_ERROR
             );
@@ -112,7 +112,7 @@ class ClientController extends Controller
         if(secureDelete($client))
         {
             return response()->json([
-                                        'msg' => '¡Success!',
+                                        'msg' => trans('general.msg.success'),
                                     ],
                                     Response::HTTP_OK
             );
@@ -120,7 +120,7 @@ class ClientController extends Controller
         else
         {
             return response()->json([
-                                        'msg' => '¡Error!',
+                                        'msg' => trans('general.msg.error'),
                                     ],
                                     Response::HTTP_INTERNAL_SERVER_ERROR
             );

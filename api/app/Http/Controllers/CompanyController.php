@@ -17,7 +17,7 @@ class CompanyController extends Controller
                            ->get();
 
         return response()->json(                                                                                                                                                                                                                                                                     [
-                                                                                                                                                                                                                                                                                                      'msg'  => '¡Success!',
+                                                                                                                                                                                                                                                                                                      'msg' => trans('general.msg.success'),
                                                                                                                                                                                                                                                                                                       'data' => $vehicles,
                                                                                                                                                                                                                                                                                                   ], Response::HTTP_OK
         );
@@ -30,7 +30,7 @@ class CompanyController extends Controller
                                                 ->get();
 
         return response()->json(   [
-                                    'msg'  => '¡Success!',
+                                    'msg' => trans('general.msg.success'),
                                     'data' => $versions,
                                 ], Response::HTTP_OK
         );
@@ -43,7 +43,7 @@ class CompanyController extends Controller
         if($validator->fails())
         {
             return response()->json(   [
-                                        'msg'    => '¡Invalid Data!',
+                                        'msg' => trans('general.msg.invalidData'),
                                         'errors' => $validator->errors(),
                                     ], Response::HTTP_BAD_REQUEST
             );
@@ -56,7 +56,7 @@ class CompanyController extends Controller
             $company->users()->attach(\Auth::user(), [ 'role' => 'owner' ]);
 
             return response()->json(   [
-                                        'msg'  => '¡Success!',
+                                        'msg' => trans('general.msg.success'),
                                         'data' => $company,
                                     ], Response::HTTP_CREATED
             );
@@ -64,7 +64,7 @@ class CompanyController extends Controller
         else
         {
             return response()->json(   [
-                                        'msg' => '¡Error!',
+                                        'msg' => trans('general.msg.error'),
                                     ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }

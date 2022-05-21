@@ -19,6 +19,7 @@ const Login = React.lazy(() => import('../pages/Login'));
 
 const Logout = React.lazy(() => import('../pages/Logout'));
 const Register = React.lazy(() => import('../pages/Register'));
+const ActivateUser = React.lazy(() => import('../pages/ActivateUser'));
 const Confirm = React.lazy(() => import('../pages/account/Confirm'));
 const ForgetPassword = React.lazy(() => import('../pages/account/ForgetPassword'));
 const LockScreen = React.lazy(() => import('../pages/account/LockScreen'));
@@ -100,6 +101,7 @@ const AllRoutes = () => {
                        
                         { path: 'logout', element: <LoadComponent component={Logout} /> },
                         { path: 'register', element: <LoadComponent component={Register} /> },
+                        { path: 'activate-user/:code', element: <LoadComponent component={ActivateUser} /> },
                         { path: 'confirm', element: <LoadComponent component={Confirm} /> },
                         { path: 'forget-password', element: <LoadComponent component={ForgetPassword} /> },
                         { path: 'lock-screen', element: <LoadComponent component={LockScreen} /> },

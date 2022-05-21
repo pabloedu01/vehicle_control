@@ -1,8 +1,13 @@
 // const baseUrl = 'https://tunap-intranet-backend.herokuapp.com/api'; //
-const baseUrl = 'http://localhost:8082/api'; //
-//
+import {API_URL} from "../../config/system";
+import {toastService} from "../../services/toast";
+import {loadingService} from "../loading";
+
+const baseUrl = API_URL;
+
 const request = async (method, endpoint, params, token = null, taketwo = null) => {
     try {
+        loadingService.show();
         method = method.toLowerCase();
         let fullUrl = `${baseUrl}${endpoint}`;
         let body = null;
@@ -33,8 +38,31 @@ const request = async (method, endpoint, params, token = null, taketwo = null) =
 
         json['httpCode'] = req.status;
 
+        switch(req.status){
+            case 201:
+                toastService.show('success','Salvo com sucesso.');
+                break;
+            case 500:
+                toastService.show('error',json.msg || 'Ha ocorreu um erro interno.');
+                break;
+            case 400:
+                toastService.show('error',json.msg || 'Dados inválidos.');
+                break;
+            case 401:
+                toastService.show('error',json.msg || 'Não autorizado.');
+                break;
+            case 404:
+                toastService.show('error',json.msg || 'Não encontrado.');
+                break;
+            default:
+                break;
+        }
+
+        loadingService.hide();
+
         return json;
     } catch (error) {
+        loadingService.hide();
         return { error: 'Erro de Conexão com API' };
     }
 };
@@ -70,6 +98,10 @@ export default () => {
         },
         signup: async (data) => {
             let json = await request('post', '/register', data, {});
+            return json;
+        },
+        activateUser: async (data) => {
+            let json = await request('post', '/activate-user', data, {});
             return json;
         },
         getSchedules: async () => {
