@@ -1,32 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
-import UseApi from '../services/api';
- 
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {APICore} from "../helpers/api/apiCore";
+
+const apiCore = new APICore();
  
 const PrivateRoute = ({ component: RouteComponent, roles, ...rest } ) => {
-    let location = useLocation();
-    const api = UseApi();
     const history = useNavigate();
-    const [loading, setLoading] = useState(true);
-    const [loggedInUser, setLoggedinuser] = useState('');
 
-    // const checkLogin = async () => {
-    //     if (api.getToken()) {
-    //         const result = await api.validateToken();
-    //         if (result.msg === "¡Success!") {
-    //             setLoading(false);
-    //             setLoggedinuser(true);
-    //         } else {
-    //             alert(result.msg);
-    //             history('/login');
-    //         }
-    //     } else {
-    //         history('/login');
-    //     }
-    // };
+    const checkLogin = () => {
+        if (apiCore.getLoggedInUser()) {
+            apiCore.post('/auth/check-token').then(() => {
+
+            }, (error) => {
+                history('/register');
+            });
+        } else {
+            history('/register');
+        }
+    };
 
     useEffect(() => {
-        // checkLogin();
+         checkLogin();
     }, []);
 
     return <RouteComponent   {...rest}/>;

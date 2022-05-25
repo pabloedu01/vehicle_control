@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {  Alert, Row, Col } from 'react-bootstrap';
-import useApi from '../services/api';
 import {toastService} from "../services/toast";
 
 //actions
@@ -11,6 +10,9 @@ import { resetAuth } from '../redux/actions';
 
 import AccountLayout from './AccountLayout';
 import Spinner from "../components/Spinner";
+import {APICore} from "../helpers/api/apiCore";
+
+const api = new APICore();
 
 /* bottom link */
 const BottomLink = ({ hidden = false }) => {
@@ -31,21 +33,18 @@ const BottomLink = ({ hidden = false }) => {
 const ActivateUser = () => {
     const dispatch = useDispatch();
     const history = useNavigate();
-    const api = useApi();
     const {code} = useParams();
     const [verified, setVerified] = useState(null);
 
     const handleActivateUser = () => {
-        api.activateUser({
+        api.post('/activate-user',{
             code
-        }).then((result) => {
-            if(result.httpCode === 200){
-                setVerified(true);
-                toastService.show('success', 'Usuário ativado');
-                history('/login');
-            } else {
-                setVerified(false);
-            }
+        }).then((response) => {
+            setVerified(true);
+            toastService.show('success', 'Usuário ativado');
+            history('/login');
+        }, (error) => {
+            setVerified(false);
         });
     };
 

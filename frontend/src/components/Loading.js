@@ -4,12 +4,11 @@ import Spinner from "./Spinner";
 
 const Loading = () => {
   const [show, setShow] = useState(false);
-  const [subscription, setSubscription] = useState(null);
 
   useEffect(() => {
-    setSubscription(loadingService.init().subscribe((data) => {
+    const subscription = loadingService.init().subscribe((data) => {
       setShow(data);
-    }));
+    });
 
     return () => {
       subscription.unsubscribe();

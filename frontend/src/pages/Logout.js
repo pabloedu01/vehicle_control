@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Row, Col } from 'react-bootstrap';
-import useApi from '../services/api';
 
 //actions
 import { logoutUser } from '../redux/actions';
@@ -36,12 +35,7 @@ const BottomLink = () => {
 const Logout = () => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const api = useApi();
-    const uselogout = async () => {
-        const result = await api.logout();
-    }
     useEffect(() => {
-        uselogout();
         dispatch(logoutUser());
     }, [dispatch]);
 

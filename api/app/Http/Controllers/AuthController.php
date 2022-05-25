@@ -58,6 +58,8 @@ class AuthController extends Controller
                         ->json([
                                    'msg'   => trans('general.msg.success'),
                                    'token' => $token->token,
+                                   'name' => $user->name,
+                                   'id' => $user->id
                                ],
                                Response::HTTP_OK
                         );
@@ -81,6 +83,15 @@ class AuthController extends Controller
         );
     }
 
+    public function checkToken(){
+        return response()
+            ->json([
+                       'msg'   => trans('general.msg.success'),
+                   ],
+                   Response::HTTP_OK
+            );
+    }
+
     public function logout(Request $request)
     {
         $user = \Auth::user();
@@ -90,7 +101,8 @@ class AuthController extends Controller
         return response()
             ->json([
                        'msg' => trans('general.msg.success'),
-                   ], Response::HTTP_OK
+                   ],
+                   Response::HTTP_OK
             );
     }
 

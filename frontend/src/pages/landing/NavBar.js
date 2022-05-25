@@ -49,11 +49,11 @@ const NavBar = (): React$Element<React$FragmentType> => {
                         </Nav>
 
                         {userLoggedIn || user ? (
-                            <Link to="/account/logout" className="btn btn-outline-light">
+                            <Link to="/logout" className="btn btn-outline-light">
                                 Logout
                             </Link>
                         ) : (
-                            <Link to="/account/login" className="btn btn-outline-light">
+                            <Link to="/login" className="btn btn-outline-light">
                                 Login
                             </Link>
                         )}

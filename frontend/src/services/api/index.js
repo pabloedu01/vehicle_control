@@ -1,9 +1,12 @@
 // const baseUrl = 'https://tunap-intranet-backend.herokuapp.com/api'; //
-import {API_URL} from "../../config/system";
+import config from '../../config';
 import {toastService} from "../../services/toast";
 import {loadingService} from "../loading";
+import {APICore} from "../../helpers/api/apiCore";
 
-const baseUrl = API_URL;
+const apiCore = new APICore();
+
+const baseUrl = config.API_URL;
 
 const request = async (method, endpoint, params, token = null, taketwo = null) => {
     try {
@@ -68,16 +71,15 @@ const request = async (method, endpoint, params, token = null, taketwo = null) =
 };
 
 export default () => {
+    const token = apiCore.getLoggedInUser()?.token || null;
+
     return {
         // funções basicas de login
         getToken: () => {
-            return localStorage.getItem('token');
+            return apiCore.getLoggedInUser();
         },
         validateToken: async () => {
-            let token = localStorage.getItem('token');
-            let json = await request('get', '/product?company_id=1', {}, token);
-            console.log(json)
-            let username = localStorage.setItem('id_user', json.msg);
+            let json = await request('post', '/auth/check-token', {}, token);
             return json;
         },
         login: async (data) => {
@@ -86,13 +88,11 @@ export default () => {
             return json;
         },
         logout: async () => {
-            let token = localStorage.getItem('token');
             let json = await request('post', '/logout', {}, token);
             localStorage.removeItem('token');
             return json;
         },
         checkMe: async () => {
-            let token = localStorage.getItem('token');
             let json = await request('post', '/auth/me', {}, token);
             return json;
         },
@@ -105,71 +105,59 @@ export default () => {
             return json;
         },
         getSchedules: async () => {
-            let token = localStorage.getItem('token');
             let json = await request('get', '/service-schedule' ,"company_id=1", token);
             return json;
         },
         delSchedules: async (id) => {
-            let token = localStorage.getItem('token');
             let json = await request('get', `/service-schedule/${id}` , {}, token);
             return json;
         },
         ///api/client?company_id=1
         getClients: async () => {
-            let token = localStorage.getItem('token');
             let json = await request('get', '/client' ,"company_id=1", token);
             return json;
         },
         ///api/technical-consultant?company_id=1
         getTechnicalConsultant: async () => {
-            let token = localStorage.getItem('token');
             let json = await request('get', '/technical-consultant' ,"company_id=1", token);
             return json;
         },
         ///api/vehicle?company_id=1
         getVehicles: async () => {
-            let token = localStorage.getItem('token');
             let json = await request('get', '/vehicle' ,"company_id=1", token);
             return json;
         },
         ///api/vehicle-brand?company_id=1
         getVehicleBrand: async () => {
-            let token = localStorage.getItem('token');
             let json = await request('get', '/vehicle-brand' ,"company_id=1", token);
             return json;
         },
         ///api/vehicle-model?brand_id=1
         getVehicleModel: async () => {
-            let token = localStorage.getItem('token');
             let json = await request('get', `/vehicle-model` ,"brand_id=1", token);
             return json;
         },
         ///api/checklist-version?brand_id=1
         getChecklistVersion: async (id) => {
-            let token = localStorage.getItem('token');
             let json = await request('get', `/checklist-version` ,"brand_id=1", token);
             return json;
         },
        ///api/vehicle?model_id=1
         getVehicle: async () => {
-            let token = localStorage.getItem('token');
             let json = await request('get', `/vehicle` ,"model_id=1", token);
             return json;
         },
         //Fecthc route: /api/claim-service?company_id=1
         getClaims: async () => {
-            let token = localStorage.getItem('token');
             let json = await request('get', `/claim-service` ,"company_id=1", token);
             return json;
         },
         // get /api/service?company_id=1
         getServices: async () => {
-            let token = localStorage.getItem('token');
             let json = await request('get', `/service` ,"company_id=1", token);
             return json;
         },
         getProducts: async () => {
-            let token = localStorage.getItem('token');
             let json = await request('get', `/product` ,"company_id=1", token);
             return json;
         }
