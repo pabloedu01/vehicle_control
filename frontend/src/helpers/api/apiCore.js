@@ -2,42 +2,47 @@ import jwtDecode from 'jwt-decode';
 import axios from 'axios';
 
 import config from '../../config';
+import {loadingService} from "../../services/loading";
+import {toastService} from "../../services/toast";
 
-// content type
-axios.defaults.headers.post['Content-Type'] = 'application/json';
-axios.defaults.baseURL = config.API_URL;
+const axiosInstance = axios.create({
+    baseURL: `${config.API_URL}`,
+    responseType: "json",
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
+
+axiosInstance.interceptors.request.use(
+    request => {
+        loadingService.show();
+
+        return request;
+    },
+    error => {
+        loadingService.hide();
+
+        toastService.show('error', '¡Request Error!');
+
+        return Promise.reject(error);
+    }
+);
 
 // intercepting to capture errors
-axios.interceptors.response.use(
+axiosInstance.interceptors.response.use(
     (response) => {
+        loadingService.hide();
+
         return response;
     },
     (error) => {
-        // Any status codes that falls outside the range of 2xx cause this function to trigger
-        let message;
+        loadingService.hide();
 
-        if (error && error.response && error.response.status === 404) {
-            // window.location.href = '/not-found';
-        } else if (error && error.response && error.response.status === 403) {
-            window.location.href = '/access-denied';
-        } else {
-            switch (error.response.status) {
-                case 401:
-                    message = 'Invalid credentials';
-                    break;
-                case 403:
-                    message = 'Access Forbidden';
-                    break;
-                case 404:
-                    message = 'Sorry! the data you are looking for could not be found';
-                    break;
-                default: {
-                    message =
-                        error.response && error.response.data ? error.response.data['message'] : error.message || error;
-                }
-            }
-            return Promise.reject(message);
+        if(error.response?.data.hasOwnProperty('msg')){
+            toastService.show('error', error.response.data.msg);
         }
+
+        return Promise.reject(error);
     }
 );
 
@@ -48,8 +53,8 @@ const AUTH_SESSION_KEY = 'hyper_user';
  * @param {*} token
  */
 const setAuthorization = (token) => {
-    if (token) axios.defaults.headers.common['Authorization'] = 'JWT ' + token;
-    else delete axios.defaults.headers.common['Authorization'];
+    if (token) axiosInstance.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+    else delete axiosInstance.defaults.headers.common['Authorization'];
 };
 
 const getUserFromSession = () => {
@@ -68,9 +73,9 @@ class APICore {
                       .map((key) => key + '=' + params[key])
                       .join('&')
                 : '';
-            response = axios.get(`${url}?${queryString}`, params);
+            response = axiosInstance.get(`${url}?${queryString}`, params);
         } else {
-            response = axios.get(`${url}`, params);
+            response = axiosInstance.get(`${url}`, params);
         }
         return response;
     };
@@ -83,9 +88,9 @@ class APICore {
                       .map((key) => key + '=' + params[key])
                       .join('&')
                 : '';
-            response = axios.get(`${url}?${queryString}`, { responseType: 'blob' });
+            response = axiosInstance.get(`${url}?${queryString}`, { responseType: 'blob' });
         } else {
-            response = axios.get(`${url}`, { responseType: 'blob' });
+            response = axiosInstance.get(`${url}`, { responseType: 'blob' });
         }
         return response;
     };
@@ -102,37 +107,41 @@ class APICore {
         }
 
         for (const url of urls) {
-            reqs.push(axios.get(`${url}?${queryString}`));
+            reqs.push(axiosInstance.get(`${url}?${queryString}`));
         }
-        return axios.all(reqs);
+        return axiosInstance.all(reqs);
+    };
+
+    post = (url, data) => {
+        return axiosInstance.post(url, data);
     };
 
     /**
      * post given data to url
      */
     create = (url, data) => {
-        return axios.post(url, data);
+        return axiosInstance.post(url, data);
     };
 
     /**
      * Updates patch data
      */
     updatePatch = (url, data) => {
-        return axios.patch(url, data);
+        return axiosInstance.patch(url, data);
     };
 
     /**
      * Updates data
      */
     update = (url, data) => {
-        return axios.put(url, data);
+        return axiosInstance.put(url, data);
     };
 
     /**
      * Deletes data
      */
     delete = (url) => {
-        return axios.delete(url);
+        return axiosInstance.delete(url);
     };
 
     /**
@@ -146,11 +155,11 @@ class APICore {
 
         const config = {
             headers: {
-                ...axios.defaults.headers,
+                ...axiosInstance.defaults.headers,
                 'content-type': 'multipart/form-data',
             },
         };
-        return axios.post(url, formData, config);
+        return axiosInstance.post(url, formData, config);
     };
 
     /**
@@ -164,11 +173,11 @@ class APICore {
 
         const config = {
             headers: {
-                ...axios.defaults.headers,
+                ...axiosInstance.defaults.headers,
                 'content-type': 'multipart/form-data',
             },
         };
-        return axios.patch(url, formData, config);
+        return axiosInstance.patch(url, formData, config);
     };
 
     isUserAuthenticated = () => {

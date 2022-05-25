@@ -16,13 +16,13 @@ import FullLayout from '../layouts/Full';
 
 // auth
 const Login = React.lazy(() => import('../pages/Login'));
-
 const Logout = React.lazy(() => import('../pages/Logout'));
 const Register = React.lazy(() => import('../pages/Register'));
 const ActivateUser = React.lazy(() => import('../pages/ActivateUser'));
-const Confirm = React.lazy(() => import('../pages/account/Confirm'));
-const ForgetPassword = React.lazy(() => import('../pages/account/ForgetPassword'));
-const LockScreen = React.lazy(() => import('../pages/account/LockScreen'));
+
+//panel
+const Companies = React.lazy(() => import('../pages/Companies'));
+
 
 // dashboard
 
@@ -95,18 +95,9 @@ const AllRoutes = () => {
             path: '/',
             element: <DefaultLayout />,
             children: [
-                {
-                    path: 'account',
-                    children: [
-                       
-                        { path: 'logout', element: <LoadComponent component={Logout} /> },
-                        { path: 'register', element: <LoadComponent component={Register} /> },
-                        { path: 'activate-user/:code', element: <LoadComponent component={ActivateUser} /> },
-                        { path: 'confirm', element: <LoadComponent component={Confirm} /> },
-                        { path: 'forget-password', element: <LoadComponent component={ForgetPassword} /> },
-                        { path: 'lock-screen', element: <LoadComponent component={LockScreen} /> },
-                    ],
-                },
+                { path: 'logout', element: <LoadComponent component={Logout} /> },
+                { path: 'register', element: <LoadComponent component={Register} /> },
+                { path: 'activate-user/:code', element: <LoadComponent component={ActivateUser} /> },
                 {
                     path: 'error-404',
                     element: <LoadComponent component={ErrorPageNotFound} />,
@@ -120,6 +111,13 @@ const AllRoutes = () => {
                     element: <LoadComponent component={Maintenance} />,
                 }
             ],
+        },
+        {
+            path: 'panel',
+            element: <PrivateRoute roles={'Admin'} component={FullLayout} />,
+            children: [
+                { path: 'companies', element: <LoadComponent component={Companies} /> },
+            ]
         },
         {
             // auth protected routes
@@ -148,7 +146,7 @@ const AllRoutes = () => {
                                     path: 'clients',
                                     element: <LoadComponent component={CRMClients} />,
                                 },
-                                
+
                             ],
                         },
                         {

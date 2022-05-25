@@ -24,11 +24,6 @@ export const logoutUser = (): AuthAction => ({
     payload: {},
 });
 
-export const signupUser = (fullname: string, email: string, password: string): AuthAction => ({
-    type: AuthActionTypes.SIGNUP_USER,
-    payload: { fullname, email, password },
-});
-
 export const forgotPassword = (username: string): AuthAction => ({
     type: AuthActionTypes.FORGOT_PASSWORD,
     payload: { username },

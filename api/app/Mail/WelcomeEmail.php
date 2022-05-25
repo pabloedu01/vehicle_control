@@ -26,7 +26,7 @@ class WelcomeEmail extends Mailable
     public function build()
     {
         return $this->subject('Welcome to our website')
-                    ->with(array_merge($this->data, ['url' => env('APP_URL_FRONTEND', '').'/account/activate-user/'.$this->data['code']]))
+                    ->with(array_merge($this->data, ['url' => env('APP_URL_FRONTEND', '').'/activate-user/'.$this->data['code']]))
                     ->view('email.welcome');
     }
 }

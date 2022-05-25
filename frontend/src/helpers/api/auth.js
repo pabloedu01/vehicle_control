@@ -5,12 +5,12 @@ const api = new APICore();
 
 // account
 function login(params: any): any {
-    const baseUrl = '/login/';
-    return api.create(`${baseUrl}`, params);
+    const baseUrl = '/login';
+    return api.post(`${baseUrl}`, params);
 }
 
 function logout(): any {
-    const baseUrl = '/logout/';
+    const baseUrl = '/logout';
     return api.create(`${baseUrl}`, {});
 }
 
