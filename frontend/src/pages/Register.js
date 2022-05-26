@@ -56,6 +56,7 @@ const Register = () => {
      */
     const schemaResolver = yupResolver(
         yup.object().shape({
+            companyName: yup.string().required(t('Por favor, digite Nome da empresa')),
             name: yup.string().required(t('Por favor, digite Nome Completo')),
             username: yup.string().required(t('Por favor, digite Usuário')),
             email: yup.string().required('Por favor, digite Email').email('Por favor insira um e-mail válido'),
@@ -73,6 +74,7 @@ const Register = () => {
      */
     const onSubmit = async (formData) => {
         const data = {
+            company_name: formData['companyName'],
             name: formData['name'],
             email: formData['email'],
             username: formData['username'],
@@ -137,6 +139,13 @@ const Register = () => {
                 </div>
 
                 <VerticalForm onSubmit={onSubmit} customMethods={methods} resolver={schemaResolver} defaultValues={{}}>
+                    <FormInput
+                        label="Empresa"
+                        type="text"
+                        name="companyName"
+                        placeholder="Digite Nome da empresa"
+                        containerClass={'mb-3'}
+                    />
                     <FormInput
                         label="CNPJ"
                         type="text"

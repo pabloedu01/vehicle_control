@@ -2,7 +2,7 @@ import { Navigate } from 'react-router-dom';
 
 const Root = () => {
     const getRootUrl = () => {
-        let url = 'apps/duc/dashboard'
+        let url = 'panel/companies'
         return url;
     };
 
