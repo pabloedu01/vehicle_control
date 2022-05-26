@@ -122,17 +122,18 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        $validator = validate($request->all(), array_merge([
-                                                               'cnpj' => [ 'nullable', 'prohibits:cpf', new CNPJ, 'unique:companies,cnpj' ],
-                                                               'cpf'  => [ 'required_without:cnpj', new CPF, 'unique:companies,cpf' ],
-                                                           ], User::rules()));
+        $validator = validate($request->all(), array_merge([ 'company_name' => 'required|string|max:100' ],
+            collect(Company::rules())
+                ->only([ 'cnpj', 'cpf' ])
+                ->toArray(), User::rules()));
 
         if($validator->fails())
         {
-            return response()->json(                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           [
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            'msg'    => trans('general.msg.invalidData'),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            'errors' => $validator->errors(),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ], Response::HTTP_BAD_REQUEST
+            return response()->json([
+                                        'msg'    => trans('general.msg.invalidData'),
+                                        'errors' => $validator->errors(),
+                                    ],
+                                    Response::HTTP_BAD_REQUEST
             );
         }
 
@@ -146,29 +147,28 @@ class AuthController extends Controller
                                             'birthday',
                                         ]));
 
-        $company = new Company($request->only([
-                                                  'cnpj',
-                                                  'cpf',
-                                              ]));
+        $company = new Company( collect(Company::changeDataColumns($request->only(Company::changeFillablesColumns())))->only(['name','cnpj', 'cpf'])->toArray() );
 
         if(secureSave($user) && secureSave($company))
         {
             $user->companies()->attach($company->id, [ 'role' => 'owner' ]);
 
             return response()
-                ->json(   [
+                ->json([
                            'msg'     => trans('general.msg.success'),
-                           'user' => $user,
+                           'user'    => $user,
                            'company' => $company,
-                       ], Response::HTTP_CREATED
+                       ],
+                       Response::HTTP_CREATED
                 );
         }
         else
         {
             return response()
-                ->json(   [
+                ->json([
                            'msg' => trans('general.msg.error'),
-                       ], Response::HTTP_INTERNAL_SERVER_ERROR
+                       ],
+                       Response::HTTP_INTERNAL_SERVER_ERROR
                 );
         }
     }
