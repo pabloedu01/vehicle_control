@@ -18,12 +18,25 @@ const MENU_ITEMS = [
     },
 
     {
+        key: 'technicalConsultants.index',
+        label: 'Consultores Técnicos',
+        url: '/technical-consultants/list',
+        icon: 'uil-tachometer-fast',
+    },
+
+    {
+        key: 'vehicleBrands.index',
+        label: 'Marcas',
+        url: '/vehicle-brands/list',
+        icon: 'uil-tachometer-fast',
+    },
+
+    {
         key: 'uil-money-withdrawal',
         label: 'Services Scheduler',
         url: '/apps/schedule/services',
-        parentKey: 'apps-crm',
         icon: 'uil-tachometer-fast',
-       
+
     },
 ];
 

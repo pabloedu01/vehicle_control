@@ -16,6 +16,9 @@ Route::group([
                      'middleware' => [ 'company' ],
                  ], function(){
 
+        Route::get('{id}', [
+            'uses' => 'CompanyController@show',
+        ]);
 
         Route::get('vehicles', [
             'uses' => 'CompanyController@vehicles',

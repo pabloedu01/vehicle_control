@@ -1,7 +1,8 @@
 // @flow
-import React, { useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import React, {useEffect, useRef, useState, useCallback} from 'react';
+import { Link, useParams} from 'react-router-dom';
 import SimpleBar from 'simplebar-react';
+
 
 import { getMenuItems } from '../helpers/menu';
 
@@ -21,6 +22,35 @@ type SideBarContentProps = {
 
 /* sidebar content */
 const SideBarContent = ({ hideUserProfile }: SideBarContentProps) => {
+    const {companyId} = useParams();
+    const [menuItems, setMenuItems] = useState([]);
+
+    const changeUrlFromMenuItems = (items) => {
+        return items.map((item) => {
+            item = Object.assign(item, {});
+
+            if(item.hasOwnProperty('url')){
+                if(!item.hasOwnProperty('temporalUrl')){
+                    item.temporalUrl = item.url;
+                } else {
+                    item.url = item.temporalUrl;
+                }
+
+                item.url = '/panel/company/' + companyId + item.url;
+            }
+
+            if(item.hasOwnProperty('children')){
+                item.children = changeUrlFromMenuItems(item.children);
+            }
+
+            return item;
+        });
+    };
+
+    useEffect(() => {
+        setMenuItems(changeUrlFromMenuItems(getMenuItems()));
+    }, [companyId]);
+
     return (
         <>
             {!hideUserProfile && (
@@ -31,7 +61,7 @@ const SideBarContent = ({ hideUserProfile }: SideBarContentProps) => {
                     </Link>
                 </div>
             )}
-            <AppMenu menuItems={getMenuItems()} />
+            <AppMenu menuItems={menuItems} />
 
             <div className="clearfix" />
         </>

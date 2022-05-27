@@ -1,5 +1,5 @@
-import React, { Suspense } from 'react';
-import { useRoutes } from 'react-router-dom';
+import React, { Suspense, useEffect, useState, useNa } from 'react';
+import {useParams, useRoutes, useNavigate} from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PrivateRoute from './PrivateRoute';
 import Root from './Root';
@@ -11,6 +11,7 @@ import VerticalLayout from '../layouts/Vertical';
 import DetachedLayout from '../layouts/Detached';
 import HorizontalLayout from '../layouts/Horizontal';
 import FullLayout from '../layouts/Full';
+import {APICore} from "../helpers/api/apiCore";
 
 // lazy load all the views
 
@@ -22,6 +23,13 @@ const ActivateUser = React.lazy(() => import('../pages/ActivateUser'));
 
 //panel
 const Companies = React.lazy(() => import('../pages/Companies'));
+
+//panel/company
+const TechnicalConsultantList = React.lazy(() => import('../pages/technical-consultant/List'));
+const TechnicalConsultantForm = React.lazy(() => import('../pages/technical-consultant/Form'));
+
+const VehicleBrandList = React.lazy(() => import('../pages/vehicle-brand/List'));
+const VehicleBrandForm = React.lazy(() => import('../pages/vehicle-brand/Form'));
 
 
 // dashboard
@@ -53,13 +61,36 @@ const Starter = React.lazy(() => import('../pages/other/Starter'));
 
 
 const loading = () => <div className=""></div>;
+const api = new APICore();
 
+const LoadComponent = ({ component: Component }) => {
+    const history = useNavigate();
+    const {companyId} = useParams();
+    const [company, setCompany] = useState({id: companyId});
 
-const LoadComponent = ({ component: Component }) => (
-    <Suspense fallback={loading()}>
-        <Component />
-    </Suspense>
-);
+    const getCompany = (id) => {
+        if(id){
+            api.get('/company/' + id).then((response) => {
+                setCompany(response.data.data);
+            }, (error) => {
+                setCompany(null);
+                history('/panel/companies');
+            });
+        } else {
+            setCompany(null);
+        }
+    };
+
+    useEffect(() => {
+        getCompany(companyId);
+    }, [companyId]);
+
+    return (
+        <Suspense fallback={loading()}>
+            <Component company={company}/>
+        </Suspense>
+    );
+};
 
 const AllRoutes = () => {
     const { layout } = useSelector((state) => ({
@@ -117,6 +148,50 @@ const AllRoutes = () => {
             element: <PrivateRoute roles={'Admin'} component={FullLayout} />,
             children: [
                 { path: 'companies', element: <LoadComponent component={Companies} /> },
+            ]
+        },
+        {
+            path: 'panel/company/:companyId',
+            element: <PrivateRoute roles={'Admin'} component={Layout} />,
+            children: [
+                {
+                    path: 'dashboard',
+                    element: <LoadComponent component={CRMDashboard} />,
+                },
+                {
+                    path: 'technical-consultants',
+                    children: [
+                        {
+                            path: 'list',
+                            element: <LoadComponent component={TechnicalConsultantList} />,
+                        },
+                        {
+                            path: 'create',
+                            element: <LoadComponent component={TechnicalConsultantForm} />,
+                        },
+                        {
+                            path: ':id/edit',
+                            element: <LoadComponent component={TechnicalConsultantForm} />,
+                        },
+                    ]
+                },
+                {
+                    path: 'vehicle-brands',
+                    children: [
+                        {
+                            path: 'list',
+                            element: <LoadComponent component={VehicleBrandList} />,
+                        },
+                        {
+                            path: 'create',
+                            element: <LoadComponent component={VehicleBrandForm} />,
+                        },
+                        {
+                            path: ':id/edit',
+                            element: <LoadComponent component={VehicleBrandForm} />,
+                        },
+                    ]
+                },
             ]
         },
         {

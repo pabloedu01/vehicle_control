@@ -15,6 +15,9 @@ input.form-control[type="range"] {
     min-height: 39px;
 }
 
+.react-select.is-invalid .react-select__control{
+    border: 1px solid var(--ct-red) !important
+}
 
 // Custom select
 .custom-select.is-invalid, .form-control.is-invalid,.custom-select:invalid, .form-control:invalid,

@@ -33,6 +33,10 @@ axiosInstance.interceptors.response.use(
     (response) => {
         loadingService.hide();
 
+        if(response.status === 201){
+            toastService.show('success', 'Salvou');
+        }
+
         return response;
     },
     (error) => {
