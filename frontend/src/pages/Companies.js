@@ -33,6 +33,7 @@ const Companies = (): React$Element<React$FragmentType> => {
                     { label: 'Companies List', path: '/panel/companies', active: true },
                 ]}
                 title={'Companies List'}
+                insideCompany={false}
             />
 
             <Row>
@@ -52,7 +53,7 @@ const Companies = (): React$Element<React$FragmentType> => {
                             </Card.Body>
                             <Card.Footer style={{'border': 'none'}}>
                                 <div className="float-start">
-                                    <button type="button" className="arrow-none dropdown-toggle btn btn-info">
+                                    <button type="button" className="arrow-none dropdown-toggle btn btn-info" onClick={ () => { history(`/panel/company/${company.id}/dashboard`); } }>
                                         Acessar
                                     </button>
                                 </div>

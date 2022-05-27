@@ -10,16 +10,30 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CompanyController extends Controller
 {
+    public function show(Request $request, $id)
+    {
+        $company = Company::where('id', '=', $id)
+                          ->first();
+
+        return response()->json([
+                                    'msg'  => trans('general.msg.success'),
+                                    'data' => $company,
+                                ],
+                                Response::HTTP_OK
+        );
+    }
+
     public function vehicles(Request $request)
     {
         $vehicles = Vehicle::with('model', 'model.brand')
                            ->where('company_id', '=', $request->company_id)
                            ->get();
 
-        return response()->json(                                                                                                                                                                                                                                                                     [
-                                                                                                                                                                                                                                                                                                      'msg' => trans('general.msg.success'),
-                                                                                                                                                                                                                                                                                                      'data' => $vehicles,
-                                                                                                                                                                                                                                                                                                  ], Response::HTTP_OK
+        return response()->json([
+                                    'msg'  => trans('general.msg.success'),
+                                    'data' => $vehicles,
+                                ],
+                                Response::HTTP_OK
         );
     }
 
@@ -29,10 +43,11 @@ class CompanyController extends Controller
                                                 ->where('company_id', '=', $request->company_id)
                                                 ->get();
 
-        return response()->json(   [
-                                    'msg' => trans('general.msg.success'),
+        return response()->json([
+                                    'msg'  => trans('general.msg.success'),
                                     'data' => $versions,
-                                ], Response::HTTP_OK
+                                ],
+                                Response::HTTP_OK
         );
     }
 
@@ -42,10 +57,11 @@ class CompanyController extends Controller
 
         if($validator->fails())
         {
-            return response()->json(   [
-                                        'msg' => trans('general.msg.invalidData'),
+            return response()->json([
+                                        'msg'    => trans('general.msg.invalidData'),
                                         'errors' => $validator->errors(),
-                                    ], Response::HTTP_BAD_REQUEST
+                                    ],
+                                    Response::HTTP_BAD_REQUEST
             );
         }
 
@@ -55,17 +71,19 @@ class CompanyController extends Controller
         {
             $company->users()->attach(\Auth::user(), [ 'role' => 'owner' ]);
 
-            return response()->json(   [
-                                        'msg' => trans('general.msg.success'),
+            return response()->json([
+                                        'msg'  => trans('general.msg.success'),
                                         'data' => $company,
-                                    ], Response::HTTP_CREATED
+                                    ],
+                                    Response::HTTP_CREATED
             );
         }
         else
         {
-            return response()->json(   [
+            return response()->json([
                                         'msg' => trans('general.msg.error'),
-                                    ], Response::HTTP_INTERNAL_SERVER_ERROR
+                                    ],
+                                    Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }

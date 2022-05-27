@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import { Form, InputGroup } from 'react-bootstrap';
 import classNames from 'classnames';
+import Select from 'react-select';
+import {Controller} from "react-hook-form";
 
 /* Password Input */
 const PasswordInput = ({ name, placeholder, refCallback, errors, register, className }) => {
@@ -52,6 +54,7 @@ type FormInputProps = {
     containerClass?: string,
     refCallback?: any,
     children?: any,
+    options?: Array<any>,
     smallHtml?: any,
 };
 
@@ -67,6 +70,7 @@ const FormInput = ({
     containerClass,
     refCallback,
     children,
+    options,
     smallHtml,
     ...otherProps
 }: FormInputProps): React$Element<React$FragmentType> => {
@@ -111,21 +115,27 @@ const FormInput = ({
                                     <Form.Group className={containerClass}>
                                         {label ? <Form.Label className={labelClassName}>{label}</Form.Label> : null}
 
-                                        <Form.Select
-                                            type={type}
-                                            label={label}
+                                        <Controller
+                                            control={otherProps['control']}
+                                            render={({ field: { onChange, value, name, ref } }) => (
+                                                <Select
+                                                    className={"react-select " + (errors && errors[name] ? 'is-invalid' : '')}
+                                                    classNamePrefix="react-select"
+                                                    inputRef={ref}
+                                                    name={name}
+                                                    options={options}
+                                                    value={options.find((option) => option.value === value) || options[0]}
+                                                    onChange={(selectedOption) => {
+                                                        onChange(selectedOption.value);
+                                                        if(otherProps.hasOwnProperty('handleChange')){
+                                                            otherProps['handleChange'](selectedOption.value);
+                                                        }
+                                                    }}
+                                                    {...otherProps}
+                                                />
+                                            )}
                                             name={name}
-                                            id={name}
-                                            ref={(r) => {
-                                                if (refCallback) refCallback(r);
-                                            }}
-                                            comp={comp}
-                                            className={className}
-                                            isInvalid={errors && errors[name] ? true : false}
-                                            {...(register ? register(name) : {})}
-                                            {...otherProps}>
-                                            {children}
-                                        </Form.Select>
+                                        />
 
                                         {errors && errors[name] ? (
                                             <Form.Control.Feedback type="invalid">
