@@ -36,7 +36,7 @@ class ServiceSchedulePermissionMiddleware extends BaseMiddleware
         if($validator->fails())
         {
             return response()->json([
-                                        'msg'    => '¡Invalid Data!',
+                                        'msg' => trans('general.msg.invalidData'),
                                         'errors' => $validator->errors(),
                                     ], Response::HTTP_BAD_REQUEST
             );
@@ -47,7 +47,7 @@ class ServiceSchedulePermissionMiddleware extends BaseMiddleware
         if(!$serviceSchedule)
         {
             return response()->json([
-                                        'msg' => '¡Not Found!',
+                                        'msg' => trans('general.msg.notFound'),
                                     ], Response::HTTP_NOT_FOUND
             );
         }
@@ -60,7 +60,7 @@ class ServiceSchedulePermissionMiddleware extends BaseMiddleware
         })->where('id', '=', $data['id'])->exists()
         )
         {
-            return response()->json([ 'msg' => '¡Unauthorized!' ], Response::HTTP_UNAUTHORIZED);
+            return response()->json([ 'msg' => trans('general.msg.unauthorized') ], Response::HTTP_UNAUTHORIZED);
         }
 
         $request->merge([

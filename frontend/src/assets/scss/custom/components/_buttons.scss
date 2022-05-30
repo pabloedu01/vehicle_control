@@ -10,6 +10,11 @@
     }
 }
 
+
+.btn-link {
+    box-shadow: none !important;
+}
+
 // Button Shadows
 @each $color, $value in $theme-colors {
     .btn-#{$color} {

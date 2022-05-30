@@ -1,22 +1,25 @@
 // @flow
 import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
-import { Navigate, Link, useNavigate } from 'react-router-dom';
-import { Button, Alert, Row, Col } from 'react-bootstrap';
+import { Link, useNavigate } from 'react-router-dom';
+import { Button, Row, Col } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import useApi from '../services/api';
 import classNames from 'classnames';
+import {toastService} from "../services/toast";
 
 //actions
-import { resetAuth, signupUser } from '../redux/actions';
+import { resetAuth } from '../redux/actions';
 
 // components
 import { VerticalForm, FormInput } from '../components/';
 
 import AccountLayout from './AccountLayout';
+import {APICore} from "../helpers/api/apiCore";
+
+const api = new APICore();
 
 /* bottom link */
 const BottomLink = () => {
@@ -40,12 +43,7 @@ const Register = () => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const history = useNavigate();
-    const api = useApi();
-    const { loading, userSignUp, error } = useSelector((state) => ({
-        loading: state.Auth.loading,
-        error: state.Auth.error,
-        userSignUp: state.Auth.userSignUp,
-    }));
+
     const [activeCpf, setActiveCpf] = useState(false);
     const [activeCpnj, setActiveCpnj] = useState(true);
 
@@ -58,6 +56,7 @@ const Register = () => {
      */
     const schemaResolver = yupResolver(
         yup.object().shape({
+            company_name: yup.string().required(t('Por favor, digite Nome da empresa')),
             name: yup.string().required(t('Por favor, digite Nome Completo')),
             username: yup.string().required(t('Por favor, digite Usuário')),
             email: yup.string().required('Por favor, digite Email').email('Por favor insira um e-mail válido'),
@@ -75,6 +74,7 @@ const Register = () => {
      */
     const onSubmit = async (formData) => {
         const data = {
+            company_name: formData['company_name'],
             name: formData['name'],
             email: formData['email'],
             username: formData['username'],
@@ -89,16 +89,14 @@ const Register = () => {
             }
         }
 
-        const result = await api.signup(data);
-
-        if(result.httpCode === 201){
-            alert('Activa tu cuenta desde el mensaje que enviamos al correo.');
+        api.post('/register',data).then((response) => {
+            toastService.show('success', 'Ative sua conta a partir da mensagem que enviamos para o e-mail.');
 
             history('/login');
-        }else {
-            if(result.hasOwnProperty('errors')){
-                for(let fieldName in result.errors){
-                    if(result.errors.hasOwnProperty(fieldName)){
+        }, (error) => {
+            if(error.response.status === 400 && error.response.data.hasOwnProperty('errors')){
+                for(let fieldName in error.response.data.errors){
+                    if(error.response.data.errors.hasOwnProperty(fieldName)){
                         if(activeCpf && fieldName === 'cpnj'){
                             continue;
                         }
@@ -107,11 +105,11 @@ const Register = () => {
                             continue;
                         }
 
-                        methods.setError(fieldName, {type: 'custom', message: result.errors[fieldName].join('<br>')});
+                        methods.setError(fieldName, {type: 'custom', message: error.response.data.errors[fieldName].join('<br>')});
                     }
                 }
             }
-        }
+        });
     };
 
     const onActiveCpnj = () => {
@@ -132,8 +130,6 @@ const Register = () => {
 
     return (
         <>
-            {userSignUp ? <Navigate to={'/account/confirm'} /> : null}
-
             <AccountLayout bottomLinks={<BottomLink />}>
                 <div className="text-center w-75 m-auto">
                     <h4 className="text-dark-50 text-center mt-0 fw-bold">Cadastro</h4>
@@ -142,13 +138,14 @@ const Register = () => {
                     </p>
                 </div>
 
-                {error && (
-                    <Alert variant="danger" className="my-2">
-                        {error}
-                    </Alert>
-                )}
-
                 <VerticalForm onSubmit={onSubmit} customMethods={methods} resolver={schemaResolver} defaultValues={{}}>
+                    <FormInput
+                        label="Empresa"
+                        type="text"
+                        name="company_name"
+                        placeholder="Digite Nome da empresa"
+                        containerClass={'mb-3'}
+                    />
                     <FormInput
                         label="CNPJ"
                         type="text"
@@ -199,7 +196,7 @@ const Register = () => {
                     />
 
                     <div className="mb-3 mb-0 text-center">
-                        <Button variant="primary" type="submit" disabled={loading}>
+                        <Button variant="primary" type="submit">
                             Cadastro
                         </Button>
                     </div>

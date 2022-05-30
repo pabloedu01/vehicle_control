@@ -22,7 +22,7 @@ class VehicleServiceController extends Controller
                                          ->get();
 
         return response()->json([
-                                    'msg'  => '¡Success!',
+                                    'msg' => trans('general.msg.success'),
                                     'data' => $vehicleServices,
                                 ],
                                 Response::HTTP_OK
@@ -36,7 +36,7 @@ class VehicleServiceController extends Controller
                                          ->first();
 
         return response()->json([
-                                    'msg'  => '¡Success!',
+                                    'msg' => trans('general.msg.success'),
                                     'data' => $vehicleServices,
                                 ],
                                 Response::HTTP_OK
@@ -67,7 +67,7 @@ class VehicleServiceController extends Controller
             $vehicleService = VehicleService::with(array_merge(self::$with, ['items']))->find($vehicleService->id);
 
             return response()->json([
-                                        'msg'  => '¡Success!',
+                                        'msg' => trans('general.msg.success'),
                                         'data' => $vehicleService,
                                     ],
                                     Response::HTTP_CREATED
@@ -76,7 +76,7 @@ class VehicleServiceController extends Controller
         else
         {
             return response()->json([
-                                        'msg' => '¡Error!',
+                                        'msg' => trans('general.msg.error'),
                                     ],
                                     Response::HTTP_INTERNAL_SERVER_ERROR
             );
@@ -105,7 +105,7 @@ class VehicleServiceController extends Controller
             $vehicleService = VehicleService::with(array_merge(self::$with, ['items']))->find($vehicleService->id);
 
             return response()->json([
-                                        'msg'  => '¡Success!',
+                                        'msg' => trans('general.msg.success'),
                                         'data' => $vehicleService,
                                     ],
                                     Response::HTTP_OK
@@ -114,7 +114,7 @@ class VehicleServiceController extends Controller
         else
         {
             return response()->json([
-                                        'msg' => '¡Error!',
+                                        'msg' => trans('general.msg.error'),
                                     ],
                                     Response::HTTP_INTERNAL_SERVER_ERROR
             );
@@ -128,7 +128,7 @@ class VehicleServiceController extends Controller
         if(secureDelete($vehicleService))
         {
             return response()->json([
-                                        'msg' => '¡Success!',
+                                        'msg' => trans('general.msg.success'),
                                     ],
                                     Response::HTTP_OK
             );
@@ -136,7 +136,7 @@ class VehicleServiceController extends Controller
         else
         {
             return response()->json([
-                                        'msg' => '¡Error!',
+                                        'msg' => trans('general.msg.error'),
                                     ],
                                     Response::HTTP_INTERNAL_SERVER_ERROR
             );

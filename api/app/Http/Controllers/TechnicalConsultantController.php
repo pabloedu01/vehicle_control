@@ -16,7 +16,7 @@ class TechnicalConsultantController extends Controller
                                                    ->get();
 
         return response()->json([
-                                    'msg'  => '¡Success!',
+                                    'msg' => trans('general.msg.success'),
                                     'data' => $technicalConsultants,
                                 ],
                                 Response::HTTP_OK
@@ -34,7 +34,7 @@ class TechnicalConsultantController extends Controller
                                     ->get();
 
         return response()->json([
-                                    'msg'  => '¡Success!',
+                                    'msg' => trans('general.msg.success'),
                                     'data' => $availableUsers,
                                 ],
                                 Response::HTTP_OK
@@ -48,7 +48,7 @@ class TechnicalConsultantController extends Controller
                                                   ->first();
 
         return response()->json([
-                                    'msg'  => '¡Success!',
+                                    'msg' => trans('general.msg.success'),
                                     'data' => $technicalConsultant,
                                 ],
                                 Response::HTTP_OK
@@ -62,7 +62,7 @@ class TechnicalConsultantController extends Controller
         if($validator->fails())
         {
             return response()->json(   [
-                                        'msg'    => '¡Invalid Data!',
+                                        'msg' => trans('general.msg.invalidData'),
                                         'errors' => $validator->errors(),
                                     ], Response::HTTP_BAD_REQUEST
             );
@@ -73,7 +73,7 @@ class TechnicalConsultantController extends Controller
         if(secureSave($technicalConsultant))
         {
             return response()->json(   [
-                                        'msg'  => '¡Success!',
+                                        'msg' => trans('general.msg.success'),
                                         'data' => $technicalConsultant,
                                     ], Response::HTTP_CREATED
             );
@@ -81,7 +81,7 @@ class TechnicalConsultantController extends Controller
         else
         {
             return response()->json(   [
-                                        'msg' => '¡Error!',
+                                        'msg' => trans('general.msg.error'),
                                     ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
@@ -96,7 +96,7 @@ class TechnicalConsultantController extends Controller
         if($validator->fails())
         {
             return response()->json(   [
-                                        'msg'    => '¡Invalid Data!',
+                                        'msg' => trans('general.msg.invalidData'),
                                         'errors' => $validator->errors(),
                                     ], Response::HTTP_BAD_REQUEST
             );
@@ -107,7 +107,7 @@ class TechnicalConsultantController extends Controller
         if(!$technicalConsultant->hasAppliedChanges() || secureSave($technicalConsultant))
         {
             return response()->json(   [
-                                        'msg'  => '¡Success!',
+                                        'msg' => trans('general.msg.success'),
                                         'data' => $technicalConsultant,
                                     ], Response::HTTP_OK
             );
@@ -115,7 +115,7 @@ class TechnicalConsultantController extends Controller
         else
         {
             return response()->json(   [
-                                        'msg' => '¡Error!',
+                                        'msg' => trans('general.msg.error'),
                                     ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
