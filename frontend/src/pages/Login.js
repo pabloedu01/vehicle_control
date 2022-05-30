@@ -1,16 +1,15 @@
 // @flow
 import React, { useEffect, useState } from 'react';
-import useApi from '../services/api';
 
 import { Button, Alert } from 'react-bootstrap';
-import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useTranslation } from 'react-i18next';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 // actions
-import { resetAuth, loginUser } from '../redux/actions';
+import {resetAuth, loginUser} from '../redux/actions';
 
 // components
 import { VerticalForm, FormInput } from '../components';
@@ -25,7 +24,7 @@ const BottomLink = () => {
         <footer className="footer footer-alt">
             <p className="text-muted">
                 {t("Don't have an account?")}{' '}
-                <Link to={'/account/register'} className="text-muted ms-1">
+                <Link to={'/register'} className="text-muted ms-1">
                     <b>{t('Cadastro')}</b>
                 </Link>
             </p>
@@ -36,12 +35,6 @@ const BottomLink = () => {
 const Login2 = () => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-
-    const location = useLocation();
-    const redirectUrl = location.state && location.state.from ? location.state.from.pathname : '/';
-
-    const api = useApi();
-    const history = useNavigate();
 
     const [user, setuser] = useState('');
     const [password, setPass] = useState('');
@@ -55,23 +48,7 @@ const Login2 = () => {
     const handleLoginButton = async (username, pass) => {
         try {
             if (username && pass) {
-                console.log(username);
-                console.log('this pass is ',pass);
-                setLoading(true);
-                const data = {
-                    username: username,
-                    password: pass,
-                };
-                const result = await api.login(data);
-                setLoading(false);
-
-                if (result.httpCode === 200) {
-                    localStorage.setItem('token', result.token);
-                    console.log(result)
-                    history('/');
-                } else {
-                    setError(result.msg);
-                }
+                dispatch(loginUser(username, pass));
             } else {
                 setError('Digite os dados');
             }
@@ -94,9 +71,7 @@ const Login2 = () => {
      * handle form submission
      */
     const onSubmit = (formData) => {
-        handleLoginButton(formData['username'], formData['password']);
-
-        // dispatch(loginUser(formData['username'], formData['password']));
+        handleLoginButton(formData['username'], formData['password']).then(() => {});
     };
 
     return (

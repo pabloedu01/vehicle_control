@@ -90,6 +90,10 @@ class Base extends Model
         {
             $uniqueRule = Rule::unique(self::getTableName())->ignore($id, 'id');
 
+            if(self::getHasSoftDeletes()){
+                $uniqueRule = $uniqueRule->where('deleted_at', null);
+            }
+
             foreach($conditions as $column => $value)
             {
                 $uniqueRule = $uniqueRule->where($column, $value);
@@ -100,6 +104,10 @@ class Base extends Model
             if(!$someConditionIsNull)
             {
                 $uniqueRule = Rule::unique(self::getTableName());
+
+                if(self::getHasSoftDeletes()){
+                    $uniqueRule = $uniqueRule->where('deleted_at', null);
+                }
 
                 foreach($conditions as $column => $value)
                 {

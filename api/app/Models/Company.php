@@ -20,6 +20,10 @@ class Company extends Base
         'address_2',
     ];
 
+    protected $changingColumns = [
+        'company_name' => 'name',
+    ];
+
     public static function rules()
     {
         return [
