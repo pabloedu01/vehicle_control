@@ -16,6 +16,10 @@ Route::group([
             'uses' => 'VehicleBrandController@index',
         ]);
 
+        Route::get('active-brands', [
+            'uses' => 'VehicleBrandController@activeBrands',
+        ]);
+
         Route::post('/', [
             'uses' => 'VehicleBrandController@store',
         ]);

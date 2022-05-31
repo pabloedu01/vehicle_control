@@ -24,6 +24,22 @@ Route::group([
             'uses' => 'CompanyController@vehicles',
         ]);
 
+        Route::get('vehicle-models', [
+            'uses' => 'CompanyController@vehicleModels',
+        ]);
+
+        Route::get('client-vehicles', [
+            'uses' => 'CompanyController@clientVehicles',
+        ]);
+
+        Route::get('active-vehicle-models', [
+            'uses' => 'CompanyController@activeVehicleModels',
+        ]);
+
+        Route::get('active-vehicles', [
+            'uses' => 'CompanyController@activeVehicles',
+        ]);
+
         Route::get('checklist-versions', [
             'uses' => 'CompanyController@vehicleBrandChecklistVersions',
         ]);

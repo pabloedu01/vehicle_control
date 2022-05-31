@@ -66,6 +66,7 @@ class Kernel extends HttpKernel
         'vehicleModel' => \App\Http\Middleware\VehicleModelPermissionMiddleware::class,
         'vehicle' => \App\Http\Middleware\VehiclePermissionMiddleware::class,
         'client' => \App\Http\Middleware\ClientPermissionMiddleware::class,
+        'clientVehicle' => \App\Http\Middleware\ClientVehiclePermissionMiddleware::class,
         'claimService' => \App\Http\Middleware\ClaimServicePermissionMiddleware::class,
         'technicalConsultant' => \App\Http\Middleware\TechnicalConsultantPermissionMiddleware::class,
         'serviceSchedule' => \App\Http\Middleware\ServiceSchedulePermissionMiddleware::class,
