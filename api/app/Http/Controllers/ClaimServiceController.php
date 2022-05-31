@@ -14,7 +14,7 @@ class ClaimServiceController extends Controller
                                      ->get();
 
         return response()->json(                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             [
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              'msg'  => '¡Success!',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              'msg' => trans('general.msg.success'),
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               'data' => $claimsService,
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ], Response::HTTP_OK
         );
@@ -26,7 +26,7 @@ class ClaimServiceController extends Controller
                                     ->first();
 
         return response()->json(   [
-                                    'msg'  => '¡Success!',
+                                    'msg' => trans('general.msg.success'),
                                     'data' => $claimService,
                                 ], Response::HTTP_OK
         );
@@ -39,7 +39,7 @@ class ClaimServiceController extends Controller
         if($validator->fails())
         {
             return response()->json(   [
-                                        'msg'    => '¡Invalid Data!',
+                                        'msg' => trans('general.msg.invalidData'),
                                         'errors' => $validator->errors(),
                                     ], Response::HTTP_BAD_REQUEST
             );
@@ -50,7 +50,7 @@ class ClaimServiceController extends Controller
         if(secureSave($claimService))
         {
             return response()->json(   [
-                                        'msg'  => '¡Success!',
+                                        'msg' => trans('general.msg.success'),
                                         'data' => $claimService,
                                     ], Response::HTTP_CREATED
             );
@@ -58,7 +58,7 @@ class ClaimServiceController extends Controller
         else
         {
             return response()->json(   [
-                                        'msg' => '¡Error!',
+                                        'msg' => trans('general.msg.error'),
                                     ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
@@ -73,7 +73,7 @@ class ClaimServiceController extends Controller
         if($validator->fails())
         {
             return response()->json(   [
-                                        'msg'    => '¡Invalid Data!',
+                                        'msg' => trans('general.msg.invalidData'),
                                         'errors' => $validator->errors(),
                                     ], Response::HTTP_BAD_REQUEST
             );
@@ -84,7 +84,7 @@ class ClaimServiceController extends Controller
         if(!$claimService->hasAppliedChanges() || secureSave($claimService))
         {
             return response()->json(   [
-                                        'msg'  => '¡Success!',
+                                        'msg' => trans('general.msg.success'),
                                         'data' => $claimService,
                                     ], Response::HTTP_OK
             );
@@ -92,7 +92,7 @@ class ClaimServiceController extends Controller
         else
         {
             return response()->json(   [
-                                        'msg' => '¡Error!',
+                                        'msg' => trans('general.msg.error'),
                                     ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
@@ -105,14 +105,14 @@ class ClaimServiceController extends Controller
         if(secureDelete($claimService))
         {
             return response()->json(   [
-                                        'msg' => '¡Success!',
+                                        'msg' => trans('general.msg.success'),
                                     ], Response::HTTP_OK
             );
         }
         else
         {
             return response()->json(   [
-                                        'msg' => '¡Error!',
+                                        'msg' => trans('general.msg.error'),
                                     ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }

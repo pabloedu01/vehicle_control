@@ -18,7 +18,7 @@ class VehicleBrandController extends Controller
         if($version)
         {
             return response()->json([
-                                        'msg'  => '¡Success!',
+                                        'msg' => trans('general.msg.success'),
                                         'data' => $version,
                                     ],
                                     Response::HTTP_OK
@@ -27,7 +27,7 @@ class VehicleBrandController extends Controller
         else
         {
             return response()->json([
-                                        'msg' => '¡Not Found!',
+                                        'msg' => trans('general.msg.notFound'),
                                     ],
                                     Response::HTTP_NOT_FOUND
             );
@@ -40,7 +40,7 @@ class VehicleBrandController extends Controller
                                      ->get();
 
         return response()->json(                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             [
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              'msg'  => '¡Success!',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              'msg' => trans('general.msg.success'),
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               'data' => $vehicleBrands,
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ], Response::HTTP_OK
         );
@@ -52,7 +52,7 @@ class VehicleBrandController extends Controller
                                     ->first();
 
         return response()->json(   [
-                                    'msg'  => '¡Success!',
+                                    'msg' => trans('general.msg.success'),
                                     'data' => $vehicleBrand,
                                 ], Response::HTTP_OK
         );
@@ -65,7 +65,7 @@ class VehicleBrandController extends Controller
         if($validator->fails())
         {
             return response()->json(   [
-                                        'msg'    => '¡Invalid Data!',
+                                        'msg' => trans('general.msg.invalidData'),
                                         'errors' => $validator->errors(),
                                     ], Response::HTTP_BAD_REQUEST
             );
@@ -76,7 +76,7 @@ class VehicleBrandController extends Controller
         if(secureSave($vehicleBrand))
         {
             return response()->json(   [
-                                        'msg'  => '¡Success!',
+                                        'msg' => trans('general.msg.success'),
                                         'data' => $vehicleBrand,
                                     ], Response::HTTP_CREATED
             );
@@ -84,7 +84,7 @@ class VehicleBrandController extends Controller
         else
         {
             return response()->json(   [
-                                        'msg' => '¡Error!',
+                                        'msg' => trans('general.msg.error'),
                                     ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
@@ -99,7 +99,7 @@ class VehicleBrandController extends Controller
         if($validator->fails())
         {
             return response()->json(   [
-                                        'msg'    => '¡Invalid Data!',
+                                        'msg' => trans('general.msg.invalidData'),
                                         'errors' => $validator->errors(),
                                     ], Response::HTTP_BAD_REQUEST
             );
@@ -110,7 +110,7 @@ class VehicleBrandController extends Controller
         if(!$vehicleBrand->hasAppliedChanges() || secureSave($vehicleBrand))
         {
             return response()->json(   [
-                                        'msg'  => '¡Success!',
+                                        'msg' => trans('general.msg.success'),
                                         'data' => $vehicleBrand,
                                     ], Response::HTTP_OK
             );
@@ -118,7 +118,7 @@ class VehicleBrandController extends Controller
         else
         {
             return response()->json(   [
-                                        'msg' => '¡Error!',
+                                        'msg' => trans('general.msg.error'),
                                     ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
@@ -131,14 +131,14 @@ class VehicleBrandController extends Controller
         if(secureDelete($vehicleBrand))
         {
             return response()->json(   [
-                                        'msg' => '¡Success!',
+                                        'msg' => trans('general.msg.success'),
                                     ], Response::HTTP_OK
             );
         }
         else
         {
             return response()->json(   [
-                                        'msg' => '¡Error!',
+                                        'msg' => trans('general.msg.error'),
                                     ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }

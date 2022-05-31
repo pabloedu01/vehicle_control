@@ -17,7 +17,7 @@ class UserController extends Controller
                             ->get();
 
         return response()->json([
-                                    'msg'  => '¡Success!',
+                                    'msg' => trans('general.msg.success'),
                                     'data' => $companies,
                                 ],
                                 Response::HTTP_OK
@@ -31,7 +31,7 @@ class UserController extends Controller
         if($validator->fails())
         {
             return response()->json([
-                                        'msg'    => '¡Invalid Data!',
+                                        'msg' => trans('general.msg.invalidData'),
                                         'errors' => $validator->errors(),
                                     ],
                                     Response::HTTP_BAD_REQUEST
@@ -44,7 +44,7 @@ class UserController extends Controller
         {
             return response()
                 ->json([
-                           'msg'  => '¡Success!',
+                           'msg' => trans('general.msg.success'),
                            'user' => $user,
                        ],
                        Response::HTTP_CREATED
@@ -54,7 +54,7 @@ class UserController extends Controller
         {
             return response()
                 ->json([
-                           'msg' => '¡Error!',
+                           'msg' => trans('general.msg.error'),
                        ],
                        Response::HTTP_INTERNAL_SERVER_ERROR
                 );
@@ -65,7 +65,7 @@ class UserController extends Controller
     {
         return response()
             ->json([
-                       'msg'  => '¡Success!',
+                       'msg' => trans('general.msg.success'),
                        'user' => \Auth::user()->toArray(),
                    ],
                    Response::HTTP_CREATED

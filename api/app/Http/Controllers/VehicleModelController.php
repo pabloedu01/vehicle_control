@@ -15,7 +15,7 @@ class VehicleModelController extends Controller
                                      ->get();
 
         return response()->json(                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  [
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   'msg'  => '¡Success!',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   'msg' => trans('general.msg.success'),
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    'data' => $vehicleModels,
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ], Response::HTTP_OK
         );
@@ -27,7 +27,7 @@ class VehicleModelController extends Controller
                                     ->first();
 
         return response()->json(   [
-                                    'msg'  => '¡Success!',
+                                    'msg' => trans('general.msg.success'),
                                     'data' => $vehicleModel,
                                 ], Response::HTTP_OK
         );
@@ -40,7 +40,7 @@ class VehicleModelController extends Controller
         if($validator->fails())
         {
             return response()->json(   [
-                                        'msg'    => '¡Invalid Data!',
+                                        'msg' => trans('general.msg.invalidData'),
                                         'errors' => $validator->errors(),
                                     ], Response::HTTP_BAD_REQUEST
             );
@@ -52,7 +52,7 @@ class VehicleModelController extends Controller
         if(secureSave($vehicleModel))
         {
             return response()->json(   [
-                                        'msg'  => '¡Success!',
+                                        'msg' => trans('general.msg.success'),
                                         'data' => $vehicleModel,
                                     ], Response::HTTP_CREATED
             );
@@ -60,7 +60,7 @@ class VehicleModelController extends Controller
         else
         {
             return response()->json(   [
-                                        'msg' => '¡Error!',
+                                        'msg' => trans('general.msg.error'),
                                     ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
@@ -75,7 +75,7 @@ class VehicleModelController extends Controller
         if($validator->fails())
         {
             return response()->json(   [
-                                        'msg'    => '¡Invalid Data!',
+                                        'msg' => trans('general.msg.invalidData'),
                                         'errors' => $validator->errors(),
                                     ], Response::HTTP_BAD_REQUEST
             );
@@ -86,7 +86,7 @@ class VehicleModelController extends Controller
         if(!$vehicleModel->hasAppliedChanges() || secureSave($vehicleModel))
         {
             return response()->json(   [
-                                        'msg'  => '¡Success!',
+                                        'msg' => trans('general.msg.success'),
                                         'data' => $vehicleModel,
                                     ], Response::HTTP_OK
             );
@@ -94,7 +94,7 @@ class VehicleModelController extends Controller
         else
         {
             return response()->json(   [
-                                        'msg' => '¡Error!',
+                                        'msg' => trans('general.msg.error'),
                                     ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
@@ -107,14 +107,14 @@ class VehicleModelController extends Controller
         if(secureDelete($vehicleModel))
         {
             return response()->json(   [
-                                        'msg' => '¡Success!',
+                                        'msg' => trans('general.msg.success'),
                                     ], Response::HTTP_OK
             );
         }
         else
         {
             return response()->json(   [
-                                        'msg' => '¡Error!',
+                                        'msg' => trans('general.msg.error'),
                                     ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
