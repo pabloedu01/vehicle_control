@@ -25,9 +25,39 @@ const MENU_ITEMS = [
     },
 
     {
-        key: 'vehicleBrands.index',
-        label: 'Marcas',
-        url: '/vehicle-brands/list',
+        key: 'vehiclesCrud',
+        label: 'Cadastro de Vehiculos',
+        isTitle: false,
+        icon: 'uil-users-alt',
+        children: [
+            {
+                key: 'vehicleBrands.index',
+                label: 'Marcas',
+                url: '/vehicle-brands/list',
+                icon: 'uil-tachometer-fast',
+                parentKey: 'vehiclesCrud'
+            },
+            {
+                key: 'vehicleModels.index',
+                label: 'Modelos',
+                url: '/vehicle-models/list',
+                icon: 'uil-tachometer-fast',
+                parentKey: 'vehiclesCrud'
+            },
+            {
+                key: 'vehicles.index',
+                label: 'Vehiculos',
+                url: '/vehicles/list',
+                icon: 'uil-tachometer-fast',
+                parentKey: 'vehiclesCrud'
+            },
+        ],
+    },
+
+    {
+        key: 'clientVehicles.index',
+        label: 'Vehiculos do Clientes',
+        url: '/client-vehicles/list',
         icon: 'uil-tachometer-fast',
     },
 

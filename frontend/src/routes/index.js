@@ -31,6 +31,15 @@ const TechnicalConsultantForm = React.lazy(() => import('../pages/technical-cons
 const VehicleBrandList = React.lazy(() => import('../pages/vehicle-brand/List'));
 const VehicleBrandForm = React.lazy(() => import('../pages/vehicle-brand/Form'));
 
+const VehicleModelList = React.lazy(() => import('../pages/vehicle-model/List'));
+const VehicleModelForm = React.lazy(() => import('../pages/vehicle-model/Form'));
+
+const VehicleList = React.lazy(() => import('../pages/vehicle/List'));
+const VehicleForm = React.lazy(() => import('../pages/vehicle/Form'));
+
+const ClientVehicleList = React.lazy(() => import('../pages/client-vehicle/List'));
+const ClientVehicleForm = React.lazy(() => import('../pages/client-vehicle/Form'));
+
 
 // dashboard
 
@@ -189,6 +198,58 @@ const AllRoutes = () => {
                         {
                             path: ':id/edit',
                             element: <LoadComponent component={VehicleBrandForm} />,
+                        },
+                    ]
+                },
+                {
+                    path: 'vehicle-models',
+                    children: [
+                        {
+                            path: 'list',
+                            element: <LoadComponent component={VehicleModelList} />,
+                        },
+                        {
+                            path: 'create',
+                            element: <LoadComponent component={VehicleModelForm} />,
+                        },
+                        {
+                            path: ':id/edit',
+                            element: <LoadComponent component={VehicleModelForm} />,
+                        },
+                    ]
+                },
+                {
+                    path: 'vehicles',
+                    children: [
+                        {
+                            path: 'list',
+                            element: <LoadComponent component={VehicleList} />,
+                        },
+                        {
+                            path: 'create',
+                            element: <LoadComponent component={VehicleForm} />,
+                        },
+                        {
+                            path: ':id/edit',
+                            element: <LoadComponent component={VehicleForm} />,
+                        },
+                    ]
+                },
+
+                {
+                    path: 'client-vehicles',
+                    children: [
+                        {
+                            path: 'list',
+                            element: <LoadComponent component={TechnicalConsultantList} />,
+                        },
+                        {
+                            path: 'create',
+                            element: <LoadComponent component={TechnicalConsultantForm} />,
+                        },
+                        {
+                            path: ':id/edit',
+                            element: <LoadComponent component={TechnicalConsultantForm} />,
                         },
                     ]
                 },
