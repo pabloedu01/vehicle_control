@@ -103,7 +103,7 @@ class VehicleModelController extends Controller
             return response()->json(   [
                                         'msg'  => trans('general.msg.success'),
                                         'data' => $vehicleModel,
-                                    ], Response::HTTP_OK
+                                    ], Response::HTTP_CREATED
             );
         }
         else

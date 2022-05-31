@@ -127,7 +127,7 @@ class VehicleBrandController extends Controller
             return response()->json(   [
                                         'msg' => trans('general.msg.success'),
                                         'data' => $vehicleBrand,
-                                    ], Response::HTTP_OK
+                                    ], Response::HTTP_CREATED
             );
         }
         else

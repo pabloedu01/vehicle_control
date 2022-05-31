@@ -92,7 +92,7 @@ class ClientController extends Controller
                                         'msg' => trans('general.msg.success'),
                                         'data' => $client,
                                     ],
-                                    Response::HTTP_OK
+                                    Response::HTTP_CREATED
             );
         }
         else

@@ -99,7 +99,7 @@ class VehicleBrandChecklistVersionController extends Controller
                                         'msg' => trans('general.msg.success'),
                                         'data' => $version,
                                     ],
-                                    Response::HTTP_OK
+                                    Response::HTTP_CREATED
             );
         }
         else

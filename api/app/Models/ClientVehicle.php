@@ -27,7 +27,7 @@ class ClientVehicle extends Base
             'chasis'       => ['required', 'string', $uniqueRule],
             'color'        => 'required|string',
             'number_motor' => ['required', 'string', $uniqueRule],
-            'renavan'      => ['required', 'string', $uniqueRule],
+            'renavan'      => ['required', 'integer', $uniqueRule],
             'plate'        => ['required', 'string', $uniqueRule],
             'mileage'      => 'required|numeric',
         ];

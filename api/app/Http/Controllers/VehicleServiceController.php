@@ -108,7 +108,7 @@ class VehicleServiceController extends Controller
                                         'msg' => trans('general.msg.success'),
                                         'data' => $vehicleService,
                                     ],
-                                    Response::HTTP_OK
+                                    Response::HTTP_CREATED
             );
         }
         else

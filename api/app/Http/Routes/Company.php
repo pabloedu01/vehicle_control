@@ -32,10 +32,6 @@ Route::group([
             'uses' => 'CompanyController@clientVehicles',
         ]);
 
-        Route::get('active-vehicle-models', [
-            'uses' => 'CompanyController@activeVehicleModels',
-        ]);
-
         Route::get('active-vehicles', [
             'uses' => 'CompanyController@activeVehicles',
         ]);

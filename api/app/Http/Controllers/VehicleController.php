@@ -18,6 +18,16 @@ class VehicleController extends Controller
         return response()->json([ 'msg' => trans('general.msg.success'), 'data' => $vehicles, ], Response::HTTP_OK);
     }
 
+    public function activeVehicles(Request $request)
+    {
+        $vehicles = Vehicle::with('model', 'model.brand')
+                           ->where('model_id', '=', $request->model_id)
+                           ->where('active', '=', true)
+                           ->get();
+
+        return response()->json([ 'msg' => trans('general.msg.success'), 'data' => $vehicles, ], Response::HTTP_OK);
+    }
+
     public function show(Request $request, $id)
     {
         $vehicle = Vehicle::with('model', 'model.brand')
@@ -87,7 +97,7 @@ class VehicleController extends Controller
             return response()->json(   [
                                         'msg' => trans('general.msg.success'),
                                         'data' => $vehicle,
-                                    ], Response::HTTP_OK
+                                    ], Response::HTTP_CREATED
             );
         }
         else

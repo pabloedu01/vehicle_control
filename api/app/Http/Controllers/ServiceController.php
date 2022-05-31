@@ -86,7 +86,7 @@ class ServiceController extends Controller
             return response()->json(   [
                                         'msg' => trans('general.msg.success'),
                                         'data' => $service,
-                                    ], Response::HTTP_OK
+                                    ], Response::HTTP_CREATED
             );
         }
         else

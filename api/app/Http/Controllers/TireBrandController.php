@@ -86,7 +86,7 @@ class TireBrandController extends Controller
             return response()->json(   [
                                         'msg' => trans('general.msg.success'),
                                         'data' => $tireBrand,
-                                    ], Response::HTTP_OK
+                                    ], Response::HTTP_CREATED
             );
         }
         else

@@ -48,21 +48,6 @@ class CompanyController extends Controller
         );
     }
 
-    public function activeVehicleModels(Request $request)
-    {
-        $vehicleModels = VehicleModel::with('brand')
-                                     ->where('company_id', '=', $request->company_id)
-                                     ->where('active', '=', true)
-                                     ->get();
-
-        return response()->json([
-                                    'msg'  => trans('general.msg.success'),
-                                    'data' => $vehicleModels,
-                                ],
-                                Response::HTTP_OK
-        );
-    }
-
     public function vehicles(Request $request)
     {
         $vehicles = Vehicle::with('model', 'model.brand')
@@ -77,23 +62,10 @@ class CompanyController extends Controller
         );
     }
 
-    public function activeVehicles(Request $request)
-    {
-        $vehicles = Vehicle::where('company_id', '=', $request->company_id)
-                           ->where('active', '=', true)
-                           ->get();
-
-        return response()->json([
-                                    'msg'  => trans('general.msg.success'),
-                                    'data' => $vehicles,
-                                ],
-                                Response::HTTP_OK
-        );
-    }
-
     public function clientVehicles(Request $request)
     {
-        $clientVehicles = ClientVehicle::where('company_id', '=', $request->company_id)
+        $clientVehicles = ClientVehicle::with([ 'vehicle', 'vehicle.model', 'vehicle.model.brand' ])
+                                       ->where('company_id', '=', $request->company_id)
                                        ->get();
 
         return response()->json([

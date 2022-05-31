@@ -11,7 +11,8 @@ class ClientVehicleController extends Controller
 {
     public function index(Request $request)
     {
-        $clientVehicles = ClientVehicle::where('vehicle_id', '=', $request->vehicle_id)
+        $clientVehicles = ClientVehicle::with([ 'vehicle', 'vehicle.model', 'vehicle.model.brand' ])
+                                       ->where('vehicle_id', '=', $request->vehicle_id)
                                        ->get();
 
         return response()->json([
@@ -24,7 +25,8 @@ class ClientVehicleController extends Controller
 
     public function show(Request $request, $id)
     {
-        $clientVehicle = ClientVehicle::where('id', '=', $id)
+        $clientVehicle = ClientVehicle::with([ 'vehicle', 'vehicle.model', 'vehicle.model.brand' ])
+                                      ->where('id', '=', $id)
                                       ->first();
 
         return response()->json([
@@ -84,10 +86,11 @@ class ClientVehicleController extends Controller
 
         if($validator->fails())
         {
-            return response()->json(                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          [
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               'msg'    => trans('general.msg.invalidData'),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               'errors' => $validator->errors(),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ], Response::HTTP_BAD_REQUEST
+            return response()->json([
+                                        'msg'    => trans('general.msg.invalidData'),
+                                        'errors' => $validator->errors(),
+                                    ],
+                                    Response::HTTP_BAD_REQUEST
             );
         }
 
@@ -99,7 +102,7 @@ class ClientVehicleController extends Controller
                                         'msg'  => trans('general.msg.success'),
                                         'data' => $clientVehicle,
                                     ],
-                                    Response::HTTP_OK
+                                    Response::HTTP_CREATED
             );
         }
         else
