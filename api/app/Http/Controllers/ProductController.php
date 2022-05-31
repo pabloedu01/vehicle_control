@@ -87,7 +87,7 @@ class ProductController extends Controller
             return response()->json(   [
                                         'msg' => trans('general.msg.success'),
                                         'data' => $product,
-                                    ], Response::HTTP_OK
+                                    ], Response::HTTP_CREATED
             );
         }
         else

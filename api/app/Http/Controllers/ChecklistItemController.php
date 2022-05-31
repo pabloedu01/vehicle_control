@@ -105,7 +105,7 @@ class ChecklistItemController extends Controller
                                             'msg' => trans('general.msg.success'),
                                             'data' => $checklistItem,
                                         ],
-                                        Response::HTTP_OK
+                                        Response::HTTP_CREATED
                 );
             }
             else

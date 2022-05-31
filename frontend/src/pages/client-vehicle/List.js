@@ -8,6 +8,7 @@ import MUIDataTable from "mui-datatables";
 import TABLE_OPTIONS from "../../constants/tableOptions";
 import Actions from "../../components/table/actions";
 import Active from "../../components/table/columnActive";
+import swal from "sweetalert";
 
 const api = new APICore();
 
@@ -19,12 +20,17 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
     const [tableOptions, setTableOptions] = useState({});
 
     const getList = () => {
-        api.get('/client-vehicles', {company_id: props.company?.id}).then((response) => {
-            setList(response.data.data.map((technicalConsultant) => {
+        api.get('/company/client-vehicles', {company_id: props.company?.id}).then((response) => {
+            setList(response.data.data.map((item) => {
                 return {
-                    id: technicalConsultant.id,
-                    name: technicalConsultant.name,
-                    active: technicalConsultant.active
+                    id: item.id,
+                    chasis: item.chasis,
+                    color: item.color,
+                    number_motor: item.number_motor,
+                    renavan: item.renavan,
+                    plate: item.plate,
+                    mileage: item.mileage,
+                    vehicle: item.vehicle.name + ' ' + item.vehicle.model_year + ' (' + item.vehicle.model.brand.name + ' - ' + item.vehicle.model.name + ')'
                 }
             }));
         }, () => {
@@ -34,6 +40,30 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     const onEdit = (id) => {
         history(`/panel/company/${props.company?.id}/client-vehicles/${id}/edit`);
+    };
+
+    const onDelete = (registerId, newList) => {
+        swal({
+            title: '¿tem certeza?',
+            text: 'Irá excluir este registro',
+            icon: 'warning',
+            buttons: {
+                cancel: 'Cancelar',
+                confirm: {
+                    text: 'Excluir',
+                    value: 'confirm'
+                }
+            },
+            dangerMode: true,
+        }).then((confirm) => {
+            if(confirm){
+                api.delete('/client-vehicle/' + registerId).then((response) => {
+                    setList(newList);
+                }, () => {
+
+                });
+            }
+        });
     };
 
     useEffect(() => {
@@ -49,22 +79,59 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                 },
             },
             {
-                label: 'Nome',
-                name: 'name',
+                label: 'Chasis',
+                name: 'chasis',
                 options: {
                     filter: true,
                     sort: true,
                 },
             },
             {
-                label: 'Ative',
-                name: 'active',
+                label: 'Color',
+                name: 'color',
                 options: {
-                    filter: false,
+                    filter: true,
                     sort: true,
-                    customBodyRender: (value, tableMeta) => {
-                        return <Active value={value} tableMeta={tableMeta}/>;
-                    }
+                },
+            },
+            {
+                label: 'Motor',
+                name: 'number_motor',
+                options: {
+                    filter: true,
+                    sort: true,
+                },
+            },
+            {
+                label: 'Renavan',
+                name: 'renavan',
+                options: {
+                    filter: true,
+                    sort: true,
+                },
+            },
+            {
+                label: 'Plate',
+                name: 'plate',
+                options: {
+                    filter: true,
+                    sort: true,
+                },
+            },
+            {
+                label: 'KM',
+                name: 'mileage',
+                options: {
+                    filter: true,
+                    sort: true,
+                },
+            },
+            {
+                label: 'Vehiculo',
+                name: 'vehicle',
+                options: {
+                    filter: true,
+                    sort: true,
                 },
             },
             {
@@ -74,7 +141,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                     filter: false,
                     sort: false,
                     customBodyRender: (value, tableMeta, updateValue) => (
-                        <Actions tableMeta={tableMeta} handleEdit={onEdit} actions={['edit']}/>
+                        <Actions tableMeta={tableMeta} handleEdit={onEdit} handleDelete={onDelete}/>
                     )
                 },
             },
@@ -106,8 +173,8 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                                 </Col>
                                 <Col xl={4}>
                                     <div className="text-xl-end mt-xl-0 mt-2">
-                                        <Button variant="danger" className="mb-2 me-2" onClick={() => { history(`/panel/company/${props.company?.id}/technical-consultants/create`) }}>
-                                            <i className="mdi mdi-basket me-1" /> Novo Consultor Técnico
+                                        <Button variant="danger" className="mb-2 me-2" onClick={() => { history(`/panel/company/${props.company?.id}/client-vehicles/create`) }}>
+                                            <i className="mdi mdi-basket me-1" /> Novo Vehiculo do Cliente
                                         </Button>
                                     </div>
                                 </Col>

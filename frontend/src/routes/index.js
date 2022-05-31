@@ -241,15 +241,15 @@ const AllRoutes = () => {
                     children: [
                         {
                             path: 'list',
-                            element: <LoadComponent component={TechnicalConsultantList} />,
+                            element: <LoadComponent component={ClientVehicleList} />,
                         },
                         {
                             path: 'create',
-                            element: <LoadComponent component={TechnicalConsultantForm} />,
+                            element: <LoadComponent component={ClientVehicleForm} />,
                         },
                         {
                             path: ':id/edit',
-                            element: <LoadComponent component={TechnicalConsultantForm} />,
+                            element: <LoadComponent component={ClientVehicleForm} />,
                         },
                     ]
                 },

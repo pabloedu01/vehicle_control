@@ -15,19 +15,24 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     const history = useNavigate();
     const {id} = useParams();
     const [data, setData] = useState();
-    const [users, setUsers] = useState([]);
-    const [allUsers, setAllUsers] = useState([]);
-    const [readOnlyName, setReadOnlyName] = useState(false);
-    const [readOnlyUserId, setReadOnlyUserId] = useState(false);
+    const [brands, setBrands] = useState([]);
+    const [models, setModels] = useState([]);
+    const [vehicles, setVehicles] = useState([]);
 
     /*
      * form validation schema
      */
     const schemaResolver = yupResolver(
         yup.object().shape({
-            user_id: yup.number(),
-            name: yup.string().required('Por favor, digite Nome Completo'),
-            active: yup.boolean(),
+            brand_id: yup.number().required('Por favor, digite Marca'),
+            model_id: yup.number().required('Por favor, digite Modelo'),
+            vehicle_id: yup.number().required('Por favor, digite Vehiculo'),
+            chasis: yup.string().required('Por favor, digite Chasis'),
+            color: yup.string().required('Por favor, digite Color'),
+            number_motor: yup.string().required('Por favor, digite Motor'),
+            renavan: yup.number().required('Por favor, digite Renavan'),
+            plate: yup.string().required('Por favor, digite Placa'),
+            mileage: yup.number().required('Por favor, digite KM'),
         })
     );
 
@@ -51,13 +56,13 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         let ajaxCall;
 
         if(id){
-            ajaxCall = api.update('/technical-consultant/' + id,Object.assign(formData,{ user_id: formData.user_id ? formData.user_id : null}));
+            ajaxCall = api.update('/client-vehicle/' + id,formData);
         } else {
-            ajaxCall = api.post('/technical-consultant',Object.assign(formData,{company_id: props.company?.id, user_id: formData.user_id ? formData.user_id : null}));
+            ajaxCall = api.post('/client-vehicle',Object.assign(formData,{company_id: props.company?.id}));
         }
 
         ajaxCall.then(() => {
-            history(`/panel/company/${props.company?.id}/technical-consultants/list`);
+            history(`/panel/company/${props.company?.id}/client-vehicles/list`);
         }, (error) => {
             if(error.response.status === 400 && error.response.data.hasOwnProperty('errors')){
                 for(let fieldName in error.response.data.errors){
@@ -69,49 +74,28 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         });
     };
 
-    const getUsers = () => {
-        api.get('/technical-consultant/available-users',{company_id: props.company?.id}).then((response) => {
-            const data = [{value: 0, label: 'Without User'}].concat(response.data.data.map((user) => {
-                return {
-                    value: user.id,
-                    label: user.name
-                };
-            }));
-
-            setAllUsers(data);
-            setUsers(data);
-        },(error) => {
-            setUsers([{value: 0, label: 'Without User'}]);
-            setAllUsers([{value: 0, label: 'Without User'}]);
-        });
-    };
-
     const getData = () => {
         const defaultData = {
-            user_id: 0,
-            name: null,
-            active: true
+            brand_id: null,
+            model_id: null,
+            vehicle_id: null,
+            chasis: null,
+            color: null,
+            number_motor: null,
+            renavan: null,
+            plate: null,
+            mileage: null,
         };
 
         if(id){
-            api.get('/technical-consultant/' + id).then((response) => {
-                const {user_id,name,active} = response.data.data;
+            api.get('/client-vehicle/' + id).then((response) => {
+                const {vehicle:{model: {brand_id}},vehicle:{model_id},vehicle_id,chasis,color,number_motor,renavan,plate,mileage} = response.data.data;
 
-                if(user_id){
-                    setUsers([{value: user_id, label: name}]);
-                    setReadOnlyName(true);
-                    setReadOnlyUserId(true);
-                } else {
-                    setReadOnlyName(false);
-                    setReadOnlyUserId(false);
-
-                    if(users.length !== allUsers.length){
-                        setUsers([...allUsers]);
-                    }
-                }
+                getModels(brand_id);
+                getVehicles(model_id);
 
                 setData({
-                    name, user_id, active
+                    vehicle_id,chasis,color,number_motor,renavan,plate,mileage,model_id,brand_id
                 });
             },(error) => {
                 setData(defaultData);
@@ -121,22 +105,61 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         }
     };
 
-    const onUserIdChange = (value) => {
-        const user = users.find((user) => user.value === value);
+    const getBrands = () => {
+        api.get('/vehicle-brand/active-brands',{company_id: props.company?.id}).then((response) => {
+            const data = response.data.data.map((user) => {
+                return {
+                    value: user.id,
+                    label: user.name
+                };
+            });
 
-        methods.clearErrors('name');
+            setBrands(data);
+        },(error) => {
+            setBrands([]);
+        });
+    };
 
-        if(user && user.value){
-            methods.setValue('name', user.label);
-            setReadOnlyName(true);
-        } else {
-            methods.setValue('name', '');
-            setReadOnlyName(false);
-        }
+    const getModels = (brand_id?) => {
+        api.get('/vehicle-model/active-vehicle-models',{brand_id: brand_id ?? methods.getValues('brand_id')}).then((response) => {
+            const data = response.data.data.map((user) => {
+                return {
+                    value: user.id,
+                    label: user.name
+                };
+            });
+
+            setModels(data);
+        },(error) => {
+            setModels([]);
+        });
+    };
+
+    const getVehicles = (model_id?) => {
+        api.get('/vehicle/active-vehicles',{model_id: model_id ?? methods.getValues('model_id')}).then((response) => {
+            const data = response.data.data.map((user) => {
+                return {
+                    value: user.id,
+                    label: user.name
+                };
+            });
+
+            setVehicles(data);
+        },(error) => {
+            setVehicles([]);
+        });
+    };
+
+    const handleChangeBrand = () => {
+        getModels();
+    };
+
+    const handleChangeModel = () => {
+        getVehicles();
     };
 
     useEffect(() => {
-        getUsers();
+        getBrands();
     }, []);
 
     useEffect(() => {
@@ -144,19 +167,25 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     }, [id]);
 
     useEffect(() => {
-        methods.setValue('name', data?.name ?? null);
-        methods.setValue('active', data?.active ?? true);
-        methods.setValue('user_id', data?.user_id ?? 0);
+        methods.setValue('chasis', data?.chasis ?? null);
+        methods.setValue('color', data?.color ?? null);
+        methods.setValue('number_motor', data?.number_motor ?? null);
+        methods.setValue('renavan', data?.renavan ?? null);
+        methods.setValue('plate', data?.plate ?? null);
+        methods.setValue('mileage', data?.mileage ?? null);
+        methods.setValue('brand_id', data?.brand_id ?? null);
+        methods.setValue('model_id', data?.model_id ?? null);
+        methods.setValue('vehicle_id', data?.vehicle_id ?? null);
     }, [data]);
 
     return (
         <>
             <PageTitle
                 breadCrumbItems={[
-                    { label: 'Consultores Técnicos', path: '/technical-consultants/list' },
-                    { label: 'Cadastro', path: `/technical-consultants/${id ? id + '/edit' : 'create'}`, active: true },
+                    { label: 'Vehiculos do Cliente', path: '/client-vehicles/list' },
+                    { label: 'Cadastro', path: `/client-vehicles/${id ? id + '/edit' : 'create'}`, active: true },
                 ]}
-                title={'Formulário de Consultor Técnico'}
+                title={'Formulário de Vehiculos do Cliente'}
                 company={props.company}
             />
             <Row>
@@ -167,35 +196,92 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                                 <Row>
                                     <Col md={6}>
                                         <FormInput
-                                            label="Usuario"
+                                            label="Marca"
                                             type="select"
-                                            name="user_id"
-                                            placeholder="Digite Nome"
+                                            name="brand_id"
                                             containerClass={'mb-3'}
+                                            options={brands}
+                                            handleChange={handleChangeBrand}
                                             {...otherProps}
-                                            options={users}
-                                            handleChange={onUserIdChange}
-                                            isDisabled={readOnlyUserId}
                                         />
 
                                         <FormInput
-                                            label="Nome"
+                                            label="Modelo"
+                                            type="select"
+                                            name="model_id"
+                                            containerClass={'mb-3'}
+                                            options={models}
+                                            handleChange={handleChangeModel}
+                                            {...otherProps}
+                                        />
+
+                                        <FormInput
+                                            label="Vehiculo"
+                                            type="select"
+                                            name="vehicle_id"
+                                            containerClass={'mb-3'}
+                                            options={vehicles}
+                                            {...otherProps}
+                                        />
+
+                                        <FormInput
+                                            label="Placa"
                                             type="text"
-                                            name="name"
-                                            placeholder="Digite Nome"
+                                            name="plate"
+                                            placeholder="Digite Placa"
                                             containerClass={'mb-3'}
                                             {...otherProps}
-                                            readOnly={readOnlyName}
                                         />
+
+                                        <FormInput
+                                            label="KM"
+                                            type="text"
+                                            name="mileage"
+                                            placeholder="Digite KM"
+                                            containerClass={'mb-3'}
+                                            {...otherProps}
+                                        />
+
                                     </Col>
+
                                     <Col md={6}>
                                         <FormInput
-                                            label="Ative"
-                                            type="checkbox"
-                                            name="active"
+                                            label="Chasis"
+                                            type="text"
+                                            name="chasis"
+                                            placeholder="Digite Chasis"
                                             containerClass={'mb-3'}
                                             {...otherProps}
                                         />
+
+                                        <FormInput
+                                            label="Color"
+                                            type="text"
+                                            name="color"
+                                            placeholder="Digite Color"
+                                            containerClass={'mb-3'}
+                                            {...otherProps}
+                                        />
+
+                                        <FormInput
+                                            label="Motor"
+                                            type="text"
+                                            name="number_motor"
+                                            placeholder="Digite Motor"
+                                            containerClass={'mb-3'}
+                                            {...otherProps}
+                                        />
+
+                                        <FormInput
+                                            label="Renavan"
+                                            type="text"
+                                            name="renavan"
+                                            placeholder="Digite Renavan"
+                                            containerClass={'mb-3'}
+                                            {...otherProps}
+                                        />
+
+
                                     </Col>
                                 </Row>
 

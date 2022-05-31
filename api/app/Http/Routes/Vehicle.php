@@ -16,6 +16,10 @@ Route::group([
             'uses' => 'VehicleController@index',
         ]);
 
+        Route::get('active-vehicles', [
+            'uses' => 'VehicleController@activeVehicles',
+        ]);
+
         Route::post('/', [
             'uses' => 'VehicleController@store',
         ]);
