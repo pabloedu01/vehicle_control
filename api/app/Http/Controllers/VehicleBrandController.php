@@ -39,10 +39,25 @@ class VehicleBrandController extends Controller
         $vehicleBrands = VehicleBrand::where('company_id', '=', $request->company_id)
                                      ->get();
 
-        return response()->json(                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             [
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              'msg' => trans('general.msg.success'),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              'data' => $vehicleBrands,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ], Response::HTTP_OK
+        return response()->json([
+                                    'msg'  => trans('general.msg.success'),
+                                    'data' => $vehicleBrands,
+                                ],
+                                Response::HTTP_OK
+        );
+    }
+
+    public function activeBrands(Request $request)
+    {
+        $vehicleBrands = VehicleBrand::where('company_id', '=', $request->company_id)
+                                     ->where('active', '=', true)
+                                     ->get();
+
+        return response()->json([
+                                    'msg'  => trans('general.msg.success'),
+                                    'data' => $vehicleBrands,
+                                ],
+                                Response::HTTP_OK
         );
     }
 

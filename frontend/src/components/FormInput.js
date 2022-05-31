@@ -124,7 +124,7 @@ const FormInput = ({
                                                     inputRef={ref}
                                                     name={name}
                                                     options={options}
-                                                    value={options.find((option) => option.value === value) || options[0]}
+                                                    value={options.find((option) => option.value === value) || null}
                                                     onChange={(selectedOption) => {
                                                         onChange(selectedOption.value);
                                                         if(otherProps.hasOwnProperty('handleChange')){

@@ -15,12 +15,14 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     const history = useNavigate();
     const {id} = useParams();
     const [data, setData] = useState();
+    const [brands, setBrands] = useState([]);
 
     /*
      * form validation schema
      */
     const schemaResolver = yupResolver(
         yup.object().shape({
+            brand_id: yup.number().required('Por favor, digite Marca'),
             name: yup.string().required('Por favor, digite Nome Completo'),
             active: yup.boolean(),
         })
@@ -46,13 +48,13 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         let ajaxCall;
 
         if(id){
-            ajaxCall = api.update('/vehicle-brand/' + id,formData);
+            ajaxCall = api.update('/vehicle-model/' + id,formData);
         } else {
-            ajaxCall = api.post('/vehicle-brand',Object.assign(formData,{company_id: props.company?.id}));
+            ajaxCall = api.post('/vehicle-model',Object.assign(formData,{company_id: props.company?.id}));
         }
 
         ajaxCall.then(() => {
-            history(`/panel/company/${props.company?.id}/vehicle-brands/list`);
+            history(`/panel/company/${props.company?.id}/vehicle-models/list`);
         }, (error) => {
             if(error.response.status === 400 && error.response.data.hasOwnProperty('errors')){
                 for(let fieldName in error.response.data.errors){
@@ -66,16 +68,17 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     const getData = () => {
         const defaultData = {
+            brand_id: null,
             name: null,
             active: true
         };
 
         if(id){
-            api.get('/vehicle-brand/' + id).then((response) => {
-                const {name,active} = response.data.data;
+            api.get('/vehicle-model/' + id).then((response) => {
+                const {name,active,brand_id} = response.data.data;
 
                 setData({
-                    name,active
+                    name,active,brand_id
                 });
             },(error) => {
                 setData(defaultData);
@@ -85,6 +88,25 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         }
     };
 
+    const getBrands = () => {
+        api.get('/vehicle-brand/active-brands',{company_id: props.company?.id}).then((response) => {
+            const data = response.data.data.map((user) => {
+                return {
+                    value: user.id,
+                    label: user.name
+                };
+            });
+
+            setBrands(data);
+        },(error) => {
+            setBrands([]);
+        });
+    };
+
+    useEffect(() => {
+        getBrands();
+    }, []);
+
     useEffect(() => {
         getData();
     }, [id]);
@@ -92,16 +114,17 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     useEffect(() => {
         methods.setValue('name', data?.name ?? null);
         methods.setValue('active', data?.active ?? true);
+        methods.setValue('brand_id', data?.brand_id ?? null);
     }, [data]);
 
     return (
         <>
             <PageTitle
                 breadCrumbItems={[
-                    { label: 'Marcas', path: '/vehicle-brands/list' },
-                    { label: 'Cadastro', path: `/vehicle-brands/${id ? id + '/edit' : 'create'}`, active: true },
+                    { label: 'Modelos', path: '/vehicle-models/list' },
+                    { label: 'Cadastro', path: `/vehicle-models/${id ? id + '/edit' : 'create'}`, active: true },
                 ]}
-                title={'Formulário de Marca'}
+                title={'Formulário de Modelo'}
                 company={props.company}
             />
             <Row>
@@ -111,6 +134,14 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                             <form onSubmit={handleSubmit(onSubmit, (e) => {console.log(e);})} noValidate>
                                 <Row>
                                     <Col md={6}>
+                                        <FormInput
+                                            label="Marca"
+                                            type="select"
+                                            name="brand_id"
+                                            containerClass={'mb-3'}
+                                            options={brands}
+                                            {...otherProps}
+                                        />
                                         <FormInput
                                             label="Nome"
                                             type="text"

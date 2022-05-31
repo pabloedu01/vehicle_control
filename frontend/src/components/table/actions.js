@@ -3,7 +3,7 @@ import {Dropdown} from "react-bootstrap";
 import classNames from "classnames";
 
 const Actions = (props: {tableMeta: any, actions?: Array<string>, handleEdit?: any, handleDelete?: any}) => {
-  const [rowData] = useState(props.tableMeta.tableData[props.tableMeta.rowIndex]);
+  const rowData = props.tableMeta.tableData[props.tableMeta.rowIndex];
 
   const handleEdit = () => {
     props.handleEdit(rowData.id);

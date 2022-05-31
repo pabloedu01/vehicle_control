@@ -2,7 +2,8 @@
 	"info": {
 		"_postman_id": "1eab3792-a71b-4aa8-841c-73a13d90bd5b",
 		"name": "Tunap",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14505537"
 	},
 	"item": [
 		{
@@ -206,7 +207,7 @@
 								},
 								{
 									"key": "cnpj",
-									"value": "68.119.835/0001-07",
+									"value": "68.119.835/0001-03",
 									"type": "text"
 								},
 								{
@@ -222,17 +223,22 @@
 								},
 								{
 									"key": "email",
-									"value": "migueljosecontreras2@gmail.com",
+									"value": "migueljosecontreras3@gmail.com",
 									"type": "text"
 								},
 								{
 									"key": "username",
-									"value": "mcontreras2",
+									"value": "mcontreras3",
 									"type": "text"
 								},
 								{
 									"key": "password",
 									"value": "123456",
+									"type": "text"
+								},
+								{
+									"key": "company_name",
+									"value": "Company",
 									"type": "text"
 								}
 							]
@@ -694,19 +700,44 @@
 					"response": []
 				},
 				{
-					"name": "Show",
+					"name": "Active Brands",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/vehicle-brand/4",
+							"raw": "{{host}}/api/vehicle-brand/active-brands?company_id=1",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"vehicle-brand",
-								"4"
+								"active-brands"
+							],
+							"query": [
+								{
+									"key": "company_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/vehicle-brand/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"vehicle-brand",
+								"1"
 							]
 						}
 					},
@@ -857,6 +888,31 @@
 					"response": []
 				},
 				{
+					"name": "Active Vehicle Models",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/vehicle-model/active-vehicle-models?brand_id=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"vehicle-model",
+								"active-vehicle-models"
+							],
+							"query": [
+								{
+									"key": "brand_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Show",
 					"request": {
 						"method": "GET",
@@ -977,9 +1033,19 @@
 			"item": [
 				{
 					"name": "List",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "",
+								"variables": ""
+							}
+						},
 						"url": {
 							"raw": "{{host}}/api/vehicle?model_id=1",
 							"host": [
@@ -1126,6 +1192,194 @@
 			]
 		},
 		{
+			"name": "Client Vehicle",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/client-vehicle?vehicle_id=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"client-vehicle"
+							],
+							"query": [
+								{
+									"key": "vehicle_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/client-vehicle/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"client-vehicle",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "chasis",
+									"value": "editado",
+									"type": "text"
+								},
+								{
+									"key": "vehicle_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "color",
+									"value": "blue",
+									"type": "text"
+								},
+								{
+									"key": "number_motor",
+									"value": "vdx",
+									"type": "text"
+								},
+								{
+									"key": "renavan",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "plate",
+									"value": "d2f4d2",
+									"type": "text"
+								},
+								{
+									"key": "mileage",
+									"value": "325",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/client-vehicle",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"client-vehicle"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "chasis",
+									"value": "editado",
+									"type": "text"
+								},
+								{
+									"key": "vehicle_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "color",
+									"value": "blue",
+									"type": "text"
+								},
+								{
+									"key": "number_motor",
+									"value": "vdx",
+									"type": "text"
+								},
+								{
+									"key": "renavan",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "plate",
+									"value": "d2f4d2",
+									"type": "text"
+								},
+								{
+									"key": "mileage",
+									"value": "325",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/client-vehicle/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"client-vehicle",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/client-vehicle/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"client-vehicle",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Technical Consultant",
 			"item": [
 				{
@@ -1183,14 +1437,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/technical-consultant/1",
+							"raw": "{{host}}/api/technical-consultant/8",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"technical-consultant",
-								"1"
+								"8"
 							]
 						}
 					},
@@ -1212,7 +1466,8 @@
 								{
 									"key": "user_id",
 									"value": "1",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "active",
@@ -1585,6 +1840,106 @@
 					"response": []
 				},
 				{
+					"name": "Active Vehicles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/company/active-vehicles?company_id=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"company",
+								"active-vehicles"
+							],
+							"query": [
+								{
+									"key": "company_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Client Vehicles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/company/client-vehicles?company_id=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"company",
+								"client-vehicles"
+							],
+							"query": [
+								{
+									"key": "company_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Vehicle Models",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/company/vehicle-models?company_id=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"company",
+								"vehicle-models"
+							],
+							"query": [
+								{
+									"key": "company_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Active Vehicle Models",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/company/active-vehicle-models?company_id=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"company",
+								"active-vehicle-models"
+							],
+							"query": [
+								{
+									"key": "company_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Checklist Versions",
 					"request": {
 						"method": "GET",
@@ -1604,6 +1959,25 @@
 									"key": "company_id",
 									"value": "1"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/company/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"company",
+								"1"
 							]
 						}
 					},

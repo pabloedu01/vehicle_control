@@ -14,10 +14,25 @@ class VehicleModelController extends Controller
         $vehicleModels = VehicleModel::where('brand_id', '=', $request->brand_id)
                                      ->get();
 
-        return response()->json(                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  [
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   'msg' => trans('general.msg.success'),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   'data' => $vehicleModels,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ], Response::HTTP_OK
+        return response()->json([
+                                    'msg'  => trans('general.msg.success'),
+                                    'data' => $vehicleModels,
+                                ],
+                                Response::HTTP_OK
+        );
+    }
+
+    public function activeVehicleModels(Request $request)
+    {
+        $vehicleModels = VehicleModel::where('brand_id', '=', $request->brand_id)
+                                     ->where('active', '=', true)
+                                     ->get();
+
+        return response()->json([
+                                    'msg'  => trans('general.msg.success'),
+                                    'data' => $vehicleModels,
+                                ],
+                                Response::HTTP_OK
         );
     }
 
@@ -26,10 +41,10 @@ class VehicleModelController extends Controller
         $vehicleModel = VehicleModel::where('id', '=', $id)
                                     ->first();
 
-        return response()->json(   [
-                                    'msg' => trans('general.msg.success'),
-                                    'data' => $vehicleModel,
-                                ], Response::HTTP_OK
+        return response()->json(                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      [
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       'msg'  => trans('general.msg.success'),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       'data' => $vehicleModel,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ], Response::HTTP_OK
         );
     }
 
@@ -40,7 +55,7 @@ class VehicleModelController extends Controller
         if($validator->fails())
         {
             return response()->json(   [
-                                        'msg' => trans('general.msg.invalidData'),
+                                        'msg'    => trans('general.msg.invalidData'),
                                         'errors' => $validator->errors(),
                                     ], Response::HTTP_BAD_REQUEST
             );
@@ -52,7 +67,7 @@ class VehicleModelController extends Controller
         if(secureSave($vehicleModel))
         {
             return response()->json(   [
-                                        'msg' => trans('general.msg.success'),
+                                        'msg'  => trans('general.msg.success'),
                                         'data' => $vehicleModel,
                                     ], Response::HTTP_CREATED
             );
@@ -75,7 +90,7 @@ class VehicleModelController extends Controller
         if($validator->fails())
         {
             return response()->json(   [
-                                        'msg' => trans('general.msg.invalidData'),
+                                        'msg'    => trans('general.msg.invalidData'),
                                         'errors' => $validator->errors(),
                                     ], Response::HTTP_BAD_REQUEST
             );
@@ -86,7 +101,7 @@ class VehicleModelController extends Controller
         if(!$vehicleModel->hasAppliedChanges() || secureSave($vehicleModel))
         {
             return response()->json(   [
-                                        'msg' => trans('general.msg.success'),
+                                        'msg'  => trans('general.msg.success'),
                                         'data' => $vehicleModel,
                                     ], Response::HTTP_OK
             );
