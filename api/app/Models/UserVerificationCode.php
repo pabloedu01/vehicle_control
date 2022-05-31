@@ -28,7 +28,7 @@ class UserVerificationCode extends Base
 
         if($userVerificationCode)
         {
-            if(strtotime($userVerificationCode->created_at) >= strtotime('-100 minutes'))
+            if(strtotime($userVerificationCode->created_at) >= strtotime('-10 minutes'))
             {
                 return $userVerificationCode;
             }
@@ -38,7 +38,7 @@ class UserVerificationCode extends Base
 
                 return response()
                     ->json([
-                               'msg' => '¡Expired Code!',
+                               'msg' => trans('general.msg.expiredCode'),
                            ],
                            Response::HTTP_BAD_REQUEST
                     );
@@ -47,7 +47,7 @@ class UserVerificationCode extends Base
         else
         {
             return response()->json([
-                                        'msg' => '¡Not Found!',
+                                        'msg' => trans('general.msg.notFound'),
                                     ],
                                     Response::HTTP_NOT_FOUND
             );

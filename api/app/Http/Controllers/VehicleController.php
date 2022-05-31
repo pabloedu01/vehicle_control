@@ -15,7 +15,7 @@ class VehicleController extends Controller
                            ->where('model_id', '=', $request->model_id)
                            ->get();
 
-        return response()->json([ 'msg' => '¡Success!', 'data' => $vehicles, ], Response::HTTP_OK);
+        return response()->json([ 'msg' => trans('general.msg.success'), 'data' => $vehicles, ], Response::HTTP_OK);
     }
 
     public function show(Request $request, $id)
@@ -25,7 +25,7 @@ class VehicleController extends Controller
                           ->first();
 
         return response()->json(   [
-                                    'msg'  => '¡Success!',
+                                    'msg' => trans('general.msg.success'),
                                     'data' => $vehicle,
                                 ], Response::HTTP_OK
         );
@@ -38,7 +38,7 @@ class VehicleController extends Controller
         if($validator->fails())
         {
             return response()->json(   [
-                                        'msg'    => '¡Invalid Data!',
+                                        'msg' => trans('general.msg.invalidData'),
                                         'errors' => $validator->errors(),
                                     ], Response::HTTP_BAD_REQUEST
             );
@@ -51,7 +51,7 @@ class VehicleController extends Controller
         if(secureSave($vehicle))
         {
             return response()->json(                                 [
-                                                                      'msg'  => '¡Success!',
+                                                                      'msg' => trans('general.msg.success'),
                                                                       'data' => $vehicle,
                                                                   ], Response::HTTP_CREATED
             );
@@ -59,7 +59,7 @@ class VehicleController extends Controller
         else
         {
             return response()->json([
-                                        'msg' => '¡Error!',
+                                        'msg' => trans('general.msg.error'),
                                     ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
@@ -74,7 +74,7 @@ class VehicleController extends Controller
         if($validator->fails())
         {
             return response()->json(   [
-                                        'msg'    => '¡Invalid Data!',
+                                        'msg' => trans('general.msg.invalidData'),
                                         'errors' => $validator->errors(),
                                     ], Response::HTTP_BAD_REQUEST
             );
@@ -85,7 +85,7 @@ class VehicleController extends Controller
         if(!$vehicle->hasAppliedChanges() || secureSave($vehicle))
         {
             return response()->json(   [
-                                        'msg'  => '¡Success!',
+                                        'msg' => trans('general.msg.success'),
                                         'data' => $vehicle,
                                     ], Response::HTTP_OK
             );
@@ -93,7 +93,7 @@ class VehicleController extends Controller
         else
         {
             return response()->json([
-                                        'msg' => '¡Error!',
+                                        'msg' => trans('general.msg.error'),
                                     ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
@@ -106,14 +106,14 @@ class VehicleController extends Controller
         if(secureDelete($vehicle))
         {
             return response()->json([
-                                        'msg' => '¡Success!',
+                                        'msg' => trans('general.msg.success'),
                                     ], Response::HTTP_OK
             );
         }
         else
         {
             return response()->json([
-                                        'msg' => '¡Error!',
+                                        'msg' => trans('general.msg.error'),
                                     ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }

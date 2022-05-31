@@ -10,7 +10,7 @@ trait FormRequestTrait
 {
     protected function failedValidation(Validator $validator) {
         throw new HttpResponseException(response()->json([
-                                                             'msg'    => '¡Invalid Data!',
+                                                             'msg' => trans('general.msg.invalidData'),
                                                              'errors' => $validator->errors(),
                                                          ],
                                                          Response::HTTP_BAD_REQUEST));

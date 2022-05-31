@@ -24,10 +24,11 @@ class AuthController extends Controller
 
         if($validator->fails())
         {
-            return response()->json(                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   [
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        'msg'    => '¡Invalid Data!',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        'errors' => $validator->errors(),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ], Response::HTTP_BAD_REQUEST
+            return response()->json([
+                                        'msg'    => trans('general.msg.invalidData'),
+                                        'errors' => $validator->errors(),
+                                    ],
+                                    Response::HTTP_BAD_REQUEST
             );
         }
 
@@ -54,27 +55,41 @@ class AuthController extends Controller
                 if(secureSave($token))
                 {
                     return response()
-                        ->json(   [
-                                   'msg'   => '¡Success!',
+                        ->json([
+                                   'msg'   => trans('general.msg.success'),
                                    'token' => $token->token,
-                               ], Response::HTTP_CREATED
+                                   'name' => $user->name,
+                                   'id' => $user->id
+                               ],
+                               Response::HTTP_OK
                         );
                 }
                 else
                 {
                     return response()
-                        ->json(   [
-                                   'msg' => '¡Error!',
-                               ], Response::HTTP_INTERNAL_SERVER_ERROR
+                        ->json([
+                                   'msg' => trans('general.msg.error'),
+                               ],
+                               Response::HTTP_INTERNAL_SERVER_ERROR
                         );
                 }
             }
         }
 
-        return response()->json(   [
-                                    'msg' => '¡Unauthorized!',
-                                ], Response::HTTP_UNAUTHORIZED
+        return response()->json([
+                                    'msg' => trans('general.msg.unauthorized'),
+                                ],
+                                Response::HTTP_UNAUTHORIZED
         );
+    }
+
+    public function checkToken(){
+        return response()
+            ->json([
+                       'msg'   => trans('general.msg.success'),
+                   ],
+                   Response::HTTP_OK
+            );
     }
 
     public function logout(Request $request)
@@ -84,9 +99,10 @@ class AuthController extends Controller
         $user->tokens()->delete();
 
         return response()
-            ->json(   [
-                       'msg' => '¡Success!',
-                   ], Response::HTTP_OK
+            ->json([
+                       'msg' => trans('general.msg.success'),
+                   ],
+                   Response::HTTP_OK
             );
     }
 
@@ -98,25 +114,26 @@ class AuthController extends Controller
         }
         else
         {
-            return response()->json(   [
-                                        'msg' => '¡Unauthorized!',
+            return response()->json([
+                                        'msg' => trans('general.msg.unauthorized'),
                                     ], Response::HTTP_UNAUTHORIZED);
         }
     }
 
     public function register(Request $request)
     {
-        $validator = validate($request->all(), array_merge(   [
-                                                               'cnpj' => [ 'nullable', 'prohibits:cpf', new CNPJ, 'unique:companies,cnpj' ],
-                                                               'cpf'  => [ 'required_without:cnpj', new CPF, 'unique:companies,cpf' ],
-                                                           ], User::rules()));
+        $validator = validate($request->all(), array_merge([ 'company_name' => 'required|string|max:100' ],
+            collect(Company::rules())
+                ->only([ 'cnpj', 'cpf' ])
+                ->toArray(), User::rules()));
 
         if($validator->fails())
         {
-            return response()->json(   [
-                                        'msg'    => '¡Invalid Data!',
+            return response()->json([
+                                        'msg'    => trans('general.msg.invalidData'),
                                         'errors' => $validator->errors(),
-                                    ], Response::HTTP_BAD_REQUEST
+                                    ],
+                                    Response::HTTP_BAD_REQUEST
             );
         }
 
@@ -130,29 +147,28 @@ class AuthController extends Controller
                                             'birthday',
                                         ]));
 
-        $company = new Company($request->only([
-                                                  'cnpj',
-                                                  'cpf',
-                                              ]));
+        $company = new Company( collect(Company::changeDataColumns($request->only(Company::changeFillablesColumns())))->only(['name','cnpj', 'cpf'])->toArray() );
 
         if(secureSave($user) && secureSave($company))
         {
             $user->companies()->attach($company->id, [ 'role' => 'owner' ]);
 
             return response()
-                ->json(   [
-                           'msg'     => '¡Success!',
-                           'user' => $user,
+                ->json([
+                           'msg'     => trans('general.msg.success'),
+                           'user'    => $user,
                            'company' => $company,
-                       ], Response::HTTP_CREATED
+                       ],
+                       Response::HTTP_CREATED
                 );
         }
         else
         {
             return response()
-                ->json(   [
-                           'msg' => '¡Error!',
-                       ], Response::HTTP_INTERNAL_SERVER_ERROR
+                ->json([
+                           'msg' => trans('general.msg.error'),
+                       ],
+                       Response::HTTP_INTERNAL_SERVER_ERROR
                 );
         }
     }
@@ -161,13 +177,16 @@ class AuthController extends Controller
     {
         $result = UserVerificationCode::validate($request->code);
 
-        if($result instanceof UserVerificationCode){
+        if($result instanceof UserVerificationCode)
+        {
             return response()
                 ->json(   [
-                              'msg' => '¡Success!',
-                          ], Response::HTTP_OK
+                           'msg' => trans('general.msg.success'),
+                       ], Response::HTTP_OK
                 );
-        } else {
+        }
+        else
+        {
             return $result;
         }
     }
@@ -176,7 +195,8 @@ class AuthController extends Controller
     {
         $result = UserVerificationCode::validate($request->code);
 
-        if($result instanceof UserVerificationCode){
+        if($result instanceof UserVerificationCode)
+        {
             $userVerificationCode = $result;
 
             $user = $userVerificationCode->user;
@@ -188,19 +208,21 @@ class AuthController extends Controller
             {
                 return response()
                     ->json(   [
-                                  'msg' => '¡Success!',
-                              ], Response::HTTP_OK
+                               'msg' => trans('general.msg.success'),
+                           ], Response::HTTP_OK
                     );
             }
             else
             {
                 return response()
                     ->json(   [
-                                  'msg' => '¡Error!',
-                              ], Response::HTTP_INTERNAL_SERVER_ERROR
+                               'msg' => trans('general.msg.error'),
+                           ], Response::HTTP_INTERNAL_SERVER_ERROR
                     );
             }
-        } else {
+        }
+        else
+        {
             return $result;
         }
     }
@@ -213,10 +235,11 @@ class AuthController extends Controller
 
         if($validator->fails())
         {
-            return response()->json(                                                                                                                                                                                                                              [
-                                                                                                                                                                                                                                                                   'msg'    => '¡Invalid Data!',
-                                                                                                                                                                                                                                                                   'errors' => $validator->errors(),
-                                                                                                                                                                                                                                                               ], Response::HTTP_BAD_REQUEST
+            return response()->json([
+                                        'msg'    => trans('general.msg.invalidData'),
+                                        'errors' => $validator->errors(),
+                                    ],
+                                    Response::HTTP_BAD_REQUEST
             );
         }
 
@@ -242,7 +265,7 @@ class AuthController extends Controller
 
                     return response()
                         ->json([
-                                   'msg' => '¡Success!',
+                                   'msg' => trans('general.msg.success'),
                                ],
                                Response::HTTP_CREATED
                         );
@@ -251,7 +274,7 @@ class AuthController extends Controller
                 {
                     return response()
                         ->json([
-                                   'msg' => '¡Error!',
+                                   'msg' => trans('general.msg.error'),
                                ],
                                Response::HTTP_INTERNAL_SERVER_ERROR
                         );
@@ -260,7 +283,7 @@ class AuthController extends Controller
             else
             {
                 return response()->json([
-                                            'msg' => '¡User not active!',
+                                            'msg' => trans('general.msg.userNotActive'),
                                         ],
                                         Response::HTTP_BAD_REQUEST
                 );
@@ -269,7 +292,7 @@ class AuthController extends Controller
         else
         {
             return response()->json([
-                                        'msg' => '¡Not Found!',
+                                        'msg' => trans('general.msg.notFound'),
                                     ],
                                     Response::HTTP_NOT_FOUND
             );
@@ -290,7 +313,7 @@ class AuthController extends Controller
             if($validator->fails())
             {
                 return response()->json([
-                                            'msg'    => '¡Invalid Data!',
+                                            'msg'    => trans('general.msg.invalidData'),
                                             'errors' => $validator->errors(),
                                         ],
                                         Response::HTTP_BAD_REQUEST
@@ -308,7 +331,7 @@ class AuthController extends Controller
             {
                 return response()
                     ->json([
-                               'msg' => '¡Success!',
+                               'msg' => trans('general.msg.success'),
                            ],
                            Response::HTTP_OK
                     );
@@ -317,7 +340,7 @@ class AuthController extends Controller
             {
                 return response()
                     ->json([
-                               'msg' => '¡Error!',
+                               'msg' => trans('general.msg.error'),
                            ],
                            Response::HTTP_INTERNAL_SERVER_ERROR
                     );

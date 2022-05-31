@@ -40,4 +40,8 @@ Route::group([
     Route::post('logout', [
         'uses' => 'AuthController@logout',
     ]);
+
+    Route::post('auth/check-token', [
+        'uses' => 'AuthController@checkToken',
+    ]);
 });
