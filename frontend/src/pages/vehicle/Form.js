@@ -15,12 +15,17 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     const history = useNavigate();
     const {id} = useParams();
     const [data, setData] = useState();
+    const [brands, setBrands] = useState([]);
+    const [models, setModels] = useState([]);
 
     /*
      * form validation schema
      */
     const schemaResolver = yupResolver(
         yup.object().shape({
+            brand_id: yup.number().required('Por favor, digite Marca'),
+            model_id: yup.number().required('Por favor, digite Modelo'),
+            model_year: yup.number().required('Por favor, digite Ano'),
             name: yup.string().required('Por favor, digite Nome Completo'),
             active: yup.boolean(),
         })
@@ -46,13 +51,13 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         let ajaxCall;
 
         if(id){
-            ajaxCall = api.update('/vehicle-brand/' + id,formData);
+            ajaxCall = api.update('/vehicle/' + id,formData);
         } else {
-            ajaxCall = api.post('/vehicle-brand',Object.assign(formData,{company_id: props.company?.id}));
+            ajaxCall = api.post('/vehicle',Object.assign(formData,{company_id: props.company?.id}));
         }
 
         ajaxCall.then(() => {
-            history(`/panel/company/${props.company?.id}/vehicle-brands/list`);
+            history(`/panel/company/${props.company?.id}/vehicles/list`);
         }, (error) => {
             if(error.response.status === 400 && error.response.data.hasOwnProperty('errors')){
                 for(let fieldName in error.response.data.errors){
@@ -66,16 +71,21 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     const getData = () => {
         const defaultData = {
+            brand_id: null,
+            model_id: null,
+            model_year: null,
             name: null,
             active: true
         };
 
         if(id){
-            api.get('/vehicle-brand/' + id).then((response) => {
-                const {name,active} = response.data.data;
+            api.get('/vehicle/' + id).then((response) => {
+                const {name,active,model_id, model_year, model: {brand_id}} = response.data.data;
+
+                getModels(brand_id);
 
                 setData({
-                    name,active
+                    name,active,model_id, model_year, brand_id
                 });
             },(error) => {
                 setData(defaultData);
@@ -85,6 +95,44 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         }
     };
 
+    const handleChangeBrand = () => {
+        getModels();
+    };
+
+    const getBrands = () => {
+        api.get('/vehicle-brand/active-brands',{company_id: props.company?.id}).then((response) => {
+            const data = response.data.data.map((item) => {
+                return {
+                    value: item.id,
+                    label: item.name
+                };
+            });
+
+            setBrands(data);
+        },(error) => {
+            setBrands([]);
+        });
+    };
+
+    const getModels = (brand_id?) => {
+        api.get('/vehicle-model/active-vehicle-models',{brand_id: brand_id ?? methods.getValues('brand_id')}).then((response) => {
+            const data = response.data.data.map((user) => {
+                return {
+                    value: user.id,
+                    label: user.name
+                };
+            });
+
+            setModels(data);
+        },(error) => {
+            setModels([]);
+        });
+    };
+
+    useEffect(() => {
+        getBrands();
+    }, []);
+
     useEffect(() => {
         getData();
     }, [id]);
@@ -92,16 +140,19 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     useEffect(() => {
         methods.setValue('name', data?.name ?? null);
         methods.setValue('active', data?.active ?? true);
+        methods.setValue('model_id', data?.model_id ?? null);
+        methods.setValue('brand_id', data?.brand_id ?? null);
+        methods.setValue('model_year', data?.model_year ?? null);
     }, [data]);
 
     return (
         <>
             <PageTitle
                 breadCrumbItems={[
-                    { label: 'Marcas', path: '/vehicle-brands/list' },
-                    { label: 'Cadastro', path: `/vehicle-brands/${id ? id + '/edit' : 'create'}`, active: true },
+                    { label: 'Modelos', path: '/vehicles/list' },
+                    { label: 'Cadastro', path: `/vehicles/${id ? id + '/edit' : 'create'}`, active: true },
                 ]}
-                title={'Formulário de Marca'}
+                title={'Formulário de Modelo'}
                 company={props.company}
             />
             <Row>
@@ -112,6 +163,16 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                                 <Row>
                                     <Col md={6}>
                                         <FormInput
+                                            label="Marcas"
+                                            type="select"
+                                            name="brand_id"
+                                            containerClass={'mb-3'}
+                                            options={brands}
+                                            handleChange={handleChangeBrand}
+                                            {...otherProps}
+                                        />
+
+                                        <FormInput
                                             label="Nome"
                                             type="text"
                                             name="name"
@@ -119,9 +180,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                                             containerClass={'mb-3'}
                                             {...otherProps}
                                         />
-                                    </Col>
 
-                                    <Col md={6}>
                                         <FormInput
                                             label="Ative"
                                             type="checkbox"
@@ -129,6 +188,26 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                                             containerClass={'mb-3'}
                                             {...otherProps}
                                         />
+                                    </Col>
+
+                                    <Col md={6}>
+                                        <FormInput
+                                            label="Modelo"
+                                            type="select"
+                                            name="model_id"
+                                            containerClass={'mb-3'}
+                                            options={models}
+                                            {...otherProps}
+                                        />
+                                        <FormInput
+                                            label="Ano"
+                                            type="text"
+                                            name="model_year"
+                                            placeholder="Digite Ano"
+                                            containerClass={'mb-3'}
+                                            {...otherProps}
+                                        />
+
                                     </Col>
                                 </Row>
 

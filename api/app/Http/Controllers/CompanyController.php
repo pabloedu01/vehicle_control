@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ClientVehicle;
 use App\Models\Company;
 use App\Models\Vehicle;
 use App\Models\VehicleBrandChecklistVersion;
+use App\Models\VehicleModel;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -23,6 +25,44 @@ class CompanyController extends Controller
         );
     }
 
+    public function index(Request $request)
+    {
+        $vehicles = Vehicle::with('model', 'model.brand')
+                           ->where('model_id', '=', $request->model_id)
+                           ->get();
+
+        return response()->json([ 'msg' => trans('general.msg.success'), 'data' => $vehicles, ], Response::HTTP_OK);
+    }
+
+    public function vehicleModels(Request $request)
+    {
+        $vehicleModels = VehicleModel::with('brand')
+                                     ->where('company_id', '=', $request->company_id)
+                                     ->get();
+
+        return response()->json([
+                                    'msg'  => trans('general.msg.success'),
+                                    'data' => $vehicleModels,
+                                ],
+                                Response::HTTP_OK
+        );
+    }
+
+    public function activeVehicleModels(Request $request)
+    {
+        $vehicleModels = VehicleModel::with('brand')
+                                     ->where('company_id', '=', $request->company_id)
+                                     ->where('active', '=', true)
+                                     ->get();
+
+        return response()->json([
+                                    'msg'  => trans('general.msg.success'),
+                                    'data' => $vehicleModels,
+                                ],
+                                Response::HTTP_OK
+        );
+    }
+
     public function vehicles(Request $request)
     {
         $vehicles = Vehicle::with('model', 'model.brand')
@@ -32,6 +72,33 @@ class CompanyController extends Controller
         return response()->json([
                                     'msg'  => trans('general.msg.success'),
                                     'data' => $vehicles,
+                                ],
+                                Response::HTTP_OK
+        );
+    }
+
+    public function activeVehicles(Request $request)
+    {
+        $vehicles = Vehicle::where('company_id', '=', $request->company_id)
+                           ->where('active', '=', true)
+                           ->get();
+
+        return response()->json([
+                                    'msg'  => trans('general.msg.success'),
+                                    'data' => $vehicles,
+                                ],
+                                Response::HTTP_OK
+        );
+    }
+
+    public function clientVehicles(Request $request)
+    {
+        $clientVehicles = ClientVehicle::where('company_id', '=', $request->company_id)
+                                       ->get();
+
+        return response()->json([
+                                    'msg'  => trans('general.msg.success'),
+                                    'data' => $clientVehicles,
                                 ],
                                 Response::HTTP_OK
         );
