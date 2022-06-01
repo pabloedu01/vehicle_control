@@ -12,10 +12,12 @@ Route::group([
                  ], function(){
 
 
-
-
         Route::get('/', [
             'uses' => 'ClientController@index',
+        ]);
+
+        Route::get('active-clients', [
+            'uses' => 'ClientController@activeClients',
         ]);
 
         Route::post('/', [

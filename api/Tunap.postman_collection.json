@@ -537,6 +537,31 @@
 					"response": []
 				},
 				{
+					"name": "Active Clients",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/client/active-clients?company_id=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"client",
+								"active-clients"
+							],
+							"query": [
+								{
+									"key": "company_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Show",
 					"request": {
 						"method": "GET",
@@ -1047,6 +1072,41 @@
 							}
 						},
 						"url": {
+							"raw": "{{host}}/api/vehicle/active-vehicles?model_id=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"vehicle",
+								"active-vehicles"
+							],
+							"query": [
+								{
+									"key": "model_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Active Vehicles",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "",
+								"variables": ""
+							}
+						},
+						"url": {
 							"raw": "{{host}}/api/vehicle?model_id=1",
 							"host": [
 								"{{host}}"
@@ -1420,6 +1480,31 @@
 							"path": [
 								"api",
 								"technical-consultant"
+							],
+							"query": [
+								{
+									"key": "company_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Active Technical Consultants",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/technical-consultant/active-technical-consultants?company_id=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"technical-consultant",
+								"active-technical-consultants"
 							],
 							"query": [
 								{
@@ -1840,31 +1925,6 @@
 					"response": []
 				},
 				{
-					"name": "Active Vehicles",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{host}}/api/company/active-vehicles?company_id=1",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"company",
-								"active-vehicles"
-							],
-							"query": [
-								{
-									"key": "company_id",
-									"value": "1"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Client Vehicles",
 					"request": {
 						"method": "GET",
@@ -1903,31 +1963,6 @@
 								"api",
 								"company",
 								"vehicle-models"
-							],
-							"query": [
-								{
-									"key": "company_id",
-									"value": "1"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Active Vehicle Models",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{host}}/api/company/active-vehicle-models?company_id=1",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"company",
-								"active-vehicle-models"
 							],
 							"query": [
 								{
@@ -2259,14 +2294,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/service-schedule/2",
+							"raw": "{{host}}/api/service-schedule/3",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"service-schedule",
-								"2"
+								"3"
 							]
 						}
 					},

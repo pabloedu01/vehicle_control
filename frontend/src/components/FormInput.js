@@ -4,6 +4,7 @@ import { Form, InputGroup } from 'react-bootstrap';
 import classNames from 'classnames';
 import Select from 'react-select';
 import {Controller} from "react-hook-form";
+import HyperDatepicker from "./Datepicker";
 
 /* Password Input */
 const PasswordInput = ({ name, placeholder, refCallback, errors, register, className }) => {
@@ -75,7 +76,7 @@ const FormInput = ({
     ...otherProps
 }: FormInputProps): React$Element<React$FragmentType> => {
     // handle input type
-    const comp = type === 'textarea' ? 'textarea' : type === 'select' ? 'select' : 'input';
+    const comp = type === 'textarea' ? 'textarea' : type === 'select' ? 'select' : type === 'datepicker' ? 'datepicker' : 'input';
 
     return (
         <>
@@ -171,33 +172,78 @@ const FormInput = ({
                                             </Form.Group>
                                         </>
                                     ) : (
-                                        <Form.Group className={containerClass}>
-                                            {label ? <Form.Label className={labelClassName}>{label}</Form.Label> : null}
+                                        <>
+                                            {type === 'datepicker' ? (
+                                                <>
+                                                    <Form.Group className={containerClass}>
+                                                        {label ? <Form.Label className={labelClassName}>{label}</Form.Label> : null}
 
-                                            <Form.Control
-                                                type={type}
-                                                placeholder={placeholder}
-                                                name={name}
-                                                id={name}
-                                                as={comp}
-                                                ref={(r) => {
-                                                    if (refCallback) refCallback(r);
-                                                }}
-                                                className={className}
-                                                isInvalid={errors && errors[name] ? true : false}
-                                                {...(register ? register(name) : {})}
-                                                {...otherProps}
-                                                autoComplete={name}>
-                                                {children ? children : null}
-                                            </Form.Control>
 
-                                            {errors && errors[name] ? (
-                                                <Form.Control.Feedback type="invalid">
-                                                    <span dangerouslySetInnerHTML={{__html: errors[name]['message']}}/>
-                                                </Form.Control.Feedback>
-                                            ) : null}
-                                            {smallHtml ? smallHtml : null}
-                                        </Form.Group>
+                                                        <div className={errors && errors[name] ? 'is-invalid' : ''}>
+                                                            <Controller
+                                                                control={otherProps['control']}
+                                                                render={({ field: { onChange, value, name, ref } }) => (
+                                                                    <HyperDatepicker
+                                                                        hideAddon={true}
+                                                                        showTimeSelect
+                                                                        timeFormat="HH:mm"
+                                                                        tI={60}
+                                                                        dateFormat="dd/MM/yyyy h:mm aa"
+                                                                        timeCaption="time"
+                                                                        name={name}
+                                                                        value={value}
+                                                                        onChange={(date) => {
+                                                                            if(otherProps.hasOwnProperty('handleChange')){
+                                                                                otherProps['handleChange'](date);
+                                                                            }
+                                                                        }}
+                                                                        {...otherProps}
+                                                                    />
+                                                                )}
+                                                                name={name}
+                                                            />
+                                                        </div>
+
+                                                        {errors && errors[name] ? (
+                                                            <Form.Control.Feedback type="invalid">
+                                                                <span dangerouslySetInnerHTML={{__html: errors[name]['message']}}/>
+                                                            </Form.Control.Feedback>
+                                                        ) : null}
+                                                        {smallHtml ? smallHtml : null}
+                                                    </Form.Group>
+                                                </>
+                                            ) : (
+                                                <Form.Group className={containerClass}>
+                                                    {label ? <Form.Label className={labelClassName}>{label}</Form.Label> : null}
+
+                                                    <Form.Control
+                                                        type={type}
+                                                        placeholder={placeholder}
+                                                        name={name}
+                                                        id={name}
+                                                        as={comp}
+                                                        ref={(r) => {
+                                                            if(refCallback){
+                                                                refCallback(r);
+                                                            }
+                                                        }}
+                                                        className={className}
+                                                        isInvalid={errors && errors[name] ? true : false}
+                                                        {...(register ? register(name) : {})}
+                                                        {...otherProps}
+                                                        autoComplete={name}>
+                                                        {children ? children : null}
+                                                    </Form.Control>
+
+                                                    {errors && errors[name] ? (
+                                                        <Form.Control.Feedback type="invalid">
+                                                            <span dangerouslySetInnerHTML={{__html: errors[name]['message']}}/>
+                                                        </Form.Control.Feedback>
+                                                    ) : null}
+                                                    {smallHtml ? smallHtml : null}
+                                                </Form.Group>
+                                            )}
+                                        </>
                                     )}
                                 </>
                             )}

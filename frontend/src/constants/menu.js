@@ -62,12 +62,13 @@ const MENU_ITEMS = [
     },
 
     {
-        key: 'uil-money-withdrawal',
-        label: 'Services Scheduler',
-        url: '/apps/schedule/services',
+        key: 'serviceSchedules.index',
+        label: 'Horários de Serviço',
+        url: '/service-schedules/list',
         icon: 'uil-tachometer-fast',
-
     },
+
+
 ];
 
 export default MENU_ITEMS;
