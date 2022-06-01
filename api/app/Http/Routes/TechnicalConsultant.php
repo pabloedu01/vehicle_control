@@ -15,6 +15,10 @@ Route::group([
             'uses' => 'TechnicalConsultantController@index',
         ]);
 
+        Route::get('active-technical-consultants', [
+            'uses' => 'TechnicalConsultantController@activeTechnicalConsultants',
+        ]);
+
         Route::post('/', [
             'uses' => 'TechnicalConsultantController@store',
         ]);

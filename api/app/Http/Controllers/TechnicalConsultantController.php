@@ -16,7 +16,22 @@ class TechnicalConsultantController extends Controller
                                                    ->get();
 
         return response()->json([
-                                    'msg' => trans('general.msg.success'),
+                                    'msg'  => trans('general.msg.success'),
+                                    'data' => $technicalConsultants,
+                                ],
+                                Response::HTTP_OK
+        );
+    }
+
+    public function activeTechnicalConsultants(Request $request)
+    {
+        $technicalConsultants = TechnicalConsultant::with('user')
+                                                   ->where('company_id', '=', $request->company_id)
+                                                   ->where('active', '=', true)
+                                                   ->get();
+
+        return response()->json([
+                                    'msg'  => trans('general.msg.success'),
                                     'data' => $technicalConsultants,
                                 ],
                                 Response::HTTP_OK
@@ -26,15 +41,15 @@ class TechnicalConsultantController extends Controller
     public function availableUsers(Request $request)
     {
         $availableUsers = User::whereHas('companies', function($query) use ($request){
-                                        return $query->where('company_id', '=', $request->company_id);
-                                    })
-                                    ->whereDoesntHave('technicalConsultants', function($query) use ($request){
-                                        return $query->where('company_id', '=', $request->company_id);
-                                    })
-                                    ->get();
+            return $query->where('company_id', '=', $request->company_id);
+        })
+                              ->whereDoesntHave('technicalConsultants', function($query) use ($request){
+                                  return $query->where('company_id', '=', $request->company_id);
+                              })
+                              ->get();
 
         return response()->json([
-                                    'msg' => trans('general.msg.success'),
+                                    'msg'  => trans('general.msg.success'),
                                     'data' => $availableUsers,
                                 ],
                                 Response::HTTP_OK
@@ -48,7 +63,7 @@ class TechnicalConsultantController extends Controller
                                                   ->first();
 
         return response()->json([
-                                    'msg' => trans('general.msg.success'),
+                                    'msg'  => trans('general.msg.success'),
                                     'data' => $technicalConsultant,
                                 ],
                                 Response::HTTP_OK
@@ -61,10 +76,10 @@ class TechnicalConsultantController extends Controller
 
         if($validator->fails())
         {
-            return response()->json(   [
-                                        'msg' => trans('general.msg.invalidData'),
-                                        'errors' => $validator->errors(),
-                                    ], Response::HTTP_BAD_REQUEST
+            return response()->json(                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         [
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              'msg'    => trans('general.msg.invalidData'),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              'errors' => $validator->errors(),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ], Response::HTTP_BAD_REQUEST
             );
         }
 
@@ -73,7 +88,7 @@ class TechnicalConsultantController extends Controller
         if(secureSave($technicalConsultant))
         {
             return response()->json(   [
-                                        'msg' => trans('general.msg.success'),
+                                        'msg'  => trans('general.msg.success'),
                                         'data' => $technicalConsultant,
                                     ], Response::HTTP_CREATED
             );
@@ -96,18 +111,18 @@ class TechnicalConsultantController extends Controller
         if($validator->fails())
         {
             return response()->json(   [
-                                        'msg' => trans('general.msg.invalidData'),
+                                        'msg'    => trans('general.msg.invalidData'),
                                         'errors' => $validator->errors(),
                                     ], Response::HTTP_BAD_REQUEST
             );
         }
 
-        $technicalConsultant->fill(collect($request->except(['company_id']))->only(TechnicalConsultant::getFillables())->toArray());
+        $technicalConsultant->fill(collect($request->except([ 'company_id' ]))->only(TechnicalConsultant::getFillables())->toArray());
 
         if(!$technicalConsultant->hasAppliedChanges() || secureSave($technicalConsultant))
         {
             return response()->json(   [
-                                        'msg' => trans('general.msg.success'),
+                                        'msg'  => trans('general.msg.success'),
                                         'data' => $technicalConsultant,
                                     ], Response::HTTP_CREATED
             );

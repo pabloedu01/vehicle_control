@@ -20,6 +20,19 @@ class ClientController extends Controller
                                 Response::HTTP_OK);
     }
 
+    public function activeClients(Request $request)
+    {
+        $clients = Client::where('company_id', '=', $request->company_id)
+                         ->where('active', '=', true)
+                         ->get();
+
+        return response()->json([
+                                    'msg'  => trans('general.msg.success'),
+                                    'data' => $clients,
+                                ],
+                                Response::HTTP_OK);
+    }
+
     public function show(Request $request, $id)
     {
         $client = Client::where('id', '=', $id)

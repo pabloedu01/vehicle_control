@@ -28,6 +28,7 @@ class ServiceSchedule extends FormRequest
      */
     public function rules()
     {
+        $id = @$this->route('id');
         $company_id = @$this->request->get('company_id');
 
         return [
@@ -45,7 +46,7 @@ class ServiceSchedule extends FormRequest
                 Rule::exists('clients', 'id')->where('company_id', $company_id)
             ],
             'code' => [
-                'nullable', 'string'
+                'nullable', 'string', \App\Models\ServiceSchedule::getUniqueRule($id, ['company_id' => $company_id])
             ],
             'chasis' => [
                 'nullable', 'string'
