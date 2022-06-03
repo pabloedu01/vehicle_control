@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ServiceScheduleController extends Controller
 {
-    private static $with = ['vehicle','vehicle.model','vehicle.model.brand', 'client', 'technicalConsultant', 'technicalConsultant.user', 'claimsService','claimsService.services','claimsService.services.products'];
+    private static $with = ['vehicle','vehicle.model','vehicle.model.brand', 'client', 'technicalConsultant', 'technicalConsultant.user', 'claimsService','claimsService.services','claimsService.services.products', 'vehicleService'];
 
     public function index(Request $request)
     {

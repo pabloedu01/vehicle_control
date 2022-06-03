@@ -197,6 +197,12 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         methods.setValue('promised_date', date);
     };
 
+    const onClickChecklist = (e) => {
+      e.preventDefault();
+
+        history(`/panel/company/${props.company?.id}/service-schedules/${id}/checklist`);
+    };
+
     useEffect(() => {
         getBrands();
         getClients();
@@ -233,7 +239,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                 <Col xs={12}>
                     <Card>
                         <Card.Body>
-                            <form onSubmit={handleSubmit(onSubmit, (e) => {console.log(e);})} noValidate>
+                            <form onSubmit={handleSubmit(onSubmit)} noValidate>
                                 <Row>
                                     <Col md={6}>
                                         <FormInput
@@ -325,7 +331,11 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                                     </Col>
 
                                     <Col md={6}>
-
+                                        <div className={'d-grid'} hidden={id ?? false}>
+                                            <Button variant="primary" size={'lg'} type="buttom" onClick={onClickChecklist}>
+                                                Checklist
+                                            </Button>
+                                        </div>
                                     </Col>
                                 </Row>
 

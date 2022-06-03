@@ -43,6 +43,11 @@ const ClientVehicleForm = React.lazy(() => import('../pages/client-vehicle/Form'
 const ServiceScheduleList = React.lazy(() => import('../pages/service-schedule/List'));
 const ServiceScheduleForm = React.lazy(() => import('../pages/service-schedule/Form'));
 
+const ClientList = React.lazy(() => import('../pages/client/List'));
+const ClientForm = React.lazy(() => import('../pages/client/Form'));
+
+const ChecklistForm = React.lazy(() => import('../pages/checklist/Form'));
+
 
 // dashboard
 
@@ -272,6 +277,27 @@ const AllRoutes = () => {
                             element: <LoadComponent component={ServiceScheduleForm} />,
                         },
                     ]
+                },
+                {
+                    path: 'clients',
+                    children: [
+                        {
+                            path: 'list',
+                            element: <LoadComponent component={ClientList} />,
+                        },
+                        {
+                            path: 'create',
+                            element: <LoadComponent component={ClientForm} />,
+                        },
+                        {
+                            path: ':id/edit',
+                            element: <LoadComponent component={ClientForm} />,
+                        },
+                    ]
+                },
+                {
+                    path: ':type/:id/checklist',
+                    element: <LoadComponent component={ChecklistForm} />,
                 },
             ]
         },

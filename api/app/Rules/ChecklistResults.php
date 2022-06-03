@@ -37,8 +37,8 @@ class ChecklistResults implements Rule
         }
 
         $items = ChecklistItem::whereHas('versions', function($query){
-            return $query->where(ChecklistVersion::getTableName().'.id', '=', $this->version_id);
-        })->get();
+                                  return $query->where(ChecklistVersion::getTableName().'.id', '=', $this->version_id);
+                              })->get();
 
         $itemsIds = $items->pluck('id')->toArray();
         $valueIds = collect($value)->pluck('id')->toArray();

@@ -67,6 +67,12 @@ const MENU_ITEMS = [
         url: '/service-schedules/list',
         icon: 'uil-tachometer-fast',
     },
+    {
+        key: 'clients.index',
+        label: 'Clientes',
+        url: '/clients/list',
+        icon: 'uil-tachometer-fast',
+    },
 
 
 ];

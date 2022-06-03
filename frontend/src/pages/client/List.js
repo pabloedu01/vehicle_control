@@ -7,8 +7,8 @@ import {useNavigate} from "react-router-dom";
 import MUIDataTable from "mui-datatables";
 import TABLE_OPTIONS from "../../constants/tableOptions";
 import Actions from "../../components/table/actions";
-import swal from "sweetalert";
-import moment from 'moment';
+import Active from "../../components/table/columnActive";
+import swal from 'sweetalert';
 
 const api = new APICore();
 
@@ -20,26 +20,23 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
     const [tableOptions, setTableOptions] = useState({});
 
     const getList = () => {
-        api.get('/service-schedule', {company_id: props.company?.id}).then((response) => {
+        api.get('/client', {company_id: props.company?.id}).then((response) => {
             setList(response.data.data.map((item) => {
                 return {
                     id: item.id,
-                    vehicle: item.vehicle !== null  ? (item.vehicle.name + ' ' + item.vehicle.model_year + ' (' + item.vehicle.model.brand.name + ' - ' + item.vehicle.model.name + ')') : null,
-                    code: item.code,
-                    chasis: item.chasis,
-                    plate: item.plate,
-                    promised_date: moment(item.promised_date).format('DD/MM/YYYY H:mma'),
-                    client: item.client?.name,
-                    technical_consultant: item.technical_consultant?.name,
+                    name: item.name,
+                    active: item.active,
+                    document: item.document,
+                    address: item.address,
                 }
             }));
-        }, () => {
+        }, (error) => {
             setList([]);
         })
     };
 
     const onEdit = (id) => {
-        history(`/panel/company/${props.company?.id}/service-schedules/${id}/edit`);
+        history(`/panel/company/${props.company?.id}/clients/${id}/edit`);
     };
 
     const onDelete = (registerId, newList) => {
@@ -57,7 +54,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
             dangerMode: true,
         }).then((confirm) => {
             if(confirm){
-                api.delete('/service-schedule/' + registerId).then((response) => {
+                api.delete('/client/' + registerId).then((response) => {
                     setList(newList);
                 }, () => {
 
@@ -79,59 +76,38 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                 },
             },
             {
-                label: 'Vehiculo',
-                name: 'vehicle',
+                label: 'Nome',
+                name: 'name',
                 options: {
                     filter: true,
                     sort: true,
                 },
             },
             {
-                label: 'Código',
-                name: 'code',
+                label: 'Documento',
+                name: 'document',
                 options: {
                     filter: true,
                     sort: true,
                 },
             },
             {
-                label: 'Chasis',
-                name: 'chasis',
-                options: {
-                    filter: true,
-                    sort: true,
-                },
-            },
-                        {
-                label: 'Plate',
-                name: 'plate',
+                label: 'Direção',
+                name: 'address',
                 options: {
                     filter: true,
                     sort: true,
                 },
             },
             {
-                label: 'Data prometida',
-                name: 'promised_date',
+                label: 'Ative',
+                name: 'active',
                 options: {
-                    filter: true,
+                    filter: false,
                     sort: true,
-                },
-            },
-            {
-                label: 'Cliente',
-                name: 'client',
-                options: {
-                    filter: true,
-                    sort: true,
-                },
-            },
-            {
-                label: 'Consultor Técnico',
-                name: 'technical_consultant',
-                options: {
-                    filter: true,
-                    sort: true,
+                    customBodyRender: (value, tableMeta) => {
+                        return <Active value={value} tableMeta={tableMeta}/>;
+                    }
                 },
             },
             {
@@ -156,10 +132,10 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
         <>
             <PageTitle
                 breadCrumbItems={[
-                    { label: 'Horários de Serviço', path: '/service-schedules/list' },
-                    { label: 'Lista', path: '/service-schedules/list', active: true },
+                    { label: 'Marcas', path: '/clients/list' },
+                    { label: 'Lista', path: '/clients/list', active: true },
                 ]}
-                title={'Horários de Serviço'}
+                title={'Clientes'}
                 company={props.company}
             />
 
@@ -173,8 +149,8 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                                 </Col>
                                 <Col xl={4}>
                                     <div className="text-xl-end mt-xl-0 mt-2">
-                                        <Button variant="danger" className="mb-2 me-2" onClick={() => { history(`/panel/company/${props.company?.id}/service-schedules/create`) }}>
-                                            <i className="mdi mdi-basket me-1" /> Novo Vehiculo do Cliente
+                                        <Button variant="danger" className="mb-2 me-2" onClick={() => { history(`/panel/company/${props.company?.id}/clients/create`) }}>
+                                            <i className="mdi mdi-basket me-1" /> Novo Cliente
                                         </Button>
                                     </div>
                                 </Col>
