@@ -46,5 +46,11 @@ class ServiceSchedule extends Base
     {
         return $this->hasMany('App\Models\ClaimServiceServiceSchedule', 'service_schedule_id', 'id');
     }
+
+    #has one
+    public function vehicleService()
+    {
+        return $this->hasOne('App\Models\VehicleService', 'service_schedule_id', 'id');
+    }
 }
 

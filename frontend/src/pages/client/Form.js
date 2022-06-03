@@ -21,9 +21,10 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
      */
     const schemaResolver = yupResolver(
         yup.object().shape({
-            code: yup.string().required('Por favor, digite Código'),
             name: yup.string().required('Por favor, digite Nome Completo'),
             active: yup.boolean(),
+            document: yup.string().required('Por favor, digite Documento'),
+            address: yup.string().required('Por favor, digite a Direção'),
         })
     );
 
@@ -47,13 +48,13 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         let ajaxCall;
 
         if(id){
-            ajaxCall = api.update('/vehicle-brand/' + id,formData);
+            ajaxCall = api.update('/client/' + id,formData);
         } else {
-            ajaxCall = api.post('/vehicle-brand',Object.assign(formData,{company_id: props.company?.id}));
+            ajaxCall = api.post('/client',Object.assign(formData,{company_id: props.company?.id}));
         }
 
         ajaxCall.then(() => {
-            history(`/panel/company/${props.company?.id}/vehicle-brands/list`);
+            history(`/panel/company/${props.company?.id}/clients/list`);
         }, (error) => {
             if(error.response.status === 400 && error.response.data.hasOwnProperty('errors')){
                 for(let fieldName in error.response.data.errors){
@@ -67,17 +68,18 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     const getData = () => {
         const defaultData = {
-            code: null,
             name: null,
-            active: true
+            active: true,
+            document: null,
+            address: null,
         };
 
         if(id){
-            api.get('/vehicle-brand/' + id).then((response) => {
-                const {name,active, code} = response.data.data;
+            api.get('/client/' + id).then((response) => {
+                const {name,active,document,address} = response.data.data;
 
                 setData({
-                    name,active,code
+                    name,active,document,address,
                 });
             },(error) => {
                 setData(defaultData);
@@ -93,18 +95,19 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     useEffect(() => {
         methods.setValue('name', data?.name ?? null);
-        methods.setValue('code', data?.code ?? null);
         methods.setValue('active', data?.active ?? true);
+        methods.setValue('document', data?.document ?? null);
+        methods.setValue('address', data?.address ?? null);
     }, [data]);
 
     return (
         <>
             <PageTitle
                 breadCrumbItems={[
-                    { label: 'Marcas', path: '/vehicle-brands/list' },
-                    { label: 'Cadastro', path: `/vehicle-brands/${id ? id + '/edit' : 'create'}`, active: true },
+                    { label: 'Marcas', path: '/clients/list' },
+                    { label: 'Cadastro', path: `/clients/${id ? id + '/edit' : 'create'}`, active: true },
                 ]}
-                title={'Formulário de Marca'}
+                title={'Clientes'}
                 company={props.company}
             />
             <Row>
@@ -124,10 +127,18 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                                         />
 
                                         <FormInput
-                                            label="Código"
+                                            label="Documento"
                                             type="text"
-                                            name="code"
-                                            placeholder="Digite Código"
+                                            name="document"
+                                            placeholder="Digite Documento"
+                                            containerClass={'mb-3'}
+                                            {...otherProps}
+                                        />
+                                        <FormInput
+                                            label="Direção"
+                                            type="text"
+                                            name="address"
+                                            placeholder="Digite Direção"
                                             containerClass={'mb-3'}
                                             {...otherProps}
                                         />

@@ -11,14 +11,19 @@ class VehicleBrandController extends Controller
 {
     public function checklist(Request $request, $id, $version_id = null)
     {
-        $version = Version::with([ 'brand', 'items' ])
-                          ->version($id,$version_id)
+        $version = Version::with([
+                                     'brand',
+                                     'items' => function($query){
+                                         return $query->where('active', '=', true);
+                                     },
+                                 ])
+                          ->version($id, $version_id)
                           ->first();
 
         if($version)
         {
             return response()->json([
-                                        'msg' => trans('general.msg.success'),
+                                        'msg'  => trans('general.msg.success'),
                                         'data' => $version,
                                     ],
                                     Response::HTTP_OK
@@ -66,10 +71,11 @@ class VehicleBrandController extends Controller
         $vehicleBrand = VehicleBrand::where('id', '=', $id)
                                     ->first();
 
-        return response()->json(   [
-                                    'msg' => trans('general.msg.success'),
+        return response()->json([
+                                    'msg'  => trans('general.msg.success'),
                                     'data' => $vehicleBrand,
-                                ], Response::HTTP_OK
+                                ],
+                                Response::HTTP_OK
         );
     }
 
@@ -79,10 +85,11 @@ class VehicleBrandController extends Controller
 
         if($validator->fails())
         {
-            return response()->json(   [
-                                        'msg' => trans('general.msg.invalidData'),
+            return response()->json([
+                                        'msg'    => trans('general.msg.invalidData'),
                                         'errors' => $validator->errors(),
-                                    ], Response::HTTP_BAD_REQUEST
+                                    ],
+                                    Response::HTTP_BAD_REQUEST
             );
         }
 
@@ -90,17 +97,19 @@ class VehicleBrandController extends Controller
 
         if(secureSave($vehicleBrand))
         {
-            return response()->json(   [
-                                        'msg' => trans('general.msg.success'),
+            return response()->json([
+                                        'msg'  => trans('general.msg.success'),
                                         'data' => $vehicleBrand,
-                                    ], Response::HTTP_CREATED
+                                    ],
+                                    Response::HTTP_CREATED
             );
         }
         else
         {
-            return response()->json(   [
+            return response()->json([
                                         'msg' => trans('general.msg.error'),
-                                    ], Response::HTTP_INTERNAL_SERVER_ERROR
+                                    ],
+                                    Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }
@@ -113,10 +122,11 @@ class VehicleBrandController extends Controller
 
         if($validator->fails())
         {
-            return response()->json(   [
-                                        'msg' => trans('general.msg.invalidData'),
+            return response()->json([
+                                        'msg'    => trans('general.msg.invalidData'),
                                         'errors' => $validator->errors(),
-                                    ], Response::HTTP_BAD_REQUEST
+                                    ],
+                                    Response::HTTP_BAD_REQUEST
             );
         }
 
@@ -124,17 +134,19 @@ class VehicleBrandController extends Controller
 
         if(!$vehicleBrand->hasAppliedChanges() || secureSave($vehicleBrand))
         {
-            return response()->json(   [
-                                        'msg' => trans('general.msg.success'),
+            return response()->json([
+                                        'msg'  => trans('general.msg.success'),
                                         'data' => $vehicleBrand,
-                                    ], Response::HTTP_CREATED
+                                    ],
+                                    Response::HTTP_CREATED
             );
         }
         else
         {
-            return response()->json(   [
+            return response()->json([
                                         'msg' => trans('general.msg.error'),
-                                    ], Response::HTTP_INTERNAL_SERVER_ERROR
+                                    ],
+                                    Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }
@@ -145,16 +157,18 @@ class VehicleBrandController extends Controller
 
         if(secureDelete($vehicleBrand))
         {
-            return response()->json(   [
+            return response()->json([
                                         'msg' => trans('general.msg.success'),
-                                    ], Response::HTTP_OK
+                                    ],
+                                    Response::HTTP_OK
             );
         }
         else
         {
-            return response()->json(   [
+            return response()->json([
                                         'msg' => trans('general.msg.error'),
-                                    ], Response::HTTP_INTERNAL_SERVER_ERROR
+                                    ],
+                                    Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }

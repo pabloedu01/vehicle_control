@@ -53,7 +53,11 @@ class VehicleBrandChecklistVersionController extends Controller
 
         if(secureSave($version))
         {
-            $version->items()->sync($request->checklist);
+            $version->items()->sync(
+                collect($request->checklist)->keyBy('id')->map(function($item){
+                    return [ 'position' => @$item['position'], 'location' => @$item['location'], 'type' => @$item['type'] ];
+                })->toArray()
+            );
             $version->load(['brand','items']);
 
             return response()->json([
@@ -92,7 +96,9 @@ class VehicleBrandChecklistVersionController extends Controller
 
         if(!$version->hasAppliedChanges() || secureSave($version))
         {
-            $version->items()->sync($request->checklist);
+            $version->items()->sync(collect($request->checklist)->keyBy('id')->map(function($item){
+                return [ 'position' => @$item['position'], 'location' => @$item['location'], 'type' => @$item['type'] ];
+            })->toArray());
             $version->load(['brand','items']);
 
             return response()->json([
