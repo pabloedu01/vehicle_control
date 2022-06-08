@@ -12,7 +12,6 @@ import DetachedLayout from '../layouts/Detached';
 import HorizontalLayout from '../layouts/Horizontal';
 import FullLayout from '../layouts/Full';
 import {APICore} from "../helpers/api/apiCore";
-import swal from "sweetalert";
 
 // lazy load all the views
 

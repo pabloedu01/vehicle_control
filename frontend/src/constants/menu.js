@@ -17,19 +17,6 @@ const MENU_ITEMS = [
         ],
     },
 
-    /*{
-        key: 'checklist.index',
-        label: 'Checklist',
-        url: '/panel/checklist',
-        icon: 'uil-tachometer-fast',
-    },
-    {
-        key: 'checklistVersion.index',
-        label: 'Checklist Versión',
-        url: '/panel/checklist-version',
-        icon: 'uil-tachometer-fast',
-    },*/
-
     {
         key: 'technicalConsultants.index',
         label: 'Consultores Técnicos',
@@ -86,7 +73,6 @@ const MENU_ITEMS = [
         url: '/clients/list',
         icon: 'uil-tachometer-fast',
     },
-
 
 
 ];
