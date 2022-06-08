@@ -22,21 +22,21 @@ class UserMiddleware extends BaseMiddleware
 
     public function handle($request, Closure $next)
     {
-        if(
-        !Token::where('user_id', '=', \Auth::user()->id)
-              ->where('from', '=', 'myself')
-              ->where('type', '=', 'user')
-              ->where('token', '=', \JWTAuth::getToken())
-              ->where('date', '>=', date('Y-m-d H:i:s', strtotime('-'.config('jwt.ttl').' minutes')))
-              ->exists()
-        ){
-            return response()->json(['msg' => 'Token is Expired'], Response::HTTP_UNAUTHORIZED);
-        }
-
         $user = \Auth::user();
 
         if(!$user || !is_null($user->deleted_at) || !$user->active){
             return response()->json(['msg' => trans('general.msg.unauthorized')], Response::HTTP_UNAUTHORIZED);
+        }
+
+        if(
+        !Token::where('user_id', '=', $user->id)
+              ->where('from', '=', 'myself')
+              ->where('type', '=', 'user')
+              ->where('token', '=', \JWTAuth::getToken() ?? @$request->token)
+              ->where('date', '>=', date('Y-m-d H:i:s', strtotime('-'.config('jwt.ttl').' minutes')))
+              ->exists()
+        ){
+            return response()->json(['msg' => 'Token is Expired'], Response::HTTP_UNAUTHORIZED);
         }
 
         return $next($request);

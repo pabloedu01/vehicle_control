@@ -41,6 +41,11 @@ return [
             'provider' => 'users',
             'hash' => false,
         ],
+        'jwtWeb' => [
+            'driver' => 'jwtWeb',
+            'provider' => 'users',
+            'hash' => false,
+        ],
     ],
 
     /*

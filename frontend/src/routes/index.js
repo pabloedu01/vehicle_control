@@ -12,6 +12,7 @@ import DetachedLayout from '../layouts/Detached';
 import HorizontalLayout from '../layouts/Horizontal';
 import FullLayout from '../layouts/Full';
 import {APICore} from "../helpers/api/apiCore";
+import swal from "sweetalert";
 
 // lazy load all the views
 
@@ -47,6 +48,13 @@ const ClientList = React.lazy(() => import('../pages/client/List'));
 const ClientForm = React.lazy(() => import('../pages/client/Form'));
 
 const ChecklistForm = React.lazy(() => import('../pages/checklist/Form'));
+
+const ChecklistItemList = React.lazy(() => import('../pages/checklist-item/List'));
+const ChecklistItemForm = React.lazy(() => import('../pages/checklist-item/Form'));
+
+const ChecklistVersionList = React.lazy(() => import('../pages/checklist-version/List'));
+const ChecklistVersionForm = React.lazy(() => import('../pages/checklist-version/Form'));
+const ChecklistVersionReport = React.lazy(() => import('../pages/checklist-version/Report'));
 
 
 // dashboard
@@ -84,6 +92,7 @@ const LoadComponent = ({ component: Component }) => {
     const history = useNavigate();
     const {companyId} = useParams();
     const [company, setCompany] = useState({id: companyId});
+    const [user, setUser] = useState(null);
 
     const getCompany = (id) => {
         if(id){
@@ -99,12 +108,20 @@ const LoadComponent = ({ component: Component }) => {
     };
 
     useEffect(() => {
+        const userSession = api.getLoggedInUser();
+
+        if(userSession && userSession.hasOwnProperty('token')){
+            setUser(userSession);
+        }
+    }, []);
+
+    useEffect(() => {
         getCompany(companyId);
     }, [companyId]);
 
     return (
         <Suspense fallback={loading()}>
-            <Component company={company}/>
+            <Component user={user} company={company}/>
         </Suspense>
     );
 };
@@ -165,6 +182,44 @@ const AllRoutes = () => {
             element: <PrivateRoute roles={'Admin'} component={FullLayout} />,
             children: [
                 { path: 'companies', element: <LoadComponent component={Companies} /> },
+                {
+                    path: 'checklist-items',
+                    children: [
+                        {
+                            path: 'list',
+                            element: <LoadComponent component={ChecklistItemList} />,
+                        },
+                        {
+                            path: 'create',
+                            element: <LoadComponent component={ChecklistItemForm} />,
+                        },
+                        {
+                            path: ':id/edit',
+                            element: <LoadComponent component={ChecklistItemForm} />,
+                        },
+                    ]
+                },
+                {
+                    path: 'checklist-versions',
+                    children: [
+                        {
+                            path: 'list',
+                            element: <LoadComponent component={ChecklistVersionList} />,
+                        },
+                        {
+                            path: 'create',
+                            element: <LoadComponent component={ChecklistVersionForm} />,
+                        },
+                        {
+                            path: ':id/edit',
+                            element: <LoadComponent component={ChecklistVersionForm} />,
+                        },
+                        {
+                            path: ':id/report',
+                            element: <LoadComponent component={ChecklistVersionReport} />,
+                        },
+                    ]
+                },
             ]
         },
         {

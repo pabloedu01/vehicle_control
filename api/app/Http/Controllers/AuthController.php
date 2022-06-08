@@ -59,6 +59,7 @@ class AuthController extends Controller
                                    'msg'   => trans('general.msg.success'),
                                    'token' => $token->token,
                                    'name' => $user->name,
+                                   'privilege' => $user->privilege,
                                    'id' => $user->id
                                ],
                                Response::HTTP_OK
@@ -146,6 +147,7 @@ class AuthController extends Controller
                                             'phone',
                                             'birthday',
                                         ]));
+        $user->privilege = 'client';
 
         $company = new Company( collect(Company::changeDataColumns($request->only(Company::changeFillablesColumns())))->only(['name','cnpj', 'cpf'])->toArray() );
 

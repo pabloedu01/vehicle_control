@@ -39,6 +39,7 @@ class UserController extends Controller
         }
 
         $user = new User($request->only(User::getFillables()));
+        $user->privilege = 'client';
 
         if(secureSave($user))
         {

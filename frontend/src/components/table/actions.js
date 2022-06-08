@@ -2,11 +2,15 @@ import React  from 'react';
 import {Dropdown} from "react-bootstrap";
 import classNames from "classnames";
 
-const Actions = (props: {tableMeta: any, actions?: Array<string>, handleEdit?: any, handleDelete?: any}) => {
+const Actions = (props: {tableMeta: any, actions?: Array<string>, handleEdit?: any, handleDelete?: any, handleDuplicate?: any, extraButtons?: Array<any>}) => {
   const rowData = props.tableMeta.tableData[props.tableMeta.rowIndex];
 
   const handleEdit = () => {
     props.handleEdit(rowData.id);
+  };
+
+  const handleDuplicate = () => {
+    props.handleDuplicate(rowData.id);
   };
 
   const handleDelete = () => {
@@ -28,6 +32,26 @@ const Actions = (props: {tableMeta: any, actions?: Array<string>, handleEdit?: a
           </Dropdown.Item>
       ) : null
       }
+
+      {(props.hasOwnProperty('actions') && props.actions.indexOf('duplicate') >= 0) ?
+          (
+              <Dropdown.Item>
+                <div onClick={handleDuplicate}>
+                  <i className={classNames('mdi mdi-content-copy', 'me-1')}/>
+                  Duplicado
+                </div>
+              </Dropdown.Item>
+          ) : null
+      }
+
+      {(props.extraButtons ?? []).map((button) =>
+          <Dropdown.Item key={button.key}>
+            <div onClick={() => {button.action(rowData.id)}}>
+              <i className={classNames(button.icon, 'me-1')}/>
+              {button.label}
+            </div>
+          </Dropdown.Item>
+      )}
 
       {(!props.hasOwnProperty('actions') || props.actions.indexOf('delete') >= 0) ?
       (

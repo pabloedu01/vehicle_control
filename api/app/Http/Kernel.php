@@ -58,6 +58,7 @@ class Kernel extends HttpKernel
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'jwt.verify' => \App\Http\Middleware\JwtMiddleware::class,
         'user' => \App\Http\Middleware\UserMiddleware::class,
+        'admin' => \App\Http\Middleware\AdminMiddleware::class,
         'company' => \App\Http\Middleware\CompanyPermissionMiddleware::class,
         'product' => \App\Http\Middleware\ProductPermissionMiddleware::class,
         'tireBrand' => \App\Http\Middleware\TireBrandPermissionMiddleware::class,

@@ -3,6 +3,7 @@
 return [
     'evidence' => 'Evidence',
     'value'    => 'Value',
+    'duplicated' => 'Duplicated',
     'msg'      => [
         'success'               => '¡Success!',
         'error'                 => '¡Error!',

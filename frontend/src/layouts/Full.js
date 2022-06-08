@@ -45,12 +45,12 @@ const FullLayout = ({ children }: VerticalLayoutProps, state: VerticalLayoutStat
 
     const [isMenuOpened, setIsMenuOpened] = useState(false);
 
-    useEffect(() => {
+    /*useEffect(() => {
         if (document.body) document.body.classList.add('hide-menu');
         return () => {
             if (document.body) document.body.classList.remove('hide-menu');
         };
-    }, []);
+    }, []);*/
 
     /*
      * layout defaults
@@ -116,7 +116,7 @@ const FullLayout = ({ children }: VerticalLayoutProps, state: VerticalLayoutStat
         <>
             <div className="wrapper">
                 <Suspense fallback={loading()}>
-                    <LeftSidebar isCondensed={isCondensed} isLight={isLight} hideUserProfile={true} />
+                    <LeftSidebar isCondensed={isCondensed} isLight={isLight} hideUserProfile={true} layout={layoutConstants.LAYOUT_FULL}/>
                 </Suspense>
                 <div className="content-page">
                     <div className="content">

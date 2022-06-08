@@ -20,6 +20,7 @@ class UserSeeder extends Seeder
             \DB::table('users')->insert([
                                             [
                                                 'username'       => 'mcontreras',
+                                                'privilege' => 'admin',
                                                 'name'      => 'Miguel Contreras',
                                                 'password' => bcrypt(123456),
                                                 'email' => 'migueljosecontreras@gmail.com',
@@ -30,6 +31,7 @@ class UserSeeder extends Seeder
                                             ],
                                             [
                                                 'username'       => 'pablo',
+                                                'privilege' => 'admin',
                                                 'name'      => 'Pablo',
                                                 'password' => bcrypt(123456),
                                                 'email' => 'pablo@gmail.com',
@@ -40,6 +42,7 @@ class UserSeeder extends Seeder
                                             ],
                                             [
                                                 'username'       => 'junior',
+                                                'privilege' => 'admin',
                                                 'name'      => 'Junior',
                                                 'password' => bcrypt(123456),
                                                 'email' => 'junior@gmail.com',

@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::group([
+/*Route::group([
     'prefix' => 'checklist-version',
                  'middleware' => [ 'jwt.verify', 'user' ],//middleware aplicado para todos los que estén dentro
              ], function(){
@@ -43,4 +43,4 @@ Route::group([
             'uses' => 'VehicleBrandChecklistVersionController@destroy',
         ]);
     });
-});
+});*/

@@ -20,18 +20,22 @@ class JwtMiddleware extends BaseMiddleware
      *
      * @throws \Illuminate\Auth\AuthenticationException
      */
-    
+
     public function handle($request, Closure $next)
     {
         try {
             if(
-                !validate_jwt_signature($request->bearerToken())
+                !validate_jwt_signature($request->bearerToken() ?? $request->token)
             ){
                 throw new TokenInvalidException('Token Invalid');
             }
-    
+
             \JWTAuth::parseToken()->authenticate();
         } catch (\Exception $e) {
+            if(!$request->ajax()){
+                abort('401');
+            }
+
             if ($e instanceof TokenInvalidException){
                 return response()->json(['msg' => 'Token is Invalid'], Response::HTTP_UNAUTHORIZED);
             }else if ($e instanceof TokenExpiredException){

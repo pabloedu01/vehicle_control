@@ -15,15 +15,20 @@ import logoDark from '../assets/images/logo_tunap.png';
 import logoDarkSm from '../assets/images/logo_tunap.png';
 import logo from '../assets/images/logo_tunap.png';
 import profileImg from '../assets/images/users/avatar-1.jpg';
+import {APICore} from "../helpers/api/apiCore";
+
+const apiCore = new APICore();
 
 type SideBarContentProps = {
     hideUserProfile: boolean,
+    layout?: string
 };
 
 /* sidebar content */
-const SideBarContent = ({ hideUserProfile }: SideBarContentProps) => {
+const SideBarContent = ({ hideUserProfile, layout }: SideBarContentProps) => {
     const {companyId} = useParams();
     const [menuItems, setMenuItems] = useState([]);
+    const [user, setUser] = useState(null);
 
     const changeUrlFromMenuItems = (items) => {
         return items.map((item) => {
@@ -48,8 +53,42 @@ const SideBarContent = ({ hideUserProfile }: SideBarContentProps) => {
     };
 
     useEffect(() => {
-        setMenuItems(changeUrlFromMenuItems(getMenuItems()));
-    }, [companyId]);
+        setUser(apiCore.getLoggedInUser());
+    }, []);
+
+    useEffect(() => {
+        if(layout === 'full'){
+            const menuItems = [
+                {
+                    key: 'companies.index',
+                    label: 'Empresas',
+                    url: '/panel/companies',
+                    icon: 'uil-tachometer-fast',
+                },
+            ];
+
+            if(user?.privilege === 'admin'){
+                menuItems.push({
+                    key: 'checklistItem.index',
+                    label: 'Lista de Verificação',
+                    url: '/panel/checklist-items/list',
+                    icon: 'uil-tachometer-fast',
+                });
+
+                menuItems.push({
+                    key: 'checklistVersion.index',
+                    label: 'Versão da Lista de Verificação',
+                    url: '/panel/checklist-versions/list',
+                    icon: 'uil-tachometer-fast',
+                });
+            }
+
+            setMenuItems(menuItems);
+        } else {
+            setMenuItems(changeUrlFromMenuItems(getMenuItems()));
+        }
+
+    }, [companyId, user]);
 
     return (
         <>
@@ -73,9 +112,10 @@ type LeftSidebarProps = {
     hideUserProfile: boolean,
     isLight: boolean,
     isCondensed: boolean,
+    layout?: string
 };
 
-const LeftSidebar = ({ isCondensed, isLight, hideLogo, hideUserProfile }: LeftSidebarProps): React$Element<any> => {
+const LeftSidebar = ({ isCondensed, isLight, hideLogo, hideUserProfile, layout }: LeftSidebarProps): React$Element<any> => {
     const menuNodeRef: any = useRef(null);
 
     /**
@@ -128,10 +168,11 @@ const LeftSidebar = ({ isCondensed, isLight, hideLogo, hideUserProfile }: LeftSi
                             menuClickHandler={() => {}}
                             isLight={isLight}
                             hideUserProfile={hideUserProfile}
+                            layout={layout}
                         />
                     </SimpleBar>
                 )}
-                {isCondensed && <SideBarContent isLight={isLight} hideUserProfile={hideUserProfile} />}
+                {isCondensed && <SideBarContent isLight={isLight} hideUserProfile={hideUserProfile} layout={layout}/>}
             </div>
         </>
     );

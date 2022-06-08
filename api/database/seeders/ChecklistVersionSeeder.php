@@ -17,28 +17,25 @@ class ChecklistVersionSeeder extends Seeder
      */
     public function run()
     {
-        $data = \DB::table(VehicleBrandChecklistVersion::getTableName())->count();
+        VehicleBrandChecklistVersion::truncate();
 
-        if($data == 0)
-        {
-            $company = Company::whereHas('users', function($query){
-                return $query->where('username', '=', 'mcontreras');
-            })->first();
+        $company = Company::whereHas('users', function($query){
+            return $query->where('username', '=', 'mcontreras');
+        })->first();
 
-            $version = VehicleBrandChecklistVersion::create([
-                                                                'company_id' => $company->id,
-                                                                'brand_id'    => VehicleBrand::where('company_id', '=', $company->id)->where('code', '=', 'chevrolet')->first()->id,
-                                                                'code'        => 'v1',
-                                                                'name'        => 'Versión 1 de prueba',
-                                                                'description' => null,
-                                                                'active'      => true,
-                                                            ]);
+        $version = VehicleBrandChecklistVersion::create([
+                                                            'company_id' => $company->id,
+                                                            'brand_id'    => VehicleBrand::where('company_id', '=', $company->id)->where('code', '=', 'chevrolet')->first()->id,
+                                                            'code'        => 'v1',
+                                                            'name'        => 'Versión 1 de prueba',
+                                                            'description' => null,
+                                                            'active'      => true,
+                                                        ]);
 
-            $items = ChecklistItem::select('id')->where('active', '=', true)->get();
+        $items = ChecklistItem::select('id')->where('active', '=', true)->get();
 
-            $version->items()->sync($items->keyBy('id')->map(function($item, $key){
-                return [ 'position' => $key, 'location' => null, 'type' => null ];
-            })->toArray());
-        }
+        $version->items()->sync($items->keyBy('id')->map(function($item, $key){
+            return [ 'position' => $key, 'location' => null, 'type' => null ];
+        })->toArray());
     }
 }

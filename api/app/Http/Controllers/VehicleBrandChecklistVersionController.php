@@ -34,6 +34,20 @@ class VehicleBrandChecklistVersionController extends Controller
         );
     }
 
+    public function showReport(Request $request, $id)
+    {
+        return response()->json([
+                                    'msg' => trans('general.msg.success'),
+                                    'data' => null,
+                                ],
+                                Response::HTTP_OK
+        );
+    }
+
+    public function storeReport(Request $request, $id){
+        dd($id,$request->all());
+    }
+
     public function store(Request $request)
     {
         $validator = validate($request->all(), Version::rules());

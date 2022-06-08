@@ -21,9 +21,9 @@ const api = new APICore();
 function* login({ payload: { username, password } }) {
     try {
         const response = yield call(loginApi, { username, password });
-        const {id, name, token} = response.data;
+        const {id, name, token, privilege} = response.data;
         const user = {
-          id,name,token
+          id,name,token, privilege
         };
 
         // NOTE - You can change this according to response format from your api
