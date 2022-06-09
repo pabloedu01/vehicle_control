@@ -45,12 +45,12 @@ const Actions = (props: {tableMeta: any, actions?: Array<string>, handleEdit?: a
       }
 
       {(props.extraButtons ?? []).map((button) =>
-          <Dropdown.Item key={button.key}>
-            <div onClick={() => {button.action(rowData.id)}}>
-              <i className={classNames(button.icon, 'me-1')}/>
-              {button.label}
-            </div>
-          </Dropdown.Item>
+            <Dropdown.Item key={button.key}>
+              <div onClick={() => {button.action(rowData.id)}}>
+                <i className={classNames(button.icon, 'me-1')}/>
+                {button.label}
+              </div>
+            </Dropdown.Item>
       )}
 
       {(!props.hasOwnProperty('actions') || props.actions.indexOf('delete') >= 0) ?

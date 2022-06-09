@@ -39,11 +39,5 @@ class ChecklistItem extends Base
     public function getFormattedNameAttribute(){
         return \Str::camel(\Str::slug($this->name, ' '));
     }
-
-    #many to many
-    public function versions()
-    {
-        return $this->belongsToMany('App\Models\VehicleBrandChecklistVersion', 'checklist_item_vehicle_brand_checklist_version','item_id', 'version_id');
-    }
 }
 
