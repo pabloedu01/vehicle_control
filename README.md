@@ -35,6 +35,6 @@ yarn start
 ```
 
 ## To release administrator access to the system, the following command must be executed directly on the database.
-```bash 
+```sql 
 update users set privilege = 'admin' where username = 'su-username'
 ```
