@@ -21,3 +21,17 @@ composer dump-autoload
 ```
 
 Copy the google-cloud.json file to the /api/config folder
+
+
+## Frontend - Installation
+
+Acces folder /frontend
+
+Check if the node version being used is 16.15.0
+
+Run the command
+
+```bash
+yarn install
+yarn start
+```
