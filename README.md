@@ -1,6 +1,4 @@
 # vehicle_control
-Controle
-.
 
 ## Backend - Installation
 
@@ -34,4 +32,9 @@ Run the command
 ```bash
 yarn install
 yarn start
+```
+
+## To release administrator access to the system, the following command must be executed directly on the database.
+```bash 
+update users set privilege = 'admin' where username = 'su-username'
 ```
