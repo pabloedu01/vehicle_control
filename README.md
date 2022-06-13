@@ -6,8 +6,10 @@ Controle
 
 Check that the Docker, docker-compose.yarm and .env files are configured
 
-Run the command docker-compose up -d
-
+Run the command
+``` bash
+docker-compose up -d
+```
 Access the apache server and run create the database model with the following commands
 
 ```bash
