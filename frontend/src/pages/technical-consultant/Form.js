@@ -8,6 +8,7 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import {useForm} from "react-hook-form";
 import {FormInput} from "../../components";
+import {getAllOptions} from "../../utils/selectOptionsForm";
 
 const api = new APICore();
 
@@ -71,15 +72,10 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     const getUsers = () => {
         api.get('/technical-consultant/available-users',{company_id: props.company?.id}).then((response) => {
-            const data = [{value: 0, label: 'Without User'}].concat(response.data.data.map((user) => {
-                return {
-                    value: user.id,
-                    label: user.name
-                };
-            }));
+            const options = [{value: 0, label: 'Without User'}].concat(getAllOptions(response.data.data, data.user));
 
-            setAllUsers(data);
-            setUsers(data);
+            setAllUsers(options);
+            setUsers(options);
         },(error) => {
             setUsers([{value: 0, label: 'Without User'}]);
             setAllUsers([{value: 0, label: 'Without User'}]);
@@ -95,7 +91,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
         if(id){
             api.get('/technical-consultant/' + id).then((response) => {
-                const {user_id,name,active} = response.data.data;
+                const {user_id,name,active, user} = response.data.data;
 
                 if(user_id){
                     setUsers([{value: user_id, label: name}]);
@@ -111,7 +107,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                 }
 
                 setData({
-                    name, user_id, active
+                    name, user_id, active, user
                 });
             },(error) => {
                 setData(defaultData);
@@ -136,8 +132,10 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     };
 
     useEffect(() => {
-        getUsers();
-    }, []);
+        if(data){
+            getUsers();
+        }
+    }, [data]);
 
     useEffect(() => {
         getData();

@@ -29,11 +29,13 @@ class TemporalFile implements Rule
         {
             $temporalFile = \App\Models\TemporalFile::where('id', '=', $value)->first();
 
-            return $temporalFile && \Storage::disk('local')->exists($temporalFile->full_name);
+            return $temporalFile && \Storage::disk('public')->exists($temporalFile->full_name);
         }
         else
         {
-            return is_string($value) && \Storage::disk(env('GOOGLE_CLOUD_STORAGE_DRIVER', 'local'))->exists($value);
+            $gcsStorage = \Storage::disk(env('GOOGLE_CLOUD_STORAGE_DRIVER', 'public'));
+
+            return is_string($value) && \Storage::disk(env('GOOGLE_CLOUD_STORAGE_DRIVER', 'public'))->exists(last(explode($gcsStorage->url(''), $value)));
         }
     }
 

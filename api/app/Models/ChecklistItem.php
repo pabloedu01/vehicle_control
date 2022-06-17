@@ -29,7 +29,7 @@ class ChecklistItem extends Base
         return [
             'name'        => 'required|string|max:100',
             'description' => 'nullable|string',
-            'code'        => 'nullable|string|max:100',
+            'code'        => 'nullable|string|regex:/^[a-zA-Z0-9\-\_]*$/|max:100',
             'active'      => 'required|boolean',
             'validation'  => 'required|array',
             'preview_data'  => 'required|array',

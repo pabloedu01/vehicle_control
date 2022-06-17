@@ -24,7 +24,7 @@ class VehicleBrandChecklistVersion extends Base
     public static function rules()
     {
         return [
-            'code'        => 'required|string|max:100',
+            'code'        => 'required|string|regex:/^[a-zA-Z0-9\-\_]*$/|max:100',
             'name'        => 'required|string|max:100',
             'description' => 'nullable|string',
             'active'      => 'required|boolean',
@@ -59,7 +59,7 @@ class VehicleBrandChecklistVersion extends Base
     #belongs to
     public function brand()
     {
-        return $this->belongsTo('App\Models\VehicleBrand', 'brand_id', 'id');
+        return $this->belongsTo('App\Models\VehicleBrand', 'brand_id', 'id')->withTrashed();
     }
 
     #many to many

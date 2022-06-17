@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\ChecklistVersion as Version;
+use App\Models\ServiceSchedule;
+use App\Models\VehicleService;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -22,7 +24,9 @@ class ChecklistVersionController extends Controller
 
     public function activeVersions(Request $request)
     {
-        $versions = Version::where('active', '=', true)->get();
+        $versions = Version::where('active', '=', true)
+                           ->whereNotNull('report')
+                           ->get();
 
         return response()->json([
                                     'msg'  => trans('general.msg.success'),
@@ -34,7 +38,8 @@ class ChecklistVersionController extends Controller
 
     public function show(Request $request, $id)
     {
-        $version = Version::where('id', '=', $id)
+        $version = Version::withoutGlobalScope('simpleColumns')
+                          ->where('id', '=', $id)
                           ->first();
 
         return response()->json([
@@ -45,9 +50,135 @@ class ChecklistVersionController extends Controller
         );
     }
 
+    public function items(Request $request, $id)
+    {
+        $version = Version::withoutGlobalScope('simpleColumns')
+                          ->withTrashed()
+                          ->where('id', '=', $id)
+                          ->first();
+
+        $version->append('formatted_report');
+        $version->append('items');
+
+        return response()->json([
+                                    'msg'  => trans('general.msg.success'),
+                                    'data' => $version,
+                                ],
+                                Response::HTTP_OK
+        );
+    }
+
+    public function print(Request $request, $id)
+    {
+        $version = Version::withTrashed()->withoutGlobalScope('simpleColumns')
+                          ->where('id', '=', $id)
+                          ->first();
+
+        if(is_null($version->report))
+        {
+            return response()->json([
+                                        'msg' => trans('general.msg.invalidData'),
+                                    ],
+                                    Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        $version->append('formatted_report');
+        $version->append('items');
+
+        $report                        = $version->formatted_report;
+        $reportParameters              = collect($report['parameters']);
+        $reportParametersGroupedByName = $reportParameters->keyBy('name');
+        $customParameters              = array_values(VehicleService::$changingColumnsForReport);
+
+        $vehicleService = null;
+
+        switch($request->type)
+        {
+            case 'service-schedules':
+                $vehicleService = VehicleService::with(['items' => function($query){return $query->withTrashed();}])->where('service_schedule_id', '=', $request->id)->first();
+                break;
+        }
+
+        if(!$vehicleService)
+        {
+            return response()->json([
+                                        'msg' => trans('general.msg.notFound'),
+                                    ],
+                                    Response::HTTP_NOT_FOUND
+            );
+        }
+
+        $dataFromParameters       = $reportParametersGroupedByName->except(array_merge([ 'page_count', 'page_number' ], $customParameters))
+                                                                  ->map(function($parameter){
+                                                                      return $parameter['testData'];
+                                                                  })
+                                                                  ->toArray();
+        $dataFromVehicleService   = $vehicleService->items->keyBy('formatted_name')->map(function($item){
+            return $item->pivot->value;
+        })->toArray();
+        $dataFromCustomParameters = VehicleService::changeDataColumns($vehicleService->only(
+            array_map(function($parameterName){
+                return array_flip(VehicleService::$changingColumnsForReport)[$parameterName];
+            }, array_filter($customParameters, function($parameterName) use ($reportParametersGroupedByName){
+                return isset($reportParametersGroupedByName[$parameterName]);
+            }))
+        ),                                                            VehicleService::$changingColumnsForReport);
+        foreach($dataFromCustomParameters as $parameterName => $value)
+        {
+            if($reportParametersGroupedByName[$parameterName]['type'] == 'date')
+            {
+                $dataFromCustomParameters[$parameterName] = gmdate('Y-m-d H:i:s', strtotime($value.' '.$request->utcOffset.' minutes'));
+            }
+        }
+
+        $data = array_merge($dataFromParameters, $dataFromVehicleService, $dataFromCustomParameters);
+
+        $curlInstance = callAPI('https://www.reportbro.com/report/run', 'PUT', json_encode([
+                                                                                               'report'       => $report,
+                                                                                               'outputFormat' => 'pdf',
+                                                                                               'data'         => $data,
+                                                                                               'isTestData'   => true,
+                                                                                           ]),
+                                false, [ 'Content-Type: application/json' ], false, true);
+
+        $response   = curl_exec($curlInstance);
+        $httpStatus = curl_getinfo($curlInstance, CURLINFO_HTTP_CODE);
+
+        if($httpStatus == 200)
+        {
+            if(is_string($response) && substr($response, 0, 4) === 'key:')
+            {
+                $reportKey    = substr($response, 4);
+                $reportBroUrl = 'https://www.reportbro.com/report/run?key='.$reportKey.'&outputFormat=pdf';
+                $fullName     = 'temporal-files/'.$reportKey.'.pdf';
+
+                $localStorage = \Storage::disk('public');
+                $localStorage->put($fullName, file_get_contents($reportBroUrl));
+                /*debería guardar el archivo y anclarlo al vehicle service?*/
+
+                return response()->json([
+                                            'msg'  => trans('general.msg.success'),
+                                            'data' => [
+                                                'report' => $localStorage->url($fullName),
+                                            ],
+                                        ],
+                                        Response::HTTP_OK
+                );
+            }
+        }
+
+        return response()->json([
+                                    'msg' => trans('general.msg.error'),
+                                ],
+                                Response::HTTP_INTERNAL_SERVER_ERROR
+        );
+    }
+
     public function duplicate(Request $request, $id)
     {
-        $version = Version::where('id', '=', $id)
+        $version = Version::withoutGlobalScope('simpleColumns')
+                          ->where('id', '=', $id)
                           ->first();
 
         $newVersion = new Version(collect($version->toArray())->except(['id'])->toArray());

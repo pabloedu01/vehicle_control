@@ -39,7 +39,7 @@ class ChecklistVersionPermissionMiddleware extends BaseMiddleware
             );
         }
 
-        if(!ChecklistVersion::where('id', '=', $data['id'])->exists())
+        if(!ChecklistVersion::withTrashed()->where('id', '=', $data['id'])->exists())
         {
             return response()->json([
                                         'msg' => trans('general.msg.notFound'),

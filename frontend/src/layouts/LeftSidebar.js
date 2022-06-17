@@ -34,7 +34,7 @@ const SideBarContent = ({ hideUserProfile, layout }: SideBarContentProps) => {
         return items.map((item) => {
             item = Object.assign(item, {});
 
-            if(item.hasOwnProperty('url')){
+            if(item.hasOwnProperty('url') && item.key !== 'companies.index'){
                 if(!item.hasOwnProperty('temporalUrl')){
                     item.temporalUrl = item.url;
                 } else {
@@ -63,7 +63,7 @@ const SideBarContent = ({ hideUserProfile, layout }: SideBarContentProps) => {
                     key: 'companies.index',
                     label: 'Empresas',
                     url: '/panel/companies',
-                    icon: 'uil-tachometer-fast',
+                    icon: 'mdi mdi-office-building-outline',
                 },
             ];
 
@@ -72,14 +72,14 @@ const SideBarContent = ({ hideUserProfile, layout }: SideBarContentProps) => {
                     key: 'checklistItem.index',
                     label: 'Lista de Verificação',
                     url: '/panel/checklist-items/list',
-                    icon: 'uil-tachometer-fast',
+                    icon: 'mdi mdi-playlist-check',
                 });
 
                 menuItems.push({
                     key: 'checklistVersion.index',
                     label: 'Versão da Lista de Verificação',
                     url: '/panel/checklist-versions/list',
-                    icon: 'uil-tachometer-fast',
+                    icon: 'mdi mdi-playlist-edit',
                 });
             }
 

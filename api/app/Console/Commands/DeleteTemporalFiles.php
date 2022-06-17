@@ -32,7 +32,7 @@ class DeleteTemporalFiles extends Command
     {
         parent::__construct();
 
-        $this->storage = \Storage::disk('local');
+        $this->storage = \Storage::disk('public');
     }
 
     /**

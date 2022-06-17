@@ -46,7 +46,7 @@ class VehicleModelPermissionMiddleware extends BaseMiddleware
             );
         }
 
-        if(!VehicleModel::where('id', '=', $data['id'])->exists())
+        if(!VehicleModel::withTrashed()->where('id', '=', $data['id'])->exists())
         {
             return response()->json([
                                         'msg' => trans('general.msg.notFound'),
@@ -55,7 +55,7 @@ class VehicleModelPermissionMiddleware extends BaseMiddleware
         }
 
         if(
-        !VehicleModel::whereHas('brand', function($query){
+        !VehicleModel::withTrashed()->whereHas('brand', function($query){
             return $query->whereHas('company', function($query){
                 return $query->whereHas('users', function($query){
                     return $query->where('users.id', '=', \Auth::user()->id);

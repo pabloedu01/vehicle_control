@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Validation\Rule;
+
 class Vehicle extends Base
 {
     protected $table = 'vehicles';
@@ -12,21 +14,23 @@ class Vehicle extends Base
 
     protected $fillable = [
         'company_id',
+        'brand_id',
         'model_id',
         'name',
         'model_year',
         'active',
     ];
 
-    public static function rules($id = null, $model_id = null, $year = null)
+    public static function rules($id = null, $company_id = null, $model_id = null, $year = null)
     {
         return [
             'name'       => [
                 'required',
                 'string',
                 'max:100',
-                self::getUniqueRule($id, ['model_id' => $model_id, 'model_year' => $year]),
+                self::getUniqueRule($id, ['model_id' => $model_id, 'model_year' => integerValue($year)]),
             ],
+            'model_id' => Rule::exists('vehicle_models', 'id')->where('company_id', $company_id),
             'model_year' => 'required|integer',
             'active'     => 'required|boolean',
         ];
@@ -40,7 +44,12 @@ class Vehicle extends Base
 
     public function model()
     {
-        return $this->belongsTo('App\Models\VehicleModel', 'model_id', 'id');
+        return $this->belongsTo('App\Models\VehicleModel', 'model_id', 'id')->withTrashed();
+    }
+
+    public function brand()
+    {
+        return $this->belongsTo('App\Models\VehicleBrand', 'brand_id', 'id')->withTrashed();
     }
 }
 

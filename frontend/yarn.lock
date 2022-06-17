@@ -10820,7 +10820,7 @@ react-select@^5.2.2:
 
 react-signature-canvas@^1.0.5:
   version "1.0.5"
-  resolved "https://registry.npmjs.org/react-signature-canvas/-/react-signature-canvas-1.0.5.tgz"
+  resolved "https://registry.yarnpkg.com/react-signature-canvas/-/react-signature-canvas-1.0.5.tgz#9c19dd9bc11afe2e5ca9d98fa65974441148c19b"
   integrity sha512-SSQytAmdmoaXInImrGGG6GZDXHcgLFnQRnixVKxAovDBBdvyDZmlgP1HC8VAWYBNYfxjkjUYbuQhKCGasY4JUg==
   dependencies:
     signature_pad "^2.3.2"

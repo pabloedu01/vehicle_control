@@ -31,6 +31,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                     promised_date: moment(item.promised_date).format('DD/MM/YYYY H:mma'),
                     client: item.client?.name,
                     technical_consultant: item.technical_consultant?.name,
+                    checklist_version_id: item.checklist_version_id
                 }
             }));
         }, () => {
@@ -63,6 +64,29 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
 
                 });
             }
+        });
+    };
+
+    const onChecklist = (registerId) => {
+        history(`/panel/company/${props.company?.id}/service-schedules/${registerId}/checklist`);
+    };
+
+    const onPrint = (registerId, registerData) => {
+        api.post('/checklist-version/' + registerData.checklist_version_id + '/print', {type: 'service-schedules', id: registerId, utcOffset: moment().utcOffset()}).then((response) => {
+            window.open(response.data.data.report, '_blank');
+        },(error) => {
+            swal({
+                title: 'Error',
+                text: 'Ocorreu um erro ao gerar o relatório.',
+                icon: 'error',
+                buttons: {
+                    confirm: {
+                        text: 'Ok',
+                        value: 'confirm'
+                    }
+                },
+                dangerMode: true,
+            });
         });
     };
 
@@ -141,7 +165,22 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                     filter: false,
                     sort: false,
                     customBodyRender: (value, tableMeta, updateValue) => (
-                        <Actions tableMeta={tableMeta} handleEdit={onEdit} handleDelete={onDelete}/>
+                        <Actions
+                            tableMeta={tableMeta}
+                            handleEdit={onEdit}
+                            handleDelete={onDelete}
+                            extraButtons={[{
+                                key: 'checklist',
+                                icon: 'mdi mdi-file-chart-outline',
+                                label: 'Checklist',
+                                action: onChecklist
+                            }, {
+                                key: 'print',
+                                icon: 'mdi mdi-file-chart-outline',
+                                label: 'Print',
+                                action: onPrint
+                            }]}
+                        />
                     )
                 },
             },

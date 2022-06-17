@@ -19,7 +19,7 @@ class Permission extends Base
         return [
             'name'        => 'required|string|max:100',
             'description' => 'nullable|string',
-            'code'        => 'required|string|max:45',
+            'code'        => 'required|string|regex:/^[a-zA-Z0-9\-\_]*$/|max:45',
         ];
     }
 }

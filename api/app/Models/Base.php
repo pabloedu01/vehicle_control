@@ -77,6 +77,11 @@ class Base extends Model
         return with(new static)->getTable();
     }
 
+    public static function getPrimaryKeyName()
+    {
+        return with(new static)->getKeyName();
+    }
+
     public static function getChangingColumns()
     {
         return with(new static)->changingColumns;
@@ -171,8 +176,8 @@ class Base extends Model
         return $newFillables;
     }
 
-    public static function changeDataColumns($array){
-        $availableColumns = self::getChangingColumns();
+    public static function changeDataColumns($array, $changingColumns = null){
+        $availableColumns = $changingColumns ?? self::getChangingColumns();
 
         $newArray = [];
 

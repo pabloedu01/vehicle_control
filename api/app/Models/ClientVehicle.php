@@ -24,11 +24,11 @@ class ClientVehicle extends Base
         $uniqueRule = self::getUniqueRule($id, ['company_id' => $company_id]);
 
         return [
-            'chasis'       => ['required', 'string', $uniqueRule],
+            'chasis'       => [ 'required', 'string', 'regex:/^[a-zA-Z0-9]*$/', $uniqueRule ],
             'color'        => 'required|string',
-            'number_motor' => ['required', 'string', $uniqueRule],
-            'renavan'      => ['required', 'integer', $uniqueRule],
-            'plate'        => ['required', 'string', $uniqueRule],
+            'number_motor' => [ 'required', 'string', 'regex:/^[a-zA-Z0-9]*$/', $uniqueRule ],
+            'renavan'      => [ 'required', 'integer', $uniqueRule ],
+            'plate'        => [ 'required', 'string', 'regex:/^[A-Z0-9]*$/', $uniqueRule ],
             'mileage'      => 'required|numeric',
         ];
     }
@@ -36,7 +36,7 @@ class ClientVehicle extends Base
     #belongs to
     public function vehicle()
     {
-        return $this->belongsTo('App\Models\Vehicle', 'vehicle_id', 'id');
+        return $this->belongsTo('App\Models\Vehicle', 'vehicle_id', 'id')->withTrashed();
     }
 
     #belongs to

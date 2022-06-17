@@ -43,6 +43,11 @@ function only_numbers($text)
     return preg_replace('/[^0-9\.]/', '', str_replace(',', '.', $text));
 }
 
+function integerValue($text)
+{
+    return preg_replace('/[^0-9]/', '', $text);
+}
+
 function mb_ucfirst($string, $encoding = 'utf8')
 {
     $strlen    = mb_strlen($string, $encoding);

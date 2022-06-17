@@ -8,6 +8,7 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import {useForm} from "react-hook-form";
 import {FormInput} from "../../components";
+import {getAllOptions} from "../../utils/selectOptionsForm";
 
 const api = new APICore();
 
@@ -75,10 +76,10 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
         if(id){
             api.get('/vehicle-model/' + id).then((response) => {
-                const {name,active,brand_id} = response.data.data;
+                const {name,active,brand_id, brand} = response.data.data;
 
                 setData({
-                    name,active,brand_id
+                    name,active,brand_id,brand
                 });
             },(error) => {
                 setData(defaultData);
@@ -90,22 +91,17 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     const getBrands = () => {
         api.get('/vehicle-brand/active-brands',{company_id: props.company?.id}).then((response) => {
-            const data = response.data.data.map((user) => {
-                return {
-                    value: user.id,
-                    label: user.name
-                };
-            });
-
-            setBrands(data);
+            setBrands(getAllOptions(response.data.data, data?.brand));
         },(error) => {
             setBrands([]);
         });
     };
 
     useEffect(() => {
-        getBrands();
-    }, []);
+        if(data){
+            getBrands();
+        }
+    }, [data]);
 
     useEffect(() => {
         getData();

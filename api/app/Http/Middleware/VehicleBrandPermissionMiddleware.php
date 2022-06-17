@@ -46,7 +46,7 @@ class VehicleBrandPermissionMiddleware extends BaseMiddleware
             );
         }
 
-        if(!VehicleBrand::where('id', '=', $data['id'])->exists())
+        if(!VehicleBrand::withTrashed()->where('id', '=', $data['id'])->exists())
         {
             return response()->json([
                                         'msg' => trans('general.msg.notFound'),
@@ -55,7 +55,7 @@ class VehicleBrandPermissionMiddleware extends BaseMiddleware
         }
 
         if(
-        !VehicleBrand::whereHas('company', function($query){
+        !VehicleBrand::withTrashed()->whereHas('company', function($query){
             return $query->whereHas('users', function($query){
                 return $query->where('users.id', '=', \Auth::user()->id);
             });

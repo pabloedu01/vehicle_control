@@ -30,7 +30,7 @@ class VehicleBrand extends Base
                 $uniqueRule,
             ],
             'code'    => [
-                'required', 'string' ,
+                'required', 'string', 'regex:/^[a-zA-Z0-9\-\_]*$/',
                 $uniqueRule,
             ],
             'active'      => 'required|boolean',

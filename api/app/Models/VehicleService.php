@@ -2,15 +2,29 @@
 
 namespace App\Models;
 
+use App\Casts\TemporalFile;
+
 class VehicleService extends Base
 {
     protected $table = 'vehicle_services';
 
     protected $fillable = [
         'company_id',
-        'version_id',
+        'checklist_version_id',
         'service_schedule_id',
         'service_order_id',
+    ];
+
+    protected $casts = [
+        'technical_consultant_signature' => TemporalFile::class,
+        'client_signature' => TemporalFile::class,
+    ];
+
+    public static $changingColumnsForReport = [
+        'client_signature_base64'               => 'clientSignature',
+        'client_signature_date'                 => 'clientSignatureDate',
+        'technical_consultant_signature_base64' => 'technicalConsultantSignature',
+        'technical_consultant_signature_date'   => 'technicalConsultantSignatureDate',
     ];
 
     protected $appends = ['client_name'];
@@ -37,6 +51,7 @@ class VehicleService extends Base
                                       'vehicle_service_technical_consultant_data.signature as technical_consultant_signature',
                                       'vehicle_service_technical_consultant_data.signature_date as technical_consultant_signature_date',
 
+                                      'vehicle_service_vehicle_data.vehicle_id',
                                       'vehicle_service_vehicle_data.brand_id',
                                       /*'vehicle_service_vehicle_data.plate',*/
                                       'vehicle_service_vehicle_data.fuel',
@@ -55,6 +70,20 @@ class VehicleService extends Base
         return $client ? $client->name : $this->getAttributeFromArray('client_name');
     }
 
+    public function getClientSignatureBase64Attribute(){
+        $gcsDriver  = env('GOOGLE_CLOUD_STORAGE_DRIVER', 'public');
+        $gcsStorage = \Storage::disk($gcsDriver);
+
+        return $this->client_signature ? 'data:image/png;base64,'.base64_encode($gcsStorage->get(last(explode($gcsStorage->url(''), $this->client_signature)))) : $this->client_signature;
+    }
+
+    public function getTechnicalConsultantSignatureBase64Attribute(){
+        $gcsDriver  = env('GOOGLE_CLOUD_STORAGE_DRIVER', 'public');
+        $gcsStorage = \Storage::disk($gcsDriver);
+
+        return $this->technical_consultant_signature ? 'data:image/png;base64,'.base64_encode($gcsStorage->get(last(explode($gcsStorage->url(''), $this->technical_consultant_signature)))) : $this->technical_consultant_signature;
+    }
+
     #belongs to
     public function company()
     {
@@ -64,38 +93,44 @@ class VehicleService extends Base
     #belongs to
     public function serviceSchedule()
     {
-        return $this->belongsTo('App\Models\ServiceSchedule', 'service_schedule_id', 'id');
+        return $this->belongsTo('App\Models\ServiceSchedule', 'service_schedule_id', 'id')->withTrashed();
     }
 
     #belongs to
     public function technicalConsultant()
     {
-        return $this->belongsTo('App\Models\TechnicalConsultant', 'technical_consultant_id', 'id');
+        return $this->belongsTo('App\Models\TechnicalConsultant', 'technical_consultant_id', 'id')->withTrashed();
     }
 
     #belongs to
     public function client()
     {
-        return $this->belongsTo('App\Models\Client', 'client_id', 'id');
+        return $this->belongsTo('App\Models\Client', 'client_id', 'id')->withTrashed();
     }
 
     #belongs to
     public function brand()
     {
-        return $this->belongsTo('App\Models\VehicleBrand', 'brand_id', 'id');
+        return $this->belongsTo('App\Models\VehicleBrand', 'brand_id', 'id')->withTrashed();
     }
 
     #belongs to
-    public function version()
+    public function vehicle()
     {
-        return $this->belongsTo('App\Models\VehicleBrandChecklistVersion', 'version_id', 'id');
+        return $this->belongsTo('App\Models\Vehicle', 'vehicle_id', 'id')->withTrashed();
+    }
+
+    #belongs to
+    public function checklistVersion()
+    {
+        return $this->belongsTo('App\Models\ChecklistVersion', 'checklist_version_id', 'id')->withTrashed();
     }
 
     #many to many
     public function items()
     {
         return $this->belongsToMany('App\Models\ChecklistItem', 'checklist_item_vehicle_service', 'vehicle_service_id', 'checklist_item_id')
-            ->withPivot([ 'value', 'evidence' ])
+            ->withPivot([ 'value', 'evidence', 'observations' ])
             ->withTimestamps()
             ->using('App\Pivots\ChecklistItemVehicleService');
     }

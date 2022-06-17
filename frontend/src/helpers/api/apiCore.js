@@ -4,6 +4,7 @@ import axios from 'axios';
 import config from '../../config';
 import {loadingService} from "../../services/loading";
 import {toastService} from "../../services/toast";
+import {prepareFormData} from "../../utils/file";
 
 const axiosInstance = axios.create({
     baseURL: `${config.API_URL}`,
@@ -146,6 +147,16 @@ class APICore {
      */
     delete = (url) => {
         return axiosInstance.delete(url);
+    };
+
+    uploadFile = (url, data) => {
+        const config = {
+            headers: {
+                ...axiosInstance.defaults.headers,
+                'content-type': 'multipart/form-data',
+            },
+        };
+        return axiosInstance.post(url, prepareFormData(data), config);
     };
 
     /**

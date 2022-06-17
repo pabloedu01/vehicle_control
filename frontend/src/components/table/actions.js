@@ -46,7 +46,7 @@ const Actions = (props: {tableMeta: any, actions?: Array<string>, handleEdit?: a
 
       {(props.extraButtons ?? []).map((button) =>
             <Dropdown.Item key={button.key}>
-              <div onClick={() => {button.action(rowData.id)}}>
+              <div onClick={() => {button.action(rowData.id, rowData)}}>
                 <i className={classNames(button.icon, 'me-1')}/>
                 {button.label}
               </div>

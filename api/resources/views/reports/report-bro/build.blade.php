@@ -27,7 +27,7 @@
 
 <script type="text/javascript">
     var checklistItems = JSON.parse('{!! json_encode($items->toArray()) !!}');
-    var oldReport = JSON.parse('{!! json_encode($version->report) !!}');
+    var oldReport = JSON.parse('{!! json_encode($version->formatted_report) !!}');
 </script>
 
 <script type="text/javascript" src="{{ url('assets/js/report-bro/scripts.js') }}"></script>

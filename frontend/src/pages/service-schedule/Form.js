@@ -9,6 +9,9 @@ import * as yup from "yup";
 import {useForm} from "react-hook-form";
 import {FormInput} from "../../components";
 import moment from 'moment';
+import swal from "sweetalert";
+import classNames from "classnames";
+import {getAllOptions} from "../../utils/selectOptionsForm";
 
 const api = new APICore();
 
@@ -20,6 +23,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     const [models, setModels] = useState([]);
     const [vehicles, setVehicles] = useState([]);
     const [clients, setClients] = useState([]);
+    const [checklistVersions, setChecklistVersions] = useState([]);
     const [technicalConsultants, setTechnicalConsultants] = useState([]);
 
     /*
@@ -27,6 +31,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
      */
     const schemaResolver = yupResolver(
         yup.object().shape({
+            checklist_version_id: yup.number().required('Por favor, digite Versão do Reporte'),
             brand_id: yup.number().required('Por favor, digite Marca'),
             model_id: yup.number().required('Por favor, digite Modelo'),
             vehicle_id: yup.number().required('Por favor, digite Vehiculo'),
@@ -81,6 +86,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     const getData = () => {
         const defaultData = {
+            checklist_version_id: null,
             brand_id: null,
             model_id: null,
             vehicle_id: null,
@@ -94,13 +100,10 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
         if(id){
             api.get('/service-schedule/' + id).then((response) => {
-                const {vehicle:{model: {brand_id}},vehicle:{model_id},vehicle_id,code,chasis,plate,promised_date,client_id,technical_consultant_id} = response.data.data;
-
-                getModels(brand_id);
-                getVehicles(model_id);
+                const {vehicle:{model: {brand_id}, model: {brand}, model},vehicle:{model_id},vehicle_id,code,chasis,plate,promised_date,client_id,technical_consultant_id, checklist_version_id, checklist_version: checklistVersion, vehicle, client, technical_consultant: technicalConsultant} = response.data.data;
 
                 setData({
-                    vehicle_id,model_id,brand_id,code,chasis,plate,promised_date: new Date(promised_date),client_id,technical_consultant_id
+                    vehicle_id,model_id,brand_id,code,chasis,plate,promised_date: new Date(promised_date),client_id,technical_consultant_id, checklist_version_id, checklistVersion, brand, model, technicalConsultant, client, vehicle
                 });
             },(error) => {
                 setData(defaultData);
@@ -112,14 +115,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     const getBrands = () => {
         api.get('/vehicle-brand/active-brands',{company_id: props.company?.id}).then((response) => {
-            const data = response.data.data.map((user) => {
-                return {
-                    value: user.id,
-                    label: user.name
-                };
-            });
-
-            setBrands(data);
+            setBrands(getAllOptions(response.data.data, data?.brand));
         },(error) => {
             setBrands([]);
         });
@@ -127,29 +123,23 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     const getClients = () => {
         api.get('/client/active-clients',{company_id: props.company?.id}).then((response) => {
-            const data = response.data.data.map((user) => {
-                return {
-                    value: user.id,
-                    label: user.name
-                };
-            });
-
-            setClients(data);
+            setClients(getAllOptions(response.data.data, data?.client));
         },(error) => {
             setClients([]);
         });
     };
 
+    const getChecklistVersions = () => {
+        api.get('/checklist-version/active-checklist-versions').then((response) => {
+            setChecklistVersions(getAllOptions(response.data.data, data?.checklistVersion));
+        },(error) => {
+            setChecklistVersions([]);
+        });
+    };
+
     const getTechnicalConsultants = () => {
         api.get('/technical-consultant/active-technical-consultants',{company_id: props.company?.id}).then((response) => {
-            const data = response.data.data.map((user) => {
-                return {
-                    value: user.id,
-                    label: user.name
-                };
-            });
-
-            setTechnicalConsultants(data);
+            setTechnicalConsultants(getAllOptions(response.data.data, data?.technicalConsultant));
         },(error) => {
             setTechnicalConsultants([]);
         });
@@ -157,14 +147,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     const getModels = (brand_id?) => {
         api.get('/vehicle-model/active-vehicle-models',{brand_id: brand_id ?? methods.getValues('brand_id')}).then((response) => {
-            const data = response.data.data.map((user) => {
-                return {
-                    value: user.id,
-                    label: user.name
-                };
-            });
-
-            setModels(data);
+            setModels(getAllOptions(response.data.data, data?.model, (brand_id ?? methods.getValues('brand_id')) === data?.brand_id));
         },(error) => {
             setModels([]);
         });
@@ -172,14 +155,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     const getVehicles = (model_id?) => {
         api.get('/vehicle/active-vehicles',{model_id: model_id ?? methods.getValues('model_id')}).then((response) => {
-            const data = response.data.data.map((user) => {
-                return {
-                    value: user.id,
-                    label: user.name
-                };
-            });
-
-            setVehicles(data);
+            setVehicles(getAllOptions(response.data.data, data?.vehicle,(model_id ?? methods.getValues('model_id')) === data?.model_id));
         },(error) => {
             setVehicles([]);
         });
@@ -187,10 +163,16 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     const handleChangeBrand = () => {
         getModels();
+
+        methods.setValue('model_id', null);
+        methods.setValue('vehicle_id', null);
+        setVehicles([]);
     };
 
     const handleChangeModel = () => {
         getVehicles();
+
+        methods.setValue('vehicle_id', null);
     };
 
     const handleChangePromisedDate = (date) => {
@@ -203,11 +185,39 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         history(`/panel/company/${props.company?.id}/service-schedules/${id}/checklist`);
     };
 
+    const onClickPrintChecklist = (e) => {
+        e.preventDefault();
+
+        api.post('/checklist-version/' + methods.getValues('checklist_version_id') + '/print', {type: 'service-schedules', id: id, utcOffset: moment().utcOffset()}).then((response) => {
+            console.log('url', response.data.data.report);
+
+            window.open(response.data.data.report, '_blank');
+        },(error) => {
+            swal({
+                title: 'Error',
+                text: 'Ocorreu um erro ao gerar o relatório.',
+                icon: 'error',
+                buttons: {
+                    confirm: {
+                        text: 'Ok',
+                        value: 'confirm'
+                    }
+                },
+                dangerMode: true,
+            });
+        });
+    };
+
     useEffect(() => {
-        getBrands();
-        getClients();
-        getTechnicalConsultants();
-    }, []);
+        if(data){
+            getBrands();
+            getModels(data.brand_id);
+            getVehicles(data.model_id);
+            getClients();
+            getChecklistVersions();
+            getTechnicalConsultants();
+        }
+    }, [data]);
 
     useEffect(() => {
         getData();
@@ -223,6 +233,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         methods.setValue('brand_id', data?.brand_id ?? null);
         methods.setValue('model_id', data?.model_id ?? null);
         methods.setValue('vehicle_id', data?.vehicle_id ?? null);
+        methods.setValue('checklist_version_id', data?.checklist_version_id ?? null);
     }, [data]);
 
     return (
@@ -242,6 +253,15 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                             <form onSubmit={handleSubmit(onSubmit)} noValidate>
                                 <Row>
                                     <Col md={6}>
+                                        <FormInput
+                                            label="Versão do Reporte"
+                                            type="select"
+                                            name="checklist_version_id"
+                                            containerClass={'mb-3'}
+                                            options={checklistVersions}
+                                            {...otherProps}
+                                        />
+
                                         <FormInput
                                             label="Cliente"
                                             type="select"
@@ -331,9 +351,13 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                                     </Col>
 
                                     <Col md={6}>
-                                        <div className={'d-grid'} hidden={id ?? false}>
+                                        <div className={classNames({'d-grid': id, 'd-none': !id})}>
                                             <Button variant="primary" size={'lg'} type="buttom" onClick={onClickChecklist}>
                                                 Checklist
+                                            </Button>
+                                            <div className="mb-3"/>
+                                            <Button  variant="primary" size={'lg'} type="buttom" onClick={onClickPrintChecklist}>
+                                                Print Checklist
                                             </Button>
                                         </div>
                                     </Col>

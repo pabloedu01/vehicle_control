@@ -36,7 +36,7 @@ class VehicleModel extends Base
 
     public function brand()
     {
-        return $this->belongsTo('App\Models\VehicleBrand', 'brand_id', 'id');
+        return $this->belongsTo('App\Models\VehicleBrand', 'brand_id', 'id')->withTrashed();
     }
 }
 

@@ -56,7 +56,7 @@ class CreateVehicleServicesTable extends Migration
             $table->foreign('brand_id')->references('id')->on('vehicle_brands')->onDelete('cascade');
             $table->string('plate')->nullable();
             $table->integer('fuel')->default(0)->nullable();
-            $table->integer('mileage')->default(0)->nullable();
+            $table->double('mileage', 10, 2)->default(0)->nullable();
             $table->timestamps();
         });
 

@@ -53,6 +53,68 @@ $(document).ready(function() {
     }
     reportBro.setModified(true);
 
+    console.log(reportBro);
+
+    var date = new Date();
+    var formattedDate = date.getFullYear() + '-' + ('00' + (date.getMonth() + 1)).substr(-2,2) + '-' + ('00' + (date.getDate())).substr(-2,2) + ' 12:00:00'
+
+    var customParameters = [
+        {
+            'id': 3,
+            'name': 'clientSignature',
+            'type': 'image',
+            'arrayItemType': 'string',
+            'testData': '',
+            'eval': false,
+            'nullable': false,
+            'pattern': '',
+            'expression': '',
+            'showOnlyNameType': false,
+        },
+        {
+            'id': 4,
+            'name': 'technicalConsultantSignature',
+            'type': 'image',
+            'arrayItemType': 'string',
+            'testData': '',
+            'eval': false,
+            'nullable': false,
+            'pattern': '',
+            'expression': '',
+            'showOnlyNameType': false,
+        },
+        {
+            'id': 5,
+            'name': 'clientSignatureDate',
+            'type': 'date',
+            'arrayItemType': 'string',
+            'testData': formattedDate,
+            'eval': false,
+            'nullable': false,
+            'pattern': 'dd/MM/yyyy hh:mma',
+            'expression': '',
+            'showOnlyNameType': false,
+        },
+        {
+            'id': 6,
+            'name': 'technicalConsultantSignatureDate',
+            'type': 'date',
+            'arrayItemType': 'string',
+            'testData': formattedDate,
+            'eval': false,
+            'nullable': false,
+            'pattern': 'dd/MM/yyyy hh:mma',
+            'expression': '',
+            'showOnlyNameType': false,
+        },
+    ];
+
+    customParameters.forEach(function(parameter){
+        if(!reportBro.getParameterById(parameter.id)){
+            reportBro.createParameter(parameter);
+        }
+    });
+
     checklistItems.forEach(function(item){
         var id = item.id + 100;
         var type;
@@ -70,7 +132,7 @@ $(document).ready(function() {
                 break;
         }
 
-        var parameter = reportBro.getParameterById(id)
+        var parameter = reportBro.getParameterById(id);
         var defaultParameter = {
             'id': id,
             'name': item.formatted_name,

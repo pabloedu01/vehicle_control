@@ -57,6 +57,7 @@ RUN composer install
 
 #CMD cat /etc/apache2/mods-available/rewrite.load
 CMD php artisan key:generate
+CMD php artisan storage:link
 CMD a2enmod rewrite
 CMD a2enmod headers
 CMD a2enmod expires

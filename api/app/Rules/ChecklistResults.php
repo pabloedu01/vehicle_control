@@ -3,12 +3,12 @@
 namespace App\Rules;
 
 use App\Models\ChecklistItem;
-use App\Models\VehicleBrandChecklistVersion as ChecklistVersion;
+use App\Models\ChecklistVersion;
 use Illuminate\Contracts\Validation\Rule;
 
 class ChecklistResults implements Rule
 {
-    private $version_id;
+    private $checklist_version_id;
     private $message;
 
     /**
@@ -16,9 +16,9 @@ class ChecklistResults implements Rule
      *
      * @return void
      */
-    public function __construct($version_id)
+    public function __construct($checklist_version_id)
     {
-        $this->version_id = $version_id;
+        $this->checklist_version_id = $checklist_version_id;
         $this->message    = trans('validation.exists');
     }
 
@@ -32,57 +32,64 @@ class ChecklistResults implements Rule
      */
     public function passes($attribute, $value)
     {
-        if(!$this->version_id){
+        if(!$this->checklist_version_id){
             return false;
         }
 
-        $items = ChecklistItem::whereHas('versions', function($query){
-                                  return $query->where(ChecklistVersion::getTableName().'.id', '=', $this->version_id);
-                              })->get();
+        $items = ChecklistItem::withTrashed()
+                              ->get();
 
         $itemsIds = $items->pluck('id')->toArray();
         $valueIds = collect($value)->pluck('id')->toArray();
 
-        if(count(array_diff($itemsIds, $valueIds)) == 0 && count(array_diff($valueIds, $itemsIds)) == 0)
+        if(count(array_diff($valueIds, $itemsIds)) == 0)
         {
-            $itemsGroupById = $items->groupBy('id');
+            $itemsGroupById = $items->keyBy('id');
             $errors         = [];
 
             foreach($value as $checklist)
             {
-                $item = $itemsGroupById[$checklist['id']][0];
+                $item = $itemsGroupById[$checklist['id']];
 
-                $validator = validate([
-                                          'valuexxxxx'    => @$checklist['value'],
-                                          'evidencexxxxx' => @$checklist['evidence'],
-                                      ],
-                                      [
-                                          'valuexxxxx'    => $item->validation['rule'],
-                                          'evidencexxxxx' => [
-                                              'nullable',
-                                              'array',
-                                              new MultipleTemporalFiles,
+                try{
+                    $validator = validate([
+                                              'valuexxxxx'    => @$checklist['value'],
+                                              'evidencexxxxx' => @$checklist['evidence'],
+                                              'observationsxxxxx' => @$checklist['observations']
                                           ],
-                                      ]);
+                                          [
+                                              'valuexxxxx'    => $item->validation['rule'],
+                                              'evidencexxxxx' => [
+                                                  'nullable',
+                                                  'array',
+                                                  new MultipleTemporalFiles,
+                                              ],
+                                              'observationsxxxxx' => 'nullable|string'
+                                          ]);
 
-                if($validator->fails())
-                {
-                    $keys = [
-                        'evidencexxxxx' => \Str::slug($item->name, '_', 'es').'_evidence',
-                        'valuexxxxx' => \Str::slug($item->name, '_', 'es').'_value',
-                    ];
+                    if($validator->fails())
+                    {
+                        $keys = [
+                            'evidencexxxxx' => \Str::slug($item->name, '_', 'es').'_evidence',
+                            'valuexxxxx' => \Str::slug($item->name, '_', 'es').'_value',
+                            'observationsxxxxx' => \Str::slug($item->name, '_', 'es').'_observation',
+                        ];
 
-                    $items = [
-                        'evidencexxxxx' => $item->name.' ('.trans('general.evidence').')',
-                        'valuexxxxx' => $item->name.' ('.trans('general.value').')',
-                    ];
+                        $items = [
+                            'evidencexxxxx' => $item->name.' ('.trans('general.evidence').')',
+                            'valuexxxxx' => $item->name.' ('.trans('general.value').')',
+                            'observationsxxxxx' => $item->name.' ('.trans('general.observations').')',
+                        ];
 
-                    $messages = $validator->errors()->getMessages();
-                    foreach($messages as $key => $message){
-                        $errors[ $keys[$key] ] = array_map(function($data) use ($key,$items){
-                            return str_replace($key, $items[$key], $data);
-                        },$message);
+                        $messages = $validator->errors()->getMessages();
+                        foreach($messages as $key => $message){
+                            $errors[ $keys[$key] ] = array_map(function($data) use ($key,$items){
+                                return str_replace($key, $items[$key], $data);
+                            },$message);
+                        }
                     }
+                }catch(\Exception $e){
+                    $errors[] = [$e->getMessage()];
                 }
             }
 

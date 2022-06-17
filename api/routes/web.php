@@ -29,9 +29,22 @@ Route::get('/build-report', function(\Illuminate\Http\Request $request){
 
     if($user && $user->privilege == 'admin')
     {
-        $items = \App\Models\ChecklistItem::where('active', '=', true)->get();
+        $version = \App\Models\ChecklistVersion::withoutGlobalScope('simpleColumns')
+                                               ->where('id', '=', $request->id)
+                                               ->first();
+        $version->append('formatted_report');
 
-        $version = \App\Models\ChecklistVersion::where('id', '=', $request->id)->first();
+        $items = \App\Models\ChecklistItem::withTrashed()
+                                          ->where('active', '=', true)
+                                          ->whereNull('deleted_at');
+
+
+        if(count($version->items) > 0)
+        {
+            $items = $items->orWhereIn('id', $version->items->pluck('id'));
+        }
+
+        $items = $items->get();
 
         if($version)
         {
@@ -57,9 +70,9 @@ Route::get('/save-report', function () {
 
     $pdf = file_get_contents($url);
 
-    \Storage::disk('local')->put('reports/test.pdf', $pdf);
+    \Storage::disk('public')->put('reports/test.pdf', $pdf);
 
-    return \Storage::disk('local')->download('reports/test.pdf');
+    return \Storage::disk('public')->download('reports/test.pdf');
 });
 
 Route::get('/generate-report', function () {

@@ -4,20 +4,27 @@ namespace App\Models;
 
 class TemporalFile extends Base
 {
-    protected $table = 'temporal_files';
+    protected $table         = 'temporal_files';
     protected $forceDeleting = true;
 
-    protected $appends = ['full_name'];
+    protected $appends = [ 'full_name', 'url' ];
 
     public static $path = 'temporal-files';
 
-    public function getFullNameAttribute(){
+    public function getFullNameAttribute()
+    {
         return self::$path.'/'.$this->filename;
     }
 
-    public static function prepare($model, $key, $value){
-        $gcsDriver    = env('GOOGLE_CLOUD_STORAGE_DRIVER', 'local');
-        $localStorage = \Storage::disk('local');
+    public function getUrlAttribute()
+    {
+        return \Storage::url($this->full_name);
+    }
+
+    public static function prepare($model, $key, $value)
+    {
+        $gcsDriver    = env('GOOGLE_CLOUD_STORAGE_DRIVER', 'public');
+        $localStorage = \Storage::disk('public');
         $gcsStorage   = \Storage::disk($gcsDriver);
 
         $newValue = null;
@@ -38,7 +45,7 @@ class TemporalFile extends Base
             }
             else
             {
-                $newValue = $value;
+                $newValue = last(explode($gcsStorage->url(''), $value));
             }
         }
 

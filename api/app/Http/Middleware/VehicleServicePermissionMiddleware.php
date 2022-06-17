@@ -69,7 +69,7 @@ class VehicleServicePermissionMiddleware extends BaseMiddleware
         $request->merge([
                             'company_id' => $vehicleService->company_id,
                             'brand_id' => @$request->get('brand_id') ?? $vehicleService->vehicleData->brand_id,
-                            'version_id' => @$request->get('version_id') ?? $vehicleService->version_id
+                            'checklist_version_id' => @$request->get('checklist_version_id') ?? $vehicleService->checklist_version_id
                         ]);
 
         return $next($request);

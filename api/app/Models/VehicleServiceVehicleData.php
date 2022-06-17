@@ -21,13 +21,19 @@ class VehicleServiceVehicleData extends Base
     #belongs to
     public function vehicleService()
     {
-        return $this->belongsTo('App\Models\VehicleService', 'vehicle_service_id', 'id');
+        return $this->belongsTo('App\Models\VehicleService', 'vehicle_service_id', 'id')->withTrashed();
     }
 
     #belongs to
     public function brand()
     {
-        return $this->belongsTo('App\Models\VehicleBrand', 'brand_id', 'id');
+        return $this->belongsTo('App\Models\VehicleBrand', 'brand_id', 'id')->withTrashed();
+    }
+
+    #belongs to
+    public function vehicle()
+    {
+        return $this->belongsTo('App\Models\Vehicle', 'vehicle_id', 'id')->withTrashed();
     }
 }
 

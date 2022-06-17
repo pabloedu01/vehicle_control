@@ -10,7 +10,19 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ServiceScheduleController extends Controller
 {
-    private static $with = ['vehicle','vehicle.model','vehicle.model.brand', 'client', 'technicalConsultant', 'technicalConsultant.user', 'claimsService','claimsService.services','claimsService.services.products', 'vehicleService'];
+    private static $with = [
+        'vehicle',
+        'vehicle.model',
+        'vehicle.model.brand',
+        'client',
+        'technicalConsultant',
+        'technicalConsultant.user',
+        'checklistVersion',
+        'claimsService',
+        'claimsService.services',
+        'claimsService.services.products',
+        'vehicleService'
+    ];
 
     public function index(Request $request)
     {
@@ -19,7 +31,7 @@ class ServiceScheduleController extends Controller
                                            ->get();
 
         return response()->json([
-                                    'msg' => trans('general.msg.success'),
+                                    'msg'  => trans('general.msg.success'),
                                     'data' => $serviceSchedules,
                                 ],
                                 Response::HTTP_OK
@@ -28,12 +40,17 @@ class ServiceScheduleController extends Controller
 
     public function show(Request $request, $id)
     {
-        $serviceSchedule = ServiceSchedule::with(self::$with)
+        $serviceSchedule = ServiceSchedule::with(array_merge(self::$with, ['vehicleService.items' => function($query){return $query->withTrashed();}]))
                                           ->where('id', '=', $id)
                                           ->first();
 
+        if($serviceSchedule->vehicleService){
+            $serviceSchedule->vehicleService->append('client_signature_base64');
+            $serviceSchedule->vehicleService->append('technical_consultant_signature_base64');
+        }
+
         return response()->json([
-                                    'msg' => trans('general.msg.success'),
+                                    'msg'  => trans('general.msg.success'),
                                     'data' => $serviceSchedule,
                                 ],
                                 Response::HTTP_OK
@@ -50,17 +67,19 @@ class ServiceScheduleController extends Controller
 
             $serviceSchedule->load(self::$with);
 
-            return response()->json(   [
-                                        'msg' => trans('general.msg.success'),
+            return response()->json([
+                                        'msg'  => trans('general.msg.success'),
                                         'data' => $serviceSchedule,
-                                    ], Response::HTTP_CREATED
+                                    ],
+                                    Response::HTTP_CREATED
             );
         }
         else
         {
-            return response()->json(   [
+            return response()->json([
                                         'msg' => trans('general.msg.error'),
-                                    ], Response::HTTP_INTERNAL_SERVER_ERROR
+                                    ],
+                                    Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }
@@ -124,17 +143,19 @@ class ServiceScheduleController extends Controller
 
             $serviceSchedule->load(self::$with);
 
-            return response()->json(   [
-                                        'msg' => trans('general.msg.success'),
+            return response()->json([
+                                        'msg'  => trans('general.msg.success'),
                                         'data' => $serviceSchedule,
-                                    ], Response::HTTP_CREATED
+                                    ],
+                                    Response::HTTP_CREATED
             );
         }
         else
         {
-            return response()->json(   [
+            return response()->json([
                                         'msg' => trans('general.msg.error'),
-                                    ], Response::HTTP_INTERNAL_SERVER_ERROR
+                                    ],
+                                    Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }
@@ -145,16 +166,18 @@ class ServiceScheduleController extends Controller
 
         if(secureDelete($serviceSchedule))
         {
-            return response()->json(   [
+            return response()->json([
                                         'msg' => trans('general.msg.success'),
-                                    ], Response::HTTP_OK
+                                    ],
+                                    Response::HTTP_OK
             );
         }
         else
         {
-            return response()->json(   [
+            return response()->json([
                                         'msg' => trans('general.msg.error'),
-                                    ], Response::HTTP_INTERNAL_SERVER_ERROR
+                                    ],
+                                    Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }

@@ -8,12 +8,15 @@ class TemporalFile implements CastsAttributes
 {
     public function get($model, $key, $value, $attributes)
     {
-        return $value;
+        $gcsDriver  = env('GOOGLE_CLOUD_STORAGE_DRIVER', 'public');
+        $gcsStorage = \Storage::disk($gcsDriver);
+
+        return $value && $gcsStorage->exists($value) ? $gcsStorage->url($value) : null;
     }
 
     public function set($model, $key, $value, $attributes)
     {
-        $gcsDriver    = env('GOOGLE_CLOUD_STORAGE_DRIVER', 'local');
+        $gcsDriver    = env('GOOGLE_CLOUD_STORAGE_DRIVER', 'public');
         $gcsStorage   = \Storage::disk($gcsDriver);
 
         $newValue = \App\Models\TemporalFile::prepare($model, $key, $value);

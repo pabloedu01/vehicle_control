@@ -15,6 +15,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     const history = useNavigate();
     const {id} = useParams();
     const [data, setData] = useState();
+    const [visibleOptions, setVisibleOptions] = useState(false);
 
     /*
      * form validation schema
@@ -58,6 +59,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
             validation: {
                 type: formData.type,
                 rule: formData.rule,
+                options: formData.type === 'list' ? formData.options.split(',') : []
             },
             preview_data: {
                 value: formData.preview_data_value
@@ -91,15 +93,18 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
             active: true,
             type: null,
             rule: null,
-            preview_data_value: null
+            preview_data_value: null,
+            options: null
         };
 
         if(id){
             api.get('/checklist-item/' + id).then((response) => {
-                const {name, description, code, active, validation: {type}, validation: {rule}, preview_data: {value: preview_data_value}} = response.data.data;
+                const {name, description, code, active, validation: {type}, validation: {rule}, validation: {options}, preview_data: {value: preview_data_value}} = response.data.data;
+
+                onTypeChange(type);
 
                 setData({
-                    name, description, code, active, type, rule, preview_data_value
+                    name, description, code, active, type, rule, preview_data_value, options
                 });
             },(error) => {
                 setData(defaultData);
@@ -107,6 +112,11 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         } else {
             setData(defaultData);
         }
+    };
+
+    const onTypeChange = (value) => {
+        setVisibleOptions(value === 'list');
+        methods.setValue('options', null);
     };
 
     useEffect(() => {
@@ -121,6 +131,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         methods.setValue('type', data?.type ?? null);
         methods.setValue('rule', data?.rule ?? null);
         methods.setValue('preview_data_value', data?.preview_data_value ?? null);
+        methods.setValue('options', data?.options?.toString() ?? null);
     }, [data]);
 
     return (
@@ -182,12 +193,23 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
                                         <FormInput
                                             label="O Tipo"
-                                            type="text"
+                                            type="select"
                                             name="type"
+                                            options={[{value: 'boolean', label: 'Boolean'}, {value: 'string', label: 'String'}, {value: 'list', label: 'List'}]}
                                             placeholder="Digite O Tipo"
                                             containerClass={'mb-3'}
+                                            handleChange={onTypeChange}
                                             {...otherProps}
                                         />
+
+                                        {visibleOptions ? <FormInput
+                                            label="Opções"
+                                            type="text"
+                                            name="options"
+                                            placeholder="Digite Options"
+                                            containerClass={'mb-3'}
+                                            {...otherProps}
+                                        />:null}
 
                                         <FormInput
                                             label="Regra"

@@ -37,7 +37,7 @@ const Builder = (props: {company?: any, user?: any}): React$Element<React$Fragme
                     { label: 'Versão', path: `/panel/checklist-versions/${id}/edit` },
                     { label: 'Reporte', path: '/report-bro', active: true },
                 ]}
-                title={'Report Bro'}
+                title={'Versão ' + data?.name}
                 insideCompany={false}
                 company={props.company}
             />

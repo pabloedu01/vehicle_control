@@ -2,11 +2,19 @@
 
 namespace App\Models;
 
+use App\Casts\TemporalFile;
+
 class VehicleServiceTechnicalConsultantData extends Base
 {
     protected $table = 'vehicle_service_technical_consultant_data';
 
     protected $forceDeleting = true;
+
+    public $filePaths = [
+        'signature' => 'vehicle-services/technical-consultants/signatures'
+    ];
+
+    protected $casts = [ 'signature' => TemporalFile::class ];
 
     protected $fillable = [
         'vehicle_service_id',
@@ -23,13 +31,13 @@ class VehicleServiceTechnicalConsultantData extends Base
     #belongs to
     public function vehicleService()
     {
-        return $this->belongsTo('App\Models\VehicleService', 'vehicle_service_id', 'id');
+        return $this->belongsTo('App\Models\VehicleService', 'vehicle_service_id', 'id')->withTrashed();
     }
 
     #belongs to
     public function technicalConsultant()
     {
-        return $this->belongsTo('App\Models\TechnicalConsultant', 'technical_consultant_id', 'id');
+        return $this->belongsTo('App\Models\TechnicalConsultant', 'technical_consultant_id', 'id')->withTrashed();
     }
 }
 

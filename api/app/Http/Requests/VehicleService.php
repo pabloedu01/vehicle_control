@@ -2,8 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Models\VehicleBrandChecklistVersion as ChecklistVersion;
+use App\Models\ChecklistVersion;
 use App\Rules\ChecklistResults;
+use App\Rules\TemporalFile;
 use App\Traits\FormRequestTrait;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -31,11 +32,7 @@ class VehicleService extends FormRequest
     {
         $vehicleService = @$this->route('id') ? \App\Models\VehicleService::withoutGlobalScope('joinToData')->find($this->route('id')) : null;
         $company_id = @$this->request->get('company_id');
-        $vehicle_id = @$this->request->get('vehicle_id');
-        $brand_id = @$this->request->get('brand_id');
         #todo: si no viene el brand_id, entonces tomar el brand_id del vehicle_id
-
-        $checklistVersion = ChecklistVersion::version($brand_id, @$this->request->get('version_id') ?? @$vehicleService->version_id)->first();
 
         return [
             'company_id' => 'required|integer',
@@ -55,9 +52,9 @@ class VehicleService extends FormRequest
                 'required', 'integer',
                 Rule::exists('vehicle_brands', 'id')->where('company_id', $company_id)
             ],
-            'version_id' => [
-                'nullable', 'integer',
-                Rule::exists('vehicle_brand_checklist_versions', 'id')->where('brand_id', $brand_id)
+            'checklist_version_id' => [
+                'required', 'integer',
+                Rule::exists('checklist_versions', 'id')
             ],
             'client_id' => [
                 'nullable', 'integer',
@@ -67,20 +64,17 @@ class VehicleService extends FormRequest
                 'required_without:client_id', 'nullable', 'string'
             ],
             'client_signature' => [
-                'nullable', 'string'
+                'nullable', new TemporalFile
             ],
             'client_signature_date' => [
                 'nullable', 'date_format:Y-m-d\TH:i:sP'
             ],
             'technical_consultant_signature' => [
-                'nullable', 'string'
+                'nullable',  new TemporalFile
             ],
             'technical_consultant_signature_date' => [
                 'nullable', 'date_format:Y-m-d\TH:i:sP'
             ],
-            /*'plate' => [
-                'nullable', 'string'
-            ],*/
             'fuel' => [
                 'nullable', 'integer'
             ],
@@ -88,7 +82,7 @@ class VehicleService extends FormRequest
                 'nullable', 'integer'
             ],
             'checklist' => [
-                'required', 'array', new ChecklistResults(@$checklistVersion->id)
+                'required', 'array', new ChecklistResults($this->request->get('checklist_version_id'))
             ]
         ];
     }

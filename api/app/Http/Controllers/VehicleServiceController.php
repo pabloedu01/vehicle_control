@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\VehicleBrandChecklistVersion as ChecklistVersion;
+use App\Models\ChecklistVersion;
+use App\Models\Vehicle;
 use App\Models\VehicleService;
 use App\Http\Requests\VehicleService as VehicleServiceRequest;
 use App\Models\VehicleServiceClientData as ClientData;
@@ -13,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class VehicleServiceController extends Controller
 {
-    private static $with = [ 'brand', 'version', 'client', 'technicalConsultant', 'technicalConsultant.user', 'serviceSchedule' ];
+    private static $with = [ 'brand', 'checklistVersion', 'client', 'technicalConsultant', 'technicalConsultant.user', 'serviceSchedule', 'vehicle' ];
 
     public function index(Request $request)
     {
@@ -22,7 +23,7 @@ class VehicleServiceController extends Controller
                                          ->get();
 
         return response()->json([
-                                    'msg' => trans('general.msg.success'),
+                                    'msg'  => trans('general.msg.success'),
                                     'data' => $vehicleServices,
                                 ],
                                 Response::HTTP_OK
@@ -31,7 +32,7 @@ class VehicleServiceController extends Controller
 
     public function show(Request $request, $id)
     {
-        $vehicleServices = VehicleService::with(array_merge(self::$with, ['items']))
+        $vehicleServices = VehicleService::with(array_merge(self::$with, ['items' => function($query){return $query->withTrashed();}]))
                                          ->where('vehicle_services.id', '=', $id)
                                          ->first();
 
@@ -45,9 +46,15 @@ class VehicleServiceController extends Controller
 
     public function store(VehicleServiceRequest $request)
     {
-        $checklistVersion = ChecklistVersion::version($request->brand_id, $request->version_id)->first();
+        if($request->has('vehicle_id')){
+            $vehicle = Vehicle::find($request->vehicle_id);
 
-        $vehicleService = new VehicleService($request->merge([ 'version_id' => $checklistVersion->id ])->only(VehicleService::getFillables()));
+            $brand_id = $vehicle->brand_id;
+        } else {
+            $brand_id = $request->brand_id;
+        }
+
+        $vehicleService = new VehicleService($request->only(VehicleService::getFillables()));
 
         if(secureSave($vehicleService))
         {
@@ -57,10 +64,10 @@ class VehicleServiceController extends Controller
             $vehicleService->technicalConsultantData()
                            ->create(TechnicalConsultantData::changeDataColumns($request->only(TechnicalConsultantData::changeFillablesColumns())));
 
-            $vehicleService->vehicleData()->create($request->only(VehicleData::getFillables()));
+            $vehicleService->vehicleData()->create($request->merge(['brand_id' => $brand_id])->only(VehicleData::getFillables()));
 
             $vehicleService->items()->sync(collect($request->checklist)->keyBy('id')->map(function($item){
-                return [ 'value' => @$item['value'], 'evidence' => @$item['evidence'] ];
+                return [ 'value' => @$item['value'], 'evidence' => @$item['evidence'], 'observations' => @$item['observations'] ];
             })->toArray());
 
             #se vuelve a solicitar el vehicle, para que venga con el global scope integrado
@@ -85,6 +92,14 @@ class VehicleServiceController extends Controller
 
     public function update(VehicleServiceRequest $request, $id)
     {
+        if($request->has('vehicle_id')){
+            $vehicle = Vehicle::find($request->vehicle_id);
+
+            $brand_id = $vehicle->brand_id;
+        } else {
+            $brand_id = $request->brand_id;
+        }
+
         $vehicleService = VehicleService::withoutGlobalScope('joinToData')
                                         ->where('id', '=', $id)
                                         ->first();
@@ -95,10 +110,10 @@ class VehicleServiceController extends Controller
         {
             $vehicleService->clientData->update(ClientData::changeDataColumns($request->only(ClientData::changeFillablesColumns())));
             $vehicleService->technicalConsultantData->update(TechnicalConsultantData::changeDataColumns($request->only(TechnicalConsultantData::changeFillablesColumns())));
-            $vehicleService->vehicleData->update($request->only(VehicleData::getFillables()));
+            $vehicleService->vehicleData->update($request->merge(['brand_id' => $brand_id])->only(VehicleData::getFillables()));
 
-            $vehicleService->items()->sync(collect($request->checklist)->keyBy('id')->map(function($item){
-                return [ 'value' => @$item['value'], 'evidence' => @$item['evidence'] ];
+            $vehicleService->items()->withTrashed()->sync(collect($request->checklist)->keyBy('id')->map(function($item){
+                return [ 'value' => @$item['value'], 'evidence' => @$item['evidence'], 'observations' => @$item['observations'] ];
             })->toArray());
 
             #se vuelve a solicitar el vehicle, para que venga con el global scope integrado

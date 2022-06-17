@@ -8,6 +8,7 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import {useForm} from "react-hook-form";
 import {FormInput} from "../../components";
+import {getAllOptions} from "../../utils/selectOptionsForm";
 
 const api = new APICore();
 
@@ -80,12 +81,10 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
         if(id){
             api.get('/vehicle/' + id).then((response) => {
-                const {name,active,model_id, model_year, model: {brand_id}} = response.data.data;
-
-                getModels(brand_id);
+                const {name,active,model_id, model_year, model: {brand_id}, model, brand} = response.data.data;
 
                 setData({
-                    name,active,model_id, model_year, brand_id
+                    name,active,model_id, model_year, brand_id, model, brand
                 });
             },(error) => {
                 setData(defaultData);
@@ -97,18 +96,13 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     const handleChangeBrand = () => {
         getModels();
+
+        methods.setValue('model_id', null);
     };
 
     const getBrands = () => {
         api.get('/vehicle-brand/active-brands',{company_id: props.company?.id}).then((response) => {
-            const data = response.data.data.map((item) => {
-                return {
-                    value: item.id,
-                    label: item.name
-                };
-            });
-
-            setBrands(data);
+            setBrands(getAllOptions(response.data.data, data?.brand));
         },(error) => {
             setBrands([]);
         });
@@ -116,22 +110,18 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     const getModels = (brand_id?) => {
         api.get('/vehicle-model/active-vehicle-models',{brand_id: brand_id ?? methods.getValues('brand_id')}).then((response) => {
-            const data = response.data.data.map((user) => {
-                return {
-                    value: user.id,
-                    label: user.name
-                };
-            });
-
-            setModels(data);
+            setModels(getAllOptions(response.data.data, data?.model,(brand_id ?? methods.getValues('brand_id')) === data?.brand_id));
         },(error) => {
             setModels([]);
         });
     };
 
     useEffect(() => {
-        getBrands();
-    }, []);
+        if(data){
+            getBrands();
+            getModels(data.brand_id);
+        }
+    }, [data]);
 
     useEffect(() => {
         getData();
@@ -149,10 +139,10 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         <>
             <PageTitle
                 breadCrumbItems={[
-                    { label: 'Modelos', path: '/vehicles/list' },
+                    { label: 'Veículos', path: '/vehicles/list' },
                     { label: 'Cadastro', path: `/vehicles/${id ? id + '/edit' : 'create'}`, active: true },
                 ]}
-                title={'Formulário de Modelo'}
+                title={'Formulário de Veículos'}
                 company={props.company}
             />
             <Row>

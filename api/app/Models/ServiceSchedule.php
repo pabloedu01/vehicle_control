@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+
 class ServiceSchedule extends Base
 {
     protected $table = 'service_schedules';
@@ -10,6 +12,7 @@ class ServiceSchedule extends Base
         'code',
         'promised_date',
         'company_id',
+        'checklist_version_id',
         'technical_consultant_id',
         'client_id',
         'vehicle_id',
@@ -24,21 +27,27 @@ class ServiceSchedule extends Base
     }
 
     #belongs to
+    public function checklistVersion()
+    {
+        return $this->belongsTo('App\Models\ChecklistVersion', 'checklist_version_id', 'id')->withTrashed();
+    }
+
+    #belongs to
     public function technicalConsultant()
     {
-        return $this->belongsTo('App\Models\TechnicalConsultant', 'technical_consultant_id', 'id');
+        return $this->belongsTo('App\Models\TechnicalConsultant', 'technical_consultant_id', 'id')->withTrashed();
     }
 
     #belongs to
     public function client()
     {
-        return $this->belongsTo('App\Models\Client', 'client_id', 'id');
+        return $this->belongsTo('App\Models\Client', 'client_id', 'id')->withTrashed();
     }
 
     #belongs to
     public function vehicle()
     {
-        return $this->belongsTo('App\Models\Vehicle', 'vehicle_id', 'id');
+        return $this->belongsTo('App\Models\Vehicle', 'vehicle_id', 'id')->withTrashed();
     }
 
     #has many
@@ -50,7 +59,7 @@ class ServiceSchedule extends Base
     #has one
     public function vehicleService()
     {
-        return $this->hasOne('App\Models\VehicleService', 'service_schedule_id', 'id');
+        return $this->hasOne('App\Models\VehicleService', 'service_schedule_id', 'id')->withTrashed();
     }
 }
 

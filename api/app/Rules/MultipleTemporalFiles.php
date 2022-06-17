@@ -37,7 +37,7 @@ class MultipleTemporalFiles implements Rule
                 {
                     $temporalFile = \App\Models\TemporalFile::where('id', '=', $value)->first();
 
-                    if(!( $temporalFile && \Storage::disk('local')->exists($temporalFile->full_name) ))
+                    if(!( $temporalFile && \Storage::disk('public')->exists($temporalFile->full_name) ))
                     {
                         $error = true;
                         break;
@@ -45,7 +45,9 @@ class MultipleTemporalFiles implements Rule
                 }
                 else
                 {
-                    if(!( is_string($value) && \Storage::disk(env('GOOGLE_CLOUD_STORAGE_DRIVER', 'local'))->exists($value) ))
+                    $gcsStorage = \Storage::disk(env('GOOGLE_CLOUD_STORAGE_DRIVER', 'public'));
+
+                    if(!( is_string($value) && $gcsStorage->exists(last(explode($gcsStorage->url(''), $value)))))
                     {
                         $error = true;
                         break;

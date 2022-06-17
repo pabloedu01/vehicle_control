@@ -1,54 +1,43 @@
 const MENU_ITEMS = [
-    { key: 'navigation', label: 'Navigation', isTitle: true },
-
-    { key: 'apps', label: 'Apps', isTitle: true },
     {
-        key: 'managers',
-        label: 'Manager',
-        isTitle: false,
-        icon: 'uil-users-alt',
-        children: [
-            {
-                key: 'users',
-                label: 'Usuarios',
-                url: '/manager/users',
-                parentKey: 'managers',
-            },
-        ],
+        key: 'companies.index',
+        label: 'Empresas',
+        url: '/panel/companies',
+        icon: 'mdi mdi-office-building-outline',
     },
 
     {
         key: 'technicalConsultants.index',
         label: 'Consultores Técnicos',
         url: '/technical-consultants/list',
-        icon: 'uil-tachometer-fast',
+        icon: 'mdi mdi-account-tie',
     },
 
     {
         key: 'vehiclesCrud',
-        label: 'Cadastro de Vehiculos',
+        label: 'Cadastro de Veículos',
         isTitle: false,
-        icon: 'uil-users-alt',
+        icon: 'mdi mdi-car',
         children: [
             {
                 key: 'vehicleBrands.index',
                 label: 'Marcas',
                 url: '/vehicle-brands/list',
-                icon: 'uil-tachometer-fast',
+                icon: 'mdi mdi-library',
                 parentKey: 'vehiclesCrud'
             },
             {
                 key: 'vehicleModels.index',
                 label: 'Modelos',
                 url: '/vehicle-models/list',
-                icon: 'uil-tachometer-fast',
+                icon: 'mdi mdi-car-info',
                 parentKey: 'vehiclesCrud'
             },
             {
                 key: 'vehicles.index',
-                label: 'Vehiculos',
+                label: 'Veículos',
                 url: '/vehicles/list',
-                icon: 'uil-tachometer-fast',
+                icon: 'mdi mdi-car',
                 parentKey: 'vehiclesCrud'
             },
         ],
@@ -56,22 +45,22 @@ const MENU_ITEMS = [
 
     {
         key: 'clientVehicles.index',
-        label: 'Vehiculos do Clientes',
+        label: 'Veículos do Clientes',
         url: '/client-vehicles/list',
-        icon: 'uil-tachometer-fast',
+        icon: 'mdi mdi-car',
     },
 
     {
         key: 'serviceSchedules.index',
         label: 'Horários de Serviço',
         url: '/service-schedules/list',
-        icon: 'uil-tachometer-fast',
+        icon: 'mdi mdi-clipboard-clock',
     },
     {
         key: 'clients.index',
         label: 'Clientes',
         url: '/clients/list',
-        icon: 'uil-tachometer-fast',
+        icon: 'mdi mdi-briefcase-account',
     },
 
 

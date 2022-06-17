@@ -8,6 +8,7 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import {useForm} from "react-hook-form";
 import {FormInput} from "../../components";
+import {getAllOptions} from "../../utils/selectOptionsForm";
 
 const api = new APICore();
 
@@ -89,13 +90,10 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
         if(id){
             api.get('/client-vehicle/' + id).then((response) => {
-                const {vehicle:{model: {brand_id}},vehicle:{model_id},vehicle_id,chasis,color,number_motor,renavan,plate,mileage} = response.data.data;
-
-                getModels(brand_id);
-                getVehicles(model_id);
+                const {vehicle:{model: {brand_id, brand}, model},vehicle:{model_id},vehicle_id,chasis,color,number_motor,renavan,plate,mileage, vehicle} = response.data.data;
 
                 setData({
-                    vehicle_id,chasis,color,number_motor,renavan,plate,mileage,model_id,brand_id
+                    vehicle_id,chasis,color,number_motor,renavan,plate,mileage,model_id,brand_id, brand, model, vehicle
                 });
             },(error) => {
                 setData(defaultData);
@@ -107,14 +105,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     const getBrands = () => {
         api.get('/vehicle-brand/active-brands',{company_id: props.company?.id}).then((response) => {
-            const data = response.data.data.map((user) => {
-                return {
-                    value: user.id,
-                    label: user.name
-                };
-            });
-
-            setBrands(data);
+            setBrands(getAllOptions(response.data.data, data?.brand));
         },(error) => {
             setBrands([]);
         });
@@ -122,14 +113,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     const getModels = (brand_id?) => {
         api.get('/vehicle-model/active-vehicle-models',{brand_id: brand_id ?? methods.getValues('brand_id')}).then((response) => {
-            const data = response.data.data.map((user) => {
-                return {
-                    value: user.id,
-                    label: user.name
-                };
-            });
-
-            setModels(data);
+            setModels(getAllOptions(response.data.data, data?.model, (brand_id ?? methods.getValues('brand_id')) === data?.brand_id));
         },(error) => {
             setModels([]);
         });
@@ -137,14 +121,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     const getVehicles = (model_id?) => {
         api.get('/vehicle/active-vehicles',{model_id: model_id ?? methods.getValues('model_id')}).then((response) => {
-            const data = response.data.data.map((user) => {
-                return {
-                    value: user.id,
-                    label: user.name
-                };
-            });
-
-            setVehicles(data);
+            setVehicles(getAllOptions(response.data.data, data?.vehicle,(model_id ?? methods.getValues('model_id')) === data?.model_id));
         },(error) => {
             setVehicles([]);
         });
@@ -152,15 +129,25 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     const handleChangeBrand = () => {
         getModels();
+
+        methods.setValue('model_id', null);
+        methods.setValue('vehicle_id', null);
+        setVehicles([]);
     };
 
     const handleChangeModel = () => {
         getVehicles();
+
+        methods.setValue('vehicle_id', null);
     };
 
     useEffect(() => {
-        getBrands();
-    }, []);
+        if(data){
+            getBrands();
+            getModels(data.brand_id);
+            getVehicles(data.model_id);
+        }
+    }, [data]);
 
     useEffect(() => {
         getData();
@@ -182,17 +169,17 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         <>
             <PageTitle
                 breadCrumbItems={[
-                    { label: 'Vehiculos do Cliente', path: '/client-vehicles/list' },
+                    { label: 'Veículos do Cliente', path: '/client-vehicles/list' },
                     { label: 'Cadastro', path: `/client-vehicles/${id ? id + '/edit' : 'create'}`, active: true },
                 ]}
-                title={'Formulário de Vehiculos do Cliente'}
+                title={'Formulário de Veículo do Cliente'}
                 company={props.company}
             />
             <Row>
                 <Col xs={12}>
                     <Card>
                         <Card.Body>
-                            <form onSubmit={handleSubmit(onSubmit, (e) => {console.log(e);})} noValidate>
+                            <form onSubmit={handleSubmit(onSubmit, (e) => {})} noValidate>
                                 <Row>
                                     <Col md={6}>
                                         <FormInput

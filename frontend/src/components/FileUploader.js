@@ -1,147 +1,160 @@
 // @flow
-import React, { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Row, Col, Card, Button, Modal, Carousel, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Row, Col, Card, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import Dropzone from 'react-dropzone';
-import useApi from '../services/api';
+import {APICore} from "../helpers/api/apiCore";
+import swal from "sweetalert";
+import {processingFiles} from "../utils/file";
+import {loadingService} from "../services/loading";
+
+const api = new APICore();
 
 type FileUploaderProps = {
     onFileUpload?: (files: any) => void,
     showPreview?: boolean,
-    anexosimage?: any,
+    validateFile?: any,
+    onLoadEnd?: any,
+    selectedFiles?: Array<any>;
 };
 
 const FileUploader = (props: FileUploaderProps): React$Element<any> => {
-    console.log(props);
-    const api = useApi();
-    const query = new URLSearchParams(useLocation().search);
-    const id = query.get('id');
-
-    const [selectedFiles, setSelectedFiles] = useState([]);
-
     /**
      * Handled the accepted files and shows the preview
      */
-    const handleAcceptedFiles = (files) => {
-        var allFiles = files;
+    const handleFileUpload = (files) => {
+        (new Promise((resolve, reject) => {
+            processingFiles(files,resolve,reject, true, props?.validateFile, props?.onLoadEnd);
+        })).then((files) => {
+            loadingService.show();
 
-        if (props.showPreview) {
-            files.map((file) =>
-                Object.assign(file, {
-                    preview: file['type'].split('/')[0] === 'image' ? URL.createObjectURL(file) : null,
-                    formattedSize: formatBytes(file.size),
-                })
-            );
-
-            allFiles = [...selectedFiles];
-            allFiles.push(...files);
-            setSelectedFiles(allFiles);
-        }
-
-        if (props.onFileUpload) props.onFileUpload(files);
+            Promise.all(files.map((file) => new Promise((resolve, reject) => {
+                /*todo: enviar a un endpoint distinto cuando se trate de otros archivos o mejorar el endpoint del backend*/
+                api.uploadFile('/file-upload/image', {image: file}).then((response) => {
+                    if(response.data.hasOwnProperty('data') && response.data.data.hasOwnProperty('id')){
+                        resolve(response.data.data);
+                    } else {
+                        reject();
+                    }
+                }, (error) => {
+                    reject();
+                });
+            }))).then((processedFiles) => {
+                if (props.onFileUpload) props.onFileUpload((props?.selectedFiles || []).concat(processedFiles));
+            }).catch((error) => {
+                swal({
+                    title: 'Error',
+                    text: 'Ocorreu um erro ao carregar as imagens.',
+                    icon: 'error',
+                    buttons: {
+                        confirm: {
+                            text: 'Ok',
+                            value: 'confirm'
+                        }
+                    },
+                    dangerMode: true,
+                });
+            }).finally(() => {
+                loadingService.hide();
+            });
+        }).catch((error) => {
+            swal({
+                title: 'Error',
+                text: error.toString(),
+                icon: 'error',
+                buttons: {
+                    confirm: {
+                        text: 'Ok',
+                        value: 'confirm'
+                    }
+                },
+                dangerMode: true,
+            });
+        });
     };
 
-    /**
-     * Formats the size
-     */
-    const formatBytes = (bytes, decimals = 2) => {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const dm = decimals < 0 ? 0 : decimals;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    const filesFormat = () => {
+        const files = props?.selectedFiles || [];
 
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        return files.map((file) => {
+            let data;
+
+            if(typeof file === 'string'){
+                data = {
+                    name: file.substring(file.lastIndexOf('/') + 1),
+                    preview: file,
+                    url: file
+                };
+            } else {
+                data = {
+                    id: file.id,
+                    name: file.original_name,
+                    preview: file.url,
+                    url: file.url
+                };
+            }
+
+            return data;
+        });
     };
 
     /*
      * Removes the selected file
      */
-    const removeFile = async (file) => {
-        if (window.confirm('Você tem certeza que deseja Excluir este arquivo?')) {
-            const newFiles = [...selectedFiles];
-            newFiles.splice(newFiles.indexOf(file), 1);
-            setSelectedFiles(newFiles);
-            console.log(selectedFiles[file].id_duc_image);
+    const removeFile = async (index) => {
+        swal({
+            title: '¿tem certeza?',
+            text: 'Você tem certeza que deseja Excluir este arquivo?',
+            icon: 'warning',
+            buttons: {
+                cancel: 'Cancelar',
+                confirm: {
+                    text: 'Excluir',
+                    value: 'confirm'
+                }
+            },
+            dangerMode: true,
+        }).then((confirm) => {
+            if(confirm){
+                if (props.onFileUpload){
+                    const newFiles = props?.selectedFiles || [];
+                    newFiles.splice(index, 1);
 
-            const result = await api.deleteImage(selectedFiles[file].id_duc_image);
-            if (result.error == '') {
-                console.log('deletou');
-            } else {
-                alert(result.error);
+                    props.onFileUpload(newFiles);
+                }
             }
-        }
+        });
     };
-
-    // get array of url imagens and convert to image src with name size and type and put in handleacepted files
-    useEffect(() => {
-        if (props.anexos) {
-            const files = props.anexos.map((anexo) => {
-                let arrax = anexo.url_image.split('/');
-                let namefile = arrax[arrax.length - 1];
-                let type = namefile.split('.')[1];
-                
-                return {
-                    // url: anexo.url_image,
-                    id_duc_image: anexo.id_duc_image,
-                    name: namefile,
-                   
-                    type: type,
-                    url: anexo.url_image,
-                    preview: anexo.url_image,
-                };
-            });
-            console.log(files);
-            var allFiles = '';
-            allFiles = [...selectedFiles];
-            allFiles.push(...files);
-            setSelectedFiles(allFiles);
-            // handleAcceptedFiles(files);
-        }
-    }, [props.anexos]);
-    const [modal, setModal] = useState(false);
-
-    /**
-     * Show/hide the modal
-     */
-    const toggle = () => {
-        setModal(!modal);
-    };
-
   
     return (
         <>
-            <Dropzone {...props} onDrop={(acceptedFiles) => handleAcceptedFiles(acceptedFiles)}>
+            <Dropzone {...props} onDrop={(acceptedFiles) => handleFileUpload(acceptedFiles)}>
                 {({ getRootProps, getInputProps }) => (
                     <div className="dropzone">
                         <div className="dz-message needsclick" {...getRootProps()}>
                             <input {...getInputProps()} />
                             <i className="h3 text-muted dripicons-cloud-upload"></i>
-                            <h5>Drop files here or click to upload.</h5>
-                            <span className="text-muted font-13">
-                                (This is just a demo dropzone. Selected files are <strong>not</strong> actually
-                                uploaded.)
-                            </span>
+                            <h5>Solte os arquivos aqui ou clique para fazer o upload.</h5>
                         </div>
                     </div>
                 )}
             </Dropzone>
 
-            {props.showPreview && selectedFiles.length > 0 && (
+            {props.showPreview && props.selectedFiles.length > 0 && (
                 <div className="dropzone-previews mt-3" id="uploadPreviewTemplate">
-                    {(selectedFiles || []).map((f, i) => {
+                    {filesFormat().map((f, i) => {
                         return (
                             <Card key={i} className="mb-2 shadow-none border">
                                 <div className="p-1">
                                     <Row className="align-items-center">
-                                        <Col className="col-auto">
-                                            <div className="avatar-sm">
-                                                <span className="avatar-title rounded">.{f.type}</span>
+                                        <Col className="col-auto d-flex">
+                                            <div className="avatar-sm d-flex align-items-center">
+                                                {/*todo: el preview que se muestra va a depender del tipo de archivo que sea*/}
+                                                <img className="d-block w-100" src={f.preview} />
                                             </div>
                                         </Col>
                                         <Col className="ps-0">
-                                                {f.name}
-                                            <p className="mb-0">{f.size}</p>
+                                            {f.name}
                                         </Col>
                                         <Col className="col-auto">
                                             <OverlayTrigger placement="left" overlay={<Tooltip>Download</Tooltip>}>
@@ -150,7 +163,7 @@ const FileUploader = (props: FileUploaderProps): React$Element<any> => {
                                                     href={f.url}
                                                     id="btn-download"
                                                     className="btn btn-link text-muted btn-lg p-0 me-1">
-                                                    <i className="uil uil-cloud-download"></i>
+                                                    <i className="uil uil-cloud-download"/>
                                                 </a>
                                             </OverlayTrigger>
                                             <OverlayTrigger placement="left" overlay={<Tooltip>Delete</Tooltip>}>
@@ -159,89 +172,24 @@ const FileUploader = (props: FileUploaderProps): React$Element<any> => {
                                                     onClick={() => removeFile(i)}
                                                     id="btn-Delete"
                                                     className="btn btn-link text-danger btn-lg p-0">
-                                                    <i className="uil uil-multiply"></i>
+                                                    <i className="uil uil-multiply"/>
                                                 </Link>
                                             </OverlayTrigger>
                                         </Col>
                                     </Row>
                                 </div>
                             </Card>
-                            // <Card className="mt-1 mb-0 shadow-none border" key={i + '-file'}>
-                            //     <div className="p-2">
-                            //         <Row className="align-items-center">
-                            //             {f.preview && (
-                            //                 <a target="_blank" href={f.url} className="text-muted fw-bold">
-                            //                     <Col className="col-auto">
-                            //                         <img
-                            //                             data-dz-thumbnail=""
-                            //                             className="avatar-sm rounded bg-light"
-                            //                             alt={f.name}
-                            //                             src={f.preview}
-                            //                         />
-                            //                     </Col>
-                            //                 </a>
-                            //             )}
-                            //             {!f.preview && (
-                            //                 <Col className="col-auto">
-                            //                     <div className="avatar-sm">
-                            //                         <span className="avatar-title bg-primary rounded">
-                            //                             {f.type.split('/')[0]}
-                            //                         </span>
-                            //                     </div>
-                            //                 </Col>
-                            //             )}
-                            //             <Col className="ps-0">
-                            //                 <a target="_blank" href={f.url} className="text-muted fw-bold">
-                            //                     {f.name}
-                            //                 </a>
-                            //                 <p className="mb-0">
-                            //                     <strong>{f.formattedSize}</strong>
-                            //                 </p>
-                            //             </Col>
-                            //             <Col className="text-end">
-                            //                 {/* <Link to="#" className="btn btn-link btn-lg text-muted shadow-none"> */}
-                            //                 <i className="dripicons-cross" onClick={() => removeFile(i)}></i>
-                            //                 {/* </Link> */}
-                            //             </Col>
-                            //         </Row>
-                            //     </div>
-                            // </Card>
                         );
                     })}
                 </div>
             )}
-            {/* <Modal show={modal} onHide={toggle} backdrop="static" keyboard={false} size={'lg'}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Anexos</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Card>
-                        <Card.Body>
-                            <Carousel indicators={true}>
-                                {(selectedFiles || []).map((f, i) => {
-                                    return (
-                                        <Carousel.Item>
-                                            <img className="d-block w-100" src={f.preview} alt="First slide" />
-                                        </Carousel.Item>
-                                    );
-                                })}
-                            </Carousel>
-                        </Card.Body>
-                    </Card>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={toggle}>
-                        Close
-                    </Button>
-                    <Button variant="primary">Understood</Button>
-                </Modal.Footer>
-            </Modal> */}
         </>
     );
 };
 
 FileUploader.defaultProps = {
     showPreview: true,
+    selectedFiles: []
 };
 
 export default FileUploader;

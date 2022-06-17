@@ -13,7 +13,7 @@ class FileUploadController extends Controller
 
     public function __construct()
     {
-        $this->storage = \Storage::disk('local');
+        $this->storage = \Storage::disk('public');
 
         if(!$this->storage->exists(TemporalFile::$path))
         {
