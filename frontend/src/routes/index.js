@@ -55,6 +55,17 @@ const ChecklistVersionList = React.lazy(() => import('../pages/checklist-version
 const ChecklistVersionForm = React.lazy(() => import('../pages/checklist-version/Form'));
 const ChecklistVersionReport = React.lazy(() => import('../pages/checklist-version/Report'));
 
+const TireBrandList = React.lazy(() => import('../pages/tire-brand/List'));
+const TireBrandForm = React.lazy(() => import('../pages/tire-brand/Form'));
+
+const ClaimServiceList = React.lazy(() => import('../pages/claim-service/List'));
+const ClaimServiceForm = React.lazy(() => import('../pages/claim-service/Form'));
+
+const ProductList = React.lazy(() => import('../pages/product/List'));
+const ProductForm = React.lazy(() => import('../pages/product/Form'));
+
+const ServiceList = React.lazy(() => import('../pages/service/List'));
+const ServiceForm = React.lazy(() => import('../pages/service/Form'));
 
 // dashboard
 
@@ -349,6 +360,80 @@ const AllRoutes = () => {
                         },
                     ]
                 },
+
+                {
+                    path: 'tire-brands',
+                    children: [
+                        {
+                            path: 'list',
+                            element: <LoadComponent component={TireBrandList} />,
+                        },
+                        {
+                            path: 'create',
+                            element: <LoadComponent component={TireBrandForm} />,
+                        },
+                        {
+                            path: ':id/edit',
+                            element: <LoadComponent component={TireBrandForm} />,
+                        },
+                    ]
+                },
+
+                {
+                    path: 'claim-services',
+                    children: [
+                        {
+                            path: 'list',
+                            element: <LoadComponent component={ClaimServiceList} />,
+                        },
+                        {
+                            path: 'create',
+                            element: <LoadComponent component={ClaimServiceForm} />,
+                        },
+                        {
+                            path: ':id/edit',
+                            element: <LoadComponent component={ClaimServiceForm} />,
+                        },
+                    ]
+                },
+
+                {
+                    path: 'products',
+                    children: [
+                        {
+                            path: 'list',
+                            element: <LoadComponent component={ProductList} />,
+                        },
+                        {
+                            path: 'create',
+                            element: <LoadComponent component={ProductForm} />,
+                        },
+                        {
+                            path: ':id/edit',
+                            element: <LoadComponent component={ProductForm} />,
+                        },
+                    ]
+                },
+
+                {
+                    path: 'services',
+                    children: [
+                        {
+                            path: 'list',
+                            element: <LoadComponent component={ServiceList} />,
+                        },
+                        {
+                            path: 'create',
+                            element: <LoadComponent component={ServiceForm} />,
+                        },
+                        {
+                            path: ':id/edit',
+                            element: <LoadComponent component={ServiceForm} />,
+                        },
+                    ]
+                },
+
+
                 {
                     path: ':type/:id/checklist',
                     element: <LoadComponent component={ChecklistForm} />,

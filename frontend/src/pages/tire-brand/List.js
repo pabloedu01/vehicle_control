@@ -20,14 +20,12 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
     const [tableOptions, setTableOptions] = useState({});
 
     const getList = () => {
-        api.get('/client', {company_id: props.company?.id}).then((response) => {
+        api.get('/tire-brand', {company_id: props.company?.id}).then((response) => {
             setList(response.data.data.map((item) => {
                 return {
                     id: item.id,
                     name: item.name,
-                    active: item.active,
-                    document: item.document,
-                    address: item.address,
+
                 }
             }));
         }, (error) => {
@@ -36,7 +34,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
     };
 
     const onEdit = (id) => {
-        history(`/panel/company/${props.company?.id}/clients/${id}/edit`);
+        history(`/panel/company/${props.company?.id}/tire-brands/${id}/edit`);
     };
 
     const onDelete = (registerId, newList) => {
@@ -54,7 +52,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
             dangerMode: true,
         }).then((confirm) => {
             if(confirm){
-                api.delete('/client/' + registerId).then((response) => {
+                api.delete('/tire-brand/' + registerId).then((response) => {
                     setList(newList);
                 }, () => {
 
@@ -84,33 +82,6 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                 },
             },
             {
-                label: 'Documento',
-                name: 'document',
-                options: {
-                    filter: true,
-                    sort: true,
-                },
-            },
-            {
-                label: 'Direção',
-                name: 'address',
-                options: {
-                    filter: true,
-                    sort: true,
-                },
-            },
-            {
-                label: 'Ative',
-                name: 'active',
-                options: {
-                    filter: false,
-                    sort: true,
-                    customBodyRender: (value, tableMeta) => {
-                        return <Active value={value} tableMeta={tableMeta}/>;
-                    }
-                },
-            },
-            {
                 label: 'Ações',
                 name: 'actions',
                 options: {
@@ -132,10 +103,10 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
         <>
             <PageTitle
                 breadCrumbItems={[
-                    { label: 'Clientes', path: '/clients/list' },
-                    { label: 'Lista', path: '/clients/list', active: true },
+                    { label: 'Marcas de Pneus', path: '/tire-brands/list' },
+                    { label: 'Lista', path: '/tire-brands/list', active: true },
                 ]}
-                title={'Clientes'}
+                title={'Marcas de Pneus'}
                 company={props.company}
             />
 
@@ -149,8 +120,8 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                                 </Col>
                                 <Col xl={4}>
                                     <div className="text-xl-end mt-xl-0 mt-2">
-                                        <Button variant="danger" className="mb-2 me-2" onClick={() => { history(`/panel/company/${props.company?.id}/clients/create`) }}>
-                                            <i className="mdi mdi-basket me-1" /> Novo Cliente
+                                        <Button variant="danger" className="mb-2 me-2" onClick={() => { history(`/panel/company/${props.company?.id}/tire-brands/create`) }}>
+                                            <i className="mdi mdi-basket me-1" /> Novo Marca de Pneus
                                         </Button>
                                     </div>
                                 </Col>

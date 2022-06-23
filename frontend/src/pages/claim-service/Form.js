@@ -21,10 +21,8 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
      */
     const schemaResolver = yupResolver(
         yup.object().shape({
-            name: yup.string().required('Por favor, digite Nome Completo'),
-            active: yup.boolean(),
-            document: yup.string().required('Por favor, digite Documento'),
-            address: yup.string().required('Por favor, digite a Direção'),
+            integration_code: yup.string().required('Por favor, digite Código de Integração'),
+            description: yup.string().required('Por favor, digite Descrição'),
         })
     );
 
@@ -48,13 +46,13 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         let ajaxCall;
 
         if(id){
-            ajaxCall = api.update('/client/' + id,formData);
+            ajaxCall = api.update('/claim-service/' + id,formData);
         } else {
-            ajaxCall = api.post('/client',Object.assign(formData,{company_id: props.company?.id}));
+            ajaxCall = api.post('/claim-service',Object.assign(formData,{company_id: props.company?.id}));
         }
 
         ajaxCall.then(() => {
-            history(`/panel/company/${props.company?.id}/clients/list`);
+            history(`/panel/company/${props.company?.id}/claim-services/list`);
         }, (error) => {
             if(error.response.status === 400 && error.response.data.hasOwnProperty('errors')){
                 for(let fieldName in error.response.data.errors){
@@ -68,14 +66,12 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     const getData = () => {
         const defaultData = {
-            name: null,
-            active: true,
-            document: null,
-            address: null,
+            integration_code: null,
+            description: null,
         };
 
         if(id){
-            api.get('/client/' + id).then((response) => {
+            api.get('/claim-service/' + id).then((response) => {
                 const {name,active,document,address} = response.data.data;
 
                 setData({
@@ -94,20 +90,18 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     }, [id]);
 
     useEffect(() => {
-        methods.setValue('name', data?.name ?? null);
-        methods.setValue('active', data?.active ?? true);
-        methods.setValue('document', data?.document ?? null);
-        methods.setValue('address', data?.address ?? null);
-    }, [data]);
+        methods.setValue('integration_code', data?.integration_code ?? null);
+        methods.setValue('description', data?.description ?? null);
+    });
 
     return (
         <>
             <PageTitle
                 breadCrumbItems={[
-                    { label: 'Clientes', path: '/clients/list' },
-                    { label: 'Cadastro', path: `/clients/${id ? id + '/edit' : 'create'}`, active: true },
+                    { label: 'Serviços de Reclamação', path: '/claim-services/list' },
+                    { label: 'Cadastro', path: `/claim-services/${id ? id + '/edit' : 'create'}`, active: true },
                 ]}
-                title={'Clientes'}
+                title={'Serviços de Reclamação'}
                 company={props.company}
             />
             <Row>
@@ -117,42 +111,27 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                             <form onSubmit={handleSubmit(onSubmit, (e) => {console.log(e);})} noValidate>
                                 <Row>
                                     <Col md={6}>
+
                                         <FormInput
-                                            label="Nome"
+                                            label="Código de Integração"
                                             type="text"
-                                            name="name"
-                                            placeholder="Digite Nome"
+                                            name="integration_code"
+                                            placeholder="Digite Código de Integração"
                                             containerClass={'mb-3'}
                                             {...otherProps}
                                         />
 
                                         <FormInput
-                                            label="Documento"
+                                            label="Descrição"
                                             type="text"
-                                            name="document"
-                                            placeholder="Digite Documento"
+                                            name="description"
+                                            placeholder="Digite Descrição"
                                             containerClass={'mb-3'}
                                             {...otherProps}
                                         />
-                                        <FormInput
-                                            label="Direção"
-                                            type="text"
-                                            name="address"
-                                            placeholder="Digite Direção"
-                                            containerClass={'mb-3'}
-                                            {...otherProps}
-                                        />
+
                                     </Col>
 
-                                    <Col md={6}>
-                                        <FormInput
-                                            label="Ative"
-                                            type="checkbox"
-                                            name="active"
-                                            containerClass={'mb-3'}
-                                            {...otherProps}
-                                        />
-                                    </Col>
                                 </Row>
 
                                 <div className="mb-3 mb-0">

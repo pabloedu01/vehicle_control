@@ -21,10 +21,11 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
      */
     const schemaResolver = yupResolver(
         yup.object().shape({
-            name: yup.string().required('Por favor, digite Nome Completo'),
+            product_code: yup.string().required('Por favor, digite Código do Produto'),
+            sale_value: yup.string().required('Por favor, digite Valor de Venda'),
+            guarantee_value: yup.string().required('Por favor, digite Valor da Garantia'),
+            unique_code: yup.string().required('Por favor, digite Código Único'),
             active: yup.boolean(),
-            document: yup.string().required('Por favor, digite Documento'),
-            address: yup.string().required('Por favor, digite a Direção'),
         })
     );
 
@@ -48,13 +49,13 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         let ajaxCall;
 
         if(id){
-            ajaxCall = api.update('/client/' + id,formData);
+            ajaxCall = api.update('/product/' + id,formData);
         } else {
-            ajaxCall = api.post('/client',Object.assign(formData,{company_id: props.company?.id}));
+            ajaxCall = api.post('/product',Object.assign(formData,{company_id: props.company?.id}));
         }
 
         ajaxCall.then(() => {
-            history(`/panel/company/${props.company?.id}/clients/list`);
+            history(`/panel/company/${props.company?.id}/products/list`);
         }, (error) => {
             if(error.response.status === 400 && error.response.data.hasOwnProperty('errors')){
                 for(let fieldName in error.response.data.errors){
@@ -68,14 +69,15 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     const getData = () => {
         const defaultData = {
-            name: null,
+            product_code: null,
+            sale_value: null,
+            guarantee_value: null,
+            unique_code: null,
             active: true,
-            document: null,
-            address: null,
         };
 
         if(id){
-            api.get('/client/' + id).then((response) => {
+            api.get('/product/' + id).then((response) => {
                 const {name,active,document,address} = response.data.data;
 
                 setData({
@@ -94,20 +96,21 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     }, [id]);
 
     useEffect(() => {
-        methods.setValue('name', data?.name ?? null);
+        methods.setValue('product_code', data?.product_code ?? null);
+        methods.setValue('sale_value', data?.sale_value ?? null);
+        methods.setValue('guarantee_value', data?.guarantee_value ?? null);
+        methods.setValue('unique_code', data?.unique_code ?? null);
         methods.setValue('active', data?.active ?? true);
-        methods.setValue('document', data?.document ?? null);
-        methods.setValue('address', data?.address ?? null);
     }, [data]);
 
     return (
         <>
             <PageTitle
                 breadCrumbItems={[
-                    { label: 'Clientes', path: '/clients/list' },
-                    { label: 'Cadastro', path: `/clients/${id ? id + '/edit' : 'create'}`, active: true },
+                    { label: 'Produtos', path: '/products/list' },
+                    { label: 'Cadastro', path: `/products/${id ? id + '/edit' : 'create'}`, active: true },
                 ]}
-                title={'Clientes'}
+                title={'Produtos'}
                 company={props.company}
             />
             <Row>
@@ -118,33 +121,45 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                                 <Row>
                                     <Col md={6}>
                                         <FormInput
-                                            label="Nome"
+                                            label="Código do Produto"
                                             type="text"
-                                            name="name"
-                                            placeholder="Digite Nome"
+                                            name="product_code"
+                                            placeholder="Digite Código do Produto"
                                             containerClass={'mb-3'}
                                             {...otherProps}
                                         />
 
                                         <FormInput
-                                            label="Documento"
+                                            label="Valor de Venda"
                                             type="text"
-                                            name="document"
-                                            placeholder="Digite Documento"
+                                            name="sale_value"
+                                            placeholder="Digite Valor de Venda"
                                             containerClass={'mb-3'}
                                             {...otherProps}
                                         />
-                                        <FormInput
-                                            label="Direção"
-                                            type="text"
-                                            name="address"
-                                            placeholder="Digite Direção"
-                                            containerClass={'mb-3'}
-                                            {...otherProps}
-                                        />
+
                                     </Col>
 
                                     <Col md={6}>
+
+                                        <FormInput
+                                            label="Valor da Garantia"
+                                            type="text"
+                                            name="guarantee_value"
+                                            placeholder="Digite Valor da Garantia"
+                                            containerClass={'mb-3'}
+                                            {...otherProps}
+                                        />
+
+                                        <FormInput
+                                            label="Código Único"
+                                            type="text"
+                                            name="unique_code"
+                                            placeholder="Digite Código Único"
+                                            containerClass={'mb-3'}
+                                            {...otherProps}
+                                        />
+
                                         <FormInput
                                             label="Ative"
                                             type="checkbox"

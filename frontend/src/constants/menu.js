@@ -65,30 +65,30 @@ const MENU_ITEMS = [
 
     {
         key: 'tireBrands.index',
-        label: 'Tire Brands',
+        label: 'Marcas de Pneus',
         url: '/tire-brands/list',
-        icon: 'mdi mdi-briefcase-account',
+        icon: 'mdi mdi-tire',
     },
 
     {
         key: 'claimServices.index',
-        label: 'Claim Services',
+        label: 'Serviços de Reclamação',
         url: '/claim-services/list',
-        icon: 'mdi mdi-briefcase-account',
+        icon: 'mdi mdi-face-agent',
     },
 
     {
         key: 'products.index',
-        label: 'Products',
+        label: 'Produtos',
         url: '/products/list',
-        icon: 'mdi mdi-briefcase-account',
+        icon: 'mdi mdi-animation',
     },
 
     {
         key: 'services.index',
-        label: 'Services',
+        label: 'Serviços',
         url: '/services/list',
-        icon: 'mdi mdi-briefcase-account',
+        icon: 'mdi mdi-toolbox-outline',
     },
 
 

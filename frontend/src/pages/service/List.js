@@ -20,14 +20,18 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
     const [tableOptions, setTableOptions] = useState({});
 
     const getList = () => {
-        api.get('/client', {company_id: props.company?.id}).then((response) => {
+        api.get('/service', {company_id: props.company?.id}).then((response) => {
             setList(response.data.data.map((item) => {
                 return {
                     id: item.id,
-                    name: item.name,
+                    service_code: item.service_code,
+                    integration_code: item.integration_code,
+                    description: item.description,
+                    standard_quantity: item.standard_quantity,
+                    standard_value: item.standard_value,
                     active: item.active,
-                    document: item.document,
-                    address: item.address,
+
+
                 }
             }));
         }, (error) => {
@@ -36,7 +40,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
     };
 
     const onEdit = (id) => {
-        history(`/panel/company/${props.company?.id}/clients/${id}/edit`);
+        history(`/panel/company/${props.company?.id}/services/${id}/edit`);
     };
 
     const onDelete = (registerId, newList) => {
@@ -54,7 +58,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
             dangerMode: true,
         }).then((confirm) => {
             if(confirm){
-                api.delete('/client/' + registerId).then((response) => {
+                api.delete('/service/' + registerId).then((response) => {
                     setList(newList);
                 }, () => {
 
@@ -76,29 +80,48 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                 },
             },
             {
-                label: 'Nome',
-                name: 'name',
+                label: 'Código de Serviço',
+                name: 'service_code',
                 options: {
                     filter: true,
                     sort: true,
                 },
             },
             {
-                label: 'Documento',
-                name: 'document',
+                label: 'Código de Integração',
+                name: 'integration_code',
                 options: {
                     filter: true,
                     sort: true,
                 },
             },
             {
-                label: 'Direção',
-                name: 'address',
+                label: 'Descrição',
+                name: 'description',
                 options: {
                     filter: true,
                     sort: true,
                 },
             },
+
+            {
+                label: 'Quantidade Padrão',
+                name: 'standard_quantity',
+                options: {
+                    filter: true,
+                    sort: true,
+                },
+            },
+
+            {
+                label: 'Valor Padrão',
+                name: 'standard_value',
+                options: {
+                    filter: true,
+                    sort: true,
+                },
+            },
+
             {
                 label: 'Ative',
                 name: 'active',
@@ -132,10 +155,10 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
         <>
             <PageTitle
                 breadCrumbItems={[
-                    { label: 'Clientes', path: '/clients/list' },
-                    { label: 'Lista', path: '/clients/list', active: true },
+                    { label: 'Serviços', path: '/services/list' },
+                    { label: 'Lista', path: '/services/list', active: true },
                 ]}
-                title={'Clientes'}
+                title={'Serviços'}
                 company={props.company}
             />
 
@@ -149,8 +172,8 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                                 </Col>
                                 <Col xl={4}>
                                     <div className="text-xl-end mt-xl-0 mt-2">
-                                        <Button variant="danger" className="mb-2 me-2" onClick={() => { history(`/panel/company/${props.company?.id}/clients/create`) }}>
-                                            <i className="mdi mdi-basket me-1" /> Novo Cliente
+                                        <Button variant="danger" className="mb-2 me-2" onClick={() => { history(`/panel/company/${props.company?.id}/services/create`) }}>
+                                            <i className="mdi mdi-basket me-1" /> Novo Serviço
                                         </Button>
                                     </div>
                                 </Col>

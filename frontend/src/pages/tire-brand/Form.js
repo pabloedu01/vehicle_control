@@ -22,9 +22,6 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     const schemaResolver = yupResolver(
         yup.object().shape({
             name: yup.string().required('Por favor, digite Nome Completo'),
-            active: yup.boolean(),
-            document: yup.string().required('Por favor, digite Documento'),
-            address: yup.string().required('Por favor, digite a Direção'),
         })
     );
 
@@ -48,13 +45,13 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         let ajaxCall;
 
         if(id){
-            ajaxCall = api.update('/client/' + id,formData);
+            ajaxCall = api.update('/tire-brand/' + id,formData);
         } else {
-            ajaxCall = api.post('/client',Object.assign(formData,{company_id: props.company?.id}));
+            ajaxCall = api.post('/tire-brand',Object.assign(formData,{company_id: props.company?.id}));
         }
 
         ajaxCall.then(() => {
-            history(`/panel/company/${props.company?.id}/clients/list`);
+            history(`/panel/company/${props.company?.id}/tire-brands/list`);
         }, (error) => {
             if(error.response.status === 400 && error.response.data.hasOwnProperty('errors')){
                 for(let fieldName in error.response.data.errors){
@@ -69,13 +66,10 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     const getData = () => {
         const defaultData = {
             name: null,
-            active: true,
-            document: null,
-            address: null,
         };
 
         if(id){
-            api.get('/client/' + id).then((response) => {
+            api.get('/tire-brand/' + id).then((response) => {
                 const {name,active,document,address} = response.data.data;
 
                 setData({
@@ -95,19 +89,16 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     useEffect(() => {
         methods.setValue('name', data?.name ?? null);
-        methods.setValue('active', data?.active ?? true);
-        methods.setValue('document', data?.document ?? null);
-        methods.setValue('address', data?.address ?? null);
     }, [data]);
 
     return (
         <>
             <PageTitle
                 breadCrumbItems={[
-                    { label: 'Clientes', path: '/clients/list' },
-                    { label: 'Cadastro', path: `/clients/${id ? id + '/edit' : 'create'}`, active: true },
+                    { label: 'Marcas de Pneus', path: '/tire-brands/list' },
+                    { label: 'Cadastro', path: `/tire-brands/${id ? id + '/edit' : 'create'}`, active: true },
                 ]}
-                title={'Clientes'}
+                title={'Marcas de Pneus'}
                 company={props.company}
             />
             <Row>
@@ -126,33 +117,8 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                                             {...otherProps}
                                         />
 
-                                        <FormInput
-                                            label="Documento"
-                                            type="text"
-                                            name="document"
-                                            placeholder="Digite Documento"
-                                            containerClass={'mb-3'}
-                                            {...otherProps}
-                                        />
-                                        <FormInput
-                                            label="Direção"
-                                            type="text"
-                                            name="address"
-                                            placeholder="Digite Direção"
-                                            containerClass={'mb-3'}
-                                            {...otherProps}
-                                        />
                                     </Col>
 
-                                    <Col md={6}>
-                                        <FormInput
-                                            label="Ative"
-                                            type="checkbox"
-                                            name="active"
-                                            containerClass={'mb-3'}
-                                            {...otherProps}
-                                        />
-                                    </Col>
                                 </Row>
 
                                 <div className="mb-3 mb-0">
