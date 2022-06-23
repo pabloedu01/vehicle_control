@@ -107,6 +107,97 @@ $(document).ready(function() {
             'expression': '',
             'showOnlyNameType': false,
         },
+
+        {
+            'id': 7,
+            'name': 'vehicleModel',
+            'type': 'string',
+            'arrayItemType': 'string',
+            'testData': 'Model',
+            'eval': false,
+            'nullable': false,
+            'pattern': '',
+            'expression': '',
+            'showOnlyNameType': false,
+        },
+
+        {
+            'id': 8,
+            'name': 'vehicleBrand',
+            'type': 'string',
+            'arrayItemType': 'string',
+            'testData': 'Brand',
+            'eval': false,
+            'nullable': false,
+            'pattern': '',
+            'expression': '',
+            'showOnlyNameType': false,
+        },
+
+        {
+            'id': 9,
+            'name': 'vehicleName',
+            'type': 'string',
+            'arrayItemType': 'string',
+            'testData': 'Name',
+            'eval': false,
+            'nullable': false,
+            'pattern': '',
+            'expression': '',
+            'showOnlyNameType': false,
+        },
+
+        {
+            'id': 10,
+            'name': 'vehiclePlate',
+            'type': 'string',
+            'arrayItemType': 'string',
+            'testData': 'Plate',
+            'eval': false,
+            'nullable': false,
+            'pattern': '',
+            'expression': '',
+            'showOnlyNameType': false,
+        },
+
+        {
+            'id': 11,
+            'name': 'vehicleChasis',
+            'type': 'string',
+            'arrayItemType': 'string',
+            'testData': 'Chasis',
+            'eval': false,
+            'nullable': false,
+            'pattern': '',
+            'expression': '',
+            'showOnlyNameType': false,
+        },
+
+        {
+            'id': 12,
+            'name': 'scheduleDate',
+            'type': 'date',
+            'arrayItemType': 'string',
+            'testData': formattedDate,
+            'eval': false,
+            'nullable': false,
+            'pattern': 'dd/MM/yyyy hh:mma',
+            'expression': '',
+            'showOnlyNameType': false,
+        },
+
+        {
+            'id': 13,
+            'name': 'clientName',
+            'type': 'string',
+            'arrayItemType': 'string',
+            'testData': 'Chasis',
+            'eval': false,
+            'nullable': false,
+            'pattern': '',
+            'expression': '',
+            'showOnlyNameType': false,
+        },
     ];
 
     customParameters.forEach(function(parameter){
@@ -133,28 +224,50 @@ $(document).ready(function() {
         }
 
         var parameter = reportBro.getParameterById(id);
-        var defaultParameter = {
-            'id': id,
-            'name': item.formatted_name,
-            'type': type,
+        var observationParameter = reportBro.getParameterById(id + 5000);
+        var defaultParameterBody = {
+            'id': '',
+            'name': '',
+            'type': '',
             'arrayItemType': 'string',
-            'testData': item.preview_data.value
+            'testData': '',
+            'eval': false,
+            'nullable': false,
+            'pattern': '',
+            'expression': '',
+            'showOnlyNameType': false,
         };
 
         if(parameter){
             reportBro.deleteParameter(parameter);
-
-            parameter = Object.assign(parameter ?? {}, defaultParameter);
-        } else {
-            parameter = Object.assign({
-                'eval': false,
-                'nullable': false,
-                'pattern': '',
-                'expression': '',
-                'showOnlyNameType': false,
-            }, defaultParameter);
         }
 
-        reportBro.createParameter(parameter);
+        if(observationParameter){
+            reportBro.deleteParameter(observationParameter);
+        }
+
+        var newParameter = Object.assign({...defaultParameterBody}, {
+            'id': id,
+            'name': item.formatted_name,
+            'type': type,
+            'testData': item.preview_data.value,
+            /*'children': [
+                Object.assign({...defaultParameterBody}, {}, {
+                    'id': id + 5000 + 1,
+                    'name': 'Value',
+                    'type': type,
+                    'testData': item.preview_data.value
+                }),
+                Object.assign({...defaultParameterBody}, {}, {
+                    'id': id + 5000 + 2,
+                    'name': 'Observation',
+                    'type': type,
+                    'testData': item.preview_data.value
+                })
+            ]*/
+        });
+
+        reportBro.createParameter(newParameter);
+        reportBro.createParameter({...newParameter, type: 'string', name: newParameter.name + 'Observacao', id: (newParameter.id + 5000), 'testData': 'Observacao'});
     });
 });

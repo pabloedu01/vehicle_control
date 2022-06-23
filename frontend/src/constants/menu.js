@@ -63,6 +63,34 @@ const MENU_ITEMS = [
         icon: 'mdi mdi-briefcase-account',
     },
 
+    {
+        key: 'tireBrands.index',
+        label: 'Tire Brands',
+        url: '/tire-brands/list',
+        icon: 'mdi mdi-briefcase-account',
+    },
+
+    {
+        key: 'claimServices.index',
+        label: 'Claim Services',
+        url: '/claim-services/list',
+        icon: 'mdi mdi-briefcase-account',
+    },
+
+    {
+        key: 'products.index',
+        label: 'Products',
+        url: '/products/list',
+        icon: 'mdi mdi-briefcase-account',
+    },
+
+    {
+        key: 'services.index',
+        label: 'Services',
+        url: '/services/list',
+        icon: 'mdi mdi-briefcase-account',
+    },
+
 
 ];
 

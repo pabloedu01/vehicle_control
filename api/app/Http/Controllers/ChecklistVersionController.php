@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\ChecklistVersion as Version;
-use App\Models\ServiceSchedule;
 use App\Models\VehicleService;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -92,11 +91,32 @@ class ChecklistVersionController extends Controller
         $customParameters              = array_values(VehicleService::$changingColumnsForReport);
 
         $vehicleService = null;
+        $customData = [];
 
         switch($request->type)
         {
             case 'service-schedules':
-                $vehicleService = VehicleService::with(['items' => function($query){return $query->withTrashed();}])->where('service_schedule_id', '=', $request->id)->first();
+                $vehicleService = VehicleService::with([
+                                                           'serviceSchedule',
+                                                           'brand',
+                                                           'vehicle',
+                                                           'vehicle.model',
+                                                           'client',
+                                                           'items' => function($query){
+                                                               return $query->withTrashed();
+                                                           },
+                                                       ])->where('service_schedule_id', '=', $request->id)->first();
+
+                $customData = [
+                    'client_name'   => @$vehicleService->client->name ?? '',
+                    'brand_name'    => @$vehicleService->brand->name ?? '',
+                    'model_name'    => @$vehicleService->vehicle->model->name ?? '',
+                    'vehicle_name'  => @$vehicleService->vehicle->name ?? '',
+                    'plate'         => @$vehicleService->serviceSchedule->plate ?? '',
+                    'chasis'        => @$vehicleService->serviceSchedule->chasis ?? '',
+                    'schedule_date' => @$vehicleService->serviceSchedule->promised_date ?? '',
+                ];
+
                 break;
         }
 
@@ -109,14 +129,22 @@ class ChecklistVersionController extends Controller
             );
         }
 
+        foreach($customData as $column => $value){
+            $vehicleService->{$column} = $value;
+        }
+
         $dataFromParameters       = $reportParametersGroupedByName->except(array_merge([ 'page_count', 'page_number' ], $customParameters))
                                                                   ->map(function($parameter){
                                                                       return $parameter['testData'];
                                                                   })
                                                                   ->toArray();
-        $dataFromVehicleService   = $vehicleService->items->keyBy('formatted_name')->map(function($item){
-            return $item->pivot->value;
-        })->toArray();
+        $dataFromVehicleService   = array_merge(...$vehicleService->items->map(function($item){
+            return [
+                $item->formatted_name => $item->pivot->value,
+                $item->formatted_name.'Observacao' => $item->pivot->observations,
+            ];
+        })->toArray());
+
         $dataFromCustomParameters = VehicleService::changeDataColumns($vehicleService->only(
             array_map(function($parameterName){
                 return array_flip(VehicleService::$changingColumnsForReport)[$parameterName];
@@ -135,7 +163,7 @@ class ChecklistVersionController extends Controller
         $data = array_merge($dataFromParameters, $dataFromVehicleService, $dataFromCustomParameters);
 
         $curlInstance = callAPI('https://www.reportbro.com/report/run', 'PUT', json_encode([
-                                                                                               'report'       => $report,
+                                                                                               'report'       => $version->customReport($data),
                                                                                                'outputFormat' => 'pdf',
                                                                                                'data'         => $data,
                                                                                                'isTestData'   => true,

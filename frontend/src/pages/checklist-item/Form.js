@@ -195,7 +195,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                                             label="O Tipo"
                                             type="select"
                                             name="type"
-                                            options={[{value: 'boolean', label: 'Boolean'}, {value: 'string', label: 'String'}, {value: 'list', label: 'List'}]}
+                                            options={[{value: 'boolean', label: 'Boolean'}, {value: 'string', label: 'String'}, {value: 'list', label: 'List'}, {value: 'integer', label: 'Integer'}, {value: 'horizontalBar', label: 'Horizontal Bar'}]}
                                             placeholder="Digite O Tipo"
                                             containerClass={'mb-3'}
                                             handleChange={onTypeChange}

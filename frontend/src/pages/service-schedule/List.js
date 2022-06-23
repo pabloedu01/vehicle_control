@@ -187,7 +187,11 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
         ]);
 
         setTableOptions(Object.assign(TABLE_OPTIONS, {
-
+            setRowProps: (row, dataIndex) => ({
+                onDoubleClick: () => {
+                    onEdit(row[0]);
+                }
+            })
         }));
     }, []);
 

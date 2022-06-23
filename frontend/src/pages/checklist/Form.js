@@ -203,6 +203,10 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
     };
 
     const handleObservationsChange = (id, value) => {
+        if(!checklistData.hasOwnProperty(id)){
+            setChecklistData({...checklistData, [id]: null});
+        }
+
         setObservationsData({...observationsData, [id]: value});
     };
 
@@ -217,6 +221,10 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
     };
 
     const handleUploadImages = (files) => {
+        if(!checklistData.hasOwnProperty(fileUploadId)){
+            setChecklistData({...checklistData, [fileUploadId]: null});
+        }
+
         setFileUploadData(files);
         setEvidences({...evidences, [fileUploadId]: files});
     };
@@ -427,7 +435,12 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                                                          <br/>
                                         {clientSignatureDate ? moment(clientSignatureDate).format('DD/MM/YYYY H:mma') : ''}
                                         <br/><br/>
-                                                             Assinatura do cliente
+
+                                        <Row className="d-flex align-items-center mb-3 position-relative">
+                                            <Button variant="success" className="w-auto position-absolute" style={{right: '3em'}} type="button" onClick={() => { clientSignature.on();clientSignature.clear(); }}><span className="mdi mdi-square-edit-outline"/></Button>
+
+                                            <span className="w-auto" style={{margin: '0 auto'}}>Assinatura do cliente</span>
+                                        </Row>
                                     </Col>
                                     <Col md={6} className=" justify-content-center text-center">
                                         <SignatureCanvas penColor='green'
@@ -437,7 +450,11 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                                         <br/>
                                         <span>{technicalConsultantSignatureDate ? moment(technicalConsultantSignatureDate).format('DD/MM/YYYY H:mma') : ''}</span>
                                         <br/><br/>
-                                        <span>Assinatura do Consultor</span>
+                                        <Row className="d-flex align-items-center mb-3 position-relative">
+                                            <Button variant="success" className="w-auto position-absolute" style={{right: '3em'}} type="button" onClick={() => { technicalConsultantSignature.on();technicalConsultantSignature.clear(); }}><span className="mdi mdi-square-edit-outline"/></Button>
+
+                                            <span className="w-auto" style={{margin: '0 auto'}}>Assinatura do Consultor</span>
+                                        </Row>
                                     </Col>
                                 </Row>
 

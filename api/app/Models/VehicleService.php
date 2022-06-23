@@ -25,6 +25,13 @@ class VehicleService extends Base
         'client_signature_date'                 => 'clientSignatureDate',
         'technical_consultant_signature_base64' => 'technicalConsultantSignature',
         'technical_consultant_signature_date'   => 'technicalConsultantSignatureDate',
+        'client_name'                           => 'clientName',
+        'brand_name'                            => 'vehicleBrand',
+        'model_name'                            => 'vehicleModel',
+        'vehicle_name'                          => 'vehicleName',
+        'plate'                                 => 'vehiclePlate',
+        'chasis'                                => 'vehicleChasis',
+        'schedule_date'                         => 'scheduleDate',
     ];
 
     protected $appends = ['client_name'];
