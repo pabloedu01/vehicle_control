@@ -249,25 +249,25 @@ $(document).ready(function() {
         var newParameter = Object.assign({...defaultParameterBody}, {
             'id': id,
             'name': item.formatted_name,
-            'type': type,
-            'testData': item.preview_data.value,
-            /*'children': [
+            'type': 'map',
+            'testData': '',
+            'children': [
                 Object.assign({...defaultParameterBody}, {}, {
-                    'id': id + 5000 + 1,
+                    'id': id + 5000,
                     'name': 'Value',
                     'type': type,
                     'testData': item.preview_data.value
                 }),
                 Object.assign({...defaultParameterBody}, {}, {
-                    'id': id + 5000 + 2,
+                    'id': id + 6000,
                     'name': 'Observation',
-                    'type': type,
-                    'testData': item.preview_data.value
+                    'type': 'string',
+                    'testData': 'Observation'
                 })
-            ]*/
+            ]
         });
 
         reportBro.createParameter(newParameter);
-        reportBro.createParameter({...newParameter, type: 'string', name: newParameter.name + 'Observacao', id: (newParameter.id + 5000), 'testData': 'Observacao'});
+        /*reportBro.createParameter({...newParameter, type: 'string', name: newParameter.name + 'Observacao', id: (newParameter.id + 5000), 'testData': 'Observacao'});*/
     });
 });

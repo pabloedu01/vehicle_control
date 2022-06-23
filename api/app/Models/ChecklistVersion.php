@@ -44,7 +44,7 @@ class ChecklistVersion extends Base
         $items = collect();
         $report = $this->formatted_report;
 
-        if($report && isset($report['docElements']) && isset($report['parameters']))
+        if($report && isset($report['docElements']) && isset($report['parameters']) && isset($report['styles']))
         {
             $docElements = array_values(\Arr::sort($report['docElements'], function($element){
                 return $element['y']*100 + $element['x'];
@@ -52,22 +52,18 @@ class ChecklistVersion extends Base
 
             $parameters = collect($report['parameters'])->keyBy('name');
 
-            $itemsId = array_unique(array_merge(...array_filter(array_map(function($element) use ($parameters){
+            $itemsId = array_unique(array_merge(...array_filter(array_map(function($docElement) use ($parameters){
                 $itemId = [];
 
                 foreach($this->fieldsToSearchItem as $field){
-                    if(isset($element[$field]) && $element[$field] && strlen($element[$field]) > 0 && preg_match_all('/(\${)(.*?)(})/', $element[$field], $matches))
+                    if(isset($docElement[$field]) && $docElement[$field] && strlen($docElement[$field]) > 0 && preg_match_all('/(\${)(.*?)(\.)(Value|Observation)(})/', $docElement[$field], $matches))
                     {
                         if(isset($matches[2]))
                         {
                             foreach($matches[2] as $formattedName){
                                 if(isset($parameters[$formattedName]))
                                 {
-                                    if(preg_match('/(.*?)(Observacao)/', $formattedName) && $parameters[$formattedName]['id'] > 5000){
-                                        $itemId[] = $parameters[$formattedName]['id'] - 5100;//en el frontend se le suma +100 a los id para que no haya choque con las variables que ya existan
-                                    } else {
-                                        $itemId[] = $parameters[$formattedName]['id'] - 100;//en el frontend se le suma +100 a los id para que no haya choque con las variables que ya existan
-                                    }
+                                    $itemId[] = $parameters[$formattedName]['id'] - 100;//en el frontend se le suma +100 a los id para que no haya choque con las variables que ya existan
                                 }
                             }
                         }
@@ -108,15 +104,15 @@ class ChecklistVersion extends Base
 
             foreach($report['parameters'] as $indexParameter => $parameter){
 
-                if($parameter['id'] < 5000){
+                if($parameter['id'] >= 100 && $parameter['id'] < 5000 && $parameter['type'] == 'map'){
                     if(isset($checklistItemsGroupedById[$parameter['id'] - 100]) && $checklistItemsGroupedById[$parameter['id'] - 100]->formatted_name != $parameter['name']){
                         $report['parameters'][$indexParameter]['name'] = $checklistItemsGroupedById[$parameter['id'] - 100]->formatted_name;
 
                         foreach($report['docElements'] as $indexDocElement => $docElement){
                             foreach($this->fieldsToSearchItem as $field){
-                                if(isset($docElement[$field]) && $docElement[$field] && strlen($docElement[$field]) > 0 && preg_match('/(\${)(.*)(})/', $docElement[$field]))
+                                if(isset($docElement[$field]) && $docElement[$field] && strlen($docElement[$field]) > 0 && preg_match('/(\${)(.*?)(\.)(Value|Observation)(})/', $docElement[$field]))
                                 {
-                                    $report['docElements'][$indexDocElement][$field] = preg_replace('/(\${)('.$parameter['name'].')(})/', '${'.$checklistItemsGroupedById[$parameter['id'] - 100]->formatted_name.'}', $docElement[$field]);
+                                    $report['docElements'][$indexDocElement][$field] = preg_replace('/(\${)('.$parameter['name'].'?)(\.)(Value|Observation)(})/', '${'.$checklistItemsGroupedById[$parameter['id'] - 100]->formatted_name.'$3$4}', $docElement[$field]);
                                 }
                             }
 
@@ -168,7 +164,7 @@ class ChecklistVersion extends Base
             $parametersGroupedByName = collect($report['parameters'])->keyBy('name');
 
             foreach($report['docElements'] as $indexDocElement => $docElement){
-                if(isset($docElement['content']) && $docElement['content'] && strlen($docElement['content']) > 0 && preg_match('/(\${)(.*)(})/', $docElement['content'], $matches)){
+                if(isset($docElement['content']) && $docElement['content'] && strlen($docElement['content']) > 0 && preg_match('/(\${)(.*?)(\.)(Value)(})/', $docElement['content'], $matches)){
                     if(isset($matches[2])){
                         $formattedName = $matches[2];
 
@@ -176,7 +172,7 @@ class ChecklistVersion extends Base
                             $checklistItem = $checklistItemsGroupedById[$parametersGroupedByName[$formattedName]['id'] - 100];
 
                             if($checklistItem->validation['type'] == 'horizontalBar'){
-                                $report['docElements'][$indexDocElement]['width'] = $data[$formattedName] * 100 / $report['docElements'][$indexDocElement]['width'];
+                                $report['docElements'][$indexDocElement]['width'] = intval($data[$formattedName]['Value'] * $report['docElements'][$indexDocElement]['width'] / 100);
 
                                 if(isset($report['docElements'][$indexDocElement]['backgroundColor']) && $report['docElements'][$indexDocElement]['backgroundColor'] && strlen($report['docElements'][$indexDocElement]['backgroundColor']) > 0)
                                 {

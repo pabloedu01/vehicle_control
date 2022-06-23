@@ -135,13 +135,23 @@ class ChecklistVersionController extends Controller
 
         $dataFromParameters       = $reportParametersGroupedByName->except(array_merge([ 'page_count', 'page_number' ], $customParameters))
                                                                   ->map(function($parameter){
-                                                                      return $parameter['testData'];
+                                                                      if($parameter['type'] == 'map'){
+                                                                          return [
+                                                                              'Value' => $parameter['children'][0]['testData'],
+                                                                              'Observation' => $parameter['children'][1]['testData'],
+                                                                          ];
+                                                                      } else {
+                                                                          return $parameter['testData'];
+                                                                      }
                                                                   })
                                                                   ->toArray();
+
         $dataFromVehicleService   = array_merge(...$vehicleService->items->map(function($item){
             return [
-                $item->formatted_name => $item->pivot->value,
-                $item->formatted_name.'Observacao' => $item->pivot->observations,
+                $item->formatted_name => [
+                    'Value' => $item->pivot->value,
+                    'Observation' => $item->pivot->observations
+                ]
             ];
         })->toArray());
 
