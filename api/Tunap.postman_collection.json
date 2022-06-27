@@ -810,6 +810,11 @@
 									"key": "active",
 									"value": "1",
 									"type": "text"
+								},
+								{
+									"key": "code",
+									"value": "chevrolet",
+									"type": "text"
 								}
 							]
 						},
@@ -842,6 +847,11 @@
 								{
 									"key": "active",
 									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "code",
+									"value": "chevrolet",
 									"type": "text"
 								}
 							]
@@ -1522,14 +1532,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/technical-consultant/8",
+							"raw": "{{host}}/api/technical-consultant/6",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"technical-consultant",
-								"8"
+								"6"
 							]
 						}
 					},
@@ -2516,19 +2526,32 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/checklist-version?brand_id=1",
+							"raw": "{{host}}/api/checklist-version",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"checklist-version"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Active Checklist Versions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/checklist-version/active-checklist-versions",
+							"host": [
+								"{{host}}"
 							],
-							"query": [
-								{
-									"key": "brand_id",
-									"value": "1"
-								}
+							"path": [
+								"api",
+								"checklist-version",
+								"active-checklist-versions"
 							]
 						}
 					},
@@ -2554,18 +2577,54 @@
 					"response": []
 				},
 				{
+					"name": "Items",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/checklist-version/1/items",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"checklist-version",
+								"1",
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Store",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"brand_id\": 1,\n    \"code\": \"v1\",\n    \"name\": \"Versión 1\",\n    \"description\": null,\n    \"active\": 1,\n    \"checklist\": [1]\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "code",
+									"value": "test",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "test",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "descripcion",
+									"type": "text"
+								},
+								{
+									"key": "active",
+									"value": "1",
+									"type": "text"
 								}
-							}
+							]
 						},
 						"url": {
 							"raw": "{{host}}/api/checklist-version",
@@ -2581,18 +2640,87 @@
 					"response": []
 				},
 				{
-					"name": "Update",
+					"name": "Duplicate",
 					"request": {
-						"method": "PUT",
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/checklist-version/1/duplicate",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"checklist-version",
+								"1",
+								"duplicate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store Report",
+					"request": {
+						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"brand_id\": 1,\n    \"code\": \"v1\",\n    \"name\": \"Versión 1\",\n    \"description\": null,\n    \"active\": 1,\n    \"checklist\": [\n        1\n    ]\n}",
+							"raw": "{\n    \"report\": {\n        \"test\": 1\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
+						},
+						"url": {
+							"raw": "{{host}}/api/checklist-version/1/report",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"checklist-version",
+								"1",
+								"report"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "code",
+									"value": "test",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "test editado",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "descripcion",
+									"type": "text"
+								},
+								{
+									"key": "active",
+									"value": "1",
+									"type": "text"
+								}
+							]
 						},
 						"url": {
 							"raw": "{{host}}/api/checklist-version/1",
@@ -2618,14 +2746,14 @@
 							"urlencoded": []
 						},
 						"url": {
-							"raw": "{{host}}/api/checklist-version/1",
+							"raw": "{{host}}/api/checklist-version/2",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"checklist-version",
-								"1"
+								"2"
 							]
 						}
 					},
@@ -2666,14 +2794,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/vehicle-service/1",
+							"raw": "{{host}}/api/vehicle-service/2",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"vehicle-service",
-								"1"
+								"2"
 							]
 						}
 					},
@@ -2686,7 +2814,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"company_id\": 1,\n    \"version_id\": null,\n    \"service_schedule_id\": null,\n    \"technical_consultant_id\": 1,\n    \"brand_id\": 1,\n    \"client_id\": null,\n    \"client_name\": \"Carmen\",\n    \"client_signature\": null,\n    \"client_signature_date\": \"2022-05-16T13:55:00 -04:00\",\n    \"technical_consultant_signature\": null,\n    \"technical_consultant_signature_date\": null,\n    \"fuel\": null,\n    \"mileage\": null,\n    \"checklist\": [\n        {\n            \"id\": 1,\n            \"value\": 4,\n            \"evidence\": [\"vehicle_services/evidences/1gbwrlLW3aJR4w3vlk6EVWVQpTwxWaLEFxxi5rpl.png\"]\n        }\n    ]\n}",
+							"raw": "{\n    \"company_id\": 1,\n    \"checklist_version_id\": 1,\n    \"service_schedule_id\": null,\n    \"technical_consultant_id\": 10,\n    \"vehicle_id\": null,\n    \"brand_id\": 1,\n    \"client_id\": null,\n    \"client_name\": \"Carmen\",\n    \"client_signature\": null,\n    \"client_signature_date\": \"2022-05-16T13:55:00-04:00\",\n    \"technical_consultant_signature\": null,\n    \"technical_consultant_signature_date\": null,\n    \"fuel\": null,\n    \"mileage\": null,\n    \"checklist\": [\n        {\n            \"id\": 1,\n            \"value\": 4,\n            \"observations\": null,\n            \"evidence\": [\"vehicle_services/evidences/1gbwrlLW3aJR4w3vlk6EVWVQpTwxWaLEFxxi5rpl.png\"]\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2896,7 +3024,7 @@
 								{
 									"key": "image",
 									"type": "file",
-									"src": "/home/mcontreras/Escritorio/informacion/imagenes/logo2.png"
+									"src": "/home/mcontreras/Escritorio/1.png"
 								}
 							]
 						},
@@ -2951,7 +3079,7 @@
 			"script": {
 				"type": "text/javascript",
 				"exec": [
-					""
+					"pm.request.headers.add({key: 'X-Requested-With', value: 'XMLHttpRequest' });"
 				]
 			}
 		},

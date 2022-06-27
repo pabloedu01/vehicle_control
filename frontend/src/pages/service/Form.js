@@ -24,8 +24,8 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
             service_code: yup.string().required('Por favor, digite Código de Serviço'),
             integration_code: yup.string().required('Por favor, digite Código de Integração'),
             description: yup.string().required('Por favor, digite Código de Descrição'),
-            standard_quantity: yup.string().required('Por favor, digite Quantidade Padrão'),
-            standard_value: yup.string().required('Por favor, digite Valor Padrão'),
+            standard_quantity: yup.number().required('Por favor, digite Quantidade Padrão'),
+            standard_value: yup.number().required('Por favor, digite Valor Padrão'),
             active: yup.boolean(),
         })
     );
@@ -76,15 +76,14 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
             standard_quantity: null,
             standard_value: null,
             active: true,
-
         };
 
         if(id){
             api.get('/service/' + id).then((response) => {
-                const {name,active,document,address} = response.data.data;
+                const {service_code,integration_code,description,standard_quantity,standard_value,active} = response.data.data;
 
                 setData({
-                    name,active,document,address,
+                    service_code,integration_code,description,standard_quantity,standard_value,active
                 });
             },(error) => {
                 setData(defaultData);
@@ -181,9 +180,6 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                                             {...otherProps}
                                         />
                                     </Col>
-
-
-
 
                                 </Row>
 

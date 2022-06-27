@@ -119,7 +119,10 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     useEffect(() => {
         if(data){
             getBrands();
-            getModels(data.brand_id);
+
+            if(id){
+                getModels(data.brand_id);
+            }
         }
     }, [data]);
 

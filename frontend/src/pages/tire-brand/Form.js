@@ -70,10 +70,10 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
         if(id){
             api.get('/tire-brand/' + id).then((response) => {
-                const {name,active,document,address} = response.data.data;
+                const {name} = response.data.data;
 
                 setData({
-                    name,active,document,address,
+                    name
                 });
             },(error) => {
                 setData(defaultData);

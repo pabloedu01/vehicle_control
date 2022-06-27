@@ -21,9 +21,10 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
      */
     const schemaResolver = yupResolver(
         yup.object().shape({
+            name: yup.string().required('Por favor, digite Nome do Produto'),
             product_code: yup.string().required('Por favor, digite Código do Produto'),
-            sale_value: yup.string().required('Por favor, digite Valor de Venda'),
-            guarantee_value: yup.string().required('Por favor, digite Valor da Garantia'),
+            sale_value: yup.number().required('Por favor, digite Valor de Venda'),
+            guarantee_value: yup.number().required('Por favor, digite Valor da Garantia'),
             unique_code: yup.string().required('Por favor, digite Código Único'),
             active: yup.boolean(),
         })
@@ -69,6 +70,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     const getData = () => {
         const defaultData = {
+            name: null,
             product_code: null,
             sale_value: null,
             guarantee_value: null,
@@ -78,10 +80,10 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
         if(id){
             api.get('/product/' + id).then((response) => {
-                const {name,active,document,address} = response.data.data;
+                const {name, product_code, sale_value, guarantee_value, unique_code, active} = response.data.data;
 
                 setData({
-                    name,active,document,address,
+                    name, product_code, sale_value, guarantee_value, unique_code, active
                 });
             },(error) => {
                 setData(defaultData);
@@ -96,6 +98,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     }, [id]);
 
     useEffect(() => {
+        methods.setValue('name', data?.name ?? null);
         methods.setValue('product_code', data?.product_code ?? null);
         methods.setValue('sale_value', data?.sale_value ?? null);
         methods.setValue('guarantee_value', data?.guarantee_value ?? null);
@@ -120,6 +123,15 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                             <form onSubmit={handleSubmit(onSubmit, (e) => {console.log(e);})} noValidate>
                                 <Row>
                                     <Col md={6}>
+                                        <FormInput
+                                            label="Nome"
+                                            type="text"
+                                            name="name"
+                                            placeholder="Digite Nome do Produto"
+                                            containerClass={'mb-3'}
+                                            {...otherProps}
+                                        />
+
                                         <FormInput
                                             label="Código do Produto"
                                             type="text"

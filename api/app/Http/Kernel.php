@@ -72,7 +72,7 @@ class Kernel extends HttpKernel
         'technicalConsultant' => \App\Http\Middleware\TechnicalConsultantPermissionMiddleware::class,
         'serviceSchedule' => \App\Http\Middleware\ServiceSchedulePermissionMiddleware::class,
         'vehicleService' => \App\Http\Middleware\VehicleServicePermissionMiddleware::class,
-        'company.service' => \App\Http\Middleware\ServicePermissionMiddleware::class,
+        'service' => \App\Http\Middleware\ServicePermissionMiddleware::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,

@@ -21,7 +21,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
      */
     const schemaResolver = yupResolver(
         yup.object().shape({
-            integration_code: yup.string().required('Por favor, digite Código de Integração'),
+            integration_code: yup.number().required('Por favor, digite Código de Integração'),
             description: yup.string().required('Por favor, digite Descrição'),
         })
     );
@@ -72,10 +72,10 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
         if(id){
             api.get('/claim-service/' + id).then((response) => {
-                const {name,active,document,address} = response.data.data;
+                const {integration_code, description} = response.data.data;
 
                 setData({
-                    name,active,document,address,
+                    integration_code, description
                 });
             },(error) => {
                 setData(defaultData);
@@ -92,7 +92,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     useEffect(() => {
         methods.setValue('integration_code', data?.integration_code ?? null);
         methods.setValue('description', data?.description ?? null);
-    });
+    }, [data]);
 
     return (
         <>
