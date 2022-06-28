@@ -7,7 +7,7 @@ class Client extends Base
     protected $table = 'clients';
 
     protected $casts = [
-        'active' => 'boolean'
+        'active' => 'boolean',
     ];
 
     protected $fillable = [
@@ -21,13 +21,15 @@ class Client extends Base
     public static function rules($id = null, $company_id = null)
     {
         return [
-            'name'            => 'required|string|max:100',
-            'address'    => 'required|string',
-            'document'     => [
-                'required', 'string' , 'max:100',
-                self::getUniqueRule($id, ['company_id' => $company_id]),
+            'name'     => 'required|string|max:100',
+            'address'  => 'required|string',
+            'document' => [
+                'required',
+                'string',
+                'max:100',
+                self::getUniqueRule($id, [ 'company_id' => $company_id ]),
             ],
-            'active'          => 'required|boolean',
+            'active'   => 'required|boolean',
         ];
     }
 

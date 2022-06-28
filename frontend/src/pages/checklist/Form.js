@@ -347,7 +347,7 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
 
                     type === 'service-schedules' ?
                         [
-                            { label: 'Horários de Serviço', path: '/service-schedules/list' },
+                            { label: 'Agenda de Serviços', path: '/service-schedules/list' },
                             { label: 'Editar', path: `/service-schedules/${id}/edit` },
                             { label: 'Checklist', active: true },
                         ]:

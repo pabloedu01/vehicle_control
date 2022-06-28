@@ -12,10 +12,10 @@ const PrivateRoute = ({ component: RouteComponent, roles, ...rest } ) => {
             apiCore.post('/auth/check-token').then(() => {
 
             }, (error) => {
-                history('/register');
+                history('/login');
             });
         } else {
-            history('/register');
+            history('/login');
         }
     };
 

@@ -6,12 +6,7 @@ const MENU_ITEMS = [
         icon: 'mdi mdi-office-building-outline',
     },
 
-    {
-        key: 'technicalConsultants.index',
-        label: 'Consultores Técnicos',
-        url: '/technical-consultants/list',
-        icon: 'mdi mdi-account-tie',
-    },
+
 
     {
         key: 'vehiclesCrud',
@@ -44,53 +39,69 @@ const MENU_ITEMS = [
     },
 
     {
+        key: 'crud',
+        label: 'Cadastros',
+        isTitle: false,
+        icon: 'mdi mdi-application-edit',
+        children: [
+            {
+                key: 'products.index',
+                label: 'Produtos',
+                url: '/products/list',
+                icon: 'mdi mdi-animation',
+                parentKey: 'crud'
+            },
+            {
+                key: 'services.index',
+                label: 'Serviços',
+                url: '/services/list',
+                icon: 'mdi mdi-toolbox-outline',
+                parentKey: 'crud'
+            },
+            {
+                key: 'clients.index',
+                label: 'Clientes',
+                url: '/clients/list',
+                icon: 'mdi mdi-briefcase-account',
+                parentKey: 'crud'
+            },
+            {
+                key: 'tireBrands.index',
+                label: 'Pneus',
+                url: '/tire-brands/list',
+                icon: 'mdi mdi-tire',
+                parentKey: 'crud'
+            },
+            {
+                key: 'technicalConsultants.index',
+                label: 'Consultores Técnicos',
+                url: '/technical-consultants/list',
+                icon: 'mdi mdi-account-tie',
+                parentKey: 'crud'
+            },
+
+        ],
+    },
+
+
+    {
         key: 'clientVehicles.index',
         label: 'Veículos do Clientes',
         url: '/client-vehicles/list',
         icon: 'mdi mdi-car',
     },
-
     {
         key: 'serviceSchedules.index',
-        label: 'Horários de Serviço',
+        label: 'Agenda de Serviços',
         url: '/service-schedules/list',
         icon: 'mdi mdi-clipboard-clock',
     },
     {
-        key: 'clients.index',
-        label: 'Clientes',
-        url: '/clients/list',
-        icon: 'mdi mdi-briefcase-account',
-    },
-
-    {
-        key: 'tireBrands.index',
-        label: 'Marcas de Pneus',
-        url: '/tire-brands/list',
-        icon: 'mdi mdi-tire',
-    },
-
-    {
         key: 'claimServices.index',
-        label: 'Serviços de Reclamação',
+        label: 'Reclamações',
         url: '/claim-services/list',
         icon: 'mdi mdi-face-agent',
     },
-
-    {
-        key: 'products.index',
-        label: 'Produtos',
-        url: '/products/list',
-        icon: 'mdi mdi-animation',
-    },
-
-    {
-        key: 'services.index',
-        label: 'Serviços',
-        url: '/services/list',
-        icon: 'mdi mdi-toolbox-outline',
-    },
-
 
 ];
 

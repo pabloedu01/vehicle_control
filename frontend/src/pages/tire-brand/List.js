@@ -103,10 +103,10 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
         <>
             <PageTitle
                 breadCrumbItems={[
-                    { label: 'Marcas de Pneus', path: '/tire-brands/list' },
+                    { label: 'Pneus', path: '/tire-brands/list' },
                     { label: 'Lista', path: '/tire-brands/list', active: true },
                 ]}
-                title={'Marcas de Pneus'}
+                title={'Pneus'}
                 company={props.company}
             />
 

@@ -243,10 +243,10 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         <>
             <PageTitle
                 breadCrumbItems={[
-                    { label: 'Horários de Serviço', path: '/service-schedules/list' },
+                    { label: 'Agenda de Serviços', path: '/service-schedules/list' },
                     { label: 'Cadastro', path: `/service-schedules/${id ? id + '/edit' : 'create'}`, active: true },
                 ]}
-                title={'Horários de Serviço'}
+                title={'Agenda de Serviços'}
                 company={props.company}
             />
             <Row>

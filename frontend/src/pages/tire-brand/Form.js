@@ -95,10 +95,10 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         <>
             <PageTitle
                 breadCrumbItems={[
-                    { label: 'Marcas de Pneus', path: '/tire-brands/list' },
+                    { label: 'Pneus', path: '/tire-brands/list' },
                     { label: 'Cadastro', path: `/tire-brands/${id ? id + '/edit' : 'create'}`, active: true },
                 ]}
-                title={'Marcas de Pneus'}
+                title={'Pneus'}
                 company={props.company}
             />
             <Row>
