@@ -21,7 +21,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
      */
     const schemaResolver = yupResolver(
         yup.object().shape({
-            integration_code: yup.number().required('Por favor, digite Código de Integração'),
+            integration_code: yup.string(),
             description: yup.string().required('Por favor, digite Descrição'),
         })
     );

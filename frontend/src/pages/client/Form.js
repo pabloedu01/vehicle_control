@@ -24,7 +24,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
             name: yup.string().required('Por favor, digite Nome Completo'),
             active: yup.boolean(),
             document: yup.string().required('Por favor, digite Documento'),
-            address: yup.string().required('Por favor, digite a Direção'),
+            address: yup.string().required('Por favor, digite a Endereço'),
         })
     );
 
@@ -135,10 +135,10 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                                             {...otherProps}
                                         />
                                         <FormInput
-                                            label="Direção"
+                                            label="Endereço"
                                             type="text"
                                             name="address"
-                                            placeholder="Digite Direção"
+                                            placeholder="Digite Endereço"
                                             containerClass={'mb-3'}
                                             {...otherProps}
                                         />

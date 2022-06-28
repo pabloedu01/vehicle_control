@@ -156,10 +156,10 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
         <>
             <PageTitle
                 breadCrumbItems={[
-                    { label: 'Veículos do Cliente', path: '/client-vehicles/list' },
+                    { label: 'Veículo de passagem', path: '/client-vehicles/list' },
                     { label: 'Lista', path: '/client-vehicles/list', active: true },
                 ]}
-                title={'Veículos do Client'}
+                title={'Veículo de passagem'}
                 company={props.company}
             />
 
@@ -174,7 +174,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                                 <Col xl={4}>
                                     <div className="text-xl-end mt-xl-0 mt-2">
                                         <Button variant="danger" className="mb-2 me-2" onClick={() => { history(`/panel/company/${props.company?.id}/client-vehicles/create`) }}>
-                                            <i className="mdi mdi-basket me-1" /> Novo Vehiculo do Cliente
+                                            <i className="mdi mdi-basket me-1" /> Novo Veículo de passagem
                                         </Button>
                                     </div>
                                 </Col>

@@ -92,7 +92,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                 },
             },
             {
-                label: 'Direção',
+                label: 'Endereço',
                 name: 'address',
                 options: {
                     filter: true,

@@ -80,29 +80,30 @@ const MENU_ITEMS = [
                 parentKey: 'crud'
             },
 
+            {
+                key: 'clientVehicles.index',
+                label: 'Veículo de passagem',
+                url: '/client-vehicles/list',
+                icon: 'mdi mdi-car',
+                parentKey: 'crud'
+            },
+
+            {
+                key: 'claimServices.index',
+                label: 'Reclamações',
+                url: '/claim-services/list',
+                icon: 'mdi mdi-face-agent',
+                parentKey: 'crud'
+            },
         ],
     },
 
-
-    {
-        key: 'clientVehicles.index',
-        label: 'Veículos do Clientes',
-        url: '/client-vehicles/list',
-        icon: 'mdi mdi-car',
-    },
     {
         key: 'serviceSchedules.index',
         label: 'Agenda de Serviços',
         url: '/service-schedules/list',
         icon: 'mdi mdi-clipboard-clock',
     },
-    {
-        key: 'claimServices.index',
-        label: 'Reclamações',
-        url: '/claim-services/list',
-        icon: 'mdi mdi-face-agent',
-    },
-
 ];
 
 export default MENU_ITEMS;

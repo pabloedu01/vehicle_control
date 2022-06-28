@@ -21,15 +21,15 @@ class ClientVehicle extends Base
 
     public static function rules($id = null, $company_id = null)
     {
-        $uniqueRule = self::getUniqueRule($id, ['company_id' => $company_id]);
+        $uniqueRule = self::getUniqueRule($id, [ 'company_id' => $company_id ]);
 
         return [
-            'chasis'       => [ 'required', 'string', 'regex:/^[a-zA-Z0-9]*$/', $uniqueRule ],
-            'color'        => 'required|string',
-            'number_motor' => [ 'required', 'string', 'regex:/^[a-zA-Z0-9]*$/', $uniqueRule ],
-            'renavan'      => [ 'required', 'integer', $uniqueRule ],
+            'chasis'       => [ 'nullable', 'string', 'regex:/^[a-zA-Z0-9]*$/', $uniqueRule ],
+            'color'        => 'nullable|string',
+            'number_motor' => [ 'nullable', 'string', 'regex:/^[a-zA-Z0-9]*$/', $uniqueRule ],
+            'renavan'      => [ 'nullable', 'integer', $uniqueRule ],
             'plate'        => [ 'required', 'string', 'regex:/^[A-Z0-9]*$/', $uniqueRule ],
-            'mileage'      => 'required|numeric',
+            'mileage'      => 'nullable|numeric',
         ];
     }
 

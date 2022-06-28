@@ -187,7 +187,7 @@ const FormInput = ({
                                                                         hideAddon={true}
                                                                         showTimeSelect
                                                                         timeFormat="HH:mm"
-                                                                        tI={60}
+                                                                        tI={1}
                                                                         dateFormat="dd/MM/yyyy h:mm aa"
                                                                         timeCaption="time"
                                                                         name={name}

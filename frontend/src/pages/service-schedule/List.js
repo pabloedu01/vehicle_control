@@ -217,7 +217,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                                 <Col xl={4}>
                                     <div className="text-xl-end mt-xl-0 mt-2">
                                         <Button variant="danger" className="mb-2 me-2" onClick={() => { history(`/panel/company/${props.company?.id}/service-schedules/create`) }}>
-                                            <i className="mdi mdi-basket me-1" /> Novo Vehiculo do Cliente
+                                            <i className="mdi mdi-basket me-1" /> Nova Agenda de Serviço
                                         </Button>
                                     </div>
                                 </Col>

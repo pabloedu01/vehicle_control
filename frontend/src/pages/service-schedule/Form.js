@@ -31,13 +31,11 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
      */
     const schemaResolver = yupResolver(
         yup.object().shape({
-            checklist_version_id: yup.number().required('Por favor, digite Versão do Reporte'),
+            checklist_version_id: yup.number().required('Por favor, digite Versão do checklist'),
             brand_id: yup.number().required('Por favor, digite Marca'),
             model_id: yup.number().required('Por favor, digite Modelo'),
             vehicle_id: yup.number().required('Por favor, digite Vehiculo'),
             code: yup.string().required('Por favor, digite Código'),
-            chasis: yup.string().required('Por favor, digite Chasis'),
-            plate: yup.string().required('Por favor, digite Plate'),
             promised_date: yup.date().required('Por favor, digite Data Prometida'),
             client_id: yup.number().required('Por favor, digite Cliente'),
             technical_consultant_id: yup.number().required('Por favor, digite Consultor Técnico'),
@@ -91,8 +89,6 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
             model_id: null,
             vehicle_id: null,
             code: null,
-            chasis: null,
-            plate: null,
             promised_date: new Date(),
             client_id: null,
             technical_consultant_id: null,
@@ -100,10 +96,10 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
         if(id){
             api.get('/service-schedule/' + id).then((response) => {
-                const {vehicle:{model: {brand_id}, model: {brand}, model},vehicle:{model_id},vehicle_id,code,chasis,plate,promised_date,client_id,technical_consultant_id, checklist_version_id, checklist_version: checklistVersion, vehicle, client, technical_consultant: technicalConsultant} = response.data.data;
+                const {vehicle:{model: {brand_id}, model: {brand}, model},vehicle:{model_id},vehicle_id,code,promised_date,client_id,technical_consultant_id, checklist_version_id, checklist_version: checklistVersion, vehicle, client, technical_consultant: technicalConsultant} = response.data.data;
 
                 setData({
-                    vehicle_id,model_id,brand_id,code,chasis,plate,promised_date: new Date(promised_date),client_id,technical_consultant_id, checklist_version_id, checklistVersion, brand, model, technicalConsultant, client, vehicle
+                    vehicle_id,model_id,brand_id,code,promised_date: new Date(promised_date),client_id,technical_consultant_id, checklist_version_id, checklistVersion, brand, model, technicalConsultant, client, vehicle
                 });
             },(error) => {
                 setData(defaultData);
@@ -228,8 +224,6 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     useEffect(() => {
         methods.setValue('code', data?.code ?? null);
-        methods.setValue('chasis', data?.chasis ?? null);
-        methods.setValue('plate', data?.plate ?? null);
         methods.setValue('promised_date', data?.promised_date ?? new Date());
         methods.setValue('client_id', data?.client_id ?? null);
         methods.setValue('technical_consultant_id', data?.technical_consultant_id ?? null);
@@ -257,7 +251,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                                 <Row>
                                     <Col md={6}>
                                         <FormInput
-                                            label="Versão do Reporte"
+                                            label="Versão do checklist"
                                             type="select"
                                             name="checklist_version_id"
                                             containerClass={'mb-3'}
@@ -324,15 +318,6 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                                         />
 
                                         <FormInput
-                                            label="Chasis"
-                                            type="text"
-                                            name="chasis"
-                                            placeholder="Digite Chasis"
-                                            containerClass={'mb-3'}
-                                            {...otherProps}
-                                        />
-
-                                        <FormInput
                                             label="Código"
                                             type="text"
                                             name="code"
@@ -340,16 +325,6 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                                             containerClass={'mb-3'}
                                             {...otherProps}
                                         />
-
-                                        <FormInput
-                                            label="Placa"
-                                            type="text"
-                                            name="plate"
-                                            placeholder="Digite Placa"
-                                            containerClass={'mb-3'}
-                                            {...otherProps}
-                                        />
-
 
                                     </Col>
 

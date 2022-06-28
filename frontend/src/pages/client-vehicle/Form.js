@@ -28,12 +28,12 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
             brand_id: yup.number().required('Por favor, digite Marca'),
             model_id: yup.number().required('Por favor, digite Modelo'),
             vehicle_id: yup.number().required('Por favor, digite Vehiculo'),
-            chasis: yup.string().required('Por favor, digite Chasis'),
-            color: yup.string().required('Por favor, digite Color'),
-            number_motor: yup.string().required('Por favor, digite Motor'),
-            renavan: yup.number().required('Por favor, digite Renavan'),
+            chasis: yup.string(),
+            color: yup.string(),
+            number_motor: yup.string(),
+            renavan: yup.string(),
             plate: yup.string().required('Por favor, digite Placa'),
-            mileage: yup.number().required('Por favor, digite KM'),
+            mileage: yup.string(),
         })
     );
 
@@ -172,7 +172,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         <>
             <PageTitle
                 breadCrumbItems={[
-                    { label: 'Veículos do Cliente', path: '/client-vehicles/list' },
+                    { label: 'Veículo de passagem', path: '/client-vehicles/list' },
                     { label: 'Cadastro', path: `/client-vehicles/${id ? id + '/edit' : 'create'}`, active: true },
                 ]}
                 title={'Formulário de Veículo do Cliente'}

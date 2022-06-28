@@ -33,7 +33,7 @@ class ServiceSchedule extends FormRequest
 
         return [
             'company_id' => 'required|integer',
-            'vehicle_id' => [
+            'client_vehicle_id' => [
                 'required', 'integer',
                 Rule::exists('vehicles', 'id')->where('company_id', $company_id)
             ],
@@ -52,8 +52,6 @@ class ServiceSchedule extends FormRequest
             'code' => [
                 'nullable', 'string', 'regex:/^[a-zA-Z0-9\-\_]*$/', \App\Models\ServiceSchedule::getUniqueRule($id, ['company_id' => $company_id])
             ],
-            'chasis' => 'required|string|regex:/^[a-zA-Z0-9]*$/',
-            'plate' => 'required|string|regex:/^[A-Z0-9]*$/',
             'promised_date' => [
                 'required', 'date_format:Y-m-d\TH:i:sP'
             ],
