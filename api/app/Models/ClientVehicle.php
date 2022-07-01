@@ -33,7 +33,7 @@ class ClientVehicle extends Base
             'color'        => 'nullable|string',
             'number_motor' => [ 'nullable', 'string', 'regex:/^[a-zA-Z0-9]*$/', $uniqueRule ],
             'renavan'      => [ 'nullable', 'integer', $uniqueRule ],
-            'plate'        => [ 'required', 'string', 'regex:/^[A-Z0-9]*$/', $uniqueRule ],
+            'plate'        => [ 'required', 'string', 'regex:/^[a-zA-Z0-9]*$/', $uniqueRule ],
             'mileage'      => 'nullable|numeric',
         ];
     }

@@ -73,8 +73,8 @@ class ClientVehicleController extends Controller
                                           });
                                       })
                                       ->where(function($query) use ($request){
-                                          return $query->where('plate', '=', $request->search)
-                                                       ->orWhere('chasis', '=', $request->search);
+                                          return $query->where(\DB::raw('lower(plate)'), '=', strtolower($request->search))
+                                                       ->orWhere(\DB::raw('lower(chasis)'), '=', strtolower($request->search));
                                       })
                                       ->first();
 

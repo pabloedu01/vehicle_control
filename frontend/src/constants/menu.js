@@ -41,7 +41,7 @@ const MENU_ITEMS = [
                 label: 'Veículo de passagem',
                 url: '/client-vehicles/list',
                 icon: 'mdi mdi-car',
-                parentKey: 'crud'
+                parentKey: 'vehiclesCrud'
             },
         ],
     },

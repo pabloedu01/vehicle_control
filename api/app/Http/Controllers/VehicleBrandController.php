@@ -81,6 +81,13 @@ class VehicleBrandController extends Controller
 
     public function store(Request $request)
     {
+        if(!$request->has('code') || is_null($request->code) || strlen($request->code) === 0)
+        {
+            $request->merge([
+                                'code' => \Str::slug($request->name),
+                            ]);
+        }
+
         $validator = validate($request->all(), VehicleBrand::rules(null, $request->company_id));
 
         if($validator->fails())
@@ -117,6 +124,13 @@ class VehicleBrandController extends Controller
     public function update(Request $request, $id)
     {
         $vehicleBrand = VehicleBrand::where('id', '=', $id)->first();
+
+        if(!$request->has('code') || is_null($request->code) || strlen($request->code) === 0)
+        {
+            $request->merge([
+                                'code' => \Str::slug($request->name),
+                            ]);
+        }
 
         $validator = validate($request->all(), VehicleBrand::rules($vehicleBrand->id, $vehicleBrand->company_id));
 

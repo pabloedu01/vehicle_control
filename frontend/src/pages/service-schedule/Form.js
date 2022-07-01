@@ -33,7 +33,7 @@ const ServiceScheduleForm = (props: {company?: any, clientVehicle?:any}): React$
         yup.object().shape({
             checklist_version_id: yup.number().required('Por favor, digite Versão do checklist'),
             client_vehicle_id: yup.number().required('Por favor, digite Vehiculo'),
-            code: yup.string().required('Por favor, digite Código'),
+            code: yup.string().nullable(),
             promised_date: yup.date().required('Por favor, digite Data Prometida'),
             client_id: yup.number().required('Por favor, digite Cliente'),
             technical_consultant_id: yup.number().required('Por favor, digite Consultor Técnico'),
