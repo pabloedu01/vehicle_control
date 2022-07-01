@@ -11,9 +11,10 @@ use Symfony\Component\HttpFoundation\Response;
 class ServiceScheduleController extends Controller
 {
     private static $with = [
-        'vehicle',
-        'vehicle.model',
-        'vehicle.model.brand',
+        'clientVehicle',
+        'clientVehicle.vehicle',
+        'clientVehicle.vehicle.model',
+        'clientVehicle.vehicle.model.brand',
         'client',
         'technicalConsultant',
         'technicalConsultant.user',
@@ -26,9 +27,11 @@ class ServiceScheduleController extends Controller
 
     public function index(Request $request)
     {
-        $serviceSchedules = ServiceSchedule::with(collect(self::$with)->take(6)->toArray())
+        $serviceSchedules = ServiceSchedule::with(collect(self::$with)->take(7)->toArray())
                                            ->where('company_id', '=', $request->company_id)
                                            ->get();
+
+        $serviceSchedules->each(function($serviceSchedule){$serviceSchedule->clientVehicle->append('name');});
 
         return response()->json([
                                     'msg'  => trans('general.msg.success'),
@@ -48,6 +51,8 @@ class ServiceScheduleController extends Controller
             $serviceSchedule->vehicleService->append('client_signature_base64');
             $serviceSchedule->vehicleService->append('technical_consultant_signature_base64');
         }
+
+        $serviceSchedule->clientVehicle->append('name');
 
         return response()->json([
                                     'msg'  => trans('general.msg.success'),

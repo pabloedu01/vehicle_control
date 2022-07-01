@@ -99,8 +99,9 @@ class ChecklistVersionController extends Controller
                 $vehicleService = VehicleService::with([
                                                            'serviceSchedule',
                                                            'brand',
-                                                           'vehicle',
-                                                           'vehicle.model',
+                                                           'serviceSchedule.clientVehicle',
+                                                           'serviceSchedule.clientVehicle.vehicle',
+                                                           'serviceSchedule.clientVehicle.vehicle.model',
                                                            'client',
                                                            'items' => function($query){
                                                                return $query->withTrashed();
@@ -110,10 +111,10 @@ class ChecklistVersionController extends Controller
                 $customData = [
                     'client_name'   => @$vehicleService->client->name ?? '',
                     'brand_name'    => @$vehicleService->brand->name ?? '',
-                    'model_name'    => @$vehicleService->vehicle->model->name ?? '',
-                    'vehicle_name'  => @$vehicleService->vehicle->name ?? '',
-                    'plate'         => @$vehicleService->serviceSchedule->plate ?? '',
-                    'chasis'        => @$vehicleService->serviceSchedule->chasis ?? '',
+                    'model_name'    => @$vehicleService->serviceSchedule->clientVehicle->vehicle->model->name ?? '',
+                    'vehicle_name'  => @$vehicleService->serviceSchedule->clientVehicle->vehicle->name ?? '',
+                    'plate'         => @$vehicleService->serviceSchedule->clientVehicle->plate ?? '',
+                    'chasis'        => @$vehicleService->serviceSchedule->clientVehicle->chasis ?? '',
                     'schedule_date' => @$vehicleService->serviceSchedule->promised_date ?? '',
                 ];
 

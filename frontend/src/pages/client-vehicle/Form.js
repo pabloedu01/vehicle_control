@@ -9,16 +9,18 @@ import * as yup from "yup";
 import {useForm} from "react-hook-form";
 import {FormInput} from "../../components";
 import {getAllOptions} from "../../utils/selectOptionsForm";
+import classNames from 'classnames';
 
 const api = new APICore();
 
-const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
+const Form = (props: {company?: any, isTag?: boolean, plate?: string, chasis?: string, previousButton?: any, pushButton?: any, doneAction?:any}): React$Element<React$FragmentType> => {
     const history = useNavigate();
     const {id} = useParams();
     const [data, setData] = useState();
     const [brands, setBrands] = useState([]);
     const [models, setModels] = useState([]);
     const [vehicles, setVehicles] = useState([]);
+    const [clients, setClients] = useState([]);
 
     /*
      * form validation schema
@@ -28,12 +30,13 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
             brand_id: yup.number().required('Por favor, digite Marca'),
             model_id: yup.number().required('Por favor, digite Modelo'),
             vehicle_id: yup.number().required('Por favor, digite Vehiculo'),
-            chasis: yup.string(),
-            color: yup.string(),
-            number_motor: yup.string(),
-            renavan: yup.string(),
+            client_id: yup.number().required('Por favor, digite Cliente'),
+            chasis: yup.string().nullable(),
+            color: yup.string().nullable(),
+            number_motor: yup.string().nullable(),
+            renavan: yup.string().nullable(),
             plate: yup.string().required('Por favor, digite Placa'),
-            mileage: yup.string(),
+            mileage: yup.string().nullable(),
         })
     );
 
@@ -62,8 +65,12 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
             ajaxCall = api.post('/client-vehicle',Object.assign(formData,{company_id: props.company?.id}));
         }
 
-        ajaxCall.then(() => {
-            history(`/panel/company/${props.company?.id}/client-vehicles/list`);
+        ajaxCall.then((response) => {
+            if(props?.doneAction){
+                props?.doneAction(response.data.data, props?.pushButton);
+            } else {
+                history(`/panel/company/${props.company?.id}/client-vehicles/list`);
+            }
         }, (error) => {
             if(error.response.status === 400 && error.response.data.hasOwnProperty('errors')){
                 for(let fieldName in error.response.data.errors){
@@ -77,23 +84,24 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     const getData = () => {
         const defaultData = {
+            client_id: null,
             brand_id: null,
             model_id: null,
             vehicle_id: null,
-            chasis: null,
+            chasis: props?.chasis ?? null,
             color: null,
             number_motor: null,
             renavan: null,
-            plate: null,
+            plate: props?.plate ?? null,
             mileage: null,
         };
 
-        if(id){
+        if(props?.isTag !== true && id){
             api.get('/client-vehicle/' + id).then((response) => {
-                const {vehicle:{model: {brand_id, brand}, model},vehicle:{model_id},vehicle_id,chasis,color,number_motor,renavan,plate,mileage, vehicle} = response.data.data;
+                const {vehicle:{model: {brand_id, brand}, model},vehicle:{model_id},client_id,vehicle_id,chasis,color,number_motor,renavan,plate,mileage, vehicle} = response.data.data;
 
                 setData({
-                    vehicle_id,chasis,color,number_motor,renavan,plate,mileage,model_id,brand_id, brand, model, vehicle
+                    vehicle_id,chasis,color,number_motor,renavan,plate,mileage,model_id,brand_id, brand, model, vehicle, client_id
                 });
             },(error) => {
                 setData(defaultData);
@@ -101,6 +109,14 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         } else {
             setData(defaultData);
         }
+    };
+
+    const getClients = () => {
+        api.get('/client/active-clients',{company_id: props.company?.id}).then((response) => {
+            setClients(getAllOptions(response.data.data, data?.client));
+        },(error) => {
+            setClients([]);
+        });
     };
 
     const getBrands = () => {
@@ -144,8 +160,9 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     useEffect(() => {
         if(data){
             getBrands();
+            getClients();
 
-            if(id){
+            if(props?.isTag !== true && id){
                 getModels(data.brand_id);
                 getVehicles(data.model_id);
             }
@@ -166,25 +183,38 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         methods.setValue('brand_id', data?.brand_id ?? null);
         methods.setValue('model_id', data?.model_id ?? null);
         methods.setValue('vehicle_id', data?.vehicle_id ?? null);
+        methods.setValue('client_id', data?.client_id ?? null);
     }, [data]);
 
     return (
         <>
-            <PageTitle
-                breadCrumbItems={[
-                    { label: 'Veículo de passagem', path: '/client-vehicles/list' },
-                    { label: 'Cadastro', path: `/client-vehicles/${id ? id + '/edit' : 'create'}`, active: true },
-                ]}
-                title={'Formulário de Veículo do Cliente'}
-                company={props.company}
-            />
+            {props?.isTag !== true ?
+                <PageTitle
+                    breadCrumbItems={[
+                        { label: 'Veículo de passagem', path: '/client-vehicles/list' },
+                        { label: 'Cadastro', path: `/client-vehicles/${id ? id + '/edit' : 'create'}`, active: true },
+                    ]}
+                    title={'Formulário de Veículo do Cliente'}
+                    company={props.company}
+                /> : null
+            }
+
             <Row>
                 <Col xs={12}>
-                    <Card>
+                    <Card className={classNames({'mb-0': props?.isTag === true})}>
                         <Card.Body>
                             <form onSubmit={handleSubmit(onSubmit, (e) => {})} noValidate>
                                 <Row>
                                     <Col md={6}>
+                                        <FormInput
+                                            label="Cliente"
+                                            type="select"
+                                            name="client_id"
+                                            containerClass={'mb-3'}
+                                            options={clients}
+                                            {...otherProps}
+                                        />
+
                                         <FormInput
                                             label="Marca"
                                             type="select"
@@ -223,6 +253,9 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                                             {...otherProps}
                                         />
 
+                                    </Col>
+
+                                    <Col md={6}>
                                         <FormInput
                                             label="KM"
                                             type="text"
@@ -232,9 +265,6 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                                             {...otherProps}
                                         />
 
-                                    </Col>
-
-                                    <Col md={6}>
                                         <FormInput
                                             label="Chasis"
                                             type="text"
@@ -275,11 +305,27 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                                     </Col>
                                 </Row>
 
-                                <div className="mb-3 mb-0">
-                                    <Button variant="primary" type="submit">
-                                        Cadastro
-                                    </Button>
-                                </div>
+                                {props?.previousButton ?
+                                    <>
+                                        <div className="mb-3 mb-0 float-start">
+                                            <Button onClick={props.previousButton} variant="success" type="button">
+                                                Anterior
+                                            </Button>
+                                        </div>
+                                        <div className="mb-3 mb-0 float-end">
+                                            <Button variant="primary" type="submit">
+                                                Cadastro
+                                            </Button>
+                                        </div>
+                                    </>
+                                    :
+
+                                    <div className="mb-3 mb-0">
+                                        <Button variant="primary" type="submit">
+                                            Cadastro
+                                        </Button>
+                                    </div>
+                                }
                             </form>
                         </Card.Body>
                     </Card>

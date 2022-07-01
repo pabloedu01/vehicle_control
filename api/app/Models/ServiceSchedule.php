@@ -15,7 +15,7 @@ class ServiceSchedule extends Base
         'checklist_version_id',
         'technical_consultant_id',
         'client_id',
-        'vehicle_id',
+        'client_vehicle_id',
     ];
 
     #belongs to
@@ -43,9 +43,9 @@ class ServiceSchedule extends Base
     }
 
     #belongs to
-    public function vehicle()
+    public function clientVehicle()
     {
-        return $this->belongsTo('App\Models\Vehicle', 'vehicle_id', 'id')->withTrashed();
+        return $this->belongsTo('App\Models\ClientVehicle', 'client_vehicle_id', 'id')->withTrashed();
     }
 
     #has many

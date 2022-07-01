@@ -35,7 +35,7 @@ class ServiceSchedule extends FormRequest
             'company_id' => 'required|integer',
             'client_vehicle_id' => [
                 'required', 'integer',
-                Rule::exists('vehicles', 'id')->where('company_id', $company_id)
+                Rule::exists('client_vehicles', 'id')->where('company_id', $company_id)
             ],
             'technical_consultant_id' => [
                 'nullable', 'integer',

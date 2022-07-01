@@ -7,9 +7,12 @@ Route::group([
                  'middleware' => [ 'jwt.verify', 'user' ],
              ], function(){
 
+    Route::get('search', [
+        'uses' => 'ClientVehicleController@search',
+    ]);
 
     Route::group([
-                     'middleware' => [ 'vehicle' ],
+                     'middleware' => [ 'client' ],
                  ], function(){
         Route::get('/', [
             'uses' => 'ClientVehicleController@index',

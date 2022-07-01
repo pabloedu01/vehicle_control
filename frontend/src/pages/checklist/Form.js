@@ -175,7 +175,7 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
             ajaxCall.then((response) => {
                 switch(type){
                     case 'service-schedules':
-                        const {checklist_version: checklistVersion,vehicle,vehicle: {model: {brand}}, client, vehicle_service : vehicleService, technical_consultant: technicalConsultant} = response.data.data;
+                        const {checklist_version: checklistVersion,client_vehicle:{vehicle,vehicle: {model: {brand}}}, client, vehicle_service : vehicleService, technical_consultant: technicalConsultant} = response.data.data;
 
                         getChecklistVersion(checklistVersion.id);
 

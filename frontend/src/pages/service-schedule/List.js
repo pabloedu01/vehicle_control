@@ -24,10 +24,10 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
             setList(response.data.data.map((item) => {
                 return {
                     id: item.id,
-                    vehicle: item.vehicle !== null  ? (item.vehicle.name + ' ' + item.vehicle.model_year + ' (' + item.vehicle.model.brand.name + ' - ' + item.vehicle.model.name + ')') : null,
+                    vehicle: item.client_vehicle.name,
                     code: item.code,
-                    chasis: item.chasis,
-                    plate: item.plate,
+                    chasis: item.client_vehicle.chasis,
+                    plate: item.client_vehicle.plate,
                     promised_date: moment(item.promised_date).format('DD/MM/YYYY H:mma'),
                     client: item.client?.name,
                     technical_consultant: item.technical_consultant?.name,

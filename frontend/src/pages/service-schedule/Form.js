@@ -1,7 +1,7 @@
 // @flow
 import React, {useEffect, useState} from 'react';
 import PageTitle from "../../components/PageTitle";
-import {Button, Card, Col, Row} from "react-bootstrap";
+import {Button, Card, Col, ProgressBar, Row, Form} from "react-bootstrap";
 import {APICore} from "../../helpers/api/apiCore";
 import {useNavigate, useParams} from "react-router-dom";
 import {yupResolver} from "@hookform/resolvers/yup";
@@ -12,16 +12,16 @@ import moment from 'moment';
 import swal from "sweetalert";
 import classNames from "classnames";
 import {getAllOptions} from "../../utils/selectOptionsForm";
+import { Wizard, Steps, Step } from 'react-albus';
+import ClientVehicleForm from '../client-vehicle/Form';
 
 const api = new APICore();
 
-const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
+const ServiceScheduleForm = (props: {company?: any, clientVehicle?:any}): React$Element<React$FragmentType> => {
     const history = useNavigate();
     const {id} = useParams();
     const [data, setData] = useState();
-    const [brands, setBrands] = useState([]);
-    const [models, setModels] = useState([]);
-    const [vehicles, setVehicles] = useState([]);
+    const [clientVehicles, setClientVehicles] = useState([]);
     const [clients, setClients] = useState([]);
     const [checklistVersions, setChecklistVersions] = useState([]);
     const [technicalConsultants, setTechnicalConsultants] = useState([]);
@@ -32,9 +32,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     const schemaResolver = yupResolver(
         yup.object().shape({
             checklist_version_id: yup.number().required('Por favor, digite Versão do checklist'),
-            brand_id: yup.number().required('Por favor, digite Marca'),
-            model_id: yup.number().required('Por favor, digite Modelo'),
-            vehicle_id: yup.number().required('Por favor, digite Vehiculo'),
+            client_vehicle_id: yup.number().required('Por favor, digite Vehiculo'),
             code: yup.string().required('Por favor, digite Código'),
             promised_date: yup.date().required('Por favor, digite Data Prometida'),
             client_id: yup.number().required('Por favor, digite Cliente'),
@@ -55,7 +53,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     } = methods;
 
     const otherProps = {
-      register,errors,control
+        register,errors,control
     };
 
     const onSubmit = (formData) => {
@@ -83,23 +81,23 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     };
 
     const getData = () => {
+        console.log(props?.clientVehicle);
+
         const defaultData = {
             checklist_version_id: null,
-            brand_id: null,
-            model_id: null,
-            vehicle_id: null,
+            client_vehicle_id: props?.clientVehicle?.id ?? null,
             code: null,
             promised_date: new Date(),
-            client_id: null,
+            client_id: props?.clientVehicle?.client_id ?? null,
             technical_consultant_id: null,
         };
 
         if(id){
             api.get('/service-schedule/' + id).then((response) => {
-                const {vehicle:{model: {brand_id}, model: {brand}, model},vehicle:{model_id},vehicle_id,code,promised_date,client_id,technical_consultant_id, checklist_version_id, checklist_version: checklistVersion, vehicle, client, technical_consultant: technicalConsultant} = response.data.data;
+                const {client_vehicle: clientVehicle, client_vehicle_id,code,promised_date,client_id,technical_consultant_id, checklist_version_id, checklist_version: checklistVersion, client, technical_consultant: technicalConsultant} = response.data.data;
 
                 setData({
-                    vehicle_id,model_id,brand_id,code,promised_date: new Date(promised_date),client_id,technical_consultant_id, checklist_version_id, checklistVersion, brand, model, technicalConsultant, client, vehicle
+                    client_vehicle_id,code,promised_date: new Date(promised_date),client_id,technical_consultant_id, checklist_version_id, checklistVersion, technicalConsultant, client, clientVehicle
                 });
             },(error) => {
                 setData(defaultData);
@@ -107,14 +105,6 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         } else {
             setData(defaultData);
         }
-    };
-
-    const getBrands = () => {
-        api.get('/vehicle-brand/active-brands',{company_id: props.company?.id}).then((response) => {
-            setBrands(getAllOptions(response.data.data, data?.brand));
-        },(error) => {
-            setBrands([]);
-        });
     };
 
     const getClients = () => {
@@ -141,34 +131,18 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         });
     };
 
-    const getModels = (brand_id?) => {
-        api.get('/vehicle-model/active-vehicle-models',{brand_id: brand_id ?? methods.getValues('brand_id')}).then((response) => {
-            setModels(getAllOptions(response.data.data, data?.model, (brand_id ?? methods.getValues('brand_id')) === data?.brand_id));
+    const getClientVehicles = (client_id?) => {
+        api.get('/client-vehicle',{client_id: client_id ?? methods.getValues('client_id')}).then((response) => {
+            setClientVehicles(getAllOptions(response.data.data, data?.clientVehicle,(client_id ?? methods.getValues('client_id')) === data?.client_id));
         },(error) => {
-            setModels([]);
+            setClientVehicles([]);
         });
     };
 
-    const getVehicles = (model_id?) => {
-        api.get('/vehicle/active-vehicles',{model_id: model_id ?? methods.getValues('model_id')}).then((response) => {
-            setVehicles(getAllOptions(response.data.data, data?.vehicle,(model_id ?? methods.getValues('model_id')) === data?.model_id));
-        },(error) => {
-            setVehicles([]);
-        });
-    };
+    const handleChangeClient = () => {
+        getClientVehicles();
 
-    const handleChangeBrand = () => {
-        getModels();
-
-        methods.setValue('model_id', null);
-        methods.setValue('vehicle_id', null);
-        setVehicles([]);
-    };
-
-    const handleChangeModel = () => {
-        getVehicles();
-
-        methods.setValue('vehicle_id', null);
+        methods.setValue('client_vehicle_id', null);
     };
 
     const handleChangePromisedDate = (date) => {
@@ -176,7 +150,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     };
 
     const onClickChecklist = (e) => {
-      e.preventDefault();
+        e.preventDefault();
 
         history(`/panel/company/${props.company?.id}/service-schedules/${id}/checklist`);
     };
@@ -206,14 +180,12 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     useEffect(() => {
         if(data){
-            getBrands();
             getClients();
             getChecklistVersions();
             getTechnicalConsultants();
 
-            if(id){
-                getModels(data.brand_id);
-                getVehicles(data.model_id);
+            if(props?.clientVehicle || id){
+                getClientVehicles(data.client_id);
             }
         }
     }, [data]);
@@ -227,11 +199,129 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         methods.setValue('promised_date', data?.promised_date ?? new Date());
         methods.setValue('client_id', data?.client_id ?? null);
         methods.setValue('technical_consultant_id', data?.technical_consultant_id ?? null);
-        methods.setValue('brand_id', data?.brand_id ?? null);
-        methods.setValue('model_id', data?.model_id ?? null);
-        methods.setValue('vehicle_id', data?.vehicle_id ?? null);
+        methods.setValue('client_vehicle_id', data?.client_vehicle_id ?? null);
         methods.setValue('checklist_version_id', data?.checklist_version_id ?? null);
     }, [data]);
+
+    return (
+        <Row>
+            <Col xs={12}>
+                <Card>
+                    <Card.Body>
+                        <form onSubmit={handleSubmit(onSubmit)} noValidate>
+            <Row>
+                <Col md={6}>
+                    <FormInput
+                        label="Versão do checklist"
+                        type="select"
+                        name="checklist_version_id"
+                        containerClass={'mb-3'}
+                        options={checklistVersions}
+                        {...otherProps}
+                    />
+
+                    <FormInput
+                        label="Cliente"
+                        type="select"
+                        name="client_id"
+                        containerClass={'mb-3'}
+                        options={clients}
+                        handleChange={handleChangeClient}
+                        {...otherProps}
+                    />
+
+                    <FormInput
+                        label="Vehiculo"
+                        type="select"
+                        name="client_vehicle_id"
+                        containerClass={'mb-3'}
+                        options={clientVehicles}
+                        {...otherProps}
+                    />
+
+                    <FormInput
+                        label="Consultor Técnico"
+                        type="select"
+                        name="technical_consultant_id"
+                        containerClass={'mb-3'}
+                        options={technicalConsultants}
+                        {...otherProps}
+                    />
+
+                    <FormInput
+                        label="Data Prometida"
+                        type="datepicker"
+                        name="promised_date"
+                        placeholder="data prometida"
+                        containerClass={'mb-3'}
+                        handleChange={handleChangePromisedDate}
+                        {...otherProps}
+                    />
+
+                    <FormInput
+                        label="Código"
+                        type="text"
+                        name="code"
+                        placeholder="Digite Código"
+                        containerClass={'mb-3'}
+                        {...otherProps}
+                    />
+
+                </Col>
+
+                <Col md={6}>
+                    <div className={classNames({'d-grid': id, 'd-none': !id})}>
+                        <Button variant="primary" size={'lg'} type="buttom" onClick={onClickChecklist}>
+                            Checklist
+                        </Button>
+                        <div className="mb-3"/>
+                        <Button  variant="primary" size={'lg'} type="buttom" onClick={onClickPrintChecklist}>
+                            Print Checklist
+                        </Button>
+                    </div>
+                </Col>
+            </Row>
+
+            <div className="mb-3 mb-0">
+                <Button variant="primary" type="submit">
+                    Cadastro
+                </Button>
+            </div>
+        </form>
+                    </Card.Body>
+                </Card>
+            </Col>
+        </Row>
+    );
+};
+
+const View = (props: {company?: any}): React$Element<React$FragmentType> => {
+    const {id} = useParams();
+    const [search, setSearch] = useState(null);
+    const [clientVehicle, setClientVehicle] = useState(null);
+
+    const handleSearchChange = (value) => {
+        setSearch(value);
+    };
+
+    const onSearch = (push) => {
+        api.get('/client-vehicle/search', {search}).then((response) => {
+            setClientVehicle(response.data.data);
+
+            push('form');
+        }).catch(() => {
+            push('createClientVehicle');
+            setClientVehicle(null);
+        });
+    };
+
+    const onDoneAction = (data, push) => {
+        setClientVehicle(data);
+
+        if(push){
+            push('form');
+        }
+    };
 
     return (
         <>
@@ -246,107 +336,58 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
             <Row>
                 <Col xs={12}>
                     <Card>
-                        <Card.Body>
-                            <form onSubmit={handleSubmit(onSubmit)} noValidate>
-                                <Row>
-                                    <Col md={6}>
-                                        <FormInput
-                                            label="Versão do checklist"
-                                            type="select"
-                                            name="checklist_version_id"
-                                            containerClass={'mb-3'}
-                                            options={checklistVersions}
-                                            {...otherProps}
+                        <Card.Body className="p-0">
+                            {id ? <ServiceScheduleForm company={props?.company}/> :
+
+                                <Wizard
+                                    render={({step, steps}) => (<>
+                                        <ProgressBar
+                                            animated
+                                            striped
+                                            variant="success"
+                                            now={((steps.indexOf(step) + 1) / steps.length) * 100}
+                                            className="progress-sm"
                                         />
 
-                                        <FormInput
-                                            label="Cliente"
-                                            type="select"
-                                            name="client_id"
-                                            containerClass={'mb-3'}
-                                            options={clients}
-                                            {...otherProps}
-                                        />
+                                        <Steps>
+                                            <Step
+                                                id="searchClientVehicle"
+                                                render={({push}) => (
+                                                    <>
+                                                        <Row className="justify-content-center mb-5 mt-5">
+                                                            <Col xs={3}>
+                                                                <Form.Control
+                                                                    size="lg"
+                                                                    type="text"
+                                                                    placeholder="Buscar"
+                                                                    onChange={(e) => {
+                                                                        handleSearchChange(e.target.value);
+                                                                    }}
+                                                                    autoComplete="off">
+                                                                </Form.Control>
+                                                            </Col>
+                                                            <Col xs={1}>
+                                                                <Button size="lg" onClick={() => {onSearch(push);}} variant="success">Buscar</Button>
+                                                            </Col>
+                                                        </Row>
+                                                    </>
+                                                )}
+                                            />
 
-                                        <FormInput
-                                            label="Consultor Técnico"
-                                            type="select"
-                                            name="technical_consultant_id"
-                                            containerClass={'mb-3'}
-                                            options={technicalConsultants}
-                                            {...otherProps}
-                                        />
+                                            <Step
+                                                id="createClientVehicle"
+                                                render={({previous,push}) => (<ClientVehicleForm doneAction={onDoneAction} pushButton={push} previousButton={previous} isTag={true} plate={search} chasis={search} company={props?.company}/>)}
+                                            />
 
+                                            <Step
+                                                id="form"
+                                                render={() => (<ServiceScheduleForm clientVehicle={clientVehicle} company={props?.company}/>)}
+                                            />
+                                        </Steps>
 
-                                        <FormInput
-                                            label="Data Prometida"
-                                            type="datepicker"
-                                            name="promised_date"
-                                            placeholder="data prometida"
-                                            containerClass={'mb-3'}
-                                            handleChange={handleChangePromisedDate}
-                                            {...otherProps}
-                                        />
-
-                                        <FormInput
-                                            label="Marca"
-                                            type="select"
-                                            name="brand_id"
-                                            containerClass={'mb-3'}
-                                            options={brands}
-                                            handleChange={handleChangeBrand}
-                                            {...otherProps}
-                                        />
-
-                                        <FormInput
-                                            label="Modelo"
-                                            type="select"
-                                            name="model_id"
-                                            containerClass={'mb-3'}
-                                            options={models}
-                                            handleChange={handleChangeModel}
-                                            {...otherProps}
-                                        />
-
-                                        <FormInput
-                                            label="Vehiculo"
-                                            type="select"
-                                            name="vehicle_id"
-                                            containerClass={'mb-3'}
-                                            options={vehicles}
-                                            {...otherProps}
-                                        />
-
-                                        <FormInput
-                                            label="Código"
-                                            type="text"
-                                            name="code"
-                                            placeholder="Digite Código"
-                                            containerClass={'mb-3'}
-                                            {...otherProps}
-                                        />
-
-                                    </Col>
-
-                                    <Col md={6}>
-                                        <div className={classNames({'d-grid': id, 'd-none': !id})}>
-                                            <Button variant="primary" size={'lg'} type="buttom" onClick={onClickChecklist}>
-                                                Checklist
-                                            </Button>
-                                            <div className="mb-3"/>
-                                            <Button  variant="primary" size={'lg'} type="buttom" onClick={onClickPrintChecklist}>
-                                                Print Checklist
-                                            </Button>
-                                        </div>
-                                    </Col>
-                                </Row>
-
-                                <div className="mb-3 mb-0">
-                                    <Button variant="primary" type="submit">
-                                        Cadastro
-                                    </Button>
-                                </div>
-                            </form>
+                                    </>)}
+                                />
+                            }
                         </Card.Body>
                     </Card>
                 </Col>
@@ -355,4 +396,4 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     );
 };
 
-export default Form;
+export default View;
