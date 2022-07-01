@@ -81,14 +81,12 @@ const ServiceScheduleForm = (props: {company?: any, clientVehicle?:any}): React$
     };
 
     const getData = () => {
-        console.log(props?.clientVehicle);
-
         const defaultData = {
             checklist_version_id: null,
             client_vehicle_id: props?.clientVehicle?.id ?? null,
             code: null,
             promised_date: new Date(),
-            client_id: props?.clientVehicle?.client_id ?? null,
+            client_id: null,
             technical_consultant_id: null,
         };
 
@@ -131,18 +129,12 @@ const ServiceScheduleForm = (props: {company?: any, clientVehicle?:any}): React$
         });
     };
 
-    const getClientVehicles = (client_id?) => {
-        api.get('/client-vehicle',{client_id: client_id ?? methods.getValues('client_id')}).then((response) => {
-            setClientVehicles(getAllOptions(response.data.data, data?.clientVehicle,(client_id ?? methods.getValues('client_id')) === data?.client_id));
+    const getClientVehicles = () => {
+        api.get('/client-vehicle/all').then((response) => {
+            setClientVehicles(getAllOptions(response.data.data, data?.clientVehicle));
         },(error) => {
             setClientVehicles([]);
         });
-    };
-
-    const handleChangeClient = () => {
-        getClientVehicles();
-
-        methods.setValue('client_vehicle_id', null);
     };
 
     const handleChangePromisedDate = (date) => {
@@ -183,10 +175,7 @@ const ServiceScheduleForm = (props: {company?: any, clientVehicle?:any}): React$
             getClients();
             getChecklistVersions();
             getTechnicalConsultants();
-
-            if(props?.clientVehicle || id){
-                getClientVehicles(data.client_id);
-            }
+            getClientVehicles();
         }
     }, [data]);
 
@@ -226,7 +215,6 @@ const ServiceScheduleForm = (props: {company?: any, clientVehicle?:any}): React$
                         name="client_id"
                         containerClass={'mb-3'}
                         options={clients}
-                        handleChange={handleChangeClient}
                         {...otherProps}
                     />
 

@@ -35,6 +35,14 @@ const MENU_ITEMS = [
                 icon: 'mdi mdi-car',
                 parentKey: 'vehiclesCrud'
             },
+
+            {
+                key: 'clientVehicles.index',
+                label: 'Veículo de passagem',
+                url: '/client-vehicles/list',
+                icon: 'mdi mdi-car',
+                parentKey: 'crud'
+            },
         ],
     },
 
@@ -77,14 +85,6 @@ const MENU_ITEMS = [
                 label: 'Consultores Técnicos',
                 url: '/technical-consultants/list',
                 icon: 'mdi mdi-account-tie',
-                parentKey: 'crud'
-            },
-
-            {
-                key: 'clientVehicles.index',
-                label: 'Veículo de passagem',
-                url: '/client-vehicles/list',
-                icon: 'mdi mdi-car',
                 parentKey: 'crud'
             },
 

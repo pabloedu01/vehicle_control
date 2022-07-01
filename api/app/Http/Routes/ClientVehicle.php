@@ -11,8 +11,12 @@ Route::group([
         'uses' => 'ClientVehicleController@search',
     ]);
 
+    Route::get('all', [
+        'uses' => 'ClientVehicleController@all',
+    ]);
+
     Route::group([
-                     'middleware' => [ 'client' ],
+                     'middleware' => [ 'vehicle' ],
                  ], function(){
         Route::get('/', [
             'uses' => 'ClientVehicleController@index',

@@ -20,7 +20,6 @@ const Form = (props: {company?: any, isTag?: boolean, plate?: string, chasis?: s
     const [brands, setBrands] = useState([]);
     const [models, setModels] = useState([]);
     const [vehicles, setVehicles] = useState([]);
-    const [clients, setClients] = useState([]);
 
     /*
      * form validation schema
@@ -30,7 +29,6 @@ const Form = (props: {company?: any, isTag?: boolean, plate?: string, chasis?: s
             brand_id: yup.number().required('Por favor, digite Marca'),
             model_id: yup.number().required('Por favor, digite Modelo'),
             vehicle_id: yup.number().required('Por favor, digite Vehiculo'),
-            client_id: yup.number().required('Por favor, digite Cliente'),
             chasis: yup.string().nullable(),
             color: yup.string().nullable(),
             number_motor: yup.string().nullable(),
@@ -84,7 +82,6 @@ const Form = (props: {company?: any, isTag?: boolean, plate?: string, chasis?: s
 
     const getData = () => {
         const defaultData = {
-            client_id: null,
             brand_id: null,
             model_id: null,
             vehicle_id: null,
@@ -98,10 +95,10 @@ const Form = (props: {company?: any, isTag?: boolean, plate?: string, chasis?: s
 
         if(props?.isTag !== true && id){
             api.get('/client-vehicle/' + id).then((response) => {
-                const {vehicle:{model: {brand_id, brand}, model},vehicle:{model_id},client_id,vehicle_id,chasis,color,number_motor,renavan,plate,mileage, vehicle} = response.data.data;
+                const {vehicle:{model: {brand_id, brand}, model},vehicle:{model_id},vehicle_id,chasis,color,number_motor,renavan,plate,mileage, vehicle} = response.data.data;
 
                 setData({
-                    vehicle_id,chasis,color,number_motor,renavan,plate,mileage,model_id,brand_id, brand, model, vehicle, client_id
+                    vehicle_id,chasis,color,number_motor,renavan,plate,mileage,model_id,brand_id, brand, model, vehicle
                 });
             },(error) => {
                 setData(defaultData);
@@ -109,14 +106,6 @@ const Form = (props: {company?: any, isTag?: boolean, plate?: string, chasis?: s
         } else {
             setData(defaultData);
         }
-    };
-
-    const getClients = () => {
-        api.get('/client/active-clients',{company_id: props.company?.id}).then((response) => {
-            setClients(getAllOptions(response.data.data, data?.client));
-        },(error) => {
-            setClients([]);
-        });
     };
 
     const getBrands = () => {
@@ -160,7 +149,6 @@ const Form = (props: {company?: any, isTag?: boolean, plate?: string, chasis?: s
     useEffect(() => {
         if(data){
             getBrands();
-            getClients();
 
             if(props?.isTag !== true && id){
                 getModels(data.brand_id);
@@ -183,7 +171,6 @@ const Form = (props: {company?: any, isTag?: boolean, plate?: string, chasis?: s
         methods.setValue('brand_id', data?.brand_id ?? null);
         methods.setValue('model_id', data?.model_id ?? null);
         methods.setValue('vehicle_id', data?.vehicle_id ?? null);
-        methods.setValue('client_id', data?.client_id ?? null);
     }, [data]);
 
     return (
@@ -206,15 +193,6 @@ const Form = (props: {company?: any, isTag?: boolean, plate?: string, chasis?: s
                             <form onSubmit={handleSubmit(onSubmit, (e) => {})} noValidate>
                                 <Row>
                                     <Col md={6}>
-                                        <FormInput
-                                            label="Cliente"
-                                            type="select"
-                                            name="client_id"
-                                            containerClass={'mb-3'}
-                                            options={clients}
-                                            {...otherProps}
-                                        />
-
                                         <FormInput
                                             label="Marca"
                                             type="select"
@@ -253,9 +231,6 @@ const Form = (props: {company?: any, isTag?: boolean, plate?: string, chasis?: s
                                             {...otherProps}
                                         />
 
-                                    </Col>
-
-                                    <Col md={6}>
                                         <FormInput
                                             label="KM"
                                             type="text"
@@ -265,6 +240,9 @@ const Form = (props: {company?: any, isTag?: boolean, plate?: string, chasis?: s
                                             {...otherProps}
                                         />
 
+                                    </Col>
+
+                                    <Col md={6}>
                                         <FormInput
                                             label="Chasis"
                                             type="text"

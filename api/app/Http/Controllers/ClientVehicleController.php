@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Client;
 use App\Models\ClientVehicle;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
@@ -12,8 +11,29 @@ class ClientVehicleController extends Controller
 {
     public function index(Request $request)
     {
-        $clientVehicles = ClientVehicle::with([ 'client', 'vehicle', 'vehicle.model', 'vehicle.model.brand' ])
-                                       ->where('client_id', '=', $request->client_id)
+
+        $clientVehicles = ClientVehicle::with([ 'vehicle', 'vehicle.model', 'vehicle.model.brand' ])
+                                       ->where('vehicle_id', '=', $request->vehicle_id)
+                                       ->get();
+
+        $clientVehicles->append('name');
+
+        return response()->json([
+                                    'msg'  => trans('general.msg.success'),
+                                    'data' => $clientVehicles,
+                                ],
+                                Response::HTTP_OK
+        );
+    }
+
+    public function all(Request $request)
+    {
+        $clientVehicles = ClientVehicle::with([ 'vehicle', 'vehicle.model', 'vehicle.model.brand' ])
+                                       ->whereHas('company', function($query){
+                                           return $query->whereHas('users', function($query){
+                                               return $query->where('users.id', '=', \Auth::user()->id);
+                                           });
+                                       })
                                        ->get();
 
         $clientVehicles->append('name');
@@ -28,7 +48,7 @@ class ClientVehicleController extends Controller
 
     public function show(Request $request, $id)
     {
-        $clientVehicle = ClientVehicle::with([ 'client', 'vehicle', 'vehicle.model', 'vehicle.model.brand' ])
+        $clientVehicle = ClientVehicle::with([ 'vehicle', 'vehicle.model', 'vehicle.model.brand' ])
                                       ->where('id', '=', $id)
                                       ->first();
 
@@ -44,7 +64,7 @@ class ClientVehicleController extends Controller
 
     public function search(Request $request)
     {
-        $clientVehicle = ClientVehicle::whereHas('client', function($query){
+        $clientVehicle = ClientVehicle::whereHas('vehicle', function($query){
             return $query->withoutTrashed();
         })
                                       ->whereHas('company', function($query){
@@ -79,13 +99,13 @@ class ClientVehicleController extends Controller
 
     public function store(Request $request)
     {
-        $client = Client::where('id', '=', $request->client_id)->first();
+        $vehicle = Vehicle::where('id', '=', $request->vehicle_id)->first();
 
         $request->merge([
-                            'company_id' => $client->company_id,
+                            'company_id' => $vehicle->company_id,
                         ]);
 
-        $validator = validate($request->all(), ClientVehicle::rules(null, $client->company_id));
+        $validator = validate($request->all(), ClientVehicle::rules(null, $vehicle->company_id));
 
         if($validator->fails())
         {
