@@ -151,8 +151,6 @@ const ServiceScheduleForm = (props: {company?: any, clientVehicle?:any}): React$
         e.preventDefault();
 
         api.post('/checklist-version/' + methods.getValues('checklist_version_id') + '/print', {type: 'service-schedules', id: id, utcOffset: moment().utcOffset()}).then((response) => {
-            console.log('url', response.data.data.report);
-
             window.open(response.data.data.report, '_blank');
         },(error) => {
             swal({
@@ -292,13 +290,10 @@ const View = (props: {company?: any}): React$Element<React$FragmentType> => {
         setSearch(value);
     };
 
-    const onSearch = (push) => {
+    const onSearch = () => {
         api.get('/client-vehicle/search', {search}).then((response) => {
             setClientVehicle(response.data.data);
-
-            push('form');
         }).catch(() => {
-            push('createClientVehicle');
             setClientVehicle(null);
         });
     };
@@ -339,8 +334,8 @@ const View = (props: {company?: any}): React$Element<React$FragmentType> => {
 
                                         <Steps>
                                             <Step
-                                                id="searchClientVehicle"
-                                                render={({push}) => (
+                                                id="createClientVehicle"
+                                                render={({previous,push}) => (
                                                     <>
                                                         <Row className="justify-content-center mb-5 mt-5">
                                                             <Col xs={3}>
@@ -355,16 +350,14 @@ const View = (props: {company?: any}): React$Element<React$FragmentType> => {
                                                                 </Form.Control>
                                                             </Col>
                                                             <Col xs={1}>
-                                                                <Button size="lg" onClick={() => {onSearch(push);}} variant="success">Buscar</Button>
+                                                                <Button size="lg" onClick={() => {onSearch();}} variant="success">Buscar</Button>
                                                             </Col>
                                                         </Row>
-                                                    </>
-                                                )}
-                                            />
 
-                                            <Step
-                                                id="createClientVehicle"
-                                                render={({previous,push}) => (<ClientVehicleForm doneAction={onDoneAction} pushButton={push} previousButton={previous} isTag={true} plate={search} chasis={search} company={props?.company}/>)}
+                                                        <ClientVehicleForm clientVehicle={clientVehicle} doneAction={onDoneAction} pushButton={push} isTag={true} company={props?.company}/>
+                                                    </>
+
+                                                    )}
                                             />
 
                                             <Step

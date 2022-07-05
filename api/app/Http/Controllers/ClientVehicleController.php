@@ -64,7 +64,8 @@ class ClientVehicleController extends Controller
 
     public function search(Request $request)
     {
-        $clientVehicle = ClientVehicle::whereHas('vehicle', function($query){
+        $clientVehicle = ClientVehicle::with([ 'vehicle', 'vehicle.model', 'vehicle.model.brand' ])
+        ->whereHas('vehicle', function($query){
             return $query->withoutTrashed();
         })
                                       ->whereHas('company', function($query){
@@ -121,6 +122,8 @@ class ClientVehicleController extends Controller
 
         if(secureSave($clientVehicle))
         {
+            $clientVehicle->load([ 'vehicle', 'vehicle.model', 'vehicle.model.brand' ]);
+
             return response()->json([
                                         'msg'  => trans('general.msg.success'),
                                         'data' => $clientVehicle,
@@ -158,6 +161,8 @@ class ClientVehicleController extends Controller
 
         if(!$clientVehicle->hasAppliedChanges() || secureSave($clientVehicle))
         {
+            $clientVehicle->load([ 'vehicle', 'vehicle.model', 'vehicle.model.brand' ]);
+
             return response()->json([
                                         'msg'  => trans('general.msg.success'),
                                         'data' => $clientVehicle,

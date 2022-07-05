@@ -166,6 +166,10 @@ const List = (): React$Element<React$FragmentType> => {
         setTableOptions(Object.assign(TABLE_OPTIONS, {
 
         }));
+
+        document.querySelectorAll('.MuiToolbar-root.MuiToolbar-gutters button.MuiButtonBase-root[aria-label=Search]').forEach(function(element){
+            element.click();
+        });
     }, []);
 
     return (

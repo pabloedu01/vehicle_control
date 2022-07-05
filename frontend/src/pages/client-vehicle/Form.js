@@ -13,7 +13,7 @@ import classNames from 'classnames';
 
 const api = new APICore();
 
-const Form = (props: {company?: any, isTag?: boolean, plate?: string, chasis?: string, previousButton?: any, pushButton?: any, doneAction?:any}): React$Element<React$FragmentType> => {
+const Form = (props: {company?: any, clientVehicle?: any, isTag?: boolean, plate?: string, chasis?: string, previousButton?: any, pushButton?: any, doneAction?:any}): React$Element<React$FragmentType> => {
     const history = useNavigate();
     const {id} = useParams();
     const [data, setData] = useState();
@@ -55,29 +55,33 @@ const Form = (props: {company?: any, isTag?: boolean, plate?: string, chasis?: s
     };
 
     const onSubmit = (formData) => {
-        let ajaxCall;
-
-        if(id){
-            ajaxCall = api.update('/client-vehicle/' + id,formData);
+        if(props?.doneAction && props?.clientVehicle){
+            props?.doneAction(props?.clientVehicle, props?.pushButton);
         } else {
-            ajaxCall = api.post('/client-vehicle',Object.assign(formData,{company_id: props.company?.id}));
-        }
+            let ajaxCall;
 
-        ajaxCall.then((response) => {
-            if(props?.doneAction){
-                props?.doneAction(response.data.data, props?.pushButton);
+            if(id){
+                ajaxCall = api.update('/client-vehicle/' + id,formData);
             } else {
-                history(`/panel/company/${props.company?.id}/client-vehicles/list`);
+                ajaxCall = api.post('/client-vehicle',Object.assign(formData,{company_id: props.company?.id}));
             }
-        }, (error) => {
-            if(error.response.status === 400 && error.response.data.hasOwnProperty('errors')){
-                for(let fieldName in error.response.data.errors){
-                    if(error.response.data.errors.hasOwnProperty(fieldName)){
-                        methods.setError(fieldName, {type: 'custom', message: error.response.data.errors[fieldName].join('<br>')});
+
+            ajaxCall.then((response) => {
+                if(props?.doneAction){
+                    props?.doneAction(response.data.data, props?.pushButton);
+                } else {
+                    history(`/panel/company/${props.company?.id}/client-vehicles/list`);
+                }
+            }, (error) => {
+                if(error.response.status === 400 && error.response.data.hasOwnProperty('errors')){
+                    for(let fieldName in error.response.data.errors){
+                        if(error.response.data.errors.hasOwnProperty(fieldName)){
+                            methods.setError(fieldName, {type: 'custom', message: error.response.data.errors[fieldName].join('<br>')});
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
     };
 
     const getData = () => {
@@ -104,7 +108,15 @@ const Form = (props: {company?: any, isTag?: boolean, plate?: string, chasis?: s
                 setData(defaultData);
             });
         } else {
-            setData(defaultData);
+            if(props?.clientVehicle){
+                const {vehicle:{model: {brand_id, brand}, model},vehicle:{model_id},vehicle_id,chasis,color,number_motor,renavan,plate,mileage, vehicle} = props?.clientVehicle;
+
+                setData({
+                    vehicle_id,chasis,color,number_motor,renavan,plate,mileage,model_id,brand_id, brand, model, vehicle
+                });
+            } else {
+                setData(defaultData);
+            }
         }
     };
 
@@ -150,7 +162,7 @@ const Form = (props: {company?: any, isTag?: boolean, plate?: string, chasis?: s
         if(data){
             getBrands();
 
-            if(props?.isTag !== true && id){
+            if(props?.isTag !== true && id || props?.clientVehicle){
                 getModels(data.brand_id);
                 getVehicles(data.model_id);
             }
@@ -159,7 +171,7 @@ const Form = (props: {company?: any, isTag?: boolean, plate?: string, chasis?: s
 
     useEffect(() => {
         getData();
-    }, [id]);
+    }, [id, props?.clientVehicle]);
 
     useEffect(() => {
         methods.setValue('chasis', data?.chasis ?? null);
@@ -201,6 +213,7 @@ const Form = (props: {company?: any, isTag?: boolean, plate?: string, chasis?: s
                                             options={brands}
                                             handleChange={handleChangeBrand}
                                             {...otherProps}
+                                            isDisabled={props?.clientVehicle}
                                         />
 
                                         <FormInput
@@ -211,6 +224,7 @@ const Form = (props: {company?: any, isTag?: boolean, plate?: string, chasis?: s
                                             options={models}
                                             handleChange={handleChangeModel}
                                             {...otherProps}
+                                            isDisabled={props?.clientVehicle}
                                         />
 
                                         <FormInput
@@ -220,6 +234,7 @@ const Form = (props: {company?: any, isTag?: boolean, plate?: string, chasis?: s
                                             containerClass={'mb-3'}
                                             options={vehicles}
                                             {...otherProps}
+                                            isDisabled={props?.clientVehicle}
                                         />
 
                                         <FormInput
@@ -229,6 +244,7 @@ const Form = (props: {company?: any, isTag?: boolean, plate?: string, chasis?: s
                                             placeholder="Digite Placa"
                                             containerClass={'mb-3'}
                                             {...otherProps}
+                                            readOnly={props?.clientVehicle}
                                         />
 
                                         <FormInput
@@ -238,6 +254,7 @@ const Form = (props: {company?: any, isTag?: boolean, plate?: string, chasis?: s
                                             placeholder="Digite KM"
                                             containerClass={'mb-3'}
                                             {...otherProps}
+                                            readOnly={props?.clientVehicle}
                                         />
 
                                     </Col>
@@ -250,6 +267,7 @@ const Form = (props: {company?: any, isTag?: boolean, plate?: string, chasis?: s
                                             placeholder="Digite Chasis"
                                             containerClass={'mb-3'}
                                             {...otherProps}
+                                            readOnly={props?.clientVehicle}
                                         />
 
                                         <FormInput
@@ -259,6 +277,7 @@ const Form = (props: {company?: any, isTag?: boolean, plate?: string, chasis?: s
                                             placeholder="Digite Color"
                                             containerClass={'mb-3'}
                                             {...otherProps}
+                                            readOnly={props?.clientVehicle}
                                         />
 
                                         <FormInput
@@ -268,6 +287,7 @@ const Form = (props: {company?: any, isTag?: boolean, plate?: string, chasis?: s
                                             placeholder="Digite Motor"
                                             containerClass={'mb-3'}
                                             {...otherProps}
+                                            readOnly={props?.clientVehicle}
                                         />
 
                                         <FormInput
@@ -277,22 +297,18 @@ const Form = (props: {company?: any, isTag?: boolean, plate?: string, chasis?: s
                                             placeholder="Digite Renavan"
                                             containerClass={'mb-3'}
                                             {...otherProps}
+                                            readOnly={props?.clientVehicle}
                                         />
 
 
                                     </Col>
                                 </Row>
 
-                                {props?.previousButton ?
+                                {props?.isTag ?
                                     <>
-                                        <div className="mb-3 mb-0 float-start">
-                                            <Button onClick={props.previousButton} variant="success" type="button">
-                                                Anterior
-                                            </Button>
-                                        </div>
                                         <div className="mb-3 mb-0 float-end">
                                             <Button variant="primary" type="submit">
-                                                Cadastro
+                                                {props?.clientVehicle ? 'Siguiente' : 'Cadastro'}
                                             </Button>
                                         </div>
                                     </>

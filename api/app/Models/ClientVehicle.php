@@ -39,7 +39,7 @@ class ClientVehicle extends Base
     }
 
     public function getNameAttribute(){
-        return $this->vehicle->name. ' '.$this->vehicle->model_year. ' (' . $this->vehicle->model->brand->name . ' - ' . $this->vehicle->model->name . ')';
+        return $this->vehicle->name. ' '.$this->vehicle->model_year. ' - '.strtoupper($this->plate).' (' . $this->vehicle->model->brand->name . ' - ' . $this->vehicle->model->name . ')';
     }
 
     #belongs to
