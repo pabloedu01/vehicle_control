@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Observers\LogObserver;
+use App\Traits\RelationshipsTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -10,7 +11,7 @@ use Illuminate\Validation\Rule;
 
 class Base extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, RelationshipsTrait;
 
     public $hasLogs = true;
 
@@ -38,6 +39,29 @@ class Base extends Model
                 return $query->orderBy(self::getTableName().'.created_at', 'desc');
             });
         }
+    }
+
+    public function secureDelete()
+    {
+        try
+        {
+            $this->delete();
+
+            return true;
+        }
+        catch(\Exception $e)
+        {
+            if(env('APP_DEBUG'))
+            {
+                dd($e->getMessage());
+            }
+
+            return false;
+        }
+    }
+
+    public function canBeDeleted(){
+        return !$this->hasDependencies();
     }
 
     public static function bootSoftDeletes()

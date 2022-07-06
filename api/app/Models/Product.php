@@ -40,5 +40,11 @@ class Product extends Base
     {
         return $this->belongsTo('App\Models\Company', 'company_id', 'id');
     }
+
+    #has many
+    public function productsServiceClaimServiceServiceSchedule()
+    {
+        return $this->hasMany('App\Models\ProductServiceClaimServiceServiceSchedule', 'product_id', 'id');
+    }
 }
 

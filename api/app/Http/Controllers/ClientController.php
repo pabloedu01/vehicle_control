@@ -122,7 +122,16 @@ class ClientController extends Controller
     {
         $client = Client::where('id', '=', $id)->first();
 
-        if(secureDelete($client))
+        if(!$client->canBeDeleted())
+        {
+            return response()->json([
+                                        'msg' => trans('general.msg.hasDependencies'),
+                                    ],
+                                    Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        if($client->secureDelete())
         {
             return response()->json([
                                         'msg' => trans('general.msg.success'),

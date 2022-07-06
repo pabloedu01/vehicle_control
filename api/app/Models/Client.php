@@ -38,5 +38,17 @@ class Client extends Base
     {
         return $this->belongsTo('App\Models\Company', 'company_id', 'id');
     }
+
+    #has many
+    public function serviceSchedules()
+    {
+        return $this->hasMany('App\Models\ServiceSchedule', 'client_id', 'id');
+    }
+
+    #has many
+    public function vehicleServiceClientsData()
+    {
+        return $this->hasMany('App\Models\VehicleServiceClientData', 'client_id', 'id');
+    }
 }
 

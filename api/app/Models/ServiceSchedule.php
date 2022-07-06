@@ -57,7 +57,7 @@ class ServiceSchedule extends Base
     #has one
     public function vehicleService()
     {
-        return $this->hasOne('App\Models\VehicleService', 'service_schedule_id', 'id')->withTrashed();
+        return $this->hasOne('App\Models\VehicleService', 'service_schedule_id', 'id');
     }
 }
 

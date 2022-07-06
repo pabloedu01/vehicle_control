@@ -169,7 +169,16 @@ class VehicleBrandController extends Controller
     {
         $vehicleBrand = VehicleBrand::where('id', '=', $id)->first();
 
-        if(secureDelete($vehicleBrand))
+        if(!$vehicleBrand->canBeDeleted())
+        {
+            return response()->json([
+                                        'msg' => trans('general.msg.hasDependencies'),
+                                    ],
+                                    Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        if($vehicleBrand->secureDelete())
         {
             return response()->json([
                                         'msg' => trans('general.msg.success'),

@@ -169,7 +169,16 @@ class ServiceScheduleController extends Controller
     {
         $serviceSchedule = ServiceSchedule::where('id', '=', $id)->first();
 
-        if(secureDelete($serviceSchedule))
+        if(!$serviceSchedule->canBeDeleted())
+        {
+            return response()->json([
+                                        'msg' => trans('general.msg.hasDependencies'),
+                                    ],
+                                    Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        if($serviceSchedule->secureDelete())
         {
             return response()->json([
                                         'msg' => trans('general.msg.success'),

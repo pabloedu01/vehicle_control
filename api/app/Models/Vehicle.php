@@ -51,5 +51,17 @@ class Vehicle extends Base
     {
         return $this->belongsTo('App\Models\VehicleBrand', 'brand_id', 'id')->withTrashed();
     }
+
+    #has many
+    public function clientVehicles()
+    {
+        return $this->hasMany('App\Models\ClientVehicle', 'vehicle_id', 'id');
+    }
+
+    #has many
+    public function vehicleServiceVehiclesData()
+    {
+        return $this->hasMany('App\Models\VehicleServiceVehicleData', 'vehicle_id', 'id');
+    }
 }
 

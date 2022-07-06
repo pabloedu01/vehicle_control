@@ -133,7 +133,16 @@ class ChecklistItemController extends Controller
 
         if($checklistItem)
         {
-            if(secureDelete($checklistItem))
+            if(!$checklistItem->canBeDeleted())
+            {
+                return response()->json([
+                                            'msg' => trans('general.msg.hasDependencies'),
+                                        ],
+                                        Response::HTTP_BAD_REQUEST
+                );
+            }
+
+            if($checklistItem->secureDelete())
             {
                 return response()->json([
                                             'msg' => trans('general.msg.success'),

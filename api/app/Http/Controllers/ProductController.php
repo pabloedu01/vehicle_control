@@ -103,7 +103,16 @@ class ProductController extends Controller
     {
         $product = Product::where('id', '=', $id)->first();
 
-        if(secureDelete($product))
+        if(!$product->canBeDeleted())
+        {
+            return response()->json([
+                                        'msg' => trans('general.msg.hasDependencies'),
+                                    ],
+                                    Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        if($product->secureDelete())
         {
             return response()->json(   [
                                         'msg' => trans('general.msg.success'),

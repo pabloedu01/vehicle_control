@@ -206,5 +206,11 @@ class ChecklistVersion extends Base
             'report'      => 'nullable|array',
         ];
     }
+
+    #has many
+    public function serviceSchedules()
+    {
+        return $this->hasMany('App\Models\ServiceSchedule', 'checklist_version_id', 'id');
+    }
 }
 

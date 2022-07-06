@@ -34,5 +34,11 @@ class ClaimService extends Base
     {
         return $this->belongsTo('App\Models\Company', 'company_id', 'id');
     }
+
+    #has many
+    public function claimServicesServiceSchedule()
+    {
+        return $this->hasMany('App\Models\ClaimServiceServiceSchedule', 'claim_service_id', 'id');
+    }
 }
 

@@ -1,5 +1,6 @@
 import jwtDecode from 'jwt-decode';
 import axios from 'axios';
+import internalAxios from 'axios';
 
 import config from '../../config';
 import {loadingService} from "../../services/loading";
@@ -42,6 +43,22 @@ axiosInstance.interceptors.response.use(
     },
     (error) => {
         loadingService.hide();
+
+        if(error.response.status === 401){
+            const user = getUserFromSession();
+
+            if(user){
+                internalAxios.post(config.API_URL + '/auth/check-token',{}, {headers: {
+                    'Authorization': 'Bearer ' + user?.token
+                }}).then(() => {
+
+            }, (error) => {
+                    window.location.href =  '/login';
+            });
+            } else {
+                window.location.href =  '/login';
+            }
+        }
 
         if(error.response?.data.hasOwnProperty('msg')){
             toastService.show('error', error.response.data.msg);

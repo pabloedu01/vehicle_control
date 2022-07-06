@@ -39,5 +39,14 @@ class ChecklistItem extends Base
     public function getFormattedNameAttribute(){
         return \Str::camel(\Str::slug($this->name, ' '));
     }
+
+    #many to many
+    public function vehicleServices()
+    {
+        return $this->belongsToMany('App\Models\VehicleService', 'checklist_item_vehicle_service', 'checklist_item_id', 'vehicle_service_id')
+                    ->withPivot([ 'value', 'evidence', 'observations' ])
+                    ->withTimestamps()
+                    ->using('App\Pivots\ChecklistItemVehicleService');
+    }
 }
 

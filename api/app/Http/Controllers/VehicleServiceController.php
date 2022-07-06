@@ -140,7 +140,16 @@ class VehicleServiceController extends Controller
     {
         $vehicleService = VehicleService::withoutGlobalScope('joinToData')->where('id', '=', $id)->first();
 
-        if(secureDelete($vehicleService))
+        if(!$vehicleService->canBeDeleted())
+        {
+            return response()->json([
+                                        'msg' => trans('general.msg.hasDependencies'),
+                                    ],
+                                    Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        if($vehicleService->secureDelete())
         {
             return response()->json([
                                         'msg' => trans('general.msg.success'),

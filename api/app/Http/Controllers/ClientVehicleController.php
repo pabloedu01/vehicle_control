@@ -184,7 +184,16 @@ class ClientVehicleController extends Controller
     {
         $clientVehicle = ClientVehicle::where('id', '=', $id)->first();
 
-        if(secureDelete($clientVehicle))
+        if(!$clientVehicle->canBeDeleted())
+        {
+            return response()->json([
+                                        'msg' => trans('general.msg.hasDependencies'),
+                                    ],
+                                    Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        if($clientVehicle->secureDelete())
         {
             return response()->json([
                                         'msg' => trans('general.msg.success'),

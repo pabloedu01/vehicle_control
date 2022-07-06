@@ -38,5 +38,11 @@ class VehicleModel extends Base
     {
         return $this->belongsTo('App\Models\VehicleBrand', 'brand_id', 'id')->withTrashed();
     }
+
+    #has many
+    public function vehicles()
+    {
+        return $this->hasMany('App\Models\Vehicle', 'model_id', 'id');
+    }
 }
 

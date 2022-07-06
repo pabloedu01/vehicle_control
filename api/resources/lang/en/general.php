@@ -5,7 +5,7 @@ return [
     'value'    => 'Value',
     'observations'    => 'Observations',
     'duplicated' => 'Duplicated',
-    'msg'      => [
+    'msg' => [
         'success'               => '¡Success!',
         'error'                 => '¡Error!',
         'unauthorized'          => '¡Unauthorized!',
@@ -15,5 +15,6 @@ return [
         'userNotActive'         => '¡User not active!',
         'fileNotSaved'          => '¡File Not Saved!',
         'expiredCode'           => '¡Expired Code!',
+        'hasDependencies'       => '¡Has Dependencies!',
     ],
 ];

@@ -354,7 +354,16 @@ class ChecklistVersionController extends Controller
     {
         $version = Version::where('id', '=', $id)->first();
 
-        if(secureDelete($version))
+        if(!$version->canBeDeleted())
+        {
+            return response()->json([
+                                        'msg' => trans('general.msg.hasDependencies'),
+                                    ],
+                                    Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        if($version->secureDelete())
         {
             return response()->json([
                                         'msg' => trans('general.msg.success'),

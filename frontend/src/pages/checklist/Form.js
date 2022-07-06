@@ -437,7 +437,7 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                                         <br/><br/>
 
                                         <Row className="d-flex align-items-center mb-3 position-relative">
-                                            <Button variant="success" className="w-auto position-absolute" style={{right: '3em'}} type="button" onClick={() => { clientSignature.on();clientSignature.clear(); }}><span className="mdi mdi-square-edit-outline"/></Button>
+                                            <Button variant="success" className="w-auto position-absolute" style={{right: '3em'}} type="button" onClick={() => { clientSignature.on();clientSignature.clear(); }}><span className="mdi mdi-trash-can-outline"/></Button>
 
                                             <span className="w-auto" style={{margin: '0 auto'}}>Assinatura do cliente</span>
                                         </Row>
@@ -451,7 +451,7 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                                         <span>{technicalConsultantSignatureDate ? moment(technicalConsultantSignatureDate).format('DD/MM/YYYY H:mma') : ''}</span>
                                         <br/><br/>
                                         <Row className="d-flex align-items-center mb-3 position-relative">
-                                            <Button variant="success" className="w-auto position-absolute" style={{right: '3em'}} type="button" onClick={() => { technicalConsultantSignature.on();technicalConsultantSignature.clear(); }}><span className="mdi mdi-square-edit-outline"/></Button>
+                                            <Button variant="success" className="w-auto position-absolute" style={{right: '3em'}} type="button" onClick={() => { technicalConsultantSignature.on();technicalConsultantSignature.clear(); }}><span className="mdi mdi-trash-can-outline"/></Button>
 
                                             <span className="w-auto" style={{margin: '0 auto'}}>Assinatura do Consultor</span>
                                         </Row>

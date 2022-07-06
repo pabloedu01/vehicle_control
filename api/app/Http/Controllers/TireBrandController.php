@@ -102,7 +102,16 @@ class TireBrandController extends Controller
     {
         $tireBrand = TireBrand::where('id', '=', $id)->first();
 
-        if(secureDelete($tireBrand))
+        if(!$tireBrand->canBeDeleted())
+        {
+            return response()->json([
+                                        'msg' => trans('general.msg.hasDependencies'),
+                                    ],
+                                    Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        if($tireBrand->secureDelete())
         {
             return response()->json(   [
                                         'msg' => trans('general.msg.success'),

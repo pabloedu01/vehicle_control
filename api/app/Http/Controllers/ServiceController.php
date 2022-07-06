@@ -102,7 +102,16 @@ class ServiceController extends Controller
     {
         $service = Service::where('id', '=', $id)->first();
 
-        if(secureDelete($service))
+        if(!$service->canBeDeleted())
+        {
+            return response()->json([
+                                        'msg' => trans('general.msg.hasDependencies'),
+                                    ],
+                                    Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        if($service->secureDelete())
         {
             return response()->json(   [
                                         'msg' => trans('general.msg.success'),

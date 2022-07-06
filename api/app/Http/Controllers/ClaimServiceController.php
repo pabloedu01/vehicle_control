@@ -102,7 +102,16 @@ class ClaimServiceController extends Controller
     {
         $claimService = ClaimService::where('id', '=', $id)->first();
 
-        if(secureDelete($claimService))
+        if(!$claimService->canBeDeleted())
+        {
+            return response()->json([
+                                        'msg' => trans('general.msg.hasDependencies'),
+                                    ],
+                                    Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        if($claimService->secureDelete())
         {
             return response()->json(   [
                                         'msg' => trans('general.msg.success'),

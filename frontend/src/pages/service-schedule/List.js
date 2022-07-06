@@ -25,7 +25,6 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                 return {
                     id: item.id,
                     vehicle: item.client_vehicle.name,
-                    code: item.code,
                     chasis: item.client_vehicle.chasis,
                     plate: item.client_vehicle.plate,
                     promised_date: moment(item.promised_date).format('DD/MM/YYYY H:mma'),
@@ -100,19 +99,12 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                 options: {
                     filter: true,
                     sort: true,
+                    display: false
                 },
             },
             {
                 label: 'Vehiculo',
                 name: 'vehicle',
-                options: {
-                    filter: true,
-                    sort: true,
-                },
-            },
-            {
-                label: 'Código',
-                name: 'code',
                 options: {
                     filter: true,
                     sort: true,

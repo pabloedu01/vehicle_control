@@ -42,5 +42,11 @@ class VehicleBrand extends Base
     {
         return $this->belongsTo('App\Models\Company', 'company_id', 'id');
     }
+
+    #has many
+    public function models()
+    {
+        return $this->hasMany('App\Models\VehicleModel', 'brand_id', 'id');
+    }
 }
 

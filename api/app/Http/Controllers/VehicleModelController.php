@@ -122,7 +122,16 @@ class VehicleModelController extends Controller
     {
         $vehicleModel = VehicleModel::where('id', '=', $id)->first();
 
-        if(secureDelete($vehicleModel))
+        if(!$vehicleModel->canBeDeleted())
+        {
+            return response()->json([
+                                        'msg' => trans('general.msg.hasDependencies'),
+                                    ],
+                                    Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        if($vehicleModel->secureDelete())
         {
             return response()->json(   [
                                         'msg' => trans('general.msg.success'),
