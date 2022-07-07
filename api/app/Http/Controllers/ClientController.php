@@ -64,6 +64,8 @@ class ClientController extends Controller
 
         if(secureSave($client))
         {
+            $client->append('fullName');
+
             return response()->json([
                                         'msg' => trans('general.msg.success'),
                                         'data' => $client,

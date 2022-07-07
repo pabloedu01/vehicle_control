@@ -55,33 +55,29 @@ const Form = (props: {company?: any, clientVehicle?: any, isTag?: boolean, plate
     };
 
     const onSubmit = (formData) => {
-        if(props?.doneAction && props?.clientVehicle){
-            props?.doneAction(props?.clientVehicle, props?.pushButton);
+        let ajaxCall;
+
+        if(props?.clientVehicle || id){
+            ajaxCall = api.update('/client-vehicle/' + (props?.clientVehicle?.id || id),formData);
         } else {
-            let ajaxCall;
+            ajaxCall = api.post('/client-vehicle',Object.assign(formData,{company_id: props.company?.id}));
+        }
 
-            if(id){
-                ajaxCall = api.update('/client-vehicle/' + id,formData);
+        ajaxCall.then((response) => {
+            if(props?.doneAction){
+                props?.doneAction(response.data.data, props?.pushButton);
             } else {
-                ajaxCall = api.post('/client-vehicle',Object.assign(formData,{company_id: props.company?.id}));
+                history(`/panel/company/${props.company?.id}/client-vehicles/list`);
             }
-
-            ajaxCall.then((response) => {
-                if(props?.doneAction){
-                    props?.doneAction(response.data.data, props?.pushButton);
-                } else {
-                    history(`/panel/company/${props.company?.id}/client-vehicles/list`);
-                }
-            }, (error) => {
-                if(error.response.status === 400 && error.response.data.hasOwnProperty('errors')){
-                    for(let fieldName in error.response.data.errors){
-                        if(error.response.data.errors.hasOwnProperty(fieldName)){
-                            methods.setError(fieldName, {type: 'custom', message: error.response.data.errors[fieldName].join('<br>')});
-                        }
+        }, (error) => {
+            if(error.response.status === 400 && error.response.data.hasOwnProperty('errors')){
+                for(let fieldName in error.response.data.errors){
+                    if(error.response.data.errors.hasOwnProperty(fieldName)){
+                        methods.setError(fieldName, {type: 'custom', message: error.response.data.errors[fieldName].join('<br>')});
                     }
                 }
-            });
-        }
+            }
+        });
     };
 
     const getData = () => {
@@ -213,7 +209,6 @@ const Form = (props: {company?: any, clientVehicle?: any, isTag?: boolean, plate
                                             options={brands}
                                             handleChange={handleChangeBrand}
                                             {...otherProps}
-                                            isDisabled={props?.clientVehicle}
                                         />
 
                                         <FormInput
@@ -224,7 +219,6 @@ const Form = (props: {company?: any, clientVehicle?: any, isTag?: boolean, plate
                                             options={models}
                                             handleChange={handleChangeModel}
                                             {...otherProps}
-                                            isDisabled={props?.clientVehicle}
                                         />
 
                                         <FormInput
@@ -234,7 +228,6 @@ const Form = (props: {company?: any, clientVehicle?: any, isTag?: boolean, plate
                                             containerClass={'mb-3'}
                                             options={vehicles}
                                             {...otherProps}
-                                            isDisabled={props?.clientVehicle}
                                         />
 
                                         <FormInput
@@ -244,7 +237,6 @@ const Form = (props: {company?: any, clientVehicle?: any, isTag?: boolean, plate
                                             placeholder="Digite Placa"
                                             containerClass={'mb-3'}
                                             {...otherProps}
-                                            readOnly={props?.clientVehicle}
                                         />
 
                                         <FormInput
@@ -254,7 +246,6 @@ const Form = (props: {company?: any, clientVehicle?: any, isTag?: boolean, plate
                                             placeholder="Digite KM"
                                             containerClass={'mb-3'}
                                             {...otherProps}
-                                            readOnly={props?.clientVehicle}
                                         />
 
                                     </Col>
@@ -267,7 +258,6 @@ const Form = (props: {company?: any, clientVehicle?: any, isTag?: boolean, plate
                                             placeholder="Digite Chasis"
                                             containerClass={'mb-3'}
                                             {...otherProps}
-                                            readOnly={props?.clientVehicle}
                                         />
 
                                         <FormInput
@@ -277,7 +267,6 @@ const Form = (props: {company?: any, clientVehicle?: any, isTag?: boolean, plate
                                             placeholder="Digite Color"
                                             containerClass={'mb-3'}
                                             {...otherProps}
-                                            readOnly={props?.clientVehicle}
                                         />
 
                                         <FormInput
@@ -287,7 +276,6 @@ const Form = (props: {company?: any, clientVehicle?: any, isTag?: boolean, plate
                                             placeholder="Digite Motor"
                                             containerClass={'mb-3'}
                                             {...otherProps}
-                                            readOnly={props?.clientVehicle}
                                         />
 
                                         <FormInput
@@ -297,29 +285,17 @@ const Form = (props: {company?: any, clientVehicle?: any, isTag?: boolean, plate
                                             placeholder="Digite Renavan"
                                             containerClass={'mb-3'}
                                             {...otherProps}
-                                            readOnly={props?.clientVehicle}
                                         />
 
 
                                     </Col>
                                 </Row>
 
-                                {props?.isTag ?
-                                    <>
-                                        <div className="mb-3 mb-0 float-end">
-                                            <Button variant="primary" type="submit">
-                                                {props?.clientVehicle ? 'Siguiente' : 'Cadastro'}
-                                            </Button>
-                                        </div>
-                                    </>
-                                    :
-
-                                    <div className="mb-3 mb-0">
-                                        <Button variant="primary" type="submit">
-                                            Cadastro
-                                        </Button>
-                                    </div>
-                                }
+                                <div className="mb-3 mb-0">
+                                    <Button variant="primary" type="submit">
+                                        Cadastro
+                                    </Button>
+                                </div>
                             </form>
                         </Card.Body>
                     </Card>

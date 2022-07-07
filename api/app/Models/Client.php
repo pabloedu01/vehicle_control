@@ -6,6 +6,8 @@ class Client extends Base
 {
     protected $table = 'clients';
 
+    protected $appends = ['fullName'];
+
     protected $casts = [
         'active' => 'boolean',
     ];
@@ -31,6 +33,10 @@ class Client extends Base
             ],
             'active'   => 'required|boolean',
         ];
+    }
+
+    public function getFullNameAttribute(){
+        return $this->document.' - '.$this->name;
     }
 
     #belongs to

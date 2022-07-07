@@ -8,10 +8,11 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import {useForm} from "react-hook-form";
 import {FormInput} from "../../components";
+import classNames from "classnames";
 
 const api = new APICore();
 
-const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
+const Form = (props: {company?: any, isTag?: boolean, doneAction?:any}): React$Element<React$FragmentType> => {
     const history = useNavigate();
     const {id} = useParams();
     const [data, setData] = useState();
@@ -53,8 +54,12 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
             ajaxCall = api.post('/client',Object.assign(formData,{company_id: props.company?.id}));
         }
 
-        ajaxCall.then(() => {
-            history(`/panel/company/${props.company?.id}/clients/list`);
+        ajaxCall.then((response) => {
+            if(props?.doneAction){
+                props?.doneAction(response.data.data);
+            } else {
+                history(`/panel/company/${props.company?.id}/clients/list`);
+            }
         }, (error) => {
             if(error.response.status === 400 && error.response.data.hasOwnProperty('errors')){
                 for(let fieldName in error.response.data.errors){
@@ -74,7 +79,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
             address: null,
         };
 
-        if(id){
+        if(props?.isTag !== true && id){
             api.get('/client/' + id).then((response) => {
                 const {name,active,document,address} = response.data.data;
 
@@ -102,17 +107,21 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     return (
         <>
-            <PageTitle
-                breadCrumbItems={[
-                    { label: 'Clientes', path: '/clients/list' },
-                    { label: 'Cadastro', path: `/clients/${id ? id + '/edit' : 'create'}`, active: true },
-                ]}
-                title={'Clientes'}
-                company={props.company}
-            />
+            {
+                props?.isTag !== true ?
+                   <PageTitle
+                        breadCrumbItems={[
+                            { label: 'Clientes', path: '/clients/list' },
+                            { label: 'Cadastro', path: `/clients/${id ? id + '/edit' : 'create'}`, active: true },
+                        ]}
+                        title={'Clientes'}
+                        company={props.company}
+                    />
+                    : null
+            }
             <Row>
                 <Col xs={12}>
-                    <Card>
+                    <Card className={classNames({'mb-0': props?.isTag === true})}>
                         <Card.Body>
                             <form onSubmit={handleSubmit(onSubmit, (e) => {console.log(e);})} noValidate>
                                 <Row>

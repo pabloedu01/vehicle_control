@@ -1,7 +1,7 @@
 // @flow
 import React, {useEffect, useState} from 'react';
 import PageTitle from "../../components/PageTitle";
-import {Button, Card, Col, ProgressBar, Row, Form} from "react-bootstrap";
+import {Button, Card, Col, ProgressBar, Row, Form, Modal} from "react-bootstrap";
 import {APICore} from "../../helpers/api/apiCore";
 import {useNavigate, useParams} from "react-router-dom";
 import {yupResolver} from "@hookform/resolvers/yup";
@@ -11,9 +11,10 @@ import {FormInput} from "../../components";
 import moment from 'moment';
 import swal from "sweetalert";
 import classNames from "classnames";
-import {getAllOptions} from "../../utils/selectOptionsForm";
+import {getAllOptions, setCreateOption} from "../../utils/selectOptionsForm";
 import { Wizard, Steps, Step } from 'react-albus';
 import ClientVehicleForm from '../client-vehicle/Form';
+import ClientForm from '../client/Form';
 
 const api = new APICore();
 
@@ -25,6 +26,8 @@ const ServiceScheduleForm = (props: {company?: any, clientVehicle?:any}): React$
     const [clients, setClients] = useState([]);
     const [checklistVersions, setChecklistVersions] = useState([]);
     const [technicalConsultants, setTechnicalConsultants] = useState([]);
+    const [showModal, setShowModal] = useState(false);
+    const [modalForm, setModalForm] = useState();
 
     /*
      * form validation schema
@@ -107,7 +110,7 @@ const ServiceScheduleForm = (props: {company?: any, clientVehicle?:any}): React$
 
     const getClients = () => {
         api.get('/client/active-clients',{company_id: props.company?.id}).then((response) => {
-            setClients(getAllOptions(response.data.data, data?.client));
+            setClients(setCreateOption(getAllOptions(response.data.data, data?.client, true, 'id', 'fullName'), 'Novo Cliente'));
         },(error) => {
             setClients([]);
         });
@@ -117,7 +120,7 @@ const ServiceScheduleForm = (props: {company?: any, clientVehicle?:any}): React$
         api.get('/checklist-version/active-checklist-versions').then((response) => {
             setChecklistVersions(getAllOptions(response.data.data, data?.checklistVersion));
         },(error) => {
-            setChecklistVersions([]);
+            setChecklistVersions([])
         });
     };
 
@@ -141,10 +144,29 @@ const ServiceScheduleForm = (props: {company?: any, clientVehicle?:any}): React$
         methods.setValue('promised_date', date);
     };
 
+    const handleChangeClient = (id) => {
+        if(id === 0){
+            setShowModal(true);
+            setModalForm('client');
+        }
+    };
+
     const onClickChecklist = (e) => {
         e.preventDefault();
 
         history(`/panel/company/${props.company?.id}/service-schedules/${id}/checklist`);
+    };
+
+    const onHideModal = () => {
+        setShowModal(false);
+        setModalForm(null);
+    };
+
+    const handleDoneActionClient = (newClient) => {
+        setClients([...clients, {value: newClient.id, label: newClient.fullName}]);
+        methods.setValue('client_id', newClient.id);
+
+        onHideModal();
     };
 
     const onClickPrintChecklist = (e) => {
@@ -192,6 +214,23 @@ const ServiceScheduleForm = (props: {company?: any, clientVehicle?:any}): React$
 
     return (
         <Row>
+            <Modal show={showModal} onHide={onHideModal} size="lg" scrollable={true}>
+                <Modal.Header onHide={onHideModal} closeButton>
+                    <h4 className="modal-title">
+                        {
+                            modalForm === null ? '' :
+                                (modalForm === 'client' ? clients[0].label : '')
+                        }
+                    </h4>
+                </Modal.Header>
+                <Modal.Body>
+                    {
+                        modalForm === null ? '' :
+                            (modalForm === 'client' ? <ClientForm company={props?.company} isTag={true} doneAction={handleDoneActionClient} /> : '')
+                    }
+                </Modal.Body>
+            </Modal>
+
             <Col xs={12}>
                 <Card>
                     <Card.Body>
@@ -213,6 +252,7 @@ const ServiceScheduleForm = (props: {company?: any, clientVehicle?:any}): React$
                         name="client_id"
                         containerClass={'mb-3'}
                         options={clients}
+                        handleChange={handleChangeClient}
                         {...otherProps}
                     />
 

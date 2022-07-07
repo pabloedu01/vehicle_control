@@ -20,7 +20,7 @@ export const addedOptionDisappeared = (options, optionSelected, data, fieldValue
 };
 
 export const getAllOptions = (items, data, sameParent = true, fieldValue = 'id', fieldLabel = 'name') => {
-  const options = formattedOptions(items);
+  const options = formattedOptions(items, fieldValue, fieldLabel);
 
   if(sameParent){
     const optionSelected = data ? getOptionSelected(options, data[fieldValue]) : undefined;
@@ -30,4 +30,8 @@ export const getAllOptions = (items, data, sameParent = true, fieldValue = 'id',
   else{
     return options;
   }
+};
+
+export const setCreateOption = (options, label = 'Novo') => {
+  return [{value: 0, label: '--- ' + label + ' ---'}].concat(options);
 };
