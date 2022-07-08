@@ -19,7 +19,7 @@ import Select from "react-select";
 
 const api = new APICore();
 
-const ServiceScheduleForm = (props: {company?: any, clientVehicle?:any, client?:any}): React$Element<React$FragmentType> => {
+const ServiceScheduleForm = (props: {company?: any, clientVehicle?:any, client?:any, onClientEdit?:any, onClientVehicleEdit?:any, pushButton?:any}): React$Element<React$FragmentType> => {
     const history = useNavigate();
     const {id} = useParams();
     const [data, setData] = useState();
@@ -29,6 +29,14 @@ const ServiceScheduleForm = (props: {company?: any, clientVehicle?:any, client?:
     const [technicalConsultants, setTechnicalConsultants] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [modalForm, setModalForm] = useState();
+    const [clientInfo, setClientInfo] = useState();
+    const [clientVehicleInfo, setClientVehicleInfo] = useState(null);
+
+    /*
+     * al moverse hacia pantallas anteriores se pierde lo hecho hasta ahora
+     * cuando se edita el service schedule y vas a editar y cambias el cliente o el vehiculo no se cambia en realidad
+     *
+     */
 
     /*
      * form validation schema
@@ -192,11 +200,24 @@ const ServiceScheduleForm = (props: {company?: any, clientVehicle?:any, client?:
     };
 
     useEffect(() => {
+        setClientInfo(props?.client);
+        setClientVehicleInfo(props?.clientVehicle);
+    }, [props?.client, props?.clientVehicle]);
+
+    useEffect(() => {
         if(data){
             getClients();
             getChecklistVersions();
             getTechnicalConsultants();
             getClientVehicles();
+
+            if(data.client){
+                setClientInfo(data.client);
+            }
+
+            if(data.clientVehicle){
+                setClientVehicleInfo(data.clientVehicle);
+            }
         }
     }, [data]);
 
@@ -248,40 +269,52 @@ const ServiceScheduleForm = (props: {company?: any, clientVehicle?:any, client?:
                     />
 
                     <FormInput
-                        label="Cliente"
-                        type="select"
-                        name="client_id"
-                        containerClass={'mb-3'}
-                        options={clients}
-                        handleChange={handleChangeClient}
-                        {...otherProps}
-                    />
-
-                    <FormInput
-                        label="Vehiculo"
-                        type="select"
-                        name="client_vehicle_id"
-                        containerClass={'mb-3'}
-                        options={clientVehicles}
-                        {...otherProps}
-                    />
-
-                    <FormInput
-                        label="Consultor Técnico"
-                        type="select"
-                        name="technical_consultant_id"
-                        containerClass={'mb-3'}
-                        options={technicalConsultants}
-                        {...otherProps}
-                    />
-
-                    <FormInput
                         label="Data Prometida"
                         type="datepicker"
                         name="promised_date"
                         placeholder="data prometida"
                         containerClass={'mb-3'}
                         handleChange={handleChangePromisedDate}
+                        {...otherProps}
+                    />
+
+                    <Card>
+                        <Card.Header>
+                            <h4>Informações do cliente</h4>
+                        </Card.Header>
+                        <Card.Body>
+                            <table>
+                                <tbody>
+                                <tr>
+                                    <td><b>Nome do cliente</b></td>
+                                    <td>{clientInfo?.name}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Documento</b></td>
+                                    <td>{clientInfo?.document}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Endereço</b></td>
+                                    <td>{clientInfo?.address}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </Card.Body>
+                        <Card.Footer className="text-center">
+                            <Button variant="success" type="buttom" onClick={() => {props?.onClientEdit(clientInfo,props?.pushButton)}}>
+                                Editar
+                            </Button>
+                        </Card.Footer>
+                    </Card>
+                </Col>
+
+                <Col md={6}>
+                    <FormInput
+                        label="Consultor Técnico"
+                        type="select"
+                        name="technical_consultant_id"
+                        containerClass={'mb-3'}
+                        options={technicalConsultants}
                         {...otherProps}
                     />
 
@@ -294,15 +327,45 @@ const ServiceScheduleForm = (props: {company?: any, clientVehicle?:any, client?:
                         {...otherProps}
                     />
 
-                </Col>
+                    <Card>
+                        <Card.Header>
+                            <h4>Informações do veículo</h4>
+                        </Card.Header>
+                        <Card.Body>
+                            <table>
+                                <tbody>
+                                <tr>
+                                    <td><b>Marca</b></td>
+                                    <td>{clientVehicleInfo?.vehicle.model.brand.name}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Modelo</b></td>
+                                    <td>{clientVehicleInfo?.vehicle.model.name}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Placa</b></td>
+                                    <td>{clientVehicleInfo?.plate}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Chassi</b></td>
+                                    <td>{clientVehicleInfo?.chasis}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </Card.Body>
+                        <Card.Footer className="text-center">
+                            <Button variant="success" type="button" onClick={() => {props?.onClientVehicleEdit(clientVehicleInfo, props?.pushButton)}}>
+                                Editar
+                            </Button>
+                        </Card.Footer>
+                    </Card>
 
-                <Col md={6}>
                     <div className={classNames({'d-grid': id, 'd-none': !id})}>
-                        <Button variant="primary" size={'lg'} type="buttom" onClick={onClickChecklist}>
+                        <Button variant="primary" size={'lg'} type="button" onClick={onClickChecklist}>
                             Checklist
                         </Button>
                         <div className="mb-3"/>
-                        <Button  variant="primary" size={'lg'} type="buttom" onClick={onClickPrintChecklist}>
+                        <Button  variant="primary" size={'lg'} type="button" onClick={onClickPrintChecklist}>
                             Print Checklist
                         </Button>
                     </div>
@@ -328,6 +391,7 @@ const View = (props: {company?: any}): React$Element<React$FragmentType> => {
     const [clientVehicle, setClientVehicle] = useState(null);
     const [client, setClient] = useState(null);
     const [clients, setClients] = useState([]);
+    const [alreadyInForm, setAlreadyInForm] = useState(false);
 
     const handleSearchClientVehicleChange = (value) => {
         setSearch(value);
@@ -341,22 +405,37 @@ const View = (props: {company?: any}): React$Element<React$FragmentType> => {
         });
     };
 
-    const onDoneClientVehicleAction = (data, next) => {
+    const onDoneClientVehicleAction = (data, push) => {
         setClientVehicle(data);
 
-        if(next){
-            next();
+        if(push){
+            if(alreadyInForm){
+                push('form');
+            } else {
+                push('createClient');
+            }
         }
     };
 
-    const onDoneClientAction = (data, next) => {
+    const onClientEdit = (data,push) => {
+        setClient(data);
+        push('createClient');
+    };
+
+    const onClientVehicleEdit = (data,push) => {
+        setClientVehicle(data);
+        push('createClientVehicle');
+    };
+
+    const onDoneClientAction = (data, push) => {
         setClient(data);
 
-        console.log('termine', data, next);
+        setAlreadyInForm(true);
 
-
-        if(next){
-            next();
+        if(alreadyInForm){
+            push('form');
+        } else {
+            push('form');
         }
     };
 
@@ -382,6 +461,10 @@ const View = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     useEffect(() => {
         getClients();
+
+        if(id){
+            setAlreadyInForm(true);
+        }
     }, []);
 
     return (
@@ -398,22 +481,26 @@ const View = (props: {company?: any}): React$Element<React$FragmentType> => {
                 <Col xs={12}>
                     <Card>
                         <Card.Body className="p-0">
-                            {id ? <ServiceScheduleForm company={props?.company}/> :
+                            <Wizard
+                                render={({step, steps}) => (<>
+                                    <ProgressBar
+                                        animated
+                                        striped
+                                        variant="success"
+                                        now={((steps.indexOf(step) + 1) / steps.length) * 100}
+                                        className="progress-sm"
+                                    />
 
-                                <Wizard
-                                    render={({step, steps}) => (<>
-                                        <ProgressBar
-                                            animated
-                                            striped
-                                            variant="success"
-                                            now={((steps.indexOf(step) + 1) / steps.length) * 100}
-                                            className="progress-sm"
-                                        />
-
+                                    {id ?
                                         <Steps>
                                             <Step
+                                                id="form"
+                                                render={({push}) => (<ServiceScheduleForm pushButton={push} onClientEdit={onClientEdit} onClientVehicleEdit={onClientVehicleEdit} clientVehicle={clientVehicle} client={client} company={props?.company}/>)}
+                                            />
+
+                                            <Step
                                                 id="createClientVehicle"
-                                                render={({next,push}) => (
+                                                render={({push}) => (
                                                     <>
                                                         <Row className="justify-content-center mb-5 mt-5">
                                                             <Col xs={3}>
@@ -432,15 +519,15 @@ const View = (props: {company?: any}): React$Element<React$FragmentType> => {
                                                             </Col>
                                                         </Row>
 
-                                                        <ClientVehicleForm clientVehicle={clientVehicle} doneAction={onDoneClientVehicleAction} pushButton={next} isTag={true} company={props?.company}/>
+                                                        <ClientVehicleForm clientVehicle={clientVehicle} doneAction={onDoneClientVehicleAction} pushButton={push} isTag={true} company={props?.company}/>
                                                     </>
 
-                                                    )}
+                                                )}
                                             />
 
                                             <Step
                                                 id="createClient"
-                                                render={({next,push}) => (
+                                                render={({push}) => (
                                                     <>
                                                         <Row className="justify-content-center mb-5 mt-5">
                                                             <Col xs={3}>
@@ -457,7 +544,60 @@ const View = (props: {company?: any}): React$Element<React$FragmentType> => {
                                                             </Col>
                                                         </Row>
 
-                                                        <ClientForm client={client} doneAction={onDoneClientAction} pushButton={next} isTag={true} company={props?.company}/>
+                                                        <ClientForm client={client} doneAction={onDoneClientAction} pushButton={push} isTag={true} company={props?.company}/>
+                                                    </>
+
+                                                )}
+                                            />
+                                        </Steps>
+                                    : <Steps>
+                                            <Step
+                                                id="createClientVehicle"
+                                                render={({push}) => (
+                                                    <>
+                                                        <Row className="justify-content-center mb-5 mt-5">
+                                                            <Col xs={3}>
+                                                                <Form.Control
+                                                                    size="lg"
+                                                                    type="text"
+                                                                    placeholder="Buscar"
+                                                                    onChange={(e) => {
+                                                                        handleSearchClientVehicleChange(e.target.value);
+                                                                    }}
+                                                                    autoComplete="off">
+                                                                </Form.Control>
+                                                            </Col>
+                                                            <Col xs={1}>
+                                                                <Button size="lg" onClick={() => {onSearchClientVehicle();}} variant="success">Buscar</Button>
+                                                            </Col>
+                                                        </Row>
+
+                                                        <ClientVehicleForm clientVehicle={clientVehicle} doneAction={onDoneClientVehicleAction} pushButton={push} isTag={true} company={props?.company}/>
+                                                    </>
+
+                                                )}
+                                            />
+
+                                            <Step
+                                                id="createClient"
+                                                render={({push}) => (
+                                                    <>
+                                                        <Row className="justify-content-center mb-5 mt-5">
+                                                            <Col xs={3}>
+                                                                <Select
+                                                                    size="lg"
+                                                                    className={"react-select"}
+                                                                    classNamePrefix="react-select"
+                                                                    name="client_id"
+                                                                    options={clients}
+                                                                    onChange={(selectedOption) => {
+                                                                        getClient(selectedOption.value);
+                                                                    }}
+                                                                />
+                                                            </Col>
+                                                        </Row>
+
+                                                        <ClientForm client={client} doneAction={onDoneClientAction} pushButton={push} isTag={true} company={props?.company}/>
                                                     </>
 
                                                 )}
@@ -465,13 +605,12 @@ const View = (props: {company?: any}): React$Element<React$FragmentType> => {
 
                                             <Step
                                                 id="form"
-                                                render={() => (<ServiceScheduleForm clientVehicle={clientVehicle} client={client} company={props?.company}/>)}
+                                                render={({push}) => (<ServiceScheduleForm pushButton={push} onClientEdit={onClientEdit} onClientVehicleEdit={onClientVehicleEdit} clientVehicle={clientVehicle} client={client} company={props?.company}/>)}
                                             />
                                         </Steps>
-
-                                    </>)}
-                                />
-                            }
+                                    }
+                                </>)}
+                            />
                         </Card.Body>
                     </Card>
                 </Col>
