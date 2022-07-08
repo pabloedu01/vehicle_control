@@ -15,10 +15,11 @@ import {getAllOptions, setCreateOption} from "../../utils/selectOptionsForm";
 import { Wizard, Steps, Step } from 'react-albus';
 import ClientVehicleForm from '../client-vehicle/Form';
 import ClientForm from '../client/Form';
+import Select from "react-select";
 
 const api = new APICore();
 
-const ServiceScheduleForm = (props: {company?: any, clientVehicle?:any}): React$Element<React$FragmentType> => {
+const ServiceScheduleForm = (props: {company?: any, clientVehicle?:any, client?:any}): React$Element<React$FragmentType> => {
     const history = useNavigate();
     const {id} = useParams();
     const [data, setData] = useState();
@@ -89,7 +90,7 @@ const ServiceScheduleForm = (props: {company?: any, clientVehicle?:any}): React$
             client_vehicle_id: props?.clientVehicle?.id ?? null,
             code: null,
             promised_date: new Date(),
-            client_id: null,
+            client_id: props?.client?.id ?? null,
             technical_consultant_id: null,
         };
 
@@ -325,12 +326,14 @@ const View = (props: {company?: any}): React$Element<React$FragmentType> => {
     const {id} = useParams();
     const [search, setSearch] = useState(null);
     const [clientVehicle, setClientVehicle] = useState(null);
+    const [client, setClient] = useState(null);
+    const [clients, setClients] = useState([]);
 
-    const handleSearchChange = (value) => {
+    const handleSearchClientVehicleChange = (value) => {
         setSearch(value);
     };
 
-    const onSearch = () => {
+    const onSearchClientVehicle = () => {
         api.get('/client-vehicle/search', {search}).then((response) => {
             setClientVehicle(response.data.data);
         }).catch(() => {
@@ -338,13 +341,48 @@ const View = (props: {company?: any}): React$Element<React$FragmentType> => {
         });
     };
 
-    const onDoneAction = (data, push) => {
+    const onDoneClientVehicleAction = (data, next) => {
         setClientVehicle(data);
 
-        if(push){
-            push('form');
+        if(next){
+            next();
         }
     };
+
+    const onDoneClientAction = (data, next) => {
+        setClient(data);
+
+        console.log('termine', data, next);
+
+
+        if(next){
+            next();
+        }
+    };
+
+    const getClient = (id) => {
+        if(id > 0) {
+            api.get('/client/' + id).then((response) => {
+                setClient(response.data.data);
+            },(error) => {
+                setClient(null);
+            });
+        } else {
+            setClient(null);
+        }
+    };
+
+    const getClients = () => {
+        api.get('/client/active-clients',{company_id: props.company?.id}).then((response) => {
+            setClients(setCreateOption(getAllOptions(response.data.data, null, true, 'id', 'fullName'), 'Novo Cliente'));
+        },(error) => {
+            setClients([]);
+        });
+    };
+
+    useEffect(() => {
+        getClients();
+    }, []);
 
     return (
         <>
@@ -375,7 +413,7 @@ const View = (props: {company?: any}): React$Element<React$FragmentType> => {
                                         <Steps>
                                             <Step
                                                 id="createClientVehicle"
-                                                render={({previous,push}) => (
+                                                render={({next,push}) => (
                                                     <>
                                                         <Row className="justify-content-center mb-5 mt-5">
                                                             <Col xs={3}>
@@ -384,25 +422,50 @@ const View = (props: {company?: any}): React$Element<React$FragmentType> => {
                                                                     type="text"
                                                                     placeholder="Buscar"
                                                                     onChange={(e) => {
-                                                                        handleSearchChange(e.target.value);
+                                                                        handleSearchClientVehicleChange(e.target.value);
                                                                     }}
                                                                     autoComplete="off">
                                                                 </Form.Control>
                                                             </Col>
                                                             <Col xs={1}>
-                                                                <Button size="lg" onClick={() => {onSearch();}} variant="success">Buscar</Button>
+                                                                <Button size="lg" onClick={() => {onSearchClientVehicle();}} variant="success">Buscar</Button>
                                                             </Col>
                                                         </Row>
 
-                                                        <ClientVehicleForm clientVehicle={clientVehicle} doneAction={onDoneAction} pushButton={push} isTag={true} company={props?.company}/>
+                                                        <ClientVehicleForm clientVehicle={clientVehicle} doneAction={onDoneClientVehicleAction} pushButton={next} isTag={true} company={props?.company}/>
                                                     </>
 
                                                     )}
                                             />
 
                                             <Step
+                                                id="createClient"
+                                                render={({next,push}) => (
+                                                    <>
+                                                        <Row className="justify-content-center mb-5 mt-5">
+                                                            <Col xs={3}>
+                                                                <Select
+                                                                    size="lg"
+                                                                    className={"react-select"}
+                                                                    classNamePrefix="react-select"
+                                                                    name="client_id"
+                                                                    options={clients}
+                                                                    onChange={(selectedOption) => {
+                                                                        getClient(selectedOption.value);
+                                                                    }}
+                                                                />
+                                                            </Col>
+                                                        </Row>
+
+                                                        <ClientForm client={client} doneAction={onDoneClientAction} pushButton={next} isTag={true} company={props?.company}/>
+                                                    </>
+
+                                                )}
+                                            />
+
+                                            <Step
                                                 id="form"
-                                                render={() => (<ServiceScheduleForm clientVehicle={clientVehicle} company={props?.company}/>)}
+                                                render={() => (<ServiceScheduleForm clientVehicle={clientVehicle} client={client} company={props?.company}/>)}
                                             />
                                         </Steps>
 

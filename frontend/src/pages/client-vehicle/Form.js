@@ -85,11 +85,11 @@ const Form = (props: {company?: any, clientVehicle?: any, isTag?: boolean, plate
             brand_id: null,
             model_id: null,
             vehicle_id: null,
-            chasis: props?.chasis ?? null,
+            chasis: null,
             color: null,
             number_motor: null,
             renavan: null,
-            plate: props?.plate ?? null,
+            plate: null,
             mileage: null,
         };
 

@@ -12,7 +12,7 @@ import classNames from "classnames";
 
 const api = new APICore();
 
-const Form = (props: {company?: any, isTag?: boolean, doneAction?:any}): React$Element<React$FragmentType> => {
+const Form = (props: {company?: any, client?: any, isTag?: boolean, previousButton?: any, pushButton?: any, doneAction?:any}): React$Element<React$FragmentType> => {
     const history = useNavigate();
     const {id} = useParams();
     const [data, setData] = useState();
@@ -48,15 +48,15 @@ const Form = (props: {company?: any, isTag?: boolean, doneAction?:any}): React$E
     const onSubmit = (formData) => {
         let ajaxCall;
 
-        if(id){
-            ajaxCall = api.update('/client/' + id,formData);
+        if(props?.client || id){
+            ajaxCall = api.update('/client/' + (props?.client?.id || id),formData);
         } else {
             ajaxCall = api.post('/client',Object.assign(formData,{company_id: props.company?.id}));
         }
 
         ajaxCall.then((response) => {
             if(props?.doneAction){
-                props?.doneAction(response.data.data);
+                props?.doneAction(response.data.data, props?.pushButton);
             } else {
                 history(`/panel/company/${props.company?.id}/clients/list`);
             }
@@ -90,13 +90,21 @@ const Form = (props: {company?: any, isTag?: boolean, doneAction?:any}): React$E
                 setData(defaultData);
             });
         } else {
-            setData(defaultData);
+            if(props?.client){
+                const {name,active,document,address} = props?.client;
+
+                setData({
+                    name,active,document,address,
+                });
+            } else {
+                setData(defaultData);
+            }
         }
     };
 
     useEffect(() => {
         getData();
-    }, [id]);
+    }, [id, props?.client]);
 
     useEffect(() => {
         methods.setValue('name', data?.name ?? null);
