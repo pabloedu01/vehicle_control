@@ -33,12 +33,6 @@ const ServiceScheduleForm = (props: {company?: any, clientVehicle?:any, client?:
     const [clientVehicleInfo, setClientVehicleInfo] = useState(null);
 
     /*
-     * al moverse hacia pantallas anteriores se pierde lo hecho hasta ahora
-     * cuando se edita el service schedule y vas a editar y cambias el cliente o el vehiculo no se cambia en realidad
-     *
-     */
-
-    /*
      * form validation schema
      */
     const schemaResolver = yupResolver(
@@ -95,26 +89,45 @@ const ServiceScheduleForm = (props: {company?: any, clientVehicle?:any, client?:
     const getData = () => {
         const defaultData = {
             checklist_version_id: null,
-            client_vehicle_id: props?.clientVehicle?.id ?? null,
+            client_vehicle_id: null,
             code: null,
             promised_date: new Date(),
-            client_id: props?.client?.id ?? null,
+            client_id: null,
             technical_consultant_id: null,
         };
 
-        if(id){
-            api.get('/service-schedule/' + id).then((response) => {
-                const {client_vehicle: clientVehicle, client_vehicle_id,code,promised_date,client_id,technical_consultant_id, checklist_version_id, checklist_version: checklistVersion, client, technical_consultant: technicalConsultant} = response.data.data;
+        new Promise((resolve) => {
+            if(id){
+                api.get('/service-schedule/' + id).then((response) => {
+                    const {client_vehicle: clientVehicle, client_vehicle_id,code,promised_date,client_id,technical_consultant_id, checklist_version_id, checklist_version: checklistVersion, client, technical_consultant: technicalConsultant} = response.data.data;
 
-                setData({
-                    client_vehicle_id,code,promised_date: new Date(promised_date),client_id,technical_consultant_id, checklist_version_id, checklistVersion, technicalConsultant, client, clientVehicle
+                    resolve({
+                        client_vehicle_id,code,promised_date: new Date(promised_date),client_id,technical_consultant_id, checklist_version_id, checklistVersion, technicalConsultant, client, clientVehicle
+                    });
+                },(error) => {
+                    resolve(defaultData);
                 });
-            },(error) => {
-                setData(defaultData);
-            });
-        } else {
-            setData(defaultData);
-        }
+            } else {
+                resolve(defaultData);
+            }
+        }).then((data) => {
+            const storage = JSON.parse(localStorage.getItem('serviceSchedule'));
+            if(storage){
+                storage.promised_date = new Date(storage.promised_date);
+
+                Object.assign(data, storage);
+            }
+
+            if(props?.client){
+                Object.assign(data, {client: props?.client, client_id: props?.client?.id});
+            }
+
+            if(props?.clientVehicle){
+                Object.assign(data, {clientVehicle: props?.clientVehicle, client_vehicle_id: props?.clientVehicle?.id});
+            }
+
+            setData(data);
+        });
     };
 
     const getClients = () => {
@@ -197,6 +210,10 @@ const ServiceScheduleForm = (props: {company?: any, clientVehicle?:any, client?:
                 dangerMode: true,
             });
         });
+    };
+
+    const onPreviousButton = () => {
+      localStorage.setItem('serviceSchedule', JSON.stringify(methods.getValues()));
     };
 
     useEffect(() => {
@@ -301,7 +318,7 @@ const ServiceScheduleForm = (props: {company?: any, clientVehicle?:any, client?:
                             </table>
                         </Card.Body>
                         <Card.Footer className="text-center">
-                            <Button variant="success" type="buttom" onClick={() => {props?.onClientEdit(clientInfo,props?.pushButton)}}>
+                            <Button variant="success" type="buttom" onClick={() => {onPreviousButton();props?.onClientEdit(clientInfo,props?.pushButton);}}>
                                 Editar
                             </Button>
                         </Card.Footer>
@@ -354,7 +371,7 @@ const ServiceScheduleForm = (props: {company?: any, clientVehicle?:any, client?:
                             </table>
                         </Card.Body>
                         <Card.Footer className="text-center">
-                            <Button variant="success" type="button" onClick={() => {props?.onClientVehicleEdit(clientVehicleInfo, props?.pushButton)}}>
+                            <Button variant="success" type="button" onClick={() => {onPreviousButton();props?.onClientVehicleEdit(clientVehicleInfo, props?.pushButton);}}>
                                 Editar
                             </Button>
                         </Card.Footer>
@@ -465,6 +482,8 @@ const View = (props: {company?: any}): React$Element<React$FragmentType> => {
         if(id){
             setAlreadyInForm(true);
         }
+
+        localStorage.setItem('serviceSchedule', null);
     }, []);
 
     return (
@@ -487,7 +506,7 @@ const View = (props: {company?: any}): React$Element<React$FragmentType> => {
                                         animated
                                         striped
                                         variant="success"
-                                        now={((steps.indexOf(step) + 1) / steps.length) * 100}
+                                        now={((step.id === 'createClientVehicle' ? 1 : (step.id === 'createClient' ? 2 : 3)) / steps.length) * 100}
                                         className="progress-sm"
                                     />
 
