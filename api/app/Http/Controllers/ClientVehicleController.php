@@ -11,7 +11,6 @@ class ClientVehicleController extends Controller
 {
     public function index(Request $request)
     {
-
         $clientVehicles = ClientVehicle::with([ 'vehicle', 'vehicle.model', 'vehicle.model.brand' ])
                                        ->where('vehicle_id', '=', $request->vehicle_id)
                                        ->get();

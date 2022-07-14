@@ -13,7 +13,7 @@ import classNames from 'classnames';
 
 const api = new APICore();
 
-const Form = (props: {company?: any, clientVehicle?: any, isTag?: boolean, plate?: string, chasis?: string, previousButton?: any, pushButton?: any, doneAction?:any}): React$Element<React$FragmentType> => {
+const Form = (props: {company?: any, clientVehicle?: any, isTag?: boolean, previousButton?: any, pushButton?: any, handleDoneAction?:any}): React$Element<React$FragmentType> => {
     const history = useNavigate();
     const {id} = useParams();
     const [data, setData] = useState();
@@ -64,8 +64,8 @@ const Form = (props: {company?: any, clientVehicle?: any, isTag?: boolean, plate
         }
 
         ajaxCall.then((response) => {
-            if(props?.doneAction){
-                props?.doneAction(response.data.data, props?.pushButton);
+            if(props?.handleDoneAction){
+                props?.handleDoneAction(response.data.data, props?.pushButton);
             } else {
                 history(`/panel/company/${props.company?.id}/client-vehicles/list`);
             }
