@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Casts\TemporalFile;
+
 class VehicleModel extends Base
 {
     protected $table = 'vehicle_models';
 
     protected $casts = [
-        'active' => 'boolean'
+        'active' => 'boolean',
+        'image' => TemporalFile::class
     ];
 
     protected $fillable = [
@@ -15,6 +18,7 @@ class VehicleModel extends Base
         'brand_id',
         'name',
         'active',
+        'image'
     ];
 
     public static function rules($id = null, $brand_id = null)
@@ -25,6 +29,7 @@ class VehicleModel extends Base
                 self::getUniqueRule($id, ['brand_id' => $brand_id]),
             ],
             'active'      => 'required|boolean',
+            'image' => ['nullable', new \App\Rules\TemporalFile]
         ];
     }
 

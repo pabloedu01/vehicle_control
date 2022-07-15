@@ -161,17 +161,6 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                             tableMeta={tableMeta}
                             handleEdit={onEdit}
                             handleDelete={onDelete}
-                            extraButtons={[{
-                                key: 'checklist',
-                                icon: 'mdi mdi-file-chart-outline',
-                                label: 'Checklist',
-                                action: onChecklist
-                            }, {
-                                key: 'print',
-                                icon: 'mdi mdi-file-chart-outline',
-                                label: 'Print',
-                                action: onPrint
-                            }]}
                         />
                     )
                 },
@@ -179,11 +168,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
         ]);
 
         setTableOptions(Object.assign(TABLE_OPTIONS, {
-            /*setRowProps: (row, dataIndex) => ({
-                onDoubleClick: (event) => {
-                    onEdit(row[0]);
-                }
-            })*/
+
         }));
 
         document.querySelectorAll('.MuiToolbar-root.MuiToolbar-gutters button.MuiButtonBase-root[aria-label=Search]').forEach(function(element){

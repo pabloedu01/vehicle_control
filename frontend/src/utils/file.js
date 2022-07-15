@@ -41,6 +41,16 @@ export const dataURLtoFile = (base64String, filename) => {
   return new File([u8arr], filename, {type:mimeType});
 };
 
+export const validateFileImage = (file) => {
+  const isValid = file.type.indexOf('image') === 0;
+
+  if(!isValid){
+    return 'El archivo ' + file.name + ' no es una imagen.';
+  } else {
+    return true;
+  }
+};
+
 export const processingFiles = (files,resolve,reject, multiple = false, validateFile = null, onLoadEnd = null) => {
   if(files.length > 0){
     Promise.all(files.map( (file) => {

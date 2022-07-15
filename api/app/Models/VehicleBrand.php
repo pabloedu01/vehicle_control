@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Casts\Slug;
+use App\Casts\TemporalFile;
 
 class VehicleBrand extends Base
 {
@@ -10,7 +11,8 @@ class VehicleBrand extends Base
 
     protected $casts = [
         'active' => 'boolean',
-        'code' => Slug::class
+        'code' => Slug::class,
+        'image' => TemporalFile::class
     ];
 
     protected $fillable = [
@@ -18,6 +20,7 @@ class VehicleBrand extends Base
         'name',
         'code',
         'active',
+        'image'
     ];
 
     public static function rules($id = null, $company_id = null)
@@ -34,6 +37,7 @@ class VehicleBrand extends Base
                 $uniqueRule,
             ],
             'active'      => 'required|boolean',
+            'image' => ['nullable', new \App\Rules\TemporalFile]
         ];
     }
 

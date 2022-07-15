@@ -8,6 +8,8 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import {useForm} from "react-hook-form";
 import {FormInput} from "../../components";
+import {processingFiles, validateFileImage} from "../../utils/file";
+import imageDefault from '../../assets/images/features-1.svg';
 
 const api = new APICore();
 
@@ -15,6 +17,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     const history = useNavigate();
     const {id} = useParams();
     const [data, setData] = useState();
+    const [imagePreview, setImagePreview] = useState(null);
 
     /*
      * form validation schema
@@ -23,7 +26,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         yup.object().shape({
             code: yup.string().nullable(),
             name: yup.string().required('Por favor, digite Nome Completo'),
-            active: yup.boolean(),
+            active: yup.boolean()
         })
     );
 
@@ -69,15 +72,18 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         const defaultData = {
             code: null,
             name: null,
+            image: null,
             active: true
         };
 
         if(id){
             api.get('/vehicle-brand/' + id).then((response) => {
-                const {name,active, code} = response.data.data;
+                const {name,active, code, image} = response.data.data;
+
+                setImagePreview(image);
 
                 setData({
-                    name,active,code
+                    name,active,code, image
                 });
             },(error) => {
                 setData(defaultData);
@@ -87,6 +93,31 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         }
     };
 
+    const onLoadImage = (e) => {
+        setImagePreview(e.target.result);
+    };
+
+    const onImageChange = (e) => {
+        (new Promise((resolve, reject) => {
+            processingFiles([e.target.files[0]],resolve,reject, false, validateFileImage, onLoadImage);
+        })).then((file) => {
+            api.uploadFile('/file-upload/image', {image: file}).then((response) => {
+                if(response.data.hasOwnProperty('data') && response.data.data.hasOwnProperty('id')){
+                    methods.setValue('image', response.data.data.id);
+                    methods.clearErrors('fileImage');
+                }
+            }, (error) => {
+                methods.setError('fileImage', {type: 'custom', message: error.message});
+                methods.setValue('image', data?.image ?? null);
+                setImagePreview(data?.image ?? null);
+            });
+        }).catch((error) => {
+            methods.setError('fileImage', {type: 'custom', message: error});
+            methods.setValue('image', data?.image ?? null);
+            setImagePreview(data?.image ?? null);
+        });
+    };
+
     useEffect(() => {
         getData();
     }, [id]);
@@ -94,6 +125,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     useEffect(() => {
         methods.setValue('name', data?.name ?? null);
         methods.setValue('code', data?.code ?? null);
+        methods.setValue('image', data?.image ?? null);
         methods.setValue('active', data?.active ?? true);
     }, [data]);
 
@@ -141,6 +173,22 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                                             containerClass={'mb-3'}
                                             {...otherProps}
                                         />
+
+                                        <Row>
+                                            <Col md={6}>
+                                                <FormInput
+                                                    label="Imagen"
+                                                    type="file"
+                                                    name="fileImage"
+                                                    containerClass={'mb-3'}
+                                                    onChange={onImageChange}
+                                                    {...otherProps}
+                                                />
+                                            </Col>
+                                            <Col md={6}>
+                                                <img src={imagePreview ?? imageDefault} alt="Preview" width={150}/>
+                                            </Col>
+                                        </Row>
                                     </Col>
                                 </Row>
 
