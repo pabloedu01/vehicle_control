@@ -74,7 +74,7 @@ const FormWizard = (props: {company?: any}): React$Element<React$FragmentType> =
     };
 
     const onClientEdit = (clientId, push) => {
-        getClientVehicle(clientId, push, () => {
+        getClient(clientId, push, () => {
             push('clientForm');
         });
     };
