@@ -79,9 +79,24 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
             ajaxCall = api.post('/vehicle-service',Object.assign(formData,{company_id: props.company?.id}));
         }
 
-        ajaxCall.then(() => {
-            setSignaturesUpdated(false);
-            history(`/panel/company/${props.company?.id}/service-schedules/list`);
+        ajaxCall.then((response) => {
+            api.post('/checklist-version/' + data.checklistVersion.id + '/generate-report', {type, id, utcOffset: moment().utcOffset()}).then(() => {
+                setSignaturesUpdated(false);
+                history(`/panel/company/${props.company?.id}/service-schedules/list`);
+            }).catch(() => {
+                swal({
+                    title: 'Error',
+                    text: 'Ocorreu um erro ao gerar o relatório.',
+                    icon: 'error',
+                    buttons: {
+                        confirm: {
+                            text: 'Ok',
+                            value: 'confirm'
+                        }
+                    },
+                    dangerMode: true,
+                });
+            });
         }, (error) => {
             setSignaturesUpdated(false);
 

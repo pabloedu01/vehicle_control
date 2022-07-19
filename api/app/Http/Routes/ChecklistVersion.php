@@ -25,6 +25,14 @@ Route::group([
         Route::post('print', [
             'uses' => 'ChecklistVersionController@print',
         ]);
+
+        Route::post('send', [
+            'uses' => 'ChecklistVersionController@send',
+        ]);
+
+        Route::post('generate-report', [
+            'uses' => 'ChecklistVersionController@generateReport',
+        ]);
     });
 
     Route::group([
@@ -57,6 +65,10 @@ Route::group([
 
             Route::delete('/', [
                 'uses' => 'ChecklistVersionController@destroy',
+            ]);
+
+            Route::delete('report/{reportId}', [
+                'uses' => 'ChecklistVersionController@destroyReport',
             ]);
         });
     });

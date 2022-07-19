@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendEmailJob;
+use App\Mail\ChecklistReportEmail;
+use App\Models\ChecklistReport;
 use App\Models\ChecklistVersion as Version;
 use App\Models\VehicleService;
 use Illuminate\Http\Request;
@@ -67,7 +70,7 @@ class ChecklistVersionController extends Controller
         );
     }
 
-    public function print(Request $request, $id)
+    public function generateReport(Request $request, $id)
     {
         $version = Version::withTrashed()->withoutGlobalScope('simpleColumns')
                           ->where('id', '=', $id)
@@ -190,17 +193,19 @@ class ChecklistVersionController extends Controller
             {
                 $reportKey    = substr($response, 4);
                 $reportBroUrl = 'https://www.reportbro.com/report/run?key='.$reportKey.'&outputFormat=pdf';
-                $fullName     = 'temporal-files/'.$reportKey.'.pdf';
+                $fullName     = 'checklist-reports/'.$reportKey.'.pdf';
 
-                $localStorage = \Storage::disk('public');
-                $localStorage->put($fullName, file_get_contents($reportBroUrl));
-                /*debería guardar el archivo y anclarlo al vehicle service?*/
+                $storage = \Storage::disk(env('GOOGLE_CLOUD_STORAGE_DRIVER', 'public'));
+                $storage->put($fullName, file_get_contents($reportBroUrl));
+
+                $checklistReport = ChecklistReport::create([
+                                            'vehicle_service_id' => $vehicleService->id,
+                                            'filename'           => $fullName,
+                                        ]);
 
                 return response()->json([
                                             'msg'  => trans('general.msg.success'),
-                                            'data' => [
-                                                'report' => $localStorage->url($fullName),
-                                            ],
+                                            'data' => $checklistReport,
                                         ],
                                         Response::HTTP_OK
                 );
@@ -212,6 +217,68 @@ class ChecklistVersionController extends Controller
                                 ],
                                 Response::HTTP_INTERNAL_SERVER_ERROR
         );
+    }
+
+    public function print(Request $request)
+    {
+        $report = ChecklistReport::withTrashed()
+                                 ->where('id', '=', $request->id)
+                                 ->first();
+
+        $storage = \Storage::disk(env('GOOGLE_CLOUD_STORAGE_DRIVER', 'public'));
+
+        if($report && $storage->exists($report->filename))
+        {
+            return response()->json([
+                                        'msg'  => trans('general.msg.success'),
+                                        'data' => [
+                                            'report' => $storage->url($report->filename),
+                                        ],
+                                    ],
+                                    Response::HTTP_OK
+            );
+        }
+        else
+        {
+            return response()->json([
+                                        'msg' => trans('general.msg.notFound'),
+                                    ],
+                                    Response::HTTP_NOT_FOUND
+            );
+        }
+    }
+
+    public function send(Request $request, $id)
+    {
+        $report = ChecklistReport::with([ 'vehicleService', 'vehicleService.client' ])
+                                 ->where('id', '=', $request->id)
+                                 ->first();
+
+        $storage = \Storage::disk(env('GOOGLE_CLOUD_STORAGE_DRIVER', 'public'));
+
+        if($report && $storage->exists($report->filename))
+        {
+            dispatch(new SendEmailJob([
+                                          'to'     => $report->vehicleService->client->email,
+                                          'report' => $report->filename,
+                                          'user'   => $report->vehicleService->client,
+                                      ],
+                                      ChecklistReportEmail::class));
+
+            return response()->json([
+                                        'msg'  => trans('general.msg.success'),
+                                    ],
+                                    Response::HTTP_OK
+            );
+        }
+        else
+        {
+            return response()->json([
+                                        'msg' => trans('general.msg.notFound'),
+                                    ],
+                                    Response::HTTP_NOT_FOUND
+            );
+        }
     }
 
     public function duplicate(Request $request, $id)
@@ -364,6 +431,35 @@ class ChecklistVersionController extends Controller
         }
 
         if($version->secureDelete())
+        {
+            return response()->json([
+                                        'msg' => trans('general.msg.success'),
+                                    ], Response::HTTP_OK
+            );
+        }
+        else
+        {
+            return response()->json([
+                                        'msg' => trans('general.msg.error'),
+                                    ], Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    public function destroyReport(Request $request, $id, $reportId)
+    {
+        $report = ChecklistReport::where('id', '=', $reportId)->first();
+
+        if(!$report->canBeDeleted())
+        {
+            return response()->json([
+                                        'msg' => trans('general.msg.hasDependencies'),
+                                    ],
+                                    Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        if($report->secureDelete())
         {
             return response()->json([
                                         'msg' => trans('general.msg.success'),

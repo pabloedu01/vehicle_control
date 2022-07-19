@@ -159,5 +159,11 @@ class VehicleService extends Base
     {
         return $this->hasOne('App\Models\VehicleServiceVehicleData', 'vehicle_service_id', 'id');
     }
+
+    #has many
+    public function reports()
+    {
+        return $this->hasMany('App\Models\ChecklistReport', 'vehicle_service_id', 'id');
+    }
 }
 

@@ -6,7 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class RecoverPasswordEmail extends Mailable
+class ChecklistReportEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -25,8 +25,12 @@ class RecoverPasswordEmail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Recover Password')
+        return $this->subject('Checklist Report')
                     ->with($this->data)
-                    ->view('email.recoverPassword');
+                    ->attachFromStorageDisk(env('GOOGLE_CLOUD_STORAGE_DRIVER', 'public'), $this->data['report'], basename($this->data['report']), [
+                        'as'   => 'Reporte.pdf',
+                        'mime' => 'application/pdf',
+                    ])
+                    ->view('email.checklistReport');
     }
 }

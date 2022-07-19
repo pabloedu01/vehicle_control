@@ -28,6 +28,10 @@ Route::group([
             'uses' => 'VehicleServiceController@show',
         ]);
 
+        Route::get('{id}/reports', [
+            'uses' => 'VehicleServiceController@reports',
+        ]);
+
         Route::put('{id}', [
             'uses' => 'VehicleServiceController@update',
         ]);

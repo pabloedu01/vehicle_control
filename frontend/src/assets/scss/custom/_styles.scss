@@ -3,6 +3,10 @@
   background-color: #eee;
 }
 
+.cursor-pointer{
+  cursor: pointer;
+}
+
 .MuiPaper-root input.MuiInput-input[aria-label=Search]{
   border: 1px solid var(--ct-input-border-color);
   border-radius: 0.25rem;

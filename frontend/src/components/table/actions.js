@@ -21,7 +21,7 @@ const Actions = (props: {tableMeta: any, actions?: Array<string>, handleEdit?: a
         {(!props.hasOwnProperty('actions') || props.actions.indexOf('edit') >= 0) ?
             (
                 <OverlayTrigger placement="left" overlay={<Tooltip>Editar</Tooltip>}>
-                  <span style={{cursor: 'pointer'}} onClick={handleEdit}><i className="mdi mdi-square-edit-outline mdi-24px"/></span>
+                  <span className="cursor-pointer" onClick={handleEdit}><i className="mdi mdi-square-edit-outline mdi-24px"/></span>
                 </OverlayTrigger>
             ) : null
         }
@@ -29,21 +29,21 @@ const Actions = (props: {tableMeta: any, actions?: Array<string>, handleEdit?: a
         {(props.hasOwnProperty('actions') && props.actions.indexOf('duplicate') >= 0) ?
             (
                 <OverlayTrigger placement="left" overlay={<Tooltip>Duplicado</Tooltip>}>
-                  <span style={{cursor: 'pointer'}} onClick={handleDuplicate}><i className="mdi mdi-content-copy mdi-24px"/></span>
+                  <span className="cursor-pointer" onClick={handleDuplicate}><i className="mdi mdi-content-copy mdi-24px"/></span>
                 </OverlayTrigger>
             ) : null
         }
 
         {(props.extraButtons ?? []).map((button) =>
             <OverlayTrigger  key={button.key} placement="left" overlay={<Tooltip>{button.label}</Tooltip>}>
-              <span style={{cursor: 'pointer'}} onClick={() => {button.action(rowData.id, rowData)}}><i className={classNames(button.icon, 'mdi-24px')}/></span>
+              <span className="cursor-pointer" onClick={() => {button.action(rowData.id, rowData)}}><i className={classNames(button.icon, 'mdi-24px')}/></span>
             </OverlayTrigger>
         )}
 
         {(!props.hasOwnProperty('actions') || props.actions.indexOf('delete') >= 0) ?
             (
                 <OverlayTrigger placement="left" overlay={<Tooltip>Excluir</Tooltip>}>
-                  <span style={{cursor: 'pointer'}} onClick={handleDelete}><i className="mdi mdi-trash-can-outline mdi-24px"/></span>
+                  <span className="cursor-pointer" onClick={handleDelete}><i className="mdi mdi-trash-can-outline mdi-24px"/></span>
                 </OverlayTrigger>
             ) : null
         }

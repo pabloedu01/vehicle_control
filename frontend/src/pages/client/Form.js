@@ -25,6 +25,7 @@ const Form = (props: {company?: any, client?: any, isTag?: boolean, previousButt
             name: yup.string().required('Por favor, digite Nome Completo'),
             active: yup.boolean(),
             document: yup.string().required('Por favor, digite Documento'),
+            email: yup.string().email('Email Inválido').required('Por favor, digite Email'),
             address: yup.string().required('Por favor, digite a Endereço'),
         })
     );
@@ -77,24 +78,25 @@ const Form = (props: {company?: any, client?: any, isTag?: boolean, previousButt
             active: true,
             document: null,
             address: null,
+            email: null
         };
 
         if(props?.isTag !== true && id){
             api.get('/client/' + id).then((response) => {
-                const {name,active,document,address} = response.data.data;
+                const {name,active,document,address,email} = response.data.data;
 
                 setData({
-                    name,active,document,address,
+                    name,active,document,address,email
                 });
             },(error) => {
                 setData(defaultData);
             });
         } else {
             if(props?.client){
-                const {name,active,document,address} = props?.client;
+                const {name,active,document,address, email} = props?.client;
 
                 setData({
-                    name,active,document,address,
+                    name,active,document,address, email
                 });
             } else {
                 setData(defaultData);
@@ -111,6 +113,7 @@ const Form = (props: {company?: any, client?: any, isTag?: boolean, previousButt
         methods.setValue('active', data?.active ?? true);
         methods.setValue('document', data?.document ?? null);
         methods.setValue('address', data?.address ?? null);
+        methods.setValue('email', data?.email ?? null);
     }, [data]);
 
     return (
@@ -162,6 +165,15 @@ const Form = (props: {company?: any, client?: any, isTag?: boolean, previousButt
                                     </Col>
 
                                     <Col md={6}>
+                                        <FormInput
+                                            label="Email"
+                                            type="email"
+                                            name="email"
+                                            placeholder="Digite Email"
+                                            containerClass={'mb-3'}
+                                            {...otherProps}
+                                        />
+
                                         <FormInput
                                             label="Ative"
                                             type="checkbox"

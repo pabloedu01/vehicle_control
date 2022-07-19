@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ChecklistVersion;
+use App\Models\ChecklistReport;
 use App\Models\Vehicle;
 use App\Models\VehicleService;
 use App\Http\Requests\VehicleService as VehicleServiceRequest;
@@ -25,6 +25,19 @@ class VehicleServiceController extends Controller
         return response()->json([
                                     'msg'  => trans('general.msg.success'),
                                     'data' => $vehicleServices,
+                                ],
+                                Response::HTTP_OK
+        );
+    }
+
+    public function reports(Request $request, $id)
+    {
+        $reports = ChecklistReport::where('vehicle_service_id', '=', $id)
+                                         ->get();
+
+        return response()->json([
+                                    'msg'  => trans('general.msg.success'),
+                                    'data' => $reports,
                                 ],
                                 Response::HTTP_OK
         );
