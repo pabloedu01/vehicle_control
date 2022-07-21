@@ -53,7 +53,7 @@ const Companies = (): React$Element<React$FragmentType> => {
                             </Card.Body>
                             <Card.Footer style={{'border': 'none'}}>
                                 <div className="float-start">
-                                    <button type="button" className="arrow-none dropdown-toggle btn btn-info" onClick={ () => { history(`/panel/company/${company.id}/dashboard`); } }>
+                                    <button type="button" className="arrow-none dropdown-toggle btn btn-info" onClick={ () => { history(`/panel/company/${company.id}/service-schedules/list`); } }>
                                         Acessar
                                     </button>
                                 </div>

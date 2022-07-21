@@ -25,8 +25,8 @@ const Form = (props: {company?: any, client?: any, isTag?: boolean, previousButt
             name: yup.string().required('Por favor, digite Nome Completo'),
             active: yup.boolean(),
             document: yup.string().required('Por favor, digite Documento'),
-            email: yup.string().email('Email Inválido').required('Por favor, digite Email'),
-            address: yup.string().required('Por favor, digite a Endereço'),
+            email: yup.string().email('Email Inválido').nullable(),
+            address: yup.string().nullable(),
         })
     );
 

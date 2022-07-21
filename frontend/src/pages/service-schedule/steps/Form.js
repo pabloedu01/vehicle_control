@@ -166,7 +166,7 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
     };
 
     const onClickPrintReport = (reportId) => {
-        api.post('/checklist-version/' + data?.vehicleService?.id + '/print', {id: reportId}).then((response) => {
+        api.post('/checklist-version/' + data?.checklistVersion?.id + '/print', {id: reportId}).then((response) => {
             window.open(response.data.data.report, '_blank');
         },() => {
 
@@ -174,7 +174,7 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
     };
 
     const onClickSendReport = (reportId) => {
-        api.post('/checklist-version/' + data?.vehicleService?.id + '/send', {id: reportId}).then((response) => {
+        api.post('/checklist-version/' + data?.checklistVersion?.id + '/send', {id: reportId}).then((response) => {
             swal({
                 title: 'Enviado',
                 text: 'El reporte ha sido enviado al cliente.',
@@ -402,11 +402,11 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
 
                     <div className={classNames({'d-grid': id, 'd-none': !id})}>
                         <Button variant="primary" size={'lg'} type="button" onClick={onClickChecklist}>
-                            Checklist
+                            Novo Checklist
                         </Button>
                         <div className="mb-3"/>
                         <Button className={classNames({'d-none': !(data?.vehicleService ?? false)})} variant="primary" size={'lg'} type="button" onClick={onClickPrintChecklist}>
-                            Print Checklist
+                                Lista de Verificación
                         </Button>
                     </div>
                 </Col>

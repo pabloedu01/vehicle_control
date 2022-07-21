@@ -25,8 +25,8 @@ class Client extends Base
     {
         return [
             'name'     => 'required|string|max:100',
-            'address'  => 'required|string',
-            'email'  => 'required|string|email',
+            'address'  => 'nullable|string',
+            'email'  => 'nullable|string|email',
             'document' => [
                 'required',
                 'string',

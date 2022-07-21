@@ -393,7 +393,7 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                                             <Col md={3}>
                                                 <b>{item.name}</b>
                                             </Col>
-                                            <Col md={2}>
+                                            <Col className="text-center" md={2}>
                                                 {item.validation.type === 'boolean' ? <Form.Check type="switch" checked={checklistData[item.id] ?? false} onChange={(e) => { handleFieldChange(item.id, e.target.checked); }} name="checklist_version_id"/> :
                                                     (item.validation.type === 'list' ?
                                                             <Select
