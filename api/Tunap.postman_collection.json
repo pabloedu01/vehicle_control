@@ -192,7 +192,7 @@
 					"response": []
 				},
 				{
-					"name": "Register",
+					"name": "Register User Company",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -251,6 +251,78 @@
 							"path": [
 								"api",
 								"register"
+							],
+							"query": [
+								{
+									"key": "cpf",
+									"value": "sdfsdfdsf",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register User Company Copy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "cpf",
+									"value": "073715170-67",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "cnpj",
+									"value": "68.119.835/0001-03",
+									"type": "text"
+								},
+								{
+									"key": "birthday",
+									"value": "02/10/2022",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "name",
+									"value": "Miguel Contreras",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "migueljosecontreras3@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "mcontreras3",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "123456",
+									"type": "text"
+								},
+								{
+									"key": "company_name",
+									"value": "Company",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/user-register",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"user-register"
 							],
 							"query": [
 								{
@@ -1289,6 +1361,31 @@
 					"response": []
 				},
 				{
+					"name": "Search",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/client-vehicle/search?search=AA869DG",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"client-vehicle",
+								"search"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "AA869DG"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Show",
 					"request": {
 						"method": "GET",
@@ -1342,12 +1439,17 @@
 								},
 								{
 									"key": "plate",
-									"value": "d2f4d2",
+									"value": "DF45FG",
 									"type": "text"
 								},
 								{
 									"key": "mileage",
 									"value": "325",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "8",
 									"type": "text"
 								}
 							]
@@ -1400,12 +1502,17 @@
 								},
 								{
 									"key": "plate",
-									"value": "d2f4d2",
+									"value": "DFDFDF",
 									"type": "text"
 								},
 								{
 									"key": "mileage",
 									"value": "325",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "8",
 									"type": "text"
 								}
 							]
@@ -1434,14 +1541,14 @@
 							"urlencoded": []
 						},
 						"url": {
-							"raw": "{{host}}/api/client-vehicle/1",
+							"raw": "{{host}}/api/client-vehicle/5",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"client-vehicle",
-								"1"
+								"5"
 							]
 						}
 					},
@@ -2324,7 +2431,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"code\": \"test\",\n    \"promised_date\": \"2022-04-29T16:30:00-04:00\",\n    \"technical_consultant_id\": 1,\n    \"client_id\": 1,\n    \"vehicle_id\": 1,\n    \"company_id\": 1,\n    \"chasis\": null,\n    \"plate\": null,\n    \"claims_service\": [\n        {\n            \"claim_service_id\": 1,\n            \"services\": [\n                {\n                    \"service_id\": 1,\n                    \"price\": \"000\",\n                    \"products\": [\n                        {\n                            \"product_id\": 1,\n                            \"price\": \"000\"\n                        }\n                    ]\n                }\n            ]\n        }\n    ]\n}",
+							"raw": "{\n    \"code\": \"test2\",\n    \"promised_date\": \"2022-04-29T16:30:00-04:00\",\n    \"technical_consultant_id\": 10,\n    \"client_id\": 8,\n    \"client_vehicle_id\": 1,\n    \"checklist_version_id\": 14,\n    \"company_id\": 1,\n    \"claims_service\": [\n        {\n            \"claim_service_id\": 4,\n            \"services\": [\n                {\n                    \"service_id\": 2,\n                    \"price\": \"000\",\n                    \"products\": [\n                        {\n                            \"product_id\": 1,\n                            \"price\": \"000\"\n                        }\n                    ]\n                }\n            ]\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2687,6 +2794,74 @@
 								"checklist-version",
 								"1",
 								"report"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Generate Report",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id",
+									"value": "4",
+									"description": "id del registro del tipo que se esté tratanto",
+									"type": "text"
+								},
+								{
+									"key": "type",
+									"value": "service-schedules",
+									"description": "service-schedules",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/checklist-version/14/generate-report",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"checklist-version",
+								"14",
+								"generate-report"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Print Report",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "id del reporte a imprimir",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/checklist-version/14/print",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"checklist-version",
+								"14",
+								"print"
 							]
 						}
 					},

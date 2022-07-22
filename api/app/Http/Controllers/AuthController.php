@@ -121,7 +121,7 @@ class AuthController extends Controller
         }
     }
 
-    public function register(Request $request)
+    public function registerUserCompany(Request $request)
     {
         $validator = validate($request->all(), array_merge([ 'company_name' => 'required|string|max:100' ],
             collect(Company::rules())
@@ -160,6 +160,44 @@ class AuthController extends Controller
                            'msg'     => trans('general.msg.success'),
                            'user'    => $user,
                            'company' => $company,
+                       ],
+                       Response::HTTP_CREATED
+                );
+        }
+        else
+        {
+            return response()
+                ->json([
+                           'msg' => trans('general.msg.error'),
+                       ],
+                       Response::HTTP_INTERNAL_SERVER_ERROR
+                );
+        }
+    }
+
+    public function registerUser(Request $request)
+    {
+        $validator = validate($request->all(), User::rules());
+
+        if($validator->fails())
+        {
+            return response()->json([
+                                        'msg'    => trans('general.msg.invalidData'),
+                                        'errors' => $validator->errors(),
+                                    ],
+                                    Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        $user = new User($request->only(User::getFillables()));
+        $user->privilege = 'client';
+
+        if(secureSave($user))
+        {
+            return response()
+                ->json([
+                           'msg'     => trans('general.msg.success'),
+                           'data'    => $user,
                        ],
                        Response::HTTP_CREATED
                 );

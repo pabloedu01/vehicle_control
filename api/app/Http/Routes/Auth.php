@@ -10,7 +10,11 @@ Route::group([
     ]);
 
     Route::post('register', [
-        'uses' => 'AuthController@register',
+        'uses' => 'AuthController@registerUserCompany',
+    ]);
+
+    Route::post('user-register', [
+        'uses' => 'AuthController@registerUser',
     ]);
 
     Route::post('user-verification-code', [
