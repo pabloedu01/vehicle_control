@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Notifications;
 use App\Jobs\SendEmailJob;
 use App\Mail\WelcomeEmail;
 use App\Models\Log;
@@ -22,9 +23,11 @@ class TestController extends Controller
                                       'to' => 'migueljosecontreras@gmail.com', 'code' => 'codigo'
                                   ], WelcomeEmail::class));*/
 
+        Notifications::dispatch(\Auth::user(), 'hola');
+
         return response()->json([
                                     'msg' => trans('general.msg.success'),
-                                    'data' => Log::limit(10)->orderBy('_id','desc')->get(),
+                                    'data' => [],
                                 ], Response::HTTP_OK
         );
 

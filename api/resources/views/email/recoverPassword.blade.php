@@ -5,6 +5,6 @@
     <title>Email</title>
 </head>
 <body>
-    Hi {{ $user['name'] }}, <a href="{{ $code }}">Click here</a> to recover your password ({{ $code }})
+    Hi {{ $user['name'] }}, <a href="{{ $url }}">Click here</a> to recover your password
 </body>
 </html>

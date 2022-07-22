@@ -51,6 +51,8 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     const onSubmit = (formData) => {
         let ajaxCall;
 
+        delete formData['fileImage'];
+
         if(id){
             ajaxCall = api.update('/vehicle-model/' + id,formData);
         } else {
@@ -109,13 +111,15 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                     methods.clearErrors('fileImage');
                 }
             }, (error) => {
-                methods.setError('fileImage', {type: 'custom', message: error.message});
+                methods.setError('fileImage', {type: 'custom', message: error.response.data.errors.image.join('<br>')});
                 methods.setValue('image', data?.image ?? null);
+                methods.setValue('fileImage', null);
                 setImagePreview(data?.image ?? null);
             });
         }).catch((error) => {
             methods.setError('fileImage', {type: 'custom', message: error});
             methods.setValue('image', data?.image ?? null);
+            methods.setValue('fileImage', null);
             setImagePreview(data?.image ?? null);
         });
     };

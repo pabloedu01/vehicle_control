@@ -170,7 +170,7 @@ class ChecklistVersionController extends Controller
         {
             if($reportParametersGroupedByName[$parameterName]['type'] == 'date')
             {
-                $dataFromCustomParameters[$parameterName] = gmdate('Y-m-d H:i:s', strtotime($value.' '.$request->utcOffset.' minutes'));
+                $dataFromCustomParameters[$parameterName] = date('Y-m-d H:i:s', strtotime($value.' '.$request->utcOffset.' minutes'));
             }
         }
 

@@ -28,6 +28,12 @@ const BottomLink = () => {
                     <b>{t('Cadastro')}</b>
                 </Link>
             </p>
+            <p className="text-muted">
+                {t("Forgot Password?")}{' '}
+                <Link to={'/forgot-password'} className="text-muted ms-1">
+                    <b>{t('Recover Password')}</b>
+                </Link>
+            </p>
         </footer>
     );
 };
@@ -62,8 +68,8 @@ const Login2 = () => {
      */
     const schemaResolver = yupResolver(
         yup.object().shape({
-            username: yup.string().required(t('Please enter Username')),
-            password: yup.string().required(t('Please enter Password')),
+            username: yup.string().required('Digite seu usuario'),
+            password: yup.string().required('Digite seu contraseña'),
         })
     );
 
@@ -77,7 +83,7 @@ const Login2 = () => {
     return (
         <>
             <AccountLayout bottomLinks={<BottomLink />}>
-                <h4 className="mt-0">{t('Log In')}</h4>
+                <h4 className="mt-0">Log In</h4>
                 <p className="text-muted mb-4">{t('Digite seu email e conta para acessar o sistema.')}</p>
 
                 {error && (

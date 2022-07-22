@@ -28,10 +28,10 @@ class Vehicle extends Base
                 'required',
                 'string',
                 'max:100',
-                self::getUniqueRule($id, ['model_id' => $model_id, 'model_year' => integerValue($year)]),
+                self::getUniqueRule($id, ['model_id' => $model_id, 'model_year' => $year]),
             ],
             'model_id' => Rule::exists('vehicle_models', 'id')->where('company_id', $company_id),
-            'model_year' => 'required|integer',
+            'model_year' => 'required|string',
             'active'     => 'required|boolean',
         ];
     }

@@ -51,6 +51,16 @@ export const validateFileImage = (file) => {
   }
 };
 
+export const validateFileExcel = (file) => {
+  const isValid = ['text/csv','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'].indexOf(file.type) >= 0;
+
+  if(!isValid){
+    return 'El archivo ' + file.name + ' no es excel.';
+  } else {
+    return true;
+  }
+};
+
 export const processingFiles = (files,resolve,reject, multiple = false, validateFile = null, onLoadEnd = null) => {
   if(files.length > 0){
     Promise.all(files.map( (file) => {

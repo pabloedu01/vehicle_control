@@ -33,6 +33,22 @@ function custom_contains($word, $text)
     }
 }
 
+function convert_user_date_to_utc($date,$utcOffset){
+    switch(substr($utcOffset, 0, 1)){
+        case '-':
+            $utcOffset = str_replace('-', '+', $utcOffset);
+            break;
+        case '+':
+            $utcOffset = str_replace('+', '-', $utcOffset);
+            break;
+        default:
+            $utcOffset = '-'.$utcOffset;
+            break;
+    }
+
+    return date('Y-m-d H:i:s', strtotime($date.' '.$utcOffset.' minutes'));
+}
+
 function only_text($text)
 {
     return remove_unnecessary_spaces(preg_replace('/[^a-zA-ZáéíóúÁÉÍÓÚñÑ \']/', ' ', $text));

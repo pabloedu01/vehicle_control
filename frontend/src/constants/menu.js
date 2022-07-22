@@ -6,7 +6,12 @@ const MENU_ITEMS = [
         icon: 'mdi mdi-office-building-outline',
     },
 
-
+    {
+        key: 'import',
+        label: 'Importación',
+        url: '/import/upload',
+        icon: 'mdi mdi-file-import-outline',
+    },
 
     {
         key: 'vehiclesCrud',

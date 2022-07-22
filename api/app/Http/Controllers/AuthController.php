@@ -269,7 +269,7 @@ class AuthController extends Controller
                         ->json([
                                    'msg' => trans('general.msg.success'),
                                ],
-                               Response::HTTP_CREATED
+                               Response::HTTP_OK
                         );
                 }
                 else
@@ -335,7 +335,7 @@ class AuthController extends Controller
                     ->json([
                                'msg' => trans('general.msg.success'),
                            ],
-                           Response::HTTP_OK
+                           Response::HTTP_CREATED
                     );
             }
             else

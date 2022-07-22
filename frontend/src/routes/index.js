@@ -19,6 +19,8 @@ import {APICore} from "../helpers/api/apiCore";
 const Login = React.lazy(() => import('../pages/Login'));
 const Logout = React.lazy(() => import('../pages/Logout'));
 const Register = React.lazy(() => import('../pages/Register'));
+const ForgotPassword = React.lazy(() => import('../pages/ForgotPassword'));
+const ChangePassword = React.lazy(() => import('../pages/ChangePassword'));
 const ActivateUser = React.lazy(() => import('../pages/ActivateUser'));
 
 //panel
@@ -66,6 +68,8 @@ const ProductForm = React.lazy(() => import('../pages/product/Form'));
 
 const ServiceList = React.lazy(() => import('../pages/service/List'));
 const ServiceForm = React.lazy(() => import('../pages/service/Form'));
+
+const ImportForm = React.lazy(() => import('../pages/import/Form'));
 
 // dashboard
 
@@ -172,6 +176,8 @@ const AllRoutes = () => {
             children: [
                 { path: 'logout', element: <LoadComponent component={Logout} /> },
                 { path: 'register', element: <LoadComponent component={Register} /> },
+                { path: 'forgot-password', element: <LoadComponent component={ForgotPassword} /> },
+                { path: 'change-password/:code', element: <LoadComponent component={ChangePassword} /> },
                 { path: 'activate-user/:code', element: <LoadComponent component={ActivateUser} /> },
                 {
                     path: 'error-404',
@@ -429,6 +435,16 @@ const AllRoutes = () => {
                         {
                             path: ':id/edit',
                             element: <LoadComponent component={ServiceForm} />,
+                        },
+                    ]
+                },
+
+                {
+                    path: 'import',
+                    children: [
+                        {
+                            path: 'upload',
+                            element: <LoadComponent component={ImportForm} />,
                         },
                     ]
                 },

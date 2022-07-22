@@ -206,7 +206,7 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
             dangerMode: true,
         }).then((confirm) => {
             if(confirm){
-                api.delete('/checklist-version/' + data?.vehicleService?.id + '/report/' + reportId).then((response) => {
+                api.delete('/checklist-version/' + data?.checklistVersion?.id + '/report/' + reportId).then((response) => {
                     setReports(reports.filter((report) => report.id !== reportId));
                 },() => {
 
