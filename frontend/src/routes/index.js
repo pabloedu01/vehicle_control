@@ -19,6 +19,7 @@ import {APICore} from "../helpers/api/apiCore";
 const Login = React.lazy(() => import('../pages/Login'));
 const Logout = React.lazy(() => import('../pages/Logout'));
 const Register = React.lazy(() => import('../pages/Register'));
+const UserRegister = React.lazy(() => import('../pages/UserRegister'));
 const ForgotPassword = React.lazy(() => import('../pages/ForgotPassword'));
 const ChangePassword = React.lazy(() => import('../pages/ChangePassword'));
 const ActivateUser = React.lazy(() => import('../pages/ActivateUser'));
@@ -176,6 +177,7 @@ const AllRoutes = () => {
             children: [
                 { path: 'logout', element: <LoadComponent component={Logout} /> },
                 { path: 'register', element: <LoadComponent component={Register} /> },
+                { path: 'user-register', element: <LoadComponent component={UserRegister} /> },
                 { path: 'forgot-password', element: <LoadComponent component={ForgotPassword} /> },
                 { path: 'change-password/:code', element: <LoadComponent component={ChangePassword} /> },
                 { path: 'activate-user/:code', element: <LoadComponent component={ActivateUser} /> },

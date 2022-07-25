@@ -10,8 +10,8 @@ import { configureStore } from './redux/store';
 import 'react-toastify/dist/ReactToastify.css';
 import {ToastContainer} from "react-toastify";
 import {toastService} from "./services/toast";
+import {socketsService} from "./services/sockets";
 import Loading from "./components/Loading";
-import {socket} from "./helpers/sockets";
 import {APICore} from "./helpers/api/apiCore";
 
 toastService.init().subscribe((data) => {
@@ -21,10 +21,13 @@ toastService.init().subscribe((data) => {
 const api = new APICore();
 const user = api.getLoggedInUser();
 
+socketsService.init().subscribe(() => {
+
+});
+
 if(user){
-    socket.private('notifications.'+user.id).listen('Notifications', (notification) => {
-        toastService.show('info', notification.message);
-    });
+    socketsService.setConnection(user);
+    socketsService.notifications();
 }
 
 ReactDOM.render(

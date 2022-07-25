@@ -11,6 +11,7 @@ import {
 import { APICore, setAuthorization } from '../../helpers/api/apiCore';
 import { authApiResponseSuccess, authApiResponseError } from './actions';
 import { AuthActionTypes } from './constants';
+import {socketsService} from "../../services/sockets";
 
 const api = new APICore();
 
@@ -47,6 +48,8 @@ function* logout() {
         yield call(logoutApi);
         api.setLoggedInUser(null);
         setAuthorization(null);
+        socketsService.disconnect();
+
         yield put(authApiResponseSuccess(AuthActionTypes.LOGOUT_USER, {}));
     } catch (error) {
         yield put(authApiResponseError(AuthActionTypes.LOGOUT_USER, error));

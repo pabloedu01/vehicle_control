@@ -23,8 +23,14 @@ const BottomLink = () => {
     return (
         <footer className="footer footer-alt">
             <p className="text-muted">
-                {t("Don't have an account?")}{' '}
+                {t("Don't have an company?")}{' '}
                 <Link to={'/register'} className="text-muted ms-1">
+                    <b>{t('Cadastro Company')}</b>
+                </Link>
+            </p>
+            <p className="text-muted">
+                {t("Don't have an account?")}{' '}
+                <Link to={'/user-register'} className="text-muted ms-1">
                     <b>{t('Cadastro')}</b>
                 </Link>
             </p>
