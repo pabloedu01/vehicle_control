@@ -23,7 +23,7 @@
 
 <IfModule mod_headers.c>
     Header set Access-Control-Allow-Origin: "*"
-    Header set Access-Control-Allow-Headers: "accept, origin, Content-type, x-json, x-prototype-version, x-requested-with, x-auth-token, x-auth-uid"
+    Header set Access-Control-Allow-Headers: "accept, origin, Content-type, x-json, x-prototype-version, x-requested-with, x-auth-token, x-auth-uid, Authorization"
     Header set Access-Control-Allow-Methods "PUT, GET, POST, DELETE, OPTIONS"
 </IfModule>
 
