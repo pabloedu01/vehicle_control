@@ -2,30 +2,30 @@ version: '3.8'
 
 services:
   tunap_postgres:
-      image: postgres:12.10
-      environment:
-        POSTGRES_USERNAME: ${DB_USERNAME}
-        POSTGRES_PASSWORD: ${DB_PASSWORD}
-        POSTGRES_DB: ${DB_DATABASE}
-      volumes:
-        - ./laravel_docker/postgres-data:/var/lib/postgresql/data
-        - ./../create_database/postgres.sql:/docker-entrypoint-initdb.d/init.sql
-      ports:
-        - '54322:5432'
-      networks:
-        - default
-    tunap_mongodb:
-      image: mongo:4.4
-      container_name: 'tunap_mongodb'
-      environment:
-        - MONGO_INITDB_ROOT_USERNAME=${DB_MONGO_USERNAME}
-        - MONGO_INITDB_ROOT_PASSWORD=${DB_MONGO_PASSWORD}
-      volumes:
-        - ./laravel_docker/mongo-data:/data/db
-      ports:
-        - "57017:27017"
-      networks:
-        - default
+    image: postgres:12.10
+    environment:
+      POSTGRES_USERNAME: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    volumes:
+      - ./laravel_docker/postgres-data:/var/lib/postgresql/data
+      - ./../create_database/postgres.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - '54322:5432'
+    networks:
+      - default
+  tunap_mongodb:
+    image: mongo:4.4
+    container_name: 'tunap_mongodb'
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${DB_MONGO_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_MONGO_PASSWORD}
+    volumes:
+      - ./laravel_docker/mongo-data:/data/db
+    ports:
+      - "57017:27017"
+    networks:
+      - default
   tunap_php_apache:
     build:
       context: ./
