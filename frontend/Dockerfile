@@ -9,6 +9,10 @@ COPY yarn.lock ./
 
 COPY . .
 
-RUN yarn install --network-timeout 100000
+RUN yarn config delete proxy
+RUN npm config rm proxy
+RUN npm config rm https-proxy
+
+RUN yarn --no-lockfile --network-timeout 100000
 
 #EXPOSE 3000
