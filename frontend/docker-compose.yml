@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  tunap_node:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    command: 'yarn start'
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    ports:
+      - ${REACT_APP_PORT}:3000
+    networks:
+      - default
