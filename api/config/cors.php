@@ -31,4 +31,19 @@ return [
 
     'supports_credentials' => true,
 
+
+    'allowedMethods' => ['*'],
+
+    'allowedOrigins' => ['*'],
+
+    'allowedOriginsPatterns' => [],
+
+    'allowedHeaders' => ['*'],
+
+    'exposedHeaders' => [],
+
+    'maxAge' => 0,
+
+    'supportsCredentials' => true,
+
 ];
