@@ -26,7 +26,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         yup.object().shape({
             brand_id: yup.number().required('Por favor, digite Marca'),
             model_id: yup.number().required('Por favor, digite Modelo'),
-            model_year: yup.number().required('Por favor, digite Ano'),
+            model_year: yup.string().required('Por favor, digite Ano'),
             name: yup.string().required('Por favor, digite Nome Completo'),
             active: yup.boolean(),
         })
