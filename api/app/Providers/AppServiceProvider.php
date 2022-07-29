@@ -26,11 +26,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        \URL::forceRootUrl(\Config::get('app.url'));
+        /*\URL::forceRootUrl(\Config::get('app.url'));
 
         if (str_contains(\Config::get('app.url'), 'https://')) {
             \URL::forceScheme('https');
-        }
+        }*/
 
         \Queue::failing(function (JobFailed $event) {
             \Log::error('JobFailed. ' . json_encode(['connectionName' => $event->connectionName, 'job' => $event->job, 'exception' => $event->exception]));
