@@ -18,7 +18,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $validator = validate($request->all(), [
-            'username' => 'required|max:20',
+            'username' => 'required|max:100',
             'password' => 'required|max:20',
         ]);
 
@@ -346,7 +346,7 @@ class AuthController extends Controller
         if($result instanceof UserVerificationCode)
         {
             $validator = validate($request->all(), [
-                'password'        => 'required|string|min:6|max:12',
+                'password'        => 'required|string|min:6|max:20',
                 'repeat_password' => 'required|same:password',
             ]);
 

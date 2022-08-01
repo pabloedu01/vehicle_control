@@ -18,6 +18,11 @@ class TestController extends Controller
         dd(\Mail::to('migueljosecontreras@gmail.com')
                 ->send($email));*/
 
+        \Mail::send('test', [ 'content' => 'this is a test message' ], function($message){
+            $message->to(env('MAIL_FROM_ADDRESS_DEBUG'))
+                    ->subject('test');
+        });
+
 
         /*dispatch(new SendEmailJob([
                                       'to' => 'migueljosecontreras@gmail.com', 'code' => 'codigo'

@@ -25,7 +25,7 @@ class RecoverPasswordEmail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Recover Password')
+        return $this->subject('Recuperação de senha')
                     ->with(array_merge($this->data, ['url' => env('APP_URL_FRONTEND', '').'/change-password/'.$this->data['code']]))
                     ->view('email.recoverPassword');
     }
