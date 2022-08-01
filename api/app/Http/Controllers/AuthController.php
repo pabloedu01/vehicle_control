@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\UserVerificationCode;
 use App\Rules\CNPJ;
 use App\Rules\CPF;
+use App\Rules\Password;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -346,7 +347,7 @@ class AuthController extends Controller
         if($result instanceof UserVerificationCode)
         {
             $validator = validate($request->all(), [
-                'password'        => 'required|string|min:6|max:20',
+                'password'        => ['required', 'string', 'min:6', 'max:20', new Password],
                 'repeat_password' => 'required|same:password',
             ]);
 

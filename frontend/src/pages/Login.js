@@ -100,21 +100,22 @@ const Login2 = () => {
 
                 <VerticalForm onSubmit={onSubmit} resolver={schemaResolver}>
                     <FormInput
-                        label={t('Username')}
+                        label="Username ou E-mail"
                         type="text"
                         name="username"
-                        placeholder={t('Enter your Username')}
+                        placeholder="Digite seu Username ou E-mail"
                         containerClass={'mb-3'}
                         value={user}
                         onChange={(e) => setuser(e.target.value)}
                     />
                     <FormInput
-                        label={t('Password')}
+                        label="Password"
                         type="password"
                         name="password"
-                        placeholder={t('Enter your password')}
+                        placeholder="Digite seu Password"
                         onChange={(e) => setPass(e.target.value)}
-                        containerClass={'mb-3'}></FormInput>
+                        containerClass={'mb-3'}
+                    />
 
                     <div className="d-grid mb-0 text-center">
                         <Button variant="primary" type="submit" disabled={loading}>

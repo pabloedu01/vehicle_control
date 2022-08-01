@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Casts\Bcrypt;
 use App\Observers\LogObserver;
 use App\Observers\UserObserver;
+use App\Rules\Password;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -52,7 +53,7 @@ class User extends Authenticatable implements JWTSubject
             'phone'    => 'nullable|string',
             'email'    => 'required|email|unique:users,email',
             'username' => 'required|string|unique:users,username',
-            'password' => 'required|string|min:6|max:12',
+            'password' => ['required', 'string', 'min:6', 'max:20', new Password],
         ];
     }
 
