@@ -109,7 +109,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                     methods.clearErrors('fileImage');
                 }
             }, (error) => {
-                methods.setError('fileImage', {type: 'custom', message: error.response.data.errors.image.join('<br>')});
+                methods.setError('fileImage', {type: 'custom', message: error.response.status+'<br>'+error.response.data.message });
                 methods.setValue('image', data?.image ?? null);
                 methods.setValue('fileImage', null);
                 setImagePreview(data?.image ?? null);

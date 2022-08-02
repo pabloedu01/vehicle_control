@@ -15,7 +15,8 @@ yarn-error.log
 /.vscode
 _ide_helper.php
 _ide_helper_models.php
-/laravel_docker
+/laravel_docker/mongo-data
+/laravel_docker/postgres-data
 app/Http/Controllers/ExampleController.php
 app/Http/Routes/ExampleRoute.php
 app/Models/ExampleModel.php
