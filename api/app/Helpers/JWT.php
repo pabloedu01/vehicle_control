@@ -7,17 +7,17 @@
  */
 function validate_jwt_signature($token){
     $jwt = get_jwt_parts($token);
-    
+
     $my_signature = base64_url_encode(hash_hmac('sha256', $jwt['header'].'.'.$jwt['payload'], env('JWT_SECRET'), true));
-    
+
     return $jwt['signature'] == $my_signature;
 }
 
 function validate_jwt_expire_data($token){
     $payload = get_jwt_payload($token);
-    
+
     $expire_date = $payload['exp'];
-    
+
     return time() <= $expire_date;
 }
 
@@ -31,7 +31,7 @@ function get_jwt_payload($token){
 
 function get_jwt_parts($token){
     $token_parts = explode('.', $token);
-    
+
     return [
         'header' => $token_parts[0],
         'payload' => $token_parts[1],

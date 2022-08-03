@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\SendEmailJob;
 use App\Mail\RecoverPasswordEmail;
+use App\Mail\WelcomeEmail;
 use App\Models\Company;
 use App\Models\Token;
 use App\Models\User;
@@ -178,38 +179,74 @@ class AuthController extends Controller
 
     public function registerUser(Request $request)
     {
-        $validator = validate($request->all(), User::rules());
+        $userNotActive = null;
 
-        if($validator->fails())
+        if($request->has('email') && $request->has('username'))
         {
-            return response()->json([
-                                        'msg'    => trans('general.msg.invalidData'),
-                                        'errors' => $validator->errors(),
-                                    ],
-                                    Response::HTTP_BAD_REQUEST
-            );
+            $userNotActive = User::where('email', '=', $request->email)
+                                 ->where('username', '=', $request->username)
+                                 ->where('active', '=', false)
+                                 ->first();
         }
 
-        $user = new User($request->only(User::getFillables()));
-        $user->privilege = 'client';
-
-        if(secureSave($user))
+        if(is_null($userNotActive))
         {
-            return response()
-                ->json([
-                           'msg'     => trans('general.msg.success'),
-                           'data'    => $user,
-                       ],
-                       Response::HTTP_CREATED
+            $validator = validate($request->all(), User::rules());
+
+            if($validator->fails())
+            {
+                return response()->json([
+                                            'msg'    => trans('general.msg.invalidData'),
+                                            'errors' => $validator->errors(),
+                                        ],
+                                        Response::HTTP_BAD_REQUEST
                 );
+            }
+
+            $user            = new User($request->only(User::getFillables()));
+            $user->privilege = 'client';
+
+            if(secureSave($user))
+            {
+                return response()
+                    ->json([
+                               'msg'  => trans('general.msg.success'),
+                               'data' => $user,
+                           ],
+                           Response::HTTP_CREATED
+                    );
+            }
+            else
+            {
+                return response()
+                    ->json([
+                               'msg' => trans('general.msg.error'),
+                           ],
+                           Response::HTTP_INTERNAL_SERVER_ERROR
+                    );
+            }
         }
         else
         {
+            $code = \Str::random();
+            if(UserVerificationCode::create([
+                                                'code'    => $code,
+                                                'user_id' => $userNotActive->id,
+                                            ]))
+            {
+                dispatch(new SendEmailJob([
+                                              'to'   => $userNotActive->email,
+                                              'code' => $code,
+                                          ],
+                                          WelcomeEmail::class));
+            }
+
             return response()
                 ->json([
-                           'msg' => trans('general.msg.error'),
+                           'msg'  => trans('general.msg.success'),
+                           'data' => $userNotActive,
                        ],
-                       Response::HTTP_INTERNAL_SERVER_ERROR
+                       Response::HTTP_CREATED
                 );
         }
     }

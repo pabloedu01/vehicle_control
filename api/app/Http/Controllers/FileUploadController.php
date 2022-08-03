@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Client;
 use App\Models\TemporalFile;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -55,6 +54,28 @@ class FileUploadController extends Controller
                                     ],
                                     Response::HTTP_BAD_REQUEST
             );
+        }
+
+        if($type == 'image'){
+            try{
+                $newWidth = 300;
+
+                $image = \Image::make($file->getRealPath());
+
+                if($image->filesize()/(1000*1000) >= 3){
+                    $currentWidth = $image->getWidth();
+
+                    if($currentWidth > $newWidth){
+                        $image->resize($newWidth, null, function ($constraint) {
+                            $constraint->aspectRatio();
+                        });
+
+                        $image->save();
+                    }
+                }
+            }catch(\Exception $e){
+
+            }
         }
 
         if($filename = $file->store(TemporalFile::$path))

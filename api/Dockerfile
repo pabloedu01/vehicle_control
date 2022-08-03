@@ -11,6 +11,9 @@ RUN apt-get update \
             libssh2-1 \
             curl \
             libcurl4-gnutls-dev \
+            libfreetype6-dev \
+            libjpeg62-turbo-dev \
+            libjpeg-dev \
             libpng-dev \
             libbz2-dev \
             libxml2-dev \
@@ -18,6 +21,7 @@ RUN apt-get update \
             libldap2-dev \
             nano \
             iputils-ping \
+        && docker-php-ext-configure gd --with-freetype-dir=/usr/include --with-jpeg-dir=/usr/include --with-png-dir=/usr/include \
         && docker-php-ext-install \
             intl \
             curl \
