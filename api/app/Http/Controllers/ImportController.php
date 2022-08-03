@@ -62,19 +62,19 @@ class ImportController extends Controller
 
         $rows = array_merge(...(new DataCompanyImport)->toArray($file));
 
-        $companiesGroupedById = Company::whereHas('users', function($query){
+        $companiesGroupedByCode = Company::whereHas('users', function($query){
             return $query->where('users.id', '=', \Auth::user()->id);
         })->get()
-                                       ->keyBy('id');
+                                       ->keyBy('integration_code');
 
-        $brandsGroupedByCompanyAndName = VehicleBrand::whereIn('company_id', $companiesGroupedById->keys()->toArray())
+        $brandsGroupedByCompanyAndName = VehicleBrand::whereIn('company_id', $companiesGroupedByCode->pluck('id')->toArray())
                                                      ->where('code', '=', 'toyota')
                                                      ->get()
                                                      ->groupBy('company_id')->map(function($models){
                 return $models->keyBy('code');
             });
 
-        $modelsGroupedByCompanyAndName = VehicleModel::whereIn('company_id', $companiesGroupedById->keys()->toArray())
+        $modelsGroupedByCompanyAndName = VehicleModel::whereIn('company_id', $companiesGroupedByCode->pluck('id')->toArray())
                                                      ->whereHas('brand', function($query){
                                                          return $query->where('code', '=', 'toyota');
                                                      })
@@ -85,7 +85,7 @@ class ImportController extends Controller
                 return $models->keyBy('key');
             });
 
-        $vehiclesGroupedByCompanyAndModelIdAndName = Vehicle::whereIn('company_id', $companiesGroupedById->keys()->toArray())
+        $vehiclesGroupedByCompanyAndModelIdAndName = Vehicle::whereIn('company_id', $companiesGroupedByCode->pluck('id')->toArray())
                                                             ->whereHas('brand', function($query){
                                                                 return $query->where('code', '=', 'toyota');
                                                             })
@@ -99,7 +99,7 @@ class ImportController extends Controller
             });
 
         $clientVehiclesGroupedByCompanyAndModelIdAndName = ClientVehicle::with(['vehicle'])
-                                                                        ->whereIn('company_id', $companiesGroupedById->keys()->toArray())
+                                                                        ->whereIn('company_id', $companiesGroupedByCode->pluck('id')->toArray())
                                                                         ->whereHas('vehicle', function($query){
                                                                             return $query->whereHas('brand', function($query){
                                                                                 return $query->where('code', '=', 'toyota');
@@ -120,7 +120,7 @@ class ImportController extends Controller
                 });
             });
 
-        $clientsGroupedByCompanyAndName = Client::whereIn('company_id', $companiesGroupedById->keys()->toArray())
+        $clientsGroupedByCompanyAndName = Client::whereIn('company_id', $companiesGroupedByCode->pluck('id')->toArray())
                                                 ->get()->map(function($client){
                 $client->key = \Str::slug($client->name);
                 return $client;
@@ -130,7 +130,7 @@ class ImportController extends Controller
 
         foreach($rows as $row)
         {
-            $company = @$companiesGroupedById[$row['filial']];
+            $company = @$companiesGroupedByCode[$row['filial']];
 
             if($company)
             {

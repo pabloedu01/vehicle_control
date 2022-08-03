@@ -18,6 +18,7 @@ class Company extends Base
         'province',
         'address_1',
         'address_2',
+        'integration_code'
     ];
 
     protected $changingColumns = [
@@ -27,14 +28,15 @@ class Company extends Base
     public static function rules()
     {
         return [
-            'name'      => 'required|string|max:100',
-            'cnpj'      => [ 'nullable', 'prohibits:cpf', new CNPJ, 'unique:companies,cnpj' ],
-            'cpf'       => [ 'required_without:cnpj', new CPF, 'unique:companies,cpf' ],
-            'country'   => 'required|string|max:100',
-            'city'      => 'required|string|max:100',
-            'province'  => 'required|string|max:100',
-            'address_1' => 'nullable|string',
-            'address_2' => 'nullable|string',
+            'name'             => 'required|string|max:100',
+            'cnpj'             => [ 'nullable', 'prohibits:cpf', new CNPJ, 'unique:companies,cnpj' ],
+            'cpf'              => [ 'required_without:cnpj', new CPF, 'unique:companies,cpf' ],
+            'country'          => 'required|string|max:100',
+            'city'             => 'required|string|max:100',
+            'province'         => 'required|string|max:100',
+            'address_1'        => 'nullable|string',
+            'address_2'        => 'nullable|string',
+            'integration_code' => 'nullable|string',
         ];
     }
 
