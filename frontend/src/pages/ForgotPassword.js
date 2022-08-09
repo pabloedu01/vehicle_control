@@ -88,9 +88,9 @@ const Register = () => {
         <>
             <AccountLayout bottomLinks={<BottomLink />}>
                 <div className="text-center w-75 m-auto">
-                    <h4 className="text-dark-50 text-center mt-0 fw-bold">Recover Password</h4>
+                    <h4 className="text-dark-50 text-center mt-0 fw-bold">Recupere sua senha</h4>
                     <p className="text-muted mb-4">
-                        Olvidó su contraseña,recuperéla, leva menos de um minuto.
+                        Recuperar sua senha leva menos de um minuto!
                     </p>
                 </div>
 
@@ -105,7 +105,7 @@ const Register = () => {
 
                     <div className="mb-3 mb-0 text-center">
                         <Button variant="primary" type="submit">
-                            Recover
+                            Recuperar
                         </Button>
                     </div>
                 </VerticalForm>
