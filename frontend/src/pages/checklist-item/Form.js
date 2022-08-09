@@ -138,7 +138,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         <>
             <PageTitle
                 breadCrumbItems={[
-                    { label: 'Lista de verificação', path: '/panel/checklist-items/list' },
+                    { label: 'Itens do checklist', path: '/panel/checklist-items/list' },
                     { label: 'Cadastro do Iten', path: `/panel/checklist-items/${id ? id + '/edit' : 'create'}`, active: true },
                 ]}
                 insideCompany={false}
