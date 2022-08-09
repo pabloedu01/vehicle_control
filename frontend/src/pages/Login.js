@@ -23,21 +23,21 @@ const BottomLink = () => {
     return (
         <footer className="footer footer-alt">
             <p className="text-muted">
-                {t("Don't have an company?")}{' '}
+                {t("Sua empresa ainda não está cadastrada?")}{' '}
                 <Link to={'/register'} className="text-muted ms-1">
-                    <b>{t('Cadastro Company')}</b>
+                    <b>{t('Cadastre sua empresa')}</b>
                 </Link>
             </p>
             <p className="text-muted">
-                {t("Don't have an account?")}{' '}
+                {t("Você não tem uma conta?")}{' '}
                 <Link to={'/user-register'} className="text-muted ms-1">
-                    <b>{t('Cadastro')}</b>
+                    <b>{t('Cadastre sua conta')}</b>
                 </Link>
             </p>
             <p className="text-muted">
-                {t("Forgot Password?")}{' '}
+                {t("Perdeu sua senha?")}{' '}
                 <Link to={'/forgot-password'} className="text-muted ms-1">
-                    <b>{t('Recover Password')}</b>
+                    <b>{t('Recupere sua senha')}</b>
                 </Link>
             </p>
         </footer>
