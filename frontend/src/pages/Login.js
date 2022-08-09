@@ -90,7 +90,7 @@ const Login2 = () => {
         <>
             <AccountLayout bottomLinks={<BottomLink />}>
                 <h4 className="mt-0">Log In</h4>
-                <p className="text-muted mb-4">{t('Digite seu email e conta para acessar o sistema.')}</p>
+                <p className="text-muted mb-4">{t('Digite seu usuário ou email para acessar o sistema.')}</p>
 
                 {error && (
                     <Alert variant="danger" className="my-2">
@@ -100,26 +100,26 @@ const Login2 = () => {
 
                 <VerticalForm onSubmit={onSubmit} resolver={schemaResolver}>
                     <FormInput
-                        label="Username ou E-mail"
+                        label="Usuário ou E-mail"
                         type="text"
                         name="username"
-                        placeholder="Digite seu Username ou E-mail"
+                        placeholder="Digite seu Usuário ou E-mail"
                         containerClass={'mb-3'}
                         value={user}
                         onChange={(e) => setuser(e.target.value)}
                     />
                     <FormInput
-                        label="Password"
+                        label="Senha"
                         type="password"
                         name="password"
-                        placeholder="Digite seu Password"
+                        placeholder="Digite sua Senha"
                         onChange={(e) => setPass(e.target.value)}
                         containerClass={'mb-3'}
                     />
 
                     <div className="d-grid mb-0 text-center">
                         <Button variant="primary" type="submit" disabled={loading}>
-                            <i className="mdi mdi-login"></i> {t('Log In')}
+                            <i className="mdi mdi-login"></i> {t('Acessar')}
                         </Button>
                     </div>
                 </VerticalForm>
