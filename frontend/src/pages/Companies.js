@@ -29,8 +29,8 @@ const Companies = (): React$Element<React$FragmentType> => {
         <>
             <PageTitle
                 breadCrumbItems={[
-                    { label: 'Companies', path: '/panel/companies' },
-                    { label: 'Empresas', path: '/panel/companies', active: true },
+                    { label: 'Empresas', path: '/panel/companies' },
+                    { label: 'Lista de empresas', path: '/panel/companies', active: true },
                 ]}
                 title={'Empresas'}
                 insideCompany={false}
