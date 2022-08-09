@@ -41,8 +41,8 @@ const Logout2 = (): React$Element<any> | React$Element<React$FragmentType> => {
         <>
             <AccountLayout bottomLinks={<BottomLink />}>
                 <div className="text-center">
-                    <h4 className="mt-0">{t('See You Again !')}</h4>
-                    <p className="text-muted mb-4">{t('You are now successfully sign out.')}</p>
+                    <h4 className="mt-0">{t('Até a próxima !')}</h4>
+                    <p className="text-muted mb-4">{t('Você saiu com sucesso.')}</p>
                 </div>
 
                 <div className="logout-icon m-auto">
