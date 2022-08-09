@@ -70,14 +70,14 @@ const SideBarContent = ({ hideUserProfile, layout }: SideBarContentProps) => {
             if(user?.privilege === 'admin'){
                 menuItems.push({
                     key: 'checklistItem.index',
-                    label: 'Lista de Verificação',
+                    label: 'Itens do checklist',
                     url: '/panel/checklist-items/list',
                     icon: 'mdi mdi-playlist-check',
                 });
 
                 menuItems.push({
                     key: 'checklistVersion.index',
-                    label: 'Versão da Lista de Verificação',
+                    label: 'Versões do checklist',
                     url: '/panel/checklist-versions/list',
                     icon: 'mdi mdi-playlist-edit',
                 });
