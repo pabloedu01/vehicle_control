@@ -51,6 +51,10 @@ Route::group([
                          'middleware' => [ 'checklistVersion' ],
                      ], function(){
 
+            Route::get('stages', [
+                'uses' => 'ChecklistVersionController@stages',
+            ]);
+
             Route::post('report', [
                 'uses' => 'ChecklistVersionController@storeReport',
             ]);

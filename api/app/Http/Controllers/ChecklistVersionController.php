@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Jobs\SendEmailJob;
 use App\Mail\ChecklistReportEmail;
+use App\Models\ChecklistItem;
 use App\Models\ChecklistReport;
 use App\Models\ChecklistVersion as Version;
+use App\Models\ChecklistVersionStage;
 use App\Models\VehicleService;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -43,6 +45,46 @@ class ChecklistVersionController extends Controller
         $version = Version::withoutGlobalScope('simpleColumns')
                           ->where('id', '=', $id)
                           ->first();
+
+        return response()->json([
+                                    'msg'  => trans('general.msg.success'),
+                                    'data' => $version,
+                                ],
+                                Response::HTTP_OK
+        );
+    }
+
+    public function stages(Request $request, $id)
+    {
+        $version = Version::withoutGlobalScope('simpleColumns')
+                          ->where('id', '=', $id)
+                          ->first();
+
+        $versionStages = ChecklistVersionStage::with(['items'])
+                                              ->where('checklist_version_id', '=', $version->id)
+                                              ->get();
+
+
+        $stages = $versionStages->map(function($stage){
+           return [
+             'id' => $stage->id,
+             'name' => $stage->name,
+             'list' => $stage->items->map(function($item){
+                return [
+                  'id' => $item->id,
+                  'name' => $item->name,
+                  'validation' => $item->validation,
+                ];
+             })
+           ];
+        });
+
+        $available = ChecklistItem::where('active', '=', true)
+            ->whereNotIn('id', array_merge(...$versionStages->map(function($stage){return $stage->items->pluck('id')->toArray();})->toArray()))
+                                       ->get();
+
+        $version->available = $available;
+        $version->stages = $stages;
 
         return response()->json([
                                     'msg'  => trans('general.msg.success'),
@@ -363,6 +405,14 @@ class ChecklistVersionController extends Controller
 
         if(secureSave($version))
         {
+            foreach($request->stages as $stage){
+                $version->stages()->create([
+                                               'name' => $stage['name']
+                                           ])
+                        ->items()
+                        ->sync(array_column(@$stage['list'] ?? [],'id'));
+            }
+
             return response()->json([
                                         'msg'  => trans('general.msg.success'),
                                         'data' => $version,
@@ -400,6 +450,17 @@ class ChecklistVersionController extends Controller
 
         if(!$version->hasAppliedChanges() || secureSave($version))
         {
+            ChecklistVersionStage::where('checklist_version_id', '=', $version->id)->delete();
+
+            foreach($request->stages as $stage)
+            {
+                $version->stages()->create([
+                                               'name' => $stage['name'],
+                                           ])
+                        ->items()
+                        ->sync(array_column(@$stage['list'] ?? [], 'id'));
+            }
+
             return response()->json([
                                         'msg'  => trans('general.msg.success'),
                                         'data' => $version,

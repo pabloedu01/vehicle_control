@@ -20,6 +20,19 @@ class ChecklistItemController extends Controller
         );
     }
 
+    public function activeItems(Request $request)
+    {
+        $checklistItems = ChecklistItem::where('active', '=', true)
+                                       ->get();
+
+        return response()->json([
+                                    'msg' => trans('general.msg.success'),
+                                    'data' => $checklistItems,
+                                ],
+                                Response::HTTP_OK
+        );
+    }
+
     public function show(Request $request, $id)
     {
         $checklistItem = ChecklistItem::where('id', '=', $id)

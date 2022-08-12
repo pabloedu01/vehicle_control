@@ -13,6 +13,11 @@ Route::group([
         'uses' => 'ChecklistItemController@index',
     ]);
 
+    #obtener listado activo
+    Route::get('active-checklist-items', [
+        'uses' => 'ChecklistItemController@activeItems',
+    ]);
+
     #guardar
     Route::post('/', [
         'uses' => 'ChecklistItemController@store',

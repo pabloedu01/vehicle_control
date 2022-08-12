@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Casts\Json;
+use App\Rules\ChecklistVersionStages;
 
 class ChecklistVersion extends Base
 {
@@ -203,6 +204,7 @@ class ChecklistVersion extends Base
             'name'        => 'required|string|max:100',
             'description' => 'nullable|string',
             'active'      => 'required|boolean',
+            'stages'      => ['required', 'array', new ChecklistVersionStages],
             'report'      => 'nullable|array',
         ];
     }
@@ -211,6 +213,12 @@ class ChecklistVersion extends Base
     public function serviceSchedules()
     {
         return $this->hasMany('App\Models\ServiceSchedule', 'checklist_version_id', 'id');
+    }
+
+    #has many
+    public function stages()
+    {
+        return $this->hasMany('App\Models\ChecklistVersionStage', 'checklist_version_id', 'id');
     }
 }
 
