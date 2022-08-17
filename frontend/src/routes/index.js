@@ -49,6 +49,7 @@ const ServiceScheduleWizard = React.lazy(() => import('../pages/service-schedule
 const ClientList = React.lazy(() => import('../pages/client/List'));
 const ClientForm = React.lazy(() => import('../pages/client/Form'));
 
+const Checklist = React.lazy(() => import('../pages/checklist/List'));
 const ChecklistForm = React.lazy(() => import('../pages/checklist/Form'));
 
 const ChecklistItemList = React.lazy(() => import('../pages/checklist-item/List'));
@@ -454,6 +455,16 @@ const AllRoutes = () => {
 
                 {
                     path: ':type/:id/checklist',
+                    element: <LoadComponent component={Checklist} />,
+                },
+
+                {
+                    path: ':type/:id/checklist/create/:checklistVersionId',
+                    element: <LoadComponent component={ChecklistForm} />,
+                },
+
+                {
+                    path: ':type/:id/checklist/:checklistId/edit',
                     element: <LoadComponent component={ChecklistForm} />,
                 },
             ]

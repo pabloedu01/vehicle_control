@@ -1,7 +1,7 @@
 // @flow
 import React, {useEffect, useState} from 'react';
 import PageTitle from "../../components/PageTitle";
-import {Button, Card, Col, Row, Form, Alert} from "react-bootstrap";
+import {Button, Card, Col, Row, Form, Alert, ProgressBar} from "react-bootstrap";
 import {APICore} from "../../helpers/api/apiCore";
 import {useNavigate, useParams} from "react-router-dom";
 import moment from 'moment';
@@ -10,17 +10,19 @@ import FileUpload from "../../components/FileUpload";
 import SignatureCanvas from 'react-signature-canvas';
 import {dataURLtoFile, toDataURL} from "../../utils/file";
 import swal from "sweetalert";
+import {Step, Steps, Wizard} from "react-albus";
 
 const api = new APICore();
 
 const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType> => {
     const history = useNavigate();
-    const {id, type} = useParams();
+    const {id, type, checklistVersionId} = useParams();
     const [data, setData] = useState();
     const [checklistData, setChecklistData] = useState({});
     const [observationsData, setObservationsData] = useState({});
     const [evidences, setEvidences] = useState({});
     const [checklistVersion, setChecklistVersion] = useState(null);
+    const [checklistItems, setChecklistItems] = useState([]);
     const [errors, setErrors] = useState(null);
     const [showFileUpload, setShowFileUpload] = useState(false);
     const [fileUploadData, setFileUploadData] = useState([]);
@@ -50,16 +52,9 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
             "client_signature_date": clientSignatureStarted ? moment().utc().format('YYYY-MM-DDTHH:mm:00+00:00') : (data.vehicleService?.client_signature_date ? moment(data.vehicleService?.client_signature_date).utc().format('YYYY-MM-DDTHH:mm:00+00:00') : (clientSignatureDate ? moment(clientSignatureDate).utc().format('YYYY-MM-DDTHH:mm:00+00:00') : null)),
             "technical_consultant_signature": technicalConsultantSignatureImage,
             "technical_consultant_signature_date": technicalConsultantSignatureStarted ? moment().utc().format('YYYY-MM-DDTHH:mm:00+00:00') : (data.vehicleService?.technical_consultant_signature_date ? moment(data.vehicleService?.technical_consultant_signature_date).utc().format('YYYY-MM-DDTHH:mm:00+00:00') : (technicalConsultantSignatureDate ? moment(technicalConsultantSignatureDate).utc().format('YYYY-MM-DDTHH:mm:00+00:00') : null)),
-            "fuel": checklistData[(checklistVersion?.items || []).find((item) => item.code === 'fuel')?.id] ?? null,
-            "mileage": checklistData[(checklistVersion?.items || []).find((item) => item.code === 'mileage')?.id] ?? null,
-            "checklist": Object.keys(checklistData).map((id) => {
-                return {
-                    id,
-                    value: checklistData[id] !== '' ? checklistData[id] : null,
-                    observations: observationsData.hasOwnProperty(id) && observationsData[id] !== '' ? observationsData[id] : null,
-                    evidence: evidences.hasOwnProperty(id) && evidences[id] !== null && evidences[id].length > 0 ? evidences[id].map((file) => typeof file === 'string' ? file : file?.id) : null,
-                };
-            })
+            "fuel": getChecklistItemValue('fuel'),
+            "mileage": getChecklistItemValue('mileage'),
+            "checklist": Object.keys(checklistData).map((id) => getFormattedChecklist(id))
         };
 
         switch(type){
@@ -120,6 +115,27 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
         });
     };
 
+    const getChecklistItemValue = (code) => {
+        const item = checklistItems.find((item) => item.code === code);
+
+        function getValue(type, value){
+            return type !== 'boolean' ? (value !== '' ? value : null) : (value ?? false);
+        }
+
+        return item ? getValue(item.validation.type, checklistData[item.id]) : null;
+    };
+
+    const getFormattedChecklist = (id) => {
+        const item = checklistItems.find((item) => item.id === parseInt(id, 10));
+
+        return {
+            id,
+            value: getChecklistItemValue(item.code),
+            observations: observationsData.hasOwnProperty(id) && observationsData[id] !== '' ? observationsData[id] : null,
+            evidence: evidences.hasOwnProperty(id) && evidences[id] !== null && evidences[id].length > 0 ? evidences[id].map((file) => typeof file === 'string' ? file : file?.id) : null,
+        }
+    };
+
     const uploadSignatures = () => {
         const files = [];
 
@@ -170,10 +186,14 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
     };
 
     const getChecklistVersion = (checklistVersionId) => {
-        api.get('/checklist-version/' + checklistVersionId + '/items').then((response) => {
+        api.get('/checklist-version/' + checklistVersionId + '/details').then((response) => {
             setChecklistVersion(response.data.data);
+            setData({...data, checklistVersion: response.data.data});
+            setChecklistItems([].concat(...response.data.data.stages.filter((stage) => stage.items.length > 0).map((stage) => stage.items)));
         },(error) => {
             setChecklistVersion(null);
+            setChecklistItems([]);
+            setData({...data, checklistVersion: null});
         });
     };
 
@@ -190,15 +210,13 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
             ajaxCall.then((response) => {
                 switch(type){
                     case 'service-schedules':
-                        const {checklist_version: checklistVersion,client_vehicle:{vehicle,vehicle: {model: {brand}}}, client, vehicle_service : vehicleService, technical_consultant: technicalConsultant} = response.data.data;
-
-                        getChecklistVersion(checklistVersion.id);
+                        const {client_vehicle:{vehicle,vehicle: {model: {brand}}}, client, vehicle_service : vehicleService, technical_consultant: technicalConsultant} = response.data.data;
 
                         setClientSignatureImage(vehicleService?.client_signature);
                         setTechnicalConsultantSignatureImage(vehicleService?.technical_consultant_signature);
                         setClientSignatureDate(vehicleService?.client_signature_date);
                         setTechnicalConsultantSignatureDate(vehicleService?.technical_consultant_signature_date);
-                        setData({brand, client, vehicleService, checklistVersion, technicalConsultant, vehicle});
+                        setData({brand, client, vehicleService, technicalConsultant, vehicle});
                         setDrawSignatures(true);
                         break;
                     default:
@@ -272,6 +290,40 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
         return width;
     };
 
+    const onNext = (items,next) => {
+        if(items.length > 0){
+            api.post('/checklist-version/' + checklistVersion.id + '/validations', {checklist: items.map((item) => getFormattedChecklist(item.id))}).then(() => {
+                setErrors(null);
+
+                if(next){
+                    next();
+                }
+            }).catch((error) => {
+                if(error.hasOwnProperty('response') && error.response?.status === 400 && error.response?.data.hasOwnProperty('errors')){
+                    const errors = [];
+
+                    Object.keys(error.response.data.errors).forEach((key) => {
+                        error.response.data.errors[key].forEach((message) => {
+                            if(typeof message === 'string'){
+                                errors.push(message);
+                            } else {
+                                message.forEach((text) => {
+                                    errors.push(text);
+                                });
+                            }
+                        });
+                    });
+
+                    setErrors(errors);
+                }
+            })
+        } else {
+            if(next){
+                next();
+            }
+        }
+    };
+
     useEffect(() => {
         const newChecklistData = {};
 
@@ -280,7 +332,7 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                 const newObservationsData = {};
                 const newEvidences = {};
                 (data.vehicleService?.items || []).forEach((item) => {
-                    if((checklistVersion?.items || []).find((checklistVersionItem) => checklistVersionItem.id === item.id)){
+                    if((checklistItems).find((checklistVersionItem) => checklistVersionItem.id === item.id)){
                         switch(item.validation.type){
                             case 'boolean':
                                 newChecklistData[item.id] = Boolean(parseInt(item?.pivot.value, 0) ?? false);
@@ -308,7 +360,7 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
             }
         }
         else{
-            (checklistVersion?.items || []).forEach((item) => {
+            (checklistItems).forEach((item) => {
                 switch(item.validation.type){
                     case 'boolean':
                         newChecklistData[item.id] = false;
@@ -324,7 +376,7 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
         }
 
         setChecklistData(newChecklistData);
-    }, [checklistVersion, data]);
+    }, [checklistVersion, data, checklistItems]);
 
     useEffect(() => {
         getData();
@@ -355,6 +407,12 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
         }
     }, [data,drawSignatures]);
 
+    useEffect(() => {
+        if(data && !data.hasOwnProperty('checklistVersion')){
+            getChecklistVersion(checklistVersionId);
+        }
+    }, [data]);
+
     return (
         <>
             <PageTitle
@@ -384,103 +442,181 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
 
             <Row>
                 <Col md={12}>
-                    <Card>
-                        <Card.Body>
-                            <form>
-                                {(checklistVersion?.items || []).map((item) => (
-                                    <div key={item.id}>
-                                        <Row className={"mb-3 mt-3 align-items-center"}>
-                                            <Col md={3}>
-                                                <b>{item.name}</b>
-                                            </Col>
-                                            <Col className="text-center" md={2}>
-                                                {item.validation.type === 'boolean' ? <Form.Check type="switch" checked={checklistData[item.id] ?? false} onChange={(e) => { handleFieldChange(item.id, e.target.checked); }} name="checklist_version_id"/> :
-                                                    (item.validation.type === 'list' ?
-                                                            <Select
-                                                                className={"react-select"}
-                                                                classNamePrefix="react-select"
-                                                                options={(item.validation?.options ?? []).map((option) => {return {value: option, label: option};})}
-                                                                value={(item.validation?.options ?? []).map((option) => {return {value: option, label: option};}).find((option) => option.value === checklistData[item.id]) || null}
-                                                                onChange={(selectedOption) => {
-                                                                    handleFieldChange(item.id, selectedOption.value);
-                                                                }}
+                            <Wizard
+                                render={({step, steps}) => (<>
+                                    <ProgressBar
+                                        animated
+                                        striped
+                                        variant="success"
+                                        now={((steps.indexOf(step) + 1)/steps.length)*100}
+                                        className={"progress-sm " + "steps" + steps.length}
+                                    />
+
+
+                                            {checklistVersion?.stages ?
+                                                <Steps>
+                                                    {(checklistVersion?.stages || []).map((stage, index) =>
+                                                        (
+                                                            <Step key={stage.id}
+                                                                  id={"stage" + stage.id}
+                                                                  render={({push, next, previous}) => (
+                                                                      <Card>
+                                                                          <Card.Body>
+                                                                            <form>
+                                                                          {(stage?.items || []).map((item) => (
+                                                                              <div key={item.id}>
+                                                                                  <Row className={"mb-3 mt-3 align-items-center"}>
+                                                                                      <Col md={3}>
+                                                                                          <b>{item.name}</b>
+                                                                                      </Col>
+                                                                                      <Col className="text-center" md={2}>
+                                                                                          {item.validation.type === 'boolean' ? <Form.Check type="switch" checked={checklistData[item.id] ?? false} onChange={(e) => { handleFieldChange(item.id, e.target.checked); }} name="checklist_version_id"/> :
+                                                                                              (item.validation.type === 'list' ?
+                                                                                                      <Select
+                                                                                                          className={"react-select"}
+                                                                                                          classNamePrefix="react-select"
+                                                                                                          options={(item.validation?.options ?? []).map((option) => {return {value: option, label: option};})}
+                                                                                                          value={(item.validation?.options ?? []).map((option) => {return {value: option, label: option};}).find((option) => option.value === checklistData[item.id]) || null}
+                                                                                                          onChange={(selectedOption) => {
+                                                                                                              handleFieldChange(item.id, selectedOption.value);
+                                                                                                          }}
+                                                                                                      />
+
+                                                                                                      :
+                                                                                                      <Form.Control
+                                                                                                          type="text"
+                                                                                                          placeholder={item.name}
+                                                                                                          onChange={(e) => {
+                                                                                                              handleFieldChange(item.id, e.target.value);
+                                                                                                          }}
+                                                                                                          value={checklistData[item.id] ?? ''}
+                                                                                                          autoComplete="off">
+                                                                                                      </Form.Control>
+                                                                                              )
+                                                                                          }
+                                                                                      </Col>
+                                                                                      <Col md={1} className="d-flex justify-content-center">
+                                                                                          <i className={"mdi mdi-image-area" + (evidences[item.id] ? " text-success" : "")} style={{fontSize: '30px'}} onClick={(e) => { handleClickUploadImage(item.id) }}/>
+                                                                                      </Col>
+                                                                                      <Col md={1}>
+                                                                                          Observação
+                                                                                      </Col>
+                                                                                      <Col md={4}>
+                                                                                          <Form.Control
+                                                                                              type="textarea"
+                                                                                              placeholder="Observações"
+                                                                                              onChange={(e) => {
+                                                                                                  handleObservationsChange(item.id, e.target.value);
+                                                                                              }}
+                                                                                              value={observationsData[item.id] ?? ''}
+                                                                                              autoComplete="off">
+                                                                                          </Form.Control>
+                                                                                      </Col>
+                                                                                  </Row>
+                                                                                  <hr/>
+                                                                              </div>
+                                                                          ))}
+
+                                                                          <ul className="list-inline wizard mb-0">
+                                                                              <li className="next list-inline-item">
+                                                                                  <Button type="button" onClick={previous} variant="primary" className={index === 0 ? 'disabled' : ''}>
+                                                                                      Previous
+                                                                                  </Button>
+                                                                              </li>
+                                                                              <li className="next list-inline-item">
+                                                                                  <Button type="button" onClick={() => {onNext(stage?.items || [], next)}} variant="primary">
+                                                                                      Next
+                                                                                  </Button>
+                                                                              </li>
+                                                                          </ul>
+
+                                                                      </form>
+                                                                          </Card.Body>
+                                                                      </Card>
+                                                                  )}
                                                             />
+                                                        )
+                                                    )}
 
-                                                    :
-                                                        <Form.Control
-                                                            type="text"
-                                                            placeholder={item.name}
-                                                            onChange={(e) => {
-                                                                handleFieldChange(item.id, e.target.value);
-                                                            }}
-                                                            value={checklistData[item.id] ?? ''}
-                                                            autoComplete="off">
-                                                        </Form.Control>
-                                                    )
-                                                }
-                                            </Col>
-                                            <Col md={1} className="d-flex justify-content-center">
-                                                <i className={"mdi mdi-image-area" + (evidences[item.id] ? " text-success" : "")} style={{fontSize: '30px'}} onClick={(e) => { handleClickUploadImage(item.id) }}/>
-                                            </Col>
-                                            <Col md={1}>
-                                                Observação
-                                            </Col>
-                                            <Col md={4}>
-                                                <Form.Control
-                                                    type="textarea"
-                                                    placeholder="Observações"
-                                                    onChange={(e) => {
-                                                        handleObservationsChange(item.id, e.target.value);
-                                                    }}
-                                                    value={observationsData[item.id] ?? ''}
-                                                    autoComplete="off">
-                                                </Form.Control>
-                                            </Col>
-                                        </Row>
-                                        <hr/>
-                                    </div>
-                                ))}
+                                                    <Step
+                                                        id="signatures"
+                                                        render={({push, next, previous}) => (
+                                                            <>
+                                                                <Card>
+                                                                    <Card.Body>
+                                                                            <Row className="mb-5 mt-5" id="signatures">
+                                                                    <Col md={6} className=" justify-content-center text-center">
+                                                                        <SignatureCanvas penColor='green'
+                                                                                         ref={(ref) => {
+                                                                                             setClientSignature(ref);
+                                                                                         }}
+                                                                                         onEnd={onEndClientSignature}
+                                                                                         canvasProps={{
+                                                                                             width: signatureWidth(),
+                                                                                             height: 200,
+                                                                                             className: 'signatureCanvas'
+                                                                                         }}/>
+                                                                        <br/>
+                                                                        {clientSignatureDate ? moment(clientSignatureDate).format('DD/MM/YYYY H:mma') : ''}
+                                                                        <br/><br/>
 
-                                <Row className="mb-5 mt-5" id="signatures">
-                                    <Col md={6} className=" justify-content-center text-center" >
-                                        <SignatureCanvas penColor='green'
-                                                         ref={(ref) => { setClientSignature(ref); }}
-                                                         onEnd={onEndClientSignature}
-                                                         canvasProps={{width: signatureWidth(), height: 200, className: 'signatureCanvas'}} />
-                                                         <br/>
-                                        {clientSignatureDate ? moment(clientSignatureDate).format('DD/MM/YYYY H:mma') : ''}
-                                        <br/><br/>
+                                                                        <Row className="d-flex align-items-center mb-3 position-relative">
+                                                                            <Button variant="success" className="w-auto position-absolute" style={{right: '3em'}} type="button" onClick={() => {
+                                                                                clientSignature.on();
+                                                                                clientSignature.clear();
+                                                                            }}><span className="mdi mdi-trash-can-outline"/></Button>
 
-                                        <Row className="d-flex align-items-center mb-3 position-relative">
-                                            <Button variant="success" className="w-auto position-absolute" style={{right: '3em'}} type="button" onClick={() => { clientSignature.on();clientSignature.clear(); }}><span className="mdi mdi-trash-can-outline"/></Button>
+                                                                            <span className="w-auto" style={{margin: '0 auto'}}>Assinatura do cliente</span>
+                                                                        </Row>
+                                                                    </Col>
+                                                                    <Col md={6} className=" justify-content-center text-center">
+                                                                        <SignatureCanvas penColor='green'
+                                                                                         ref={(ref) => {
+                                                                                             setTechnicalConsultantSignature(ref);
+                                                                                         }}
+                                                                                         onEnd={onEndTechnicalConsultantSignature}
+                                                                                         canvasProps={{
+                                                                                             width: signatureWidth(),
+                                                                                             height: 200,
+                                                                                             className: 'signatureCanvas'
+                                                                                         }}/>
+                                                                        <br/>
+                                                                        <span>{technicalConsultantSignatureDate ? moment(technicalConsultantSignatureDate).format('DD/MM/YYYY H:mma') : ''}</span>
+                                                                        <br/><br/>
+                                                                        <Row className="d-flex align-items-center mb-3 position-relative">
+                                                                            <Button variant="success" className="w-auto position-absolute" style={{right: '3em'}} type="button" onClick={() => {
+                                                                                technicalConsultantSignature.on();
+                                                                                technicalConsultantSignature.clear();
+                                                                            }}><span className="mdi mdi-trash-can-outline"/></Button>
 
-                                            <span className="w-auto" style={{margin: '0 auto'}}>Assinatura do cliente</span>
-                                        </Row>
-                                    </Col>
-                                    <Col md={6} className=" justify-content-center text-center">
-                                        <SignatureCanvas penColor='green'
-                                                         ref={(ref) => { setTechnicalConsultantSignature(ref); }}
-                                                         onEnd={onEndTechnicalConsultantSignature}
-                                                         canvasProps={{width: signatureWidth(), height: 200, className: 'signatureCanvas'}} />
-                                        <br/>
-                                        <span>{technicalConsultantSignatureDate ? moment(technicalConsultantSignatureDate).format('DD/MM/YYYY H:mma') : ''}</span>
-                                        <br/><br/>
-                                        <Row className="d-flex align-items-center mb-3 position-relative">
-                                            <Button variant="success" className="w-auto position-absolute" style={{right: '3em'}} type="button" onClick={() => { technicalConsultantSignature.on();technicalConsultantSignature.clear(); }}><span className="mdi mdi-trash-can-outline"/></Button>
+                                                                            <span className="w-auto" style={{margin: '0 auto'}}>Assinatura do Consultor</span>
+                                                                        </Row>
+                                                                    </Col>
+                                                                </Row>
 
-                                            <span className="w-auto" style={{margin: '0 auto'}}>Assinatura do Consultor</span>
-                                        </Row>
-                                    </Col>
-                                </Row>
+                                                                            <ul className="list-inline wizard mb-0">
+                                                                                <li className="next list-inline-item">
+                                                                                    <Button type="button" onClick={previous} variant="primary">
+                                                                                        Previous
+                                                                                    </Button>
+                                                                                </li>
+                                                                                <li className="next list-inline-item">
+                                                                                    <Button type="button" onClick={uploadSignatures} variant="primary">
+                                                                                        Cadastro
+                                                                                    </Button>
+                                                                                </li>
+                                                                            </ul>
+                                                                    </Card.Body>
+                                                                </Card>
+                                                            </>
+                                                        )}
+                                                    />
+                                                </Steps>
+                                                : null
+                                            }
 
-                                <div className="mb-3 mb-0">
-                                    <Button variant="primary" type="button" onClick={uploadSignatures}>
-                                        Cadastro
-                                    </Button>
-                                </div>
-                            </form>
-                        </Card.Body>
-                    </Card>
+                                </>)}
+                            />
                 </Col>
             </Row>
         </>

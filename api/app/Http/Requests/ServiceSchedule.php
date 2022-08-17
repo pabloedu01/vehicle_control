@@ -45,10 +45,6 @@ class ServiceSchedule extends FormRequest
                 'nullable', 'integer',
                 Rule::exists('clients', 'id')->where('company_id', $company_id)
             ],
-            'checklist_version_id' => [
-                'required', 'integer',
-                Rule::exists('checklist_versions', 'id')
-            ],
             'code' => [
                 'nullable', 'string', 'regex:/^[a-zA-Z0-9\-\_]*$/', \App\Models\ServiceSchedule::getUniqueRule($id, ['company_id' => $company_id])
             ],

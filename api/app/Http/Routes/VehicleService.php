@@ -6,8 +6,6 @@ Route::group([
     'prefix' => 'vehicle-service',
                  'middleware' => [ 'jwt.verify', 'user' ],
              ], function(){
-
-
     Route::group([
                      'middleware' => [ 'company' ],
                  ], function(){

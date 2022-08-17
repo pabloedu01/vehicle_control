@@ -1,6 +1,6 @@
 // @flow
 import React, {useEffect, useState} from 'react';
-import {Button, Card, Col, Row, Modal, Tooltip, OverlayTrigger} from "react-bootstrap";
+import {Button, Card, Col, Row} from "react-bootstrap";
 import {APICore} from "../../../helpers/api/apiCore";
 import {useNavigate, useParams} from "react-router-dom";
 import {yupResolver} from "@hookform/resolvers/yup";
@@ -8,7 +8,6 @@ import * as yup from "yup";
 import {useForm} from "react-hook-form";
 import {FormInput} from "../../../components";
 import moment from 'moment';
-import swal from "sweetalert";
 import classNames from "classnames";
 import {getAllOptions} from "../../../utils/selectOptionsForm";
 
@@ -18,10 +17,7 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
     const history = useNavigate();
     const {id} = useParams();
     const [data, setData] = useState();
-    const [checklistVersions, setChecklistVersions] = useState([]);
     const [technicalConsultants, setTechnicalConsultants] = useState([]);
-    const [showModal, setShowModal] = useState(false);
-    const [reports, setReports] = useState([]);
     const [clientInfo, setClientInfo] = useState();
     const [clientVehicleInfo, setClientVehicleInfo] = useState(null);
 
@@ -30,7 +26,6 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
      */
     const schemaResolver = yupResolver(
         yup.object().shape({
-            checklist_version_id: yup.number().required('Por favor, digite Versão do checklist'),
             client_vehicle_id: yup.number().required('Por favor, digite Vehiculo'),
             code: yup.string().nullable(),
             promised_date: yup.date().required('Por favor, digite Data Prometida'),
@@ -81,7 +76,6 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
 
     const getData = () => {
         const defaultData = {
-            checklist_version_id: null,
             client_vehicle_id: null,
             code: null,
             promised_date: new Date(),
@@ -92,10 +86,10 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
         new Promise((resolve) => {
             if(id){
                 api.get('/service-schedule/' + id).then((response) => {
-                    const {client_vehicle: clientVehicle, client_vehicle_id,code,promised_date,client_id,technical_consultant_id, checklist_version_id, checklist_version: checklistVersion, client, technical_consultant: technicalConsultant, vehicle_service: vehicleService} = response.data.data;
+                    const {client_vehicle: clientVehicle, client_vehicle_id,code,promised_date,client_id,technical_consultant_id, client, technical_consultant: technicalConsultant, vehicle_service: vehicleService} = response.data.data;
 
                     resolve({
-                        client_vehicle_id,code,promised_date: new Date(promised_date),client_id,technical_consultant_id, checklist_version_id, checklistVersion, technicalConsultant, client, clientVehicle, vehicleService
+                        client_vehicle_id,code,promised_date: new Date(promised_date),client_id,technical_consultant_id, technicalConsultant, client, clientVehicle, vehicleService
                     });
                 },(error) => {
                     resolve(defaultData);
@@ -123,14 +117,6 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
         });
     };
 
-    const getChecklistVersions = () => {
-        api.get('/checklist-version/active-checklist-versions').then((response) => {
-            setChecklistVersions(getAllOptions(response.data.data, data?.checklistVersion));
-        },(error) => {
-            setChecklistVersions([])
-        });
-    };
-
     const getTechnicalConsultants = () => {
         api.get('/technical-consultant/active-technical-consultants',{company_id: props.company?.id}).then((response) => {
             setTechnicalConsultants(getAllOptions(response.data.data, data?.technicalConsultant));
@@ -149,72 +135,6 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
         history(`/panel/company/${props.company?.id}/service-schedules/${id}/checklist`);
     };
 
-    const onHideModal = () => {
-        setShowModal(false);
-        setReports([]);
-    };
-
-    const onClickPrintChecklist = (e) => {
-        e.preventDefault();
-
-        api.get('/vehicle-service/' + data?.vehicleService?.id + '/reports').then((response) => {
-            setShowModal(true);
-            setReports(response.data.data);
-        },() => {
-            onHideModal();
-        });
-    };
-
-    const onClickPrintReport = (reportId) => {
-        api.post('/checklist-version/' + data?.checklistVersion?.id + '/print', {id: reportId}).then((response) => {
-            window.open(response.data.data.report, '_blank');
-        },() => {
-
-        });
-    };
-
-    const onClickSendReport = (reportId) => {
-        api.post('/checklist-version/' + data?.checklistVersion?.id + '/send', {id: reportId}).then((response) => {
-            swal({
-                title: 'Enviado',
-                text: 'El reporte ha sido enviado al cliente.',
-                icon: 'success',
-                buttons: {
-                    confirm: {
-                        text: 'Ok',
-                        value: 'confirm'
-                    }
-                },
-            });
-        },() => {
-
-        });
-    };
-
-    const onClickDeleteReport = (reportId) => {
-        swal({
-            title: '¿tem certeza?',
-            text: 'Irá excluir este registro',
-            icon: 'warning',
-            buttons: {
-                cancel: 'Cancelar',
-                confirm: {
-                    text: 'Excluir',
-                    value: 'confirm'
-                }
-            },
-            dangerMode: true,
-        }).then((confirm) => {
-            if(confirm){
-                api.delete('/checklist-version/' + data?.checklistVersion?.id + '/report/' + reportId).then((response) => {
-                    setReports(reports.filter((report) => report.id !== reportId));
-                },() => {
-
-                });
-            }
-        });
-    };
-
     const onPreviousButton = () => {
       localStorage.setItem('serviceSchedule', JSON.stringify(methods.getValues()));
     };
@@ -226,7 +146,6 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
 
     useEffect(() => {
         if(data){
-            getChecklistVersions();
             getTechnicalConsultants();
 
             if(data.client){
@@ -249,65 +168,16 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
         methods.setValue('client_id', data?.client_id ?? null);
         methods.setValue('technical_consultant_id', data?.technical_consultant_id ?? null);
         methods.setValue('client_vehicle_id', data?.client_vehicle_id ?? null);
-        methods.setValue('checklist_version_id', data?.checklist_version_id ?? null);
     }, [data]);
 
     return (
         <Row>
-            <Modal show={showModal} onHide={onHideModal} size="lg" scrollable={true}>
-                <Modal.Header onHide={onHideModal} closeButton>
-                    <h4 className="modal-title">
-                        Reportes
-                    </h4>
-                </Modal.Header>
-                <Modal.Body>
-                    <table className="w-100 table table-bordered">
-                        <thead>
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Archivo</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {reports.map((report) => (
-                          <tr key={report.id}>
-                              <td>{moment(report.date).format('DD/MM/YYYY H:mma')}</td>
-                              <td>{report.filename.split('/').pop()}</td>
-                              <td className="d-flex justify-content-around">
-                                  <OverlayTrigger placement="left" overlay={<Tooltip>Imprimir</Tooltip>}>
-                                      <span onClick={() => {onClickPrintReport(report.id)}}><i className="mdi mdi-printer-outline mdi-18px cursor-pointer" /></span>
-                                  </OverlayTrigger>
-                                  <OverlayTrigger placement="left" overlay={<Tooltip>Enviar</Tooltip>}>
-                                      <span onClick={() => {onClickSendReport(report.id)}}><i className="mdi mdi-email-send-outline mdi-18px cursor-pointer" /></span>
-                                  </OverlayTrigger>
-                                  <OverlayTrigger placement="left" overlay={<Tooltip>Excluir</Tooltip>}>
-                                      <span className="cursor-pointer" onClick={() => {onClickDeleteReport(report.id)}}><i className="mdi mdi-trash-can-outline mdi-18px"/></span>
-                                  </OverlayTrigger>
-                              </td>
-                          </tr>
-                        ))
-                        }
-                        </tbody>
-                    </table>
-                </Modal.Body>
-            </Modal>
-
             <Col xs={12}>
                 <Card>
                     <Card.Body>
                         <form onSubmit={handleSubmit(onSubmit)} noValidate>
             <Row>
                 <Col md={6}>
-                    <FormInput
-                        label="Versão do checklist"
-                        type="select"
-                        name="checklist_version_id"
-                        containerClass={'mb-3'}
-                        options={checklistVersions}
-                        {...otherProps}
-                    />
-
                     <FormInput
                         label="Data Prometida"
                         type="datepicker"
@@ -402,11 +272,7 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
 
                     <div className={classNames({'d-grid': id, 'd-none': !id})}>
                         <Button variant="primary" size={'lg'} type="button" onClick={onClickChecklist}>
-                            Novo Checklist
-                        </Button>
-                        <div className="mb-3"/>
-                        <Button className={classNames({'d-none': !(data?.vehicleService ?? false)})} variant="primary" size={'lg'} type="button" onClick={onClickPrintChecklist}>
-                                Lista de Verificación
+                            Checklist
                         </Button>
                     </div>
                 </Col>

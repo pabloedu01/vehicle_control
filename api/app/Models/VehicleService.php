@@ -8,6 +8,11 @@ class VehicleService extends Base
 {
     protected $table = 'vehicle_services';
 
+    protected $hidden = [
+        'deleted_at',
+        'updated_at',
+    ];
+
     protected $fillable = [
         'company_id',
         'checklist_version_id',

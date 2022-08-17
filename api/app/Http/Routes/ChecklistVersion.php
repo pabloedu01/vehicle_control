@@ -18,8 +18,12 @@ Route::group([
             'uses' => 'ChecklistVersionController@show',
         ]);
 
-        Route::get('items', [
-            'uses' => 'ChecklistVersionController@items',
+        Route::get('details', [
+            'uses' => 'ChecklistVersionController@details',
+        ]);
+
+        Route::post('validations', [
+            'uses' => 'ChecklistVersionController@validations',
         ]);
 
         Route::post('print', [

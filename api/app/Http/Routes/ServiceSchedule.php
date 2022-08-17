@@ -27,6 +27,10 @@ Route::group([
             'uses' => 'ServiceScheduleController@show',
         ]);
 
+        Route::get('{id}/vehicle-services', [
+            'uses' => 'ServiceScheduleController@vehicleServices',
+        ]);
+
         Route::put('{id}', [
             'uses' => 'ServiceScheduleController@update',
         ]);

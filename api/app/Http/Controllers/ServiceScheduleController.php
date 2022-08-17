@@ -18,11 +18,10 @@ class ServiceScheduleController extends Controller
         'client',
         'technicalConsultant',
         'technicalConsultant.user',
-        'checklistVersion',
         'claimsService',
         'claimsService.services',
         'claimsService.services.products',
-        'vehicleService'
+        'vehicleServices'
     ];
 
     public function index(Request $request)
@@ -41,15 +40,29 @@ class ServiceScheduleController extends Controller
         );
     }
 
+    public function vehicleServices(Request $request, $id)
+    {
+        $serviceSchedules = ServiceSchedule::with(['vehicleServices','vehicleServices.checklistVersion'])
+                                           ->where('id', '=', $id)
+                                           ->first();
+
+        return response()->json([
+                                    'msg'  => trans('general.msg.success'),
+                                    'data' => $serviceSchedules->vehicleServices,
+                                ],
+                                Response::HTTP_OK
+        );
+    }
+
     public function show(Request $request, $id)
     {
-        $serviceSchedule = ServiceSchedule::with(array_merge(self::$with, ['vehicleService.items' => function($query){return $query->withTrashed();}]))
+        $serviceSchedule = ServiceSchedule::with(array_merge(self::$with, ['vehicleServices.items' => function($query){return $query->withTrashed();}]))
                                           ->where('id', '=', $id)
                                           ->first();
 
-        if($serviceSchedule->vehicleService){
-            $serviceSchedule->vehicleService->append('client_signature_base64');
-            $serviceSchedule->vehicleService->append('technical_consultant_signature_base64');
+        if(count($serviceSchedule->vehicleServices) > 0){
+            $serviceSchedule->vehicleServices->append('client_signature_base64');
+            $serviceSchedule->vehicleServices->append('technical_consultant_signature_base64');
         }
 
         $serviceSchedule->clientVehicle->append('name');

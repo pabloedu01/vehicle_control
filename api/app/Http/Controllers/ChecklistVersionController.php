@@ -9,6 +9,7 @@ use App\Models\ChecklistReport;
 use App\Models\ChecklistVersion as Version;
 use App\Models\ChecklistVersionStage;
 use App\Models\VehicleService;
+use App\Rules\ChecklistResults;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -80,7 +81,7 @@ class ChecklistVersionController extends Controller
         });
 
         $available = ChecklistItem::where('active', '=', true)
-            ->whereNotIn('id', array_merge(...$versionStages->map(function($stage){return $stage->items->pluck('id')->toArray();})->toArray()))
+            ->whereNotIn('id', $versionStages->count() > 0 ? array_merge(...$versionStages->map(function($stage){return $stage->items->pluck('id')->toArray();})->toArray()) : [])
                                        ->get();
 
         $version->available = $available;
@@ -94,15 +95,35 @@ class ChecklistVersionController extends Controller
         );
     }
 
-    public function items(Request $request, $id)
+    public function validations(Request $request, $id){
+        $validator = validate($request->all(), ['checklist' => [
+            'required', 'array', new ChecklistResults($id)
+        ]]);
+
+        if($validator->fails())
+        {
+            return response()->json([
+                                        'msg'    => trans('general.msg.invalidData'),
+                                        'errors' => $validator->errors(),
+                                    ],
+                                    Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        return response()->json([
+                                    'msg'  => trans('general.msg.success'),
+                                ],
+                                Response::HTTP_OK
+        );
+    }
+
+    public function details(Request $request, $id)
     {
-        $version = Version::withoutGlobalScope('simpleColumns')
+        $version = Version::with([ 'stages', 'stages.items' ])
+                          ->withoutGlobalScope('simpleColumns')
                           ->withTrashed()
                           ->where('id', '=', $id)
                           ->first();
-
-        $version->append('formatted_report');
-        $version->append('items');
 
         return response()->json([
                                     'msg'  => trans('general.msg.success'),
