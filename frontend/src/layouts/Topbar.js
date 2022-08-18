@@ -124,7 +124,20 @@ const Topbar = ({ hideLogo, navCssClasses, openLeftMenuCallBack, topbarDark }: T
         layoutType: state.Layout.layoutType,
         leftSideBarType: state.Layout.leftSideBarType,
     }));
-
+    const [userName, setUserName] = useState('');
+    const [userFunction,setUserFunction] = useState('');
+    const userInfo = () => {
+       let data =  JSON.parse(sessionStorage.getItem('hyper_user'));
+        if( data !== null){
+            setUserName(data.name);
+            setUserFunction(data.privilege)
+        }
+    }
+    
+    React.useEffect(() => {
+        userInfo();
+    } ,[])
+    
     /**
      * Toggle the leftmenu when having mobile screen
      */
@@ -187,20 +200,20 @@ const Topbar = ({ hideLogo, navCssClasses, openLeftMenuCallBack, topbarDark }: T
                         </li>
                         <li className="dropdown notification-list d-none d-sm-inline-block">
                             <AppsDropdown />
-                        </li>
-                        <li className="notification-list">
+                        </li> 
+                         <li className="notification-list">
                             <button
                                 className="nav-link dropdown-toggle end-bar-toggle arrow-none btn btn-link shadow-none"
                                 onClick={handleRightSideBar}>
                                 <i className="dripicons-gear noti-icon"></i>
-                            </button>
-                        </li> */}
+                            </button> 
+                        </li>*/}
                         <li className="dropdown notification-list">
                             <ProfileDropdown
                                 profilePic={profilePic}
                                 menuItems={ProfileMenus}
-                                username={'Dominic Keller'}
-                                userTitle={'Founder'}
+                                username={userName}
+                                userTitle={userFunction}
                             />
                         </li>
                     </ul>
