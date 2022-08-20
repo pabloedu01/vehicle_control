@@ -45,13 +45,16 @@ class VehicleServiceController extends Controller
 
     public function show(Request $request, $id)
     {
-        $vehicleServices = VehicleService::with(array_merge(self::$with, ['items' => function($query){return $query->withTrashed();}]))
+        $vehicleService = VehicleService::with(array_merge(self::$with, ['items' => function($query){return $query->withTrashed();}]))
                                          ->where('vehicle_services.id', '=', $id)
                                          ->first();
 
+        $vehicleService->append('client_signature_base64');
+        $vehicleService->append('technical_consultant_signature_base64');
+
         return response()->json([
                                     'msg' => trans('general.msg.success'),
-                                    'data' => $vehicleServices,
+                                    'data' => $vehicleService,
                                 ],
                                 Response::HTTP_OK
         );
@@ -85,6 +88,8 @@ class VehicleServiceController extends Controller
 
             #se vuelve a solicitar el vehicle, para que venga con el global scope integrado
             $vehicleService = VehicleService::with(array_merge(self::$with, ['items']))->find($vehicleService->id);
+            $vehicleService->append('client_signature_base64');
+            $vehicleService->append('technical_consultant_signature_base64');
 
             return response()->json([
                                         'msg' => trans('general.msg.success'),
@@ -125,12 +130,20 @@ class VehicleServiceController extends Controller
             $vehicleService->technicalConsultantData->update(TechnicalConsultantData::changeDataColumns($request->only(TechnicalConsultantData::changeFillablesColumns())));
             $vehicleService->vehicleData->update($request->merge(['brand_id' => $brand_id])->only(VehicleData::getFillables()));
 
-            $vehicleService->items()->withTrashed()->sync(collect($request->checklist)->keyBy('id')->map(function($item){
+            $oldItems = $vehicleService->items->keyBy('id')->map(function($item){
+                return [ 'value' => $item->pivot->value, 'evidence' => $item->pivot->evidence, 'observations' => $item->pivot->observations ];
+            })->toArray();
+
+            $newItems = collect($request->checklist)->keyBy('id')->map(function($item){
                 return [ 'value' => @$item['value'], 'evidence' => @$item['evidence'], 'observations' => @$item['observations'] ];
-            })->toArray());
+            })->toArray();
+
+            $vehicleService->items()->withTrashed()->sync($newItems + $oldItems);
 
             #se vuelve a solicitar el vehicle, para que venga con el global scope integrado
             $vehicleService = VehicleService::with(array_merge(self::$with, ['items']))->find($vehicleService->id);
+            $vehicleService->append('client_signature_base64');
+            $vehicleService->append('technical_consultant_signature_base64');
 
             return response()->json([
                                         'msg' => trans('general.msg.success'),
@@ -154,6 +167,30 @@ class VehicleServiceController extends Controller
         $vehicleService = VehicleService::withoutGlobalScope('joinToData')->where('id', '=', $id)->first();
 
         if($vehicleService->secureDelete())
+        {
+            return response()->json([
+                                        'msg' => trans('general.msg.success'),
+                                    ],
+                                    Response::HTTP_OK
+            );
+        }
+        else
+        {
+            return response()->json([
+                                        'msg' => trans('general.msg.error'),
+                                    ],
+                                    Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    public function complete(Request $request, $id)
+    {
+        $vehicleService = VehicleService::withoutGlobalScope('joinToData')->where('id', '=', $id)->first();
+
+        $vehicleService->completed = true;
+
+        if(secureSave($vehicleService))
         {
             return response()->json([
                                         'msg' => trans('general.msg.success'),

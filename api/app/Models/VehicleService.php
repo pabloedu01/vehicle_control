@@ -18,6 +18,7 @@ class VehicleService extends Base
         'checklist_version_id',
         'service_schedule_id',
         'service_order_id',
+        'completed'
     ];
 
     protected $casts = [
@@ -74,6 +75,19 @@ class VehicleService extends Base
                          ->join('vehicle_service_technical_consultant_data', 'vehicle_services.id', '=', 'vehicle_service_technical_consultant_data.vehicle_service_id', 'inner')
                          ->join('vehicle_service_vehicle_data', 'vehicle_services.id', '=', 'vehicle_service_vehicle_data.vehicle_service_id', 'inner');
         });
+    }
+
+    public function getCanCompleteAttribute(){
+        if($this->completed){
+            return false;
+        }
+
+        $this->loadCount('items');
+
+        $completedItemsCount = $this->items_count;
+        $itemsCount = $this->checklistVersion->items->count();
+
+        return $completedItemsCount >= $itemsCount && !is_null($this->client_signature) && !is_null($this->technical_consultant_signature);
     }
 
     public function getClientNameAttribute(){
@@ -142,6 +156,7 @@ class VehicleService extends Base
     public function items()
     {
         return $this->belongsToMany('App\Models\ChecklistItem', 'checklist_item_vehicle_service', 'vehicle_service_id', 'checklist_item_id')
+            ->withTrashed()
             ->withPivot([ 'value', 'evidence', 'observations' ])
             ->withTimestamps()
             ->using('App\Pivots\ChecklistItemVehicleService');

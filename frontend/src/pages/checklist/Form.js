@@ -16,7 +16,7 @@ const api = new APICore();
 
 const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType> => {
     const history = useNavigate();
-    const {id, type, checklistVersionId} = useParams();
+    const {id, type, checklistVersionId, checklistId} = useParams();
     const [data, setData] = useState();
     const [checklistData, setChecklistData] = useState({});
     const [observationsData, setObservationsData] = useState({});
@@ -75,43 +75,12 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
         }
 
         ajaxCall.then((response) => {
-            api.post('/checklist-version/' + data.checklistVersion.id + '/generate-report', {type, id, utcOffset: moment().utcOffset()}).then(() => {
-                setSignaturesUpdated(false);
-                history(`/panel/company/${props.company?.id}/service-schedules/list`);
-            }).catch(() => {
-                swal({
-                    title: 'Error',
-                    text: 'Ocorreu um erro ao gerar o relatório.',
-                    icon: 'error',
-                    buttons: {
-                        confirm: {
-                            text: 'Ok',
-                            value: 'confirm'
-                        }
-                    },
-                    dangerMode: true,
-                });
-            });
+            setSignaturesUpdated(false);
+            history(`/panel/company/${props.company?.id}/service-schedules/list`);
         }, (error) => {
             setSignaturesUpdated(false);
 
-            if(error.hasOwnProperty('response') && error.response?.status === 400 && error.response?.data.hasOwnProperty('errors')){
-                const errors = [];
-
-                Object.keys(error.response.data.errors).forEach((key) => {
-                    error.response.data.errors[key].forEach((message) => {
-                        if(typeof message === 'string'){
-                            errors.push(message);
-                        } else {
-                            message.forEach((text) => {
-                                errors.push(text);
-                            });
-                        }
-                    });
-                });
-
-                setErrors(errors);
-            }
+            manageAjaxError(error);
         });
     };
 
@@ -140,11 +109,19 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
         const files = [];
 
         if(technicalConsultantSignatureStarted){
-            files.push(dataURLtoFile(technicalConsultantSignature.toDataURL('image/png'), 'technicalConsultantSignature.png'));
+            if(technicalConsultantSignature && !technicalConsultantSignature.isEmpty()){
+                files.push(dataURLtoFile(technicalConsultantSignature.toDataURL('image/png'), 'technicalConsultantSignature.png'));
+            } else {
+                setTechnicalConsultantSignatureImage(null);
+            }
         }
 
         if(clientSignatureStarted){
-            files.push(dataURLtoFile(clientSignature.toDataURL('image/png'), 'clientSignature.png'));
+            if(clientSignature && !clientSignature.isEmpty()){
+                files.push(dataURLtoFile(clientSignature.toDataURL('image/png'), 'clientSignature.png'));
+            } else {
+                setClientSignatureImage(null);
+            }
         }
 
         Promise.all(files.map((file) => new Promise((resolve, reject) => {
@@ -203,20 +180,33 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
 
             switch(type){
                 case 'service-schedules':
-                    ajaxCall = api.get('/service-schedule/' + id);
+                    if(checklistId){
+                        ajaxCall = api.get('/vehicle-service/' + checklistId);
+                    } else {
+                        ajaxCall = api.get('/service-schedule/' + id);
+                    }
                     break;
             }
 
             ajaxCall.then((response) => {
                 switch(type){
                     case 'service-schedules':
-                        const {client_vehicle:{vehicle,vehicle: {model: {brand}}}, client, vehicle_service : vehicleService, technical_consultant: technicalConsultant} = response.data.data;
+                        let data;
 
-                        setClientSignatureImage(vehicleService?.client_signature);
-                        setTechnicalConsultantSignatureImage(vehicleService?.technical_consultant_signature);
-                        setClientSignatureDate(vehicleService?.client_signature_date);
-                        setTechnicalConsultantSignatureDate(vehicleService?.technical_consultant_signature_date);
-                        setData({brand, client, vehicleService, technicalConsultant, vehicle});
+                        if(checklistId){
+                            const {brand,client,vehicle, technical_consultant: technicalConsultant, ...vehicleService} = response.data.data;
+                            data = {brand, client, technicalConsultant, vehicle, vehicleService};
+
+                            setClientSignatureImage(vehicleService?.client_signature);
+                            setTechnicalConsultantSignatureImage(vehicleService?.technical_consultant_signature);
+                            setClientSignatureDate(vehicleService?.client_signature_date);
+                            setTechnicalConsultantSignatureDate(vehicleService?.technical_consultant_signature_date);
+                        } else {
+                            const {client_vehicle:{vehicle,vehicle: {model: {brand}}}, client , technical_consultant: technicalConsultant} = response.data.data;
+                            data = {brand, client, technicalConsultant, vehicle, vehicleService: null};
+                        }
+
+                        setData(data);
                         setDrawSignatures(true);
                         break;
                     default:
@@ -291,36 +281,75 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
     };
 
     const onNext = (items,next) => {
-        if(items.length > 0){
-            api.post('/checklist-version/' + checklistVersion.id + '/validations', {checklist: items.map((item) => getFormattedChecklist(item.id))}).then(() => {
+        (new Promise((resolve, reject) => {
+            if(items.length > 0){
+                const formData = {
+                    "checklist_version_id": data.checklistVersion.id,
+                    "service_schedule_id": null,
+                    "technical_consultant_id": data.technicalConsultant.id,
+                    "brand_id": data.brand.id,
+                    "client_id": data.client.id,
+                    "client_name": data.client.name,
+                    "fuel": getChecklistItemValue('fuel'),
+                    "mileage": getChecklistItemValue('mileage'),
+                    "checklist": items.map((item) => getFormattedChecklist(item.id))
+                };
+
+                switch(type){
+                    case 'service-schedules':
+                        formData.service_schedule_id = id;
+                        formData.vehicle_id = data.vehicle.id;
+                        break;
+                }
+
                 setErrors(null);
 
-                if(next){
-                    next();
-                }
-            }).catch((error) => {
-                if(error.hasOwnProperty('response') && error.response?.status === 400 && error.response?.data.hasOwnProperty('errors')){
-                    const errors = [];
+                let ajaxCall;
 
-                    Object.keys(error.response.data.errors).forEach((key) => {
-                        error.response.data.errors[key].forEach((message) => {
-                            if(typeof message === 'string'){
-                                errors.push(message);
-                            } else {
-                                message.forEach((text) => {
-                                    errors.push(text);
-                                });
-                            }
-                        });
-                    });
-
-                    setErrors(errors);
+                if(data.vehicleService?.id){
+                    ajaxCall = api.update('/vehicle-service/' + data.vehicleService?.id, formData);
+                } else {
+                    ajaxCall = api.post('/vehicle-service',Object.assign(formData,{company_id: props.company?.id}));
                 }
-            })
-        } else {
+
+                ajaxCall.then((response) => {
+                    setData({...data, vehicleService: response.data.data});
+
+                    resolve();
+                }, (error) => {
+                    reject(error);
+                });
+            } else {
+                resolve();
+            }
+        })).then(() => {
             if(next){
+                setDrawSignatures(true);
+
                 next();
             }
+        }).catch((error) => {
+            manageAjaxError(error);
+        });
+    };
+
+    const manageAjaxError = (error) => {
+        if(error.hasOwnProperty('response') && error.response?.status === 400 && error.response?.data.hasOwnProperty('errors')){
+            const errors = [];
+
+            Object.keys(error.response.data.errors).forEach((key) => {
+                error.response.data.errors[key].forEach((message) => {
+                    if(typeof message === 'string'){
+                        errors.push(message);
+                    } else {
+                        message.forEach((text) => {
+                            errors.push(text);
+                        });
+                    }
+                });
+            });
+
+            setErrors(errors);
         }
     };
 
@@ -392,24 +421,22 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
     }, [signaturesUpdated]);
 
     useEffect(() => {
-        if(drawSignatures){
-            if(data?.vehicleService && data?.vehicleService?.client_signature_base64){
-                clientSignature.fromDataURL(data?.vehicleService && data?.vehicleService?.client_signature_base64);
-                clientSignature.off();
-            }
-
-            if(data?.vehicleService && data?.vehicleService?.technical_consultant_signature_base64){
-                technicalConsultantSignature.fromDataURL(data?.vehicleService?.technical_consultant_signature_base64);
-                technicalConsultantSignature.off();
-            }
-
-            setDrawSignatures(false);
+        if(clientSignature && data?.vehicleService && data?.vehicleService?.client_signature_base64 && !clientSignatureStarted){
+            clientSignature.fromDataURL(data?.vehicleService && data?.vehicleService?.client_signature_base64);
+            clientSignature.off();
         }
-    }, [data,drawSignatures]);
+
+        if(technicalConsultantSignature && data?.vehicleService && data?.vehicleService?.technical_consultant_signature_base64 && !technicalConsultantSignatureStarted){
+            technicalConsultantSignature.fromDataURL(data?.vehicleService?.technical_consultant_signature_base64);
+            technicalConsultantSignature.off();
+        }
+
+        setDrawSignatures(false);
+    }, [data,drawSignatures, technicalConsultantSignature, clientSignature]);
 
     useEffect(() => {
         if(data && !data.hasOwnProperty('checklistVersion')){
-            getChecklistVersion(checklistVersionId);
+            getChecklistVersion(data?.vehicleService?.checklist_version_id ?? checklistVersionId);
         }
     }, [data]);
 
@@ -548,7 +575,15 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                                                                     <Col md={6} className=" justify-content-center text-center">
                                                                         <SignatureCanvas penColor='green'
                                                                                          ref={(ref) => {
-                                                                                             setClientSignature(ref);
+                                                                                             const newRefFrom = ref && ref.isEmpty() && clientSignature !== null ? 'clientSignature' : (ref === null && clientSignature !== null ? 'clientSignature' : 'ref');
+                                                                                             let newRef = ref && ref.isEmpty() && clientSignature !== null ? clientSignature : (ref === null && clientSignature !== null ? clientSignature : ref);
+
+                                                                                             if(newRefFrom === 'clientSignature' && ref){
+                                                                                                 ref.fromDataURL(newRef.toDataURL('image/png'), {width: signatureWidth(),height: 200,ratio: 1});
+                                                                                                 newRef = ref;
+                                                                                             }
+
+                                                                                             setClientSignature(newRef);
                                                                                          }}
                                                                                          onEnd={onEndClientSignature}
                                                                                          canvasProps={{
@@ -562,6 +597,9 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
 
                                                                         <Row className="d-flex align-items-center mb-3 position-relative">
                                                                             <Button variant="success" className="w-auto position-absolute" style={{right: '3em'}} type="button" onClick={() => {
+                                                                                setClientSignatureStarted(false);
+                                                                                setClientSignatureDate(null);
+                                                                                setClientSignatureImage(null);
                                                                                 clientSignature.on();
                                                                                 clientSignature.clear();
                                                                             }}><span className="mdi mdi-trash-can-outline"/></Button>
@@ -572,7 +610,15 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                                                                     <Col md={6} className=" justify-content-center text-center">
                                                                         <SignatureCanvas penColor='green'
                                                                                          ref={(ref) => {
-                                                                                             setTechnicalConsultantSignature(ref);
+                                                                                             const newRefFrom = ref && ref.isEmpty() && technicalConsultantSignature !== null ? 'technicalConsultantSignature' : (ref === null && technicalConsultantSignature !== null ? 'technicalConsultantSignature' : 'ref');
+                                                                                             let newRef = ref && ref.isEmpty() && technicalConsultantSignature !== null ? technicalConsultantSignature : (ref === null && technicalConsultantSignature !== null ? technicalConsultantSignature : ref);
+
+                                                                                             if(newRefFrom === 'technicalConsultantSignature' && ref){
+                                                                                                 ref.fromDataURL(newRef.toDataURL('image/png'), {width: signatureWidth(),height: 200,ratio: 1});
+                                                                                                 newRef = ref;
+                                                                                             }
+
+                                                                                             setTechnicalConsultantSignature(newRef);
                                                                                          }}
                                                                                          onEnd={onEndTechnicalConsultantSignature}
                                                                                          canvasProps={{
@@ -585,6 +631,9 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                                                                         <br/><br/>
                                                                         <Row className="d-flex align-items-center mb-3 position-relative">
                                                                             <Button variant="success" className="w-auto position-absolute" style={{right: '3em'}} type="button" onClick={() => {
+                                                                                setTechnicalConsultantSignatureStarted(false);
+                                                                                setTechnicalConsultantSignatureDate(null);
+                                                                                setTechnicalConsultantSignatureImage(null);
                                                                                 technicalConsultantSignature.on();
                                                                                 technicalConsultantSignature.clear();
                                                                             }}><span className="mdi mdi-trash-can-outline"/></Button>
@@ -596,7 +645,7 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
 
                                                                             <ul className="list-inline wizard mb-0">
                                                                                 <li className="next list-inline-item">
-                                                                                    <Button type="button" onClick={previous} variant="primary">
+                                                                                    <Button type="button" onClick={() => {previous();}} variant="primary">
                                                                                         Previous
                                                                                     </Button>
                                                                                 </li>

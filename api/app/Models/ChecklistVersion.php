@@ -40,7 +40,7 @@ class ChecklistVersion extends Base
         });
     }
 
-    public function getItemsAttribute()
+    /*public function getItemsAttribute()
     {
         $items = collect();
         $report = $this->formatted_report;
@@ -89,6 +89,18 @@ class ChecklistVersion extends Base
                 }
             }
         }
+
+        return $items;
+    }*/
+
+    public function getItemsAttribute(){
+        $this->loadMissing(['stages', 'stages.items']);
+
+        $items = collect([]);
+
+        $this->stages->each(function($stage) use($items){
+            $items->push(...$stage->items);
+        });
 
         return $items;
     }
@@ -210,9 +222,9 @@ class ChecklistVersion extends Base
     }
 
     #has many
-    public function serviceSchedules()
+    public function vehicleServices()
     {
-        return $this->hasMany('App\Models\ServiceSchedule', 'checklist_version_id', 'id');
+        return $this->hasMany('App\Models\VehicleService', 'checklist_version_id', 'id');
     }
 
     #has many

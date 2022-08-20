@@ -17,7 +17,7 @@ class CreateChecklistVersionStagesTable extends Migration
             $table->id();
             $table->integer('checklist_version_id')->unsigned();
             $table->foreign('checklist_version_id')->references('id')->on('checklist_versions')->onDelete('cascade');
-            $table->string('name', 20);
+            $table->string('name', 100);
             $table->softDeletes();
             $table->timestamps();
         });

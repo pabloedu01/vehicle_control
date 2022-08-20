@@ -21,7 +21,6 @@ class ServiceScheduleController extends Controller
         'claimsService',
         'claimsService.services',
         'claimsService.services.products',
-        'vehicleServices'
     ];
 
     public function index(Request $request)
@@ -46,6 +45,8 @@ class ServiceScheduleController extends Controller
                                            ->where('id', '=', $id)
                                            ->first();
 
+        $serviceSchedules->vehicleServices->append('can_complete');
+
         return response()->json([
                                     'msg'  => trans('general.msg.success'),
                                     'data' => $serviceSchedules->vehicleServices,
@@ -56,7 +57,7 @@ class ServiceScheduleController extends Controller
 
     public function show(Request $request, $id)
     {
-        $serviceSchedule = ServiceSchedule::with(array_merge(self::$with, ['vehicleServices.items' => function($query){return $query->withTrashed();}]))
+        $serviceSchedule = ServiceSchedule::with(array_merge(self::$with, ['vehicleServices','vehicleServices.items' => function($query){return $query->withTrashed();}]))
                                           ->where('id', '=', $id)
                                           ->first();
 

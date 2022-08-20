@@ -30,7 +30,7 @@ class ChecklistVersionController extends Controller
     public function activeVersions(Request $request)
     {
         $versions = Version::where('active', '=', true)
-                           ->whereNotNull('report')
+                           ->whereHas('stages')
                            ->get();
 
         return response()->json([

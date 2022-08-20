@@ -65,7 +65,9 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                 return {
                   id: vehicleService.id,
                   date: moment(vehicleService.created_at).format('DD/MM/YYYY H:mma'),
-                  version: vehicleService.checklist_version.name
+                  version: vehicleService.checklist_version.name,
+                    canComplete: vehicleService.can_complete,
+                    isCompleted: vehicleService.completed
                 };
             }))
         }, (error) => {
@@ -85,7 +87,31 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
         history(`/panel/company/${props.company?.id}/${type}/${id}/checklist/${vehicleServiceId}/edit`);
     };
 
-    const onDelete = (registerId, newList) => {
+    const onComplete = (vehicleServiceId, rowData) => {
+        swal({
+            title: '¿tem certeza?',
+            text: 'Irá completar este registro',
+            icon: 'warning',
+            buttons: {
+                cancel: 'Cancelar',
+                confirm: {
+                    text: 'Completar',
+                    value: 'confirm'
+                }
+            },
+            dangerMode: true,
+        }).then((confirm) => {
+            if(confirm){
+                api.post('/vehicle-service/' + vehicleServiceId + '/complete').then((response) => {
+                    getList();
+                }, () => {
+
+                });
+            }
+        });
+    };
+
+    /*const onDelete = (registerId, newList) => {
         swal({
             title: '¿tem certeza?',
             text: 'Irá excluir este registro',
@@ -107,7 +133,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                 });
             }
         });
-    };
+    };*/
 
     const onShowModal = () => {
         setShowModal(true);
@@ -159,7 +185,26 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                     filter: false,
                     sort: false,
                     customBodyRender: (value, tableMeta, updateValue) => (
-                        <Actions tableMeta={tableMeta} handleEdit={onEdit} handleDelete={onDelete}/>
+                        <Actions tableMeta={tableMeta} actions={[]} extraButtons={[
+                            {
+                                key: 'edit',
+                                icon: 'mdi mdi-square-edit-outline',
+                                label: 'Editar',
+                                action: onEdit,
+                                condition: (data) => {
+                                    return !data.isCompleted;
+                                }
+                            },
+                            {
+                                key: 'complete',
+                                icon: 'mdi mdi-check',
+                                label: 'Completar',
+                                action: onComplete,
+                                condition: (data) => {
+                                    return data.canComplete;
+                                }
+                            }
+                        ]}/>
                     )
                 },
             },

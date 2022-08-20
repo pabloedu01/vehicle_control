@@ -30,6 +30,10 @@ Route::group([
             'uses' => 'VehicleServiceController@reports',
         ]);
 
+        Route::post('{id}/complete', [
+            'uses' => 'VehicleServiceController@complete',
+        ]);
+
         Route::put('{id}', [
             'uses' => 'VehicleServiceController@update',
         ]);
