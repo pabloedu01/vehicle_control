@@ -1,11 +1,12 @@
 // @flow
 import React, {useEffect, useState} from 'react';
 import PageTitle from "../../components/PageTitle";
-import {Button, Card, Col, Row} from "react-bootstrap";
+import {Button, Card, Col, Row,OverlayTrigger, Tooltip} from "react-bootstrap";
 import {APICore} from "../../helpers/api/apiCore";
 import {useNavigate} from "react-router-dom";
 import MUIDataTable from "mui-datatables";
 import TABLE_OPTIONS from "../../constants/tableOptions";
+import Table from '../../components/Table';
 import Actions from "../../components/table/actions";
 import swal from "sweetalert";
 import moment from 'moment';
@@ -19,6 +20,55 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
     const [tableFields, setTableFields] = useState([]);
     const [tableOptions, setTableOptions] = useState({});
 
+    const columns = [
+        {
+            Header: 'id',
+            accessor: 'id',
+            sort: true,
+        },
+        {
+            Header: 'Nome',
+            accessor: 'name',
+            sort: true,
+        },
+        {
+            Header: 'Vehiculo',
+            accessor: 'vehicle',
+            sort: false,
+        },
+        {
+            Header: 'Chasis',
+            accessor: 'chasis',
+            sort: false,
+        },
+        {
+            Header: 'Placa',
+            accessor: 'plate',
+            sort: false,
+        },
+        {
+            Header: 'Data prometida',
+            accessor: 'promised_date',
+            sort: false,
+        },
+        {
+            Header: 'Cliente',
+            accessor: 'client',
+            sort: false,
+        },
+        {
+            Header: 'Consultor Técnico',
+            accessor: 'technical_consultant',
+            sort: false,
+        },
+        {
+            Header: 'Ações',
+            accessor: 'actions',
+            sort: false,
+        },
+    ];
+
+
     const getList = () => {
         api.get('/service-schedule', {company_id: props.company?.id}).then((response) => {
             setList(response.data.data.map((item) => {
@@ -30,7 +80,15 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                     promised_date: moment(item.promised_date).format('DD/MM/YYYY H:mma'),
                     client: item.client?.name,
                     technical_consultant: item.technical_consultant?.name,
-                    checklist_version_id: item.checklist_version_id
+                    checklist_version_id: item.checklist_version_id,
+                    actions: <div>
+                    <OverlayTrigger placement="left" overlay={<Tooltip>Editar</Tooltip>}>
+                        <span className="cursor-pointer" onClick={()=>onEdit(item.id)}><i className="mdi mdi-square-edit-outline mdi-24px"/></span>
+                   </OverlayTrigger>
+                   <OverlayTrigger placement="left" overlay={<Tooltip>Excluir</Tooltip>}>
+                      <span className="cursor-pointer" onClick={() => deleteItem(item.id)}><i className="mdi mdi-trash-can-outline mdi-24px"/></span>
+                  </OverlayTrigger>
+                  </div>
                 }
             }));
         }, () => {
@@ -65,7 +123,29 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
             }
         });
     };
+    const deleteItem = (registerId, newList) => {
+        swal({
+            title: '¿tem certeza?',
+            text: 'Irá excluir este registro',
+            icon: 'warning',
+            buttons: {
+                cancel: 'Cancelar',
+                confirm: {
+                    text: 'Excluir',
+                    value: 'confirm'
+                }
+            },
+            dangerMode: true,
+        }).then((confirm) => {
+            if(confirm){
+                api.delete('/service-schedule/' + registerId).then((response) => {
+                   getList();
+                }, () => {
 
+                });
+            }
+        });
+    };
     const onChecklist = (registerId) => {
         history(`/panel/company/${props.company?.id}/service-schedules/${registerId}/checklist`);
     };
@@ -205,7 +285,18 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                             </Row>
                             <Row>
                                 <Col>
-                                    <MUIDataTable data={list} columns={tableFields} options={tableOptions}/>
+                                    {/* <MUIDataTable data={list} columns={tableFields} options={tableOptions}/> */}
+                                    <Table
+                                            columns={columns}
+                                            data={list}
+                                            pageSize={5}
+                                            sizePerPageList={TABLE_OPTIONS.sizePerPageList}
+                                            isSortable={true}
+                                            pagination={true}
+                                            isSelectable={true}
+                                            // isSearchable={true}
+                                        />
+
                                 </Col>
                             </Row>
                         </Card.Body>
