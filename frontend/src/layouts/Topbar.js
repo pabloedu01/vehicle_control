@@ -257,7 +257,6 @@ const Topbar = ({ hideLogo, navCssClasses, openLeftMenuCallBack, topbarDark }: T
 };
 
 export default Topbar;
-=======
 // @flow
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -517,4 +516,3 @@ const Topbar = ({ hideLogo, navCssClasses, openLeftMenuCallBack, topbarDark }: T
 };
 
 export default Topbar;
->>>>>>> db756aca5046817d8240b8da6005f8b2b3727e1b
