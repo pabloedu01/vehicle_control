@@ -26,7 +26,9 @@ class ServiceScheduleController extends Controller
     public function index(Request $request)
     {
         $serviceSchedules = ServiceSchedule::with(collect(self::$with)->take(7)->toArray())
+                                           ->withoutGlobalScope('orderByCreatedAt')
                                            ->where('company_id', '=', $request->company_id)
+                                           ->orderBy('promised_date', 'desc')
                                            ->get();
 
         $serviceSchedules->each(function($serviceSchedule){$serviceSchedule->clientVehicle->append('name');});
@@ -45,7 +47,7 @@ class ServiceScheduleController extends Controller
                                            ->where('id', '=', $id)
                                            ->first();
 
-        $serviceSchedules->vehicleServices->append('can_complete');
+        $serviceSchedules->vehicleServices->append(['next_stage']);
 
         return response()->json([
                                     'msg'  => trans('general.msg.success'),
@@ -57,14 +59,9 @@ class ServiceScheduleController extends Controller
 
     public function show(Request $request, $id)
     {
-        $serviceSchedule = ServiceSchedule::with(array_merge(self::$with, ['vehicleServices','vehicleServices.items' => function($query){return $query->withTrashed();}]))
+        $serviceSchedule = ServiceSchedule::with(self::$with)
                                           ->where('id', '=', $id)
                                           ->first();
-
-        if(count($serviceSchedule->vehicleServices) > 0){
-            $serviceSchedule->vehicleServices->append('client_signature_base64');
-            $serviceSchedule->vehicleServices->append('technical_consultant_signature_base64');
-        }
 
         $serviceSchedule->clientVehicle->append('name');
 

@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Casts\TemporalFile;
-
 class VehicleService extends Base
 {
     protected $table = 'vehicle_services';
@@ -19,11 +17,6 @@ class VehicleService extends Base
         'service_schedule_id',
         'service_order_id',
         'completed'
-    ];
-
-    protected $casts = [
-        'technical_consultant_signature' => TemporalFile::class,
-        'client_signature' => TemporalFile::class,
     ];
 
     public static $changingColumnsForReport = [
@@ -57,19 +50,13 @@ class VehicleService extends Base
 
                                       'vehicle_service_client_data.client_id',
                                       'vehicle_service_client_data.name as client_name',
-                                      'vehicle_service_client_data.signature as client_signature',
-                                      'vehicle_service_client_data.signature_date as client_signature_date',
 
                                       'vehicle_service_technical_consultant_data.technical_consultant_id',
-                                      'vehicle_service_technical_consultant_data.signature as technical_consultant_signature',
-                                      'vehicle_service_technical_consultant_data.signature_date as technical_consultant_signature_date',
 
                                       'vehicle_service_vehicle_data.vehicle_id',
                                       'vehicle_service_vehicle_data.brand_id',
-                                      /*'vehicle_service_vehicle_data.plate',*/
                                       'vehicle_service_vehicle_data.fuel',
                                       'vehicle_service_vehicle_data.mileage',
-                                      /*'vehicle_service_vehicle_data.chasis'*/
                                   ])
                          ->join('vehicle_service_client_data', 'vehicle_services.id', '=', 'vehicle_service_client_data.vehicle_service_id', 'inner')
                          ->join('vehicle_service_technical_consultant_data', 'vehicle_services.id', '=', 'vehicle_service_technical_consultant_data.vehicle_service_id', 'inner')
@@ -77,17 +64,26 @@ class VehicleService extends Base
         });
     }
 
-    public function getCanCompleteAttribute(){
-        if($this->completed){
-            return false;
+    public function setCompleted($force = false){
+        $eval = false;
+
+        if(!$force){
+            if(!$this->completed){
+                $eval = true;
+            }
+        } else {
+            $eval = true;
         }
 
-        $this->loadCount('items');
+        if($eval){
+            $vehicleServiceStages = $this->stages;
+            $checklistVersionStages = $this->checklistVersion->stages;
 
-        $completedItemsCount = $this->items_count;
-        $itemsCount = $this->checklistVersion->items->count();
+            $completed = $checklistVersionStages->count() > 0 &&
+                         $checklistVersionStages->count() == $vehicleServiceStages->filter(function($stage){return $stage->pivot->completed;})->count();
 
-        return $completedItemsCount >= $itemsCount && !is_null($this->client_signature) && !is_null($this->technical_consultant_signature);
+            $this->update(['completed' => $completed]);
+        }
     }
 
     public function getClientNameAttribute(){
@@ -96,18 +92,15 @@ class VehicleService extends Base
         return $client ? $client->name : $this->getAttributeFromArray('client_name');
     }
 
-    public function getClientSignatureBase64Attribute(){
-        $gcsDriver  = env('GOOGLE_CLOUD_STORAGE_DRIVER', 'public');
-        $gcsStorage = \Storage::disk($gcsDriver);
+    public function getNextStageAttribute(){
+        $vehicleServiceStages = $this->stages;
 
-        return $this->client_signature ? 'data:image/png;base64,'.base64_encode($gcsStorage->get(last(explode($gcsStorage->url(''), $this->client_signature)))) : $this->client_signature;
-    }
-
-    public function getTechnicalConsultantSignatureBase64Attribute(){
-        $gcsDriver  = env('GOOGLE_CLOUD_STORAGE_DRIVER', 'public');
-        $gcsStorage = \Storage::disk($gcsDriver);
-
-        return $this->technical_consultant_signature ? 'data:image/png;base64,'.base64_encode($gcsStorage->get(last(explode($gcsStorage->url(''), $this->technical_consultant_signature)))) : $this->technical_consultant_signature;
+        if($this->completed){
+            return $vehicleServiceStages->first();
+        } else {
+            /*todo: estos stages son un problema, porque si vengo de un stage ya eliminado voy a comparar de mal forma, lo mismo para el listado de stages mostrados en el frontend*/
+            return $vehicleServiceStages->last();
+        }
     }
 
     #belongs to
@@ -162,6 +155,22 @@ class VehicleService extends Base
             ->using('App\Pivots\ChecklistItemVehicleService');
     }
 
+    #many to many
+    public function stages()
+    {
+        return $this->belongsToMany('App\Models\ChecklistVersionStage', 'checklist_version_stage_vehicle_service', 'vehicle_service_id', 'checklist_version_stage_id')
+                    ->withTrashed()
+                    ->withPivot([
+                                    'technical_consultant_signature',
+                                    'client_signature',
+                                    'client_signature_date',
+                                    'technical_consultant_signature_date',
+                                    'completed',
+                                ])
+                    ->withTimestamps()
+                    ->using('App\Pivots\ChecklistItemStageVehicleService');
+    }
+
     #has one
     public function clientData()
     {
@@ -178,12 +187,6 @@ class VehicleService extends Base
     public function vehicleData()
     {
         return $this->hasOne('App\Models\VehicleServiceVehicleData', 'vehicle_service_id', 'id');
-    }
-
-    #has many
-    public function reports()
-    {
-        return $this->hasMany('App\Models\ChecklistReport', 'vehicle_service_id', 'id');
     }
 }
 

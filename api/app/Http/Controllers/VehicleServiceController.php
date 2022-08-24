@@ -45,12 +45,9 @@ class VehicleServiceController extends Controller
 
     public function show(Request $request, $id)
     {
-        $vehicleService = VehicleService::with(array_merge(self::$with, ['items' => function($query){return $query->withTrashed();}]))
+        $vehicleService = VehicleService::with(array_merge(self::$with, ['stages','items' => function($query){return $query->withTrashed();}]))
                                          ->where('vehicle_services.id', '=', $id)
                                          ->first();
-
-        $vehicleService->append('client_signature_base64');
-        $vehicleService->append('technical_consultant_signature_base64');
 
         return response()->json([
                                     'msg' => trans('general.msg.success'),
@@ -70,7 +67,7 @@ class VehicleServiceController extends Controller
             $brand_id = $request->brand_id;
         }
 
-        $vehicleService = new VehicleService($request->only(VehicleService::getFillables()));
+        $vehicleService = new VehicleService(array_merge($request->only(VehicleService::getFillables()), ['completed' => false]));
 
         if(secureSave($vehicleService))
         {
@@ -86,10 +83,20 @@ class VehicleServiceController extends Controller
                 return [ 'value' => @$item['value'], 'evidence' => @$item['evidence'], 'observations' => @$item['observations'] ];
             })->toArray());
 
+            $vehicleService->stages()->attach([
+                                                  $request->stage_id => $request->only([
+                                                                                           'client_signature',
+                                                                                           'technical_consultant_signature',
+                                                                                           'client_signature_date',
+                                                                                           'technical_consultant_signature_date',
+                                                                                           'completed'
+                                                                                       ]),
+                                              ]);
+
+            $vehicleService->setCompleted(true);
+
             #se vuelve a solicitar el vehicle, para que venga con el global scope integrado
-            $vehicleService = VehicleService::with(array_merge(self::$with, ['items']))->find($vehicleService->id);
-            $vehicleService->append('client_signature_base64');
-            $vehicleService->append('technical_consultant_signature_base64');
+            $vehicleService = VehicleService::with(array_merge(self::$with, ['stages','items']))->find($vehicleService->id);
 
             return response()->json([
                                         'msg' => trans('general.msg.success'),
@@ -122,7 +129,7 @@ class VehicleServiceController extends Controller
                                         ->where('id', '=', $id)
                                         ->first();
 
-        $vehicleService->fill($request->only(VehicleService::getFillables()));
+        $vehicleService->fill(array_merge($request->only(VehicleService::getFillables()), ['completed' => false]));
 
         if(!$vehicleService->hasAppliedChanges() || secureSave($vehicleService))
         {
@@ -140,10 +147,32 @@ class VehicleServiceController extends Controller
 
             $vehicleService->items()->withTrashed()->sync($newItems + $oldItems);
 
+            $oldStages = $vehicleService->stages->keyBy('id')->map(function($item){
+                return $item->pivot->only([
+                                              'client_signature',
+                                              'technical_consultant_signature',
+                                              'client_signature_date',
+                                              'technical_consultant_signature_date',
+                                              'completed'
+                                          ]);
+            })->toArray();
+
+            $newStages = [
+                $request->stage_id => $request->only([
+                                                         'client_signature',
+                                                         'technical_consultant_signature',
+                                                         'client_signature_date',
+                                                         'technical_consultant_signature_date',
+                                                         'completed'
+                                                     ]),
+            ];
+
+            $vehicleService->stages()->sync($newStages + $oldStages);
+
+            $vehicleService->setCompleted();
+
             #se vuelve a solicitar el vehicle, para que venga con el global scope integrado
-            $vehicleService = VehicleService::with(array_merge(self::$with, ['items']))->find($vehicleService->id);
-            $vehicleService->append('client_signature_base64');
-            $vehicleService->append('technical_consultant_signature_base64');
+            $vehicleService = VehicleService::with(array_merge(self::$with, ['stages','items']))->find($vehicleService->id);
 
             return response()->json([
                                         'msg' => trans('general.msg.success'),
@@ -167,30 +196,6 @@ class VehicleServiceController extends Controller
         $vehicleService = VehicleService::withoutGlobalScope('joinToData')->where('id', '=', $id)->first();
 
         if($vehicleService->secureDelete())
-        {
-            return response()->json([
-                                        'msg' => trans('general.msg.success'),
-                                    ],
-                                    Response::HTTP_OK
-            );
-        }
-        else
-        {
-            return response()->json([
-                                        'msg' => trans('general.msg.error'),
-                                    ],
-                                    Response::HTTP_INTERNAL_SERVER_ERROR
-            );
-        }
-    }
-
-    public function complete(Request $request, $id)
-    {
-        $vehicleService = VehicleService::withoutGlobalScope('joinToData')->where('id', '=', $id)->first();
-
-        $vehicleService->completed = true;
-
-        if(secureSave($vehicleService))
         {
             return response()->json([
                                         'msg' => trans('general.msg.success'),

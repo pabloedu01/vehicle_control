@@ -464,7 +464,7 @@ const AllRoutes = () => {
                 },
 
                 {
-                    path: ':type/:id/checklist/:checklistId/edit',
+                    path: ':type/:id/checklist/:checklistId/edit/:stageId',
                     element: <LoadComponent component={ChecklistForm} />,
                 },
             ]

@@ -66,7 +66,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                   id: vehicleService.id,
                   date: moment(vehicleService.created_at).format('DD/MM/YYYY H:mma'),
                   version: vehicleService.checklist_version.name,
-                    canComplete: vehicleService.can_complete,
+                    nextStage: vehicleService.next_stage?.id ?? null,
                     isCompleted: vehicleService.completed
                 };
             }))
@@ -83,8 +83,8 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
         });
     };
 
-    const onEdit = (vehicleServiceId) => {
-        history(`/panel/company/${props.company?.id}/${type}/${id}/checklist/${vehicleServiceId}/edit`);
+    const onEdit = (vehicleServiceId, rowData) => {
+        history(`/panel/company/${props.company?.id}/${type}/${id}/checklist/${vehicleServiceId}/edit/${rowData.nextStage}`);
     };
 
     const onComplete = (vehicleServiceId, rowData) => {
@@ -192,16 +192,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                                 label: 'Editar',
                                 action: onEdit,
                                 condition: (data) => {
-                                    return !data.isCompleted;
-                                }
-                            },
-                            {
-                                key: 'complete',
-                                icon: 'mdi mdi-check',
-                                label: 'Completar',
-                                action: onComplete,
-                                condition: (data) => {
-                                    return data.canComplete;
+                                    return !data.isCompleted && data.nextStage !== null;
                                 }
                             }
                         ]}/>
