@@ -1,7 +1,7 @@
 // @flow
 import React, {useEffect, useState} from 'react';
 import PageTitle from "../../components/PageTitle";
-import {Button, Card, Col, Row,OverlayTrigger, Tooltip} from "react-bootstrap";
+import {Button, Card, Col, Row,OverlayTrigger, Tooltip, Dropdown, DropdownButton, Form, InputGroup} from "react-bootstrap";
 import {APICore} from "../../helpers/api/apiCore";
 import {useNavigate} from "react-router-dom";
 import MUIDataTable from "mui-datatables";
@@ -273,7 +273,22 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                         <Card.Body>
                             <Row className="mb-2">
                                 <Col xl={8}>
-                                    <Row className="gy-2 gx-2 align-items-center justify-content-xl-start justify-content-between"/>
+                                    <InputGroup className="mb-3">
+                                        <Form.Control aria-label="Text input with dropdown button" />
+
+                                                <DropdownButton
+                                              variant="outline-secondary"
+                                              title="Dropdown"
+                                              id="input-group-dropdown-2"
+                                              align="end"
+                                            >
+                                              <Dropdown.Item href="#">Procurar</Dropdown.Item>
+                                              <Dropdown.Item href="#">Another action</Dropdown.Item>
+                                              <Dropdown.Item href="#">Something else here</Dropdown.Item>
+                                              <Dropdown.Divider />
+                                              <Dropdown.Item href="#">Separated link</Dropdown.Item>
+                                            </DropdownButton>
+                                          </InputGroup>
                                 </Col>
                                 <Col xl={4}>
                                     <div className="text-xl-end mt-xl-0 mt-2">
@@ -308,3 +323,4 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
 };
 
 export default List;
+
