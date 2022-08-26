@@ -1,5 +1,5 @@
 {
-    "name": "laravel/laravel",
+    "name": "laravel/tunap",
     "type": "project",
     "description": "Tunap API.",
     "keywords": ["framework", "laravel"],

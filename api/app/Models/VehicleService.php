@@ -76,13 +76,9 @@ class VehicleService extends Base
         }
 
         if($eval){
-            $vehicleServiceStages = $this->stages;
-            $checklistVersionStages = $this->checklistVersion->stages;
+            $this->load('stages');
 
-            $completed = $checklistVersionStages->count() > 0 &&
-                         $checklistVersionStages->count() == $vehicleServiceStages->filter(function($stage){return $stage->pivot->completed;})->count();
-
-            $this->update(['completed' => $completed]);
+            $this->update(['completed' => $this->stages->filter(function($stage){return !$stage->pivot->completed || !$stage->pivot->processed;})->count() == 0]);
         }
     }
 
@@ -93,13 +89,22 @@ class VehicleService extends Base
     }
 
     public function getNextStageAttribute(){
-        $vehicleServiceStages = $this->stages;
-
         if($this->completed){
-            return $vehicleServiceStages->first();
+            return $this->stages->first();
         } else {
-            /*todo: estos stages son un problema, porque si vengo de un stage ya eliminado voy a comparar de mal forma, lo mismo para el listado de stages mostrados en el frontend*/
-            return $vehicleServiceStages->last();
+            $lastStageProcessed = $this->stages->filter(function($stage){return $stage->pivot->processed;})->last();
+
+            if($lastStageProcessed){
+                $lastStageProcessedIndex = $this->stages->search(function($stage) use($lastStageProcessed){return $stage->id == $lastStageProcessed->id;});
+
+                if($lastStageProcessedIndex != $this->stages->count() - 1){
+                    return $this->stages[$lastStageProcessedIndex + 1];
+                } else {
+                    return $this->stages->last();
+                }
+            } else {
+                return $this->stages->first();
+            }
         }
     }
 
@@ -166,6 +171,7 @@ class VehicleService extends Base
                                     'client_signature_date',
                                     'technical_consultant_signature_date',
                                     'completed',
+                                    'processed'
                                 ])
                     ->withTimestamps()
                     ->using('App\Pivots\ChecklistItemStageVehicleService');

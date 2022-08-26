@@ -24,6 +24,7 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
     const [forceToMoveStage, setForceToMoveStage] = useState(null);
     const [checklistVersion, setChecklistVersion] = useState(null);
     const [stage, setStage] = useState(null);
+    const [stages, setStages] = useState([]);
     const [vehicleServiceStage, setVehicleServiceStage] = useState(null);
     const [checklistItems, setChecklistItems] = useState([]);
     const [errors, setErrors] = useState(null);
@@ -68,11 +69,9 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
         api.get('/checklist-version/' + checklistVersionId + '/details').then((response) => {
             setChecklistVersion(response.data.data);
             setData({...data, checklistVersion: response.data.data});
-            setChecklistItems([].concat(...response.data.data.stages.filter((stage) => stage.items.length > 0).map((stage) => stage.items)));
         },(error) => {
             setChecklistVersion(null);
-            setChecklistItems([]);
-            setData({...data, checklistVersion: null, stage: null});
+            setData({...data, checklistVersion: null});
         });
     };
 
@@ -180,22 +179,22 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
     };
 
     const onPreviousStage = () => {
-        const currentStageIndex = (checklistVersion?.stages || []).indexOf(stage);
+        const currentStageIndex = stages.indexOf(stage);
 
         if(currentStageIndex > 0){
-            moveToStage(checklistVersion?.stages[currentStageIndex - 1].id);
+            moveToStage(stages[currentStageIndex - 1].id);
         } else {
-            if(checklistVersion?.stages.length > 0){
-                moveToStage(checklistVersion?.stages[0].id);
+            if(stages.length > 0){
+                moveToStage(stages[0].id);
             }
         }
     };
 
     const onNextStage = () => {
-        const currentStageIndex = (checklistVersion?.stages || []).indexOf(stage);
+        const currentStageIndex = stages.indexOf(stage);
 
-        if(checklistVersion?.stages[currentStageIndex + 1]){
-            moveToStage(checklistVersion?.stages[currentStageIndex + 1].id);
+        if(stages[currentStageIndex + 1]){
+            moveToStage(stages[currentStageIndex + 1].id);
         } else {
             swal({
                 title: 'Completado',
@@ -216,18 +215,18 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
     const moveToStage = (stageId, checkIfIsAvailable = false) => {
         if(stage?.id !== stageId){
             if(vehicleService){
-                const indexStageToGo = checklistVersion.stages.findIndex((stage) => stage.id === stageId);
+                const indexStageToGo = stages.findIndex((stage) => stage.id === stageId);
 
                 /*si existe el index es porque ya fué realizado dicho stage y no hay problema en abrirlo*/
                 /*si no existe, buscará el stage anterior, el mismo debe existir*/
-                if(checkIfIsAvailable === false || (vehicleService.stages[indexStageToGo] || (vehicleService.stages[indexStageToGo - 1]))){
+                if(checkIfIsAvailable === false || (vehicleService.stages[indexStageToGo]?.pivot?.processed || (vehicleService.stages[indexStageToGo - 1]?.pivot?.processed))){
                     setCleanClientSignature(!cleanClientSignature);
 
                     history(`/panel/company/${props.company?.id}/service-schedules/${id}/checklist/${vehicleService.id}/edit/${stageId}`, { replace: true });
                 } else {
                     swal({
                         title: 'Error',
-                        text: 'No puedes ir al stage ' + checklistVersion.stages[indexStageToGo].name,
+                        text: 'No puedes ir al stage ' + stages[indexStageToGo].name,
                         icon: 'error',
                         buttons: {
                             confirm: {
@@ -497,6 +496,25 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
 
     }, [stage, vehicleService]);
 
+    /*setear stages*/
+    useEffect(() => {
+        if(vehicleService){
+            setStages(vehicleService.stages);
+        }
+    }, [vehicleService]);
+
+    /*setear stages*/
+    useEffect(() => {
+        if(checklistVersion && !vehicleService){
+            setStages(checklistVersion.stages);
+        }
+    }, [checklistVersion]);
+
+    /*setear checklistItems*/
+    useEffect(() => {
+        setChecklistItems([].concat(...stages.filter((stage) => stage.items.length > 0).map((stage) => stage.items)));
+    }, [stages]);
+
     /*forzar la limpieza de la firma*/
     useEffect(() => {
         setTimeout(() => {
@@ -534,14 +552,14 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
 
     /*setea el stage actual, el que está en la url, de lo contrario tomará el primero*/
     useEffect(() => {
-        if(checklistVersion){
-            const firstStage = checklistVersion.stages[0];
-            const localStageId = parseInt(stageId, 10) ?? firstStage.id;
-            const currentStage = checklistVersion.stages.find((stage) => stage.id === localStageId);
+        if(stages.length > 0){
+            const firstStage = stages[0];
+            const localStageId = parseInt(stageId ?? firstStage.id, 10);
+            const currentStage = stages.find((stage) => stage.id === localStageId);
 
             setStage(currentStage ?? firstStage);
         }
-    }, [stageId, checklistVersion]);
+    }, [stageId, stages]);
 
     return (
         <>
@@ -574,7 +592,7 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                 <Col md={12}>
                     <Card>
                         <Card.Header className="d-flex justify-content-around">
-                            {(checklistVersion?.stages || []).filter((stage) => stage.items.length > 0).map((localStage) => (
+                            {(stages).filter((stage) => stage.items.length > 0).map((localStage) => (
                                <div className="cursor-pointer" key={localStage.id} >
                                    <h3 className={ stage?.id === localStage.id ? 'text-primary' : '' } onClick={() => {moveToStage(localStage.id, true)}}>{localStage.name}</h3>
                                </div>
@@ -703,17 +721,11 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                                 </Row>
 
                                 <ul className="list-inline wizard mb-0">
-                                    <li className="next list-inline-item">
-                                        <Button type="button" onClick={onPreviousStage} variant="primary" className={(checklistVersion?.stages || []).indexOf(stage) === 0 ? 'disabled' : ''}>
-                                            Previous
-                                        </Button>
-                                    </li>
-
                                     {!vehicleServiceStage?.completed
                                         ?
                                         <li className="next list-inline-item">
                                             <Button type="button" onClick={() => {onSubmit(false)}} variant="primary">
-                                                Cadastro
+                                                Salvar
                                             </Button>
                                         </li>
                                         :
@@ -728,7 +740,7 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                                         ?
                                             <li className="next list-inline-item">
                                                 <Button type="button" onClick={() => {onSubmit(true);}} variant="primary">
-                                                    Complete
+                                                    Finalizar
                                                 </Button>
                                             </li>
                                         : null

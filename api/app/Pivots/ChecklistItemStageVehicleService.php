@@ -20,7 +20,8 @@ class ChecklistItemStageVehicleService extends Pivot
         'technical_consultant_signature',
         'client_signature_date',
         'technical_consultant_signature_date',
-        'completed'
+        'completed',
+        'processed'
     ];
 
     protected $casts = [
