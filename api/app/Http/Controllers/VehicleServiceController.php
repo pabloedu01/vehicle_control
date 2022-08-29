@@ -95,17 +95,15 @@ class VehicleServiceController extends Controller
                 ];
             })->toArray();
 
-            $newStages = [
-                $request->stage_id => array_merge($request->only([
-                                                                     'client_signature',
-                                                                     'technical_consultant_signature',
-                                                                     'client_signature_date',
-                                                                     'technical_consultant_signature_date',
-                                                                     'completed'
-                                                                 ]), ['processed' => true]),
-            ];
+            $defaultStages[$request->stage_id] = array_merge($request->only([
+                                                                                'client_signature',
+                                                                                'technical_consultant_signature',
+                                                                                'client_signature_date',
+                                                                                'technical_consultant_signature_date',
+                                                                                'completed'
+                                                                            ]), ['processed' => true]);
 
-            $vehicleService->stages()->sync($newStages + $defaultStages);
+            $vehicleService->stages()->sync($defaultStages);
 
             $vehicleService->setCompleted(true);
 
@@ -172,17 +170,15 @@ class VehicleServiceController extends Controller
                                           ]);
             })->toArray();
 
-            $newStages = [
-                $request->stage_id => array_merge($request->only([
-                                                                     'client_signature',
-                                                                     'technical_consultant_signature',
-                                                                     'client_signature_date',
-                                                                     'technical_consultant_signature_date',
-                                                                     'completed'
-                                                                 ]), ['processed' => true]),
-            ];
+            $oldStages[$request->stage_id] = array_merge($request->only([
+                                                                            'client_signature',
+                                                                            'technical_consultant_signature',
+                                                                            'client_signature_date',
+                                                                            'technical_consultant_signature_date',
+                                                                            'completed'
+                                                                        ]), ['processed' => true]);
 
-            $vehicleService->stages()->sync($newStages + $oldStages);
+            $vehicleService->stages()->sync($oldStages);
 
             $vehicleService->setCompleted();
 
