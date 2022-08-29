@@ -231,7 +231,8 @@ class ChecklistVersion extends Base
     public function stages()
     {
         return $this->hasMany('App\Models\ChecklistVersionStage', 'checklist_version_id', 'id')
-                    ->withoutGlobalScope('orderByCreatedAt');
+                    ->withoutGlobalScope('orderByCreatedAt')
+                    ->orderBy('id', 'asc');
     }
 }
 

@@ -26,6 +26,7 @@ class ChecklistVersionStage extends Base
         return $this->belongsToMany('App\Models\ChecklistItem', 'checklist_item_checklist_version_stage', 'checklist_version_stage_id', 'checklist_item_id')
                     ->withTimestamps()
                     ->withTrashed()
+                    ->withoutGlobalScope('orderByCreatedAt')
                     ->orderBy('checklist_item_checklist_version_stage.id');
     }
 }

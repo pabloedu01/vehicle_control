@@ -171,9 +171,11 @@ class VehicleService extends Base
                                     'client_signature_date',
                                     'technical_consultant_signature_date',
                                     'completed',
-                                    'processed'
+                                    'processed',
                                 ])
                     ->withTimestamps()
+                    ->withoutGlobalScope('orderByCreatedAt')
+                    ->orderBy('checklist_version_stage_vehicle_service.checklist_version_stage_id')
                     ->using('App\Pivots\ChecklistItemStageVehicleService');
     }
 

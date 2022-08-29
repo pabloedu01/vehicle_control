@@ -61,8 +61,10 @@ class ChecklistVersionController extends Controller
                           ->where('id', '=', $id)
                           ->first();
 
-        $versionStages = ChecklistVersionStage::with(['items'])
+        $versionStages = ChecklistVersionStage::with([ 'items' ])
+                                              ->withoutGlobalScope('orderByCreatedAt')
                                               ->where('checklist_version_id', '=', $version->id)
+                                              ->orderBy('id', 'asc')
                                               ->get();
 
 
