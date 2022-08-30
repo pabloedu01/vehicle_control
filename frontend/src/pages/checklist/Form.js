@@ -561,13 +561,13 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                 company={props.company}
             />
 
-            {errors && (
+            {/*{errors && (
                 <Alert variant="danger" className="my-2" dismissible={true} onClose={() => {setErrors(null)}}>
                     <ul className="mb-0">
                         { errors.map((error, index) => <li key={index}>{error}</li>) }
                     </ul>
                 </Alert>
-            )}
+            )}*/}
 
             <FileUpload show={showFileUpload} handleClose={() => { setShowFileUpload(false); }} files={fileUploadData} handleFileUpload={handleUploadImages} validateFile={validateFileImage}/>
 
