@@ -196,7 +196,7 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
         if(stages[currentStageIndex + 1]){
             moveToStage(stages[currentStageIndex + 1].id);
         } else {
-            swal({
+            /*swal({
                 title: 'Completado',
                 text: 'Checklist Completado',
                 icon: 'success',
@@ -206,7 +206,7 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                         value: 'confirm'
                     }
                 },
-            });
+            });*/
 
             history(`/panel/company/${props.company?.id}/service-schedules/${id}/checklist`);
         }
@@ -215,28 +215,9 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
     const moveToStage = (stageId, checkIfIsAvailable = false) => {
         if(stage?.id !== stageId){
             if(vehicleService){
-                const indexStageToGo = stages.findIndex((stage) => stage.id === stageId);
+                setCleanClientSignature(!cleanClientSignature);
 
-                /*si existe el index es porque ya fué realizado dicho stage y no hay problema en abrirlo*/
-                /*si no existe, buscará el stage anterior, el mismo debe existir*/
-                if(checkIfIsAvailable === false || (vehicleService.stages[indexStageToGo]?.pivot?.processed || (vehicleService.stages[indexStageToGo - 1]?.pivot?.processed))){
-                    setCleanClientSignature(!cleanClientSignature);
-
-                    history(`/panel/company/${props.company?.id}/service-schedules/${id}/checklist/${vehicleService.id}/edit/${stageId}`, { replace: true });
-                } else {
-                    swal({
-                        title: 'Error',
-                        text: 'No puedes ir al stage ' + stages[indexStageToGo].name,
-                        icon: 'error',
-                        buttons: {
-                            confirm: {
-                                text: 'Ok',
-                                value: 'confirm'
-                            }
-                        },
-                        dangerMode: true,
-                    });
-                }
+                history(`/panel/company/${props.company?.id}/service-schedules/${id}/checklist/${vehicleService.id}/edit/${stageId}`, { replace: true });
             } else {
                 setForceToMoveStage(stageId);
             }
@@ -594,7 +575,7 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                         <Card.Header className="d-flex justify-content-around">
                             {(stages).filter((stage) => stage.items.length > 0).map((localStage) => (
                                <div className="cursor-pointer" key={localStage.id} >
-                                   <h3 className={ stage?.id === localStage.id ? 'text-primary' : '' } onClick={() => {moveToStage(localStage.id, true)}}>{localStage.name}</h3>
+                                   <h3 className={ stage?.id === localStage.id ? 'text-primary' : '' } onClick={() => {vehicleService ? moveToStage(localStage.id, true) : setStage(localStage);}}>{localStage.name}</h3>
                                </div>
                             ))}
                         </Card.Header>
@@ -723,27 +704,25 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                                 <ul className="list-inline wizard mb-0">
                                     {!vehicleServiceStage?.completed
                                         ?
-                                        <li className="next list-inline-item">
-                                            <Button type="button" onClick={() => {onSubmit(false)}} variant="primary">
-                                                Salvar
-                                            </Button>
-                                        </li>
+                                        (<>
+                                            <li className="next list-inline-item">
+                                                <Button type="button" onClick={() => {onSubmit(false)}} variant="primary">
+                                                    Salvar
+                                                </Button>
+                                            </li>
+
+                                            <li className="next list-inline-item">
+                                                <Button type="button" onClick={() => {onSubmit(true);}} variant="primary">
+                                                    Finalizar
+                                                </Button>
+                                            </li>
+                                        </>)
                                         :
                                         <li className="next list-inline-item">
                                             <Button type="button" onClick={() => {onNextStage();}} variant="primary">
                                                 Next
                                             </Button>
                                         </li>
-                                    }
-
-                                    {!vehicleServiceStage?.completed && (clientSignatureStarted || clientSignatureImage) && (technicalConsultantSignatureStarted || technicalConsultantSignatureImage)
-                                        ?
-                                            <li className="next list-inline-item">
-                                                <Button type="button" onClick={() => {onSubmit(true);}} variant="primary">
-                                                    Finalizar
-                                                </Button>
-                                            </li>
-                                        : null
                                     }
                                 </ul>
 
