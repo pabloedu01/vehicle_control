@@ -10,6 +10,7 @@ import FileUpload from "../../components/FileUpload";
 import SignatureCanvas from 'react-signature-canvas';
 import {dataURLtoFile} from "../../utils/file";
 import swal from "sweetalert";
+import {toastService} from "../../services/toast";
 
 const api = new APICore();
 
@@ -318,7 +319,7 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                     resolve();
                 }
             })).then(() => {
-                onNextStage();
+                /*onNextStage();*/
             }).catch((error) => {
                 manageAjaxError(error);
             });
@@ -348,6 +349,7 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                         errors.push(message);
                     } else {
                         message.forEach((text) => {
+                            toastService.show('error', text);
                             errors.push(text);
                         });
                     }
