@@ -87,6 +87,10 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
         history(`/panel/company/${props.company?.id}/${type}/${id}/checklist/${vehicleServiceId}/edit/${rowData.nextStage}`);
     };
 
+    const onShow = (vehicleServiceId, rowData) => {
+        history(`/panel/company/${props.company?.id}/${type}/${id}/checklist/${vehicleServiceId}`);
+    };
+
     const onComplete = (vehicleServiceId, rowData) => {
         swal({
             title: '¿tem certeza?',
@@ -193,6 +197,15 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                                 action: onEdit,
                                 condition: (data) => {
                                     return !data.isCompleted && data.nextStage !== null;
+                                }
+                            },
+                            {
+                                key: 'show',
+                                icon: 'mdi mdi-eye-outline',
+                                label: 'Visualizar',
+                                action: onShow,
+                                condition: (data) => {
+                                    return data.isCompleted;
                                 }
                             }
                         ]}/>

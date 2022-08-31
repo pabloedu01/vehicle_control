@@ -51,6 +51,7 @@ const ClientForm = React.lazy(() => import('../pages/client/Form'));
 
 const Checklist = React.lazy(() => import('../pages/checklist/List'));
 const ChecklistForm = React.lazy(() => import('../pages/checklist/Form'));
+const ChecklistPreview= React.lazy(() => import('../pages/checklist/Preview'));
 
 const ChecklistItemList = React.lazy(() => import('../pages/checklist-item/List'));
 const ChecklistItemForm = React.lazy(() => import('../pages/checklist-item/Form'));
@@ -466,6 +467,11 @@ const AllRoutes = () => {
                 {
                     path: ':type/:id/checklist/:checklistId/edit/:stageId',
                     element: <LoadComponent component={ChecklistForm} />,
+                },
+
+                {
+                    path: ':type/:id/checklist/:checklistId',
+                    element: <LoadComponent component={ChecklistPreview} />,
                 },
             ]
         },
