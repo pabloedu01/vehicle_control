@@ -1,7 +1,7 @@
 // @flow
 import React, {useEffect, useState} from 'react';
 import PageTitle from "../../components/PageTitle";
-import {Card, Col, Row, Badge} from "react-bootstrap";
+import {Card, Col, Row, Badge, Carousel, Modal} from "react-bootstrap";
 import {APICore} from "../../helpers/api/apiCore";
 import {useNavigate, useParams} from "react-router-dom";
 
@@ -15,6 +15,8 @@ const Preview = (props: {company?: any}): React$Element<React$FragmentType> => {
     const [checklistVersion, setChecklistVersion] = useState(null);
     const [stages, setStages] = useState([]);
     const [checklistData, setChecklistData] = useState({});
+    const [showModal, setShowModal] = useState(false);
+    const [previewImage, setPreviewImage] = useState(null);
 
     const getData = () => {
         if(id){
@@ -45,9 +47,14 @@ const Preview = (props: {company?: any}): React$Element<React$FragmentType> => {
                             };
                         });
 
+                        const stages = vehicleService.stages.filter((stage) => stage.pivot.processed);
+                        stages.forEach((stage, index) => {
+                            stages[index].evidences = [].concat(...stage.items.map((checklistItem) => (checklistData[checklistItem.id]?.evidence || []).map((evidence) => {return {evidence, observations: checklistData[checklistItem.id].observations};})));
+                        });
+
                         setVehicleService(vehicleService);
                         setChecklistVersion(vehicleService.checklist_version);
-                        setStages(vehicleService.stages);
+                        setStages(stages);
                         setChecklistData(checklistData);
                         setData(data);
                         break;
@@ -63,6 +70,16 @@ const Preview = (props: {company?: any}): React$Element<React$FragmentType> => {
         }
     };
 
+    const showImage = (imageUrl) => {
+        setPreviewImage(imageUrl);
+        setShowModal(true);
+    };
+
+    const onHideModal = () => {
+        setPreviewImage(null);
+        setShowModal(false);
+    };
+
     /*si se cambia alguno de los parametros de id tipo o el vehicle service, se reinicializa todo*/
     useEffect(() => {
         getData();
@@ -70,6 +87,15 @@ const Preview = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     return (
         <>
+            <Modal show={showModal} onHide={onHideModal} size="lg" scrollable={true} centered={true}>
+                <Modal.Body className="p-0" style={{minHeight: '300px'}}>
+                    <img
+                        className="d-block w-100"
+                        src={previewImage}
+                    />
+                </Modal.Body>
+            </Modal>
+
             <PageTitle
                 breadCrumbItems={[
                     { label: 'Checklist', path: `/${type}/${id}/checklist` },
@@ -85,9 +111,33 @@ const Preview = (props: {company?: any}): React$Element<React$FragmentType> => {
                         <>
                             <h2 className="text-center mb-3">{stage.name}</h2>
                             <Row>
+
+                                {stage.evidences.length > 0
+                                    ?
+                                    <Col className="mb-3" lg={4} md={5} sm={8} xs={12}>
+                                        <Carousel indicators={true}>
+                                            {stage.evidences.map((evidence, index) => (
+                                                <Carousel.Item>
+                                                    <img
+                                                        onClick={() => {showImage(evidence.evidence);}}
+                                                        className="d-block w-100"
+                                                        style={{height: '300px'}}
+                                                        src={evidence.evidence}
+                                                        alt={'Imagen ' + stage.name + ' ' + index}
+                                                    />
+                                                    <Carousel.Caption>
+                                                        <p>{evidence.observations}</p>
+                                                    </Carousel.Caption>
+                                                </Carousel.Item>
+                                            ))}
+                                        </Carousel>
+                                    </Col>
+                                    : null
+                                }
+
                                 {stage.items.map((checklistItem) => (
                                   <>
-                                      <Col className="mb-3" sm={2}>
+                                      <Col className="mb-3" lg={3} md={4} sm={4} xs={6}>
                                           <Card>
                                               <Card.Body>
                                                   <h5>{checklistItem.name}</h5>

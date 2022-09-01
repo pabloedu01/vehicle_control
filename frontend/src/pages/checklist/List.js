@@ -203,10 +203,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                                 key: 'show',
                                 icon: 'mdi mdi-eye-outline',
                                 label: 'Visualizar',
-                                action: onShow,
-                                condition: (data) => {
-                                    return data.isCompleted;
-                                }
+                                action: onShow
                             }
                         ]}/>
                     )
