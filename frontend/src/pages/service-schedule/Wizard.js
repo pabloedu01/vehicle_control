@@ -126,7 +126,7 @@ const FormWizard = (props: {company?: any}): React$Element<React$FragmentType> =
                     { label: 'Cadastro', path: `/service-schedules/${id ? id + '/edit' : 'create'}`, active: true },
                 ]}
                 title={'Agenda de Serviços'}
-                company={props.company}
+                company={props?.company}
             />
             <Row>
                 <Col xs={12}>

@@ -9,13 +9,12 @@ use App\Http\Requests\VehicleService as VehicleServiceRequest;
 use App\Models\VehicleServiceClientData as ClientData;
 use App\Models\VehicleServiceTechnicalConsultantData as TechnicalConsultantData;
 use App\Models\VehicleServiceVehicleData as VehicleData;
-use App\Rules\ChecklistVersion;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class VehicleServiceController extends Controller
 {
-    private static $with = [ 'brand', 'checklistVersion', 'client', 'technicalConsultant', 'technicalConsultant.user', 'serviceSchedule', 'vehicle' ];
+    private static $with = [ 'brand', 'checklistVersion', 'client', 'technicalConsultant', 'technicalConsultant.user', 'serviceSchedule', 'serviceSchedule.clientVehicle', 'vehicle' ];
 
     public function index(Request $request)
     {

@@ -558,7 +558,7 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                     [{ label: 'Checklist', active: true },]
                 }
                 title={'Checklist ' + (checklistVersion?.name ?? '')}
-                company={props.company}
+                company={props?.company}
             />
 
             {/*{errors && (
