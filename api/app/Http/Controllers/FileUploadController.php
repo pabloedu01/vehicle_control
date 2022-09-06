@@ -22,6 +22,10 @@ class FileUploadController extends Controller
 
     public function store(Request $request, $type)
     {
+        ini_set('display_errors', 1);
+        ini_set('display_startup_errors', 1);
+        error_reporting(E_ALL);
+
         switch($type){
             case 'image':
                 $validator = validate($request->all(), [
