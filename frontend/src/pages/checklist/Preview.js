@@ -178,7 +178,7 @@ const Preview = (props: {company?: any}): React$Element<React$FragmentType> => {
                                         </div>
 
                                         <div className="mt-4">
-                                            <p style={{fontSize: '1.5rem'}}><b>Cor</b>: {data?.vehicle?.name}</p>
+                                            <p style={{fontSize: '1.5rem'}}><b>Cor</b>: {data?.clientVehicle?.color}</p>
                                         </div>
 
                                         <div className="mt-4">

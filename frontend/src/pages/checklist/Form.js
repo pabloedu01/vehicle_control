@@ -319,6 +319,7 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                     resolve();
                 }
             })).then(() => {
+                history(`/panel/company/${props.company?.id}/service-schedules/${id}/checklist`);
                 /*onNextStage();*/
             }).catch((error) => {
                 manageAjaxError(error);
