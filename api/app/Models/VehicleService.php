@@ -2,22 +2,21 @@
 
 namespace App\Models;
 
-use App\Casts\TemporalFile;
-
 class VehicleService extends Base
 {
     protected $table = 'vehicle_services';
+
+    protected $hidden = [
+        'deleted_at',
+        'updated_at',
+    ];
 
     protected $fillable = [
         'company_id',
         'checklist_version_id',
         'service_schedule_id',
         'service_order_id',
-    ];
-
-    protected $casts = [
-        'technical_consultant_signature' => TemporalFile::class,
-        'client_signature' => TemporalFile::class,
+        'completed'
     ];
 
     public static $changingColumnsForReport = [
@@ -51,24 +50,36 @@ class VehicleService extends Base
 
                                       'vehicle_service_client_data.client_id',
                                       'vehicle_service_client_data.name as client_name',
-                                      'vehicle_service_client_data.signature as client_signature',
-                                      'vehicle_service_client_data.signature_date as client_signature_date',
 
                                       'vehicle_service_technical_consultant_data.technical_consultant_id',
-                                      'vehicle_service_technical_consultant_data.signature as technical_consultant_signature',
-                                      'vehicle_service_technical_consultant_data.signature_date as technical_consultant_signature_date',
 
                                       'vehicle_service_vehicle_data.vehicle_id',
                                       'vehicle_service_vehicle_data.brand_id',
-                                      /*'vehicle_service_vehicle_data.plate',*/
                                       'vehicle_service_vehicle_data.fuel',
                                       'vehicle_service_vehicle_data.mileage',
-                                      /*'vehicle_service_vehicle_data.chasis'*/
                                   ])
                          ->join('vehicle_service_client_data', 'vehicle_services.id', '=', 'vehicle_service_client_data.vehicle_service_id', 'inner')
                          ->join('vehicle_service_technical_consultant_data', 'vehicle_services.id', '=', 'vehicle_service_technical_consultant_data.vehicle_service_id', 'inner')
                          ->join('vehicle_service_vehicle_data', 'vehicle_services.id', '=', 'vehicle_service_vehicle_data.vehicle_service_id', 'inner');
         });
+    }
+
+    public function setCompleted($force = false){
+        $eval = false;
+
+        if(!$force){
+            if(!$this->completed){
+                $eval = true;
+            }
+        } else {
+            $eval = true;
+        }
+
+        if($eval){
+            $this->load('stages');
+
+            $this->update(['completed' => $this->stages->filter(function($stage){return !$stage->pivot->completed || !$stage->pivot->processed;})->count() == 0]);
+        }
     }
 
     public function getClientNameAttribute(){
@@ -77,18 +88,24 @@ class VehicleService extends Base
         return $client ? $client->name : $this->getAttributeFromArray('client_name');
     }
 
-    public function getClientSignatureBase64Attribute(){
-        $gcsDriver  = env('GOOGLE_CLOUD_STORAGE_DRIVER', 'public');
-        $gcsStorage = \Storage::disk($gcsDriver);
+    public function getNextStageAttribute(){
+        if($this->completed){
+            return $this->stages->first();
+        } else {
+            $lastStageProcessed = $this->stages->filter(function($stage){return $stage->pivot->processed;})->last();
 
-        return $this->client_signature ? 'data:image/png;base64,'.base64_encode($gcsStorage->get(last(explode($gcsStorage->url(''), $this->client_signature)))) : $this->client_signature;
-    }
+            if($lastStageProcessed){
+                $lastStageProcessedIndex = $this->stages->search(function($stage) use($lastStageProcessed){return $stage->id == $lastStageProcessed->id;});
 
-    public function getTechnicalConsultantSignatureBase64Attribute(){
-        $gcsDriver  = env('GOOGLE_CLOUD_STORAGE_DRIVER', 'public');
-        $gcsStorage = \Storage::disk($gcsDriver);
-
-        return $this->technical_consultant_signature ? 'data:image/png;base64,'.base64_encode($gcsStorage->get(last(explode($gcsStorage->url(''), $this->technical_consultant_signature)))) : $this->technical_consultant_signature;
+                if($lastStageProcessedIndex != $this->stages->count() - 1){
+                    return $this->stages[$lastStageProcessedIndex + 1];
+                } else {
+                    return $this->stages->last();
+                }
+            } else {
+                return $this->stages->first();
+            }
+        }
     }
 
     #belongs to
@@ -137,9 +154,29 @@ class VehicleService extends Base
     public function items()
     {
         return $this->belongsToMany('App\Models\ChecklistItem', 'checklist_item_vehicle_service', 'vehicle_service_id', 'checklist_item_id')
+            ->withTrashed()
             ->withPivot([ 'value', 'evidence', 'observations' ])
             ->withTimestamps()
             ->using('App\Pivots\ChecklistItemVehicleService');
+    }
+
+    #many to many
+    public function stages()
+    {
+        return $this->belongsToMany('App\Models\ChecklistVersionStage', 'checklist_version_stage_vehicle_service', 'vehicle_service_id', 'checklist_version_stage_id')
+                    ->withTrashed()
+                    ->withPivot([
+                                    'technical_consultant_signature',
+                                    'client_signature',
+                                    'client_signature_date',
+                                    'technical_consultant_signature_date',
+                                    'completed',
+                                    'processed',
+                                ])
+                    ->withTimestamps()
+                    ->withoutGlobalScope('orderByCreatedAt')
+                    ->orderBy('checklist_version_stage_vehicle_service.checklist_version_stage_id')
+                    ->using('App\Pivots\ChecklistItemStageVehicleService');
     }
 
     #has one
@@ -158,12 +195,6 @@ class VehicleService extends Base
     public function vehicleData()
     {
         return $this->hasOne('App\Models\VehicleServiceVehicleData', 'vehicle_service_id', 'id');
-    }
-
-    #has many
-    public function reports()
-    {
-        return $this->hasMany('App\Models\ChecklistReport', 'vehicle_service_id', 'id');
     }
 }
 

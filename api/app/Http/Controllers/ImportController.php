@@ -128,31 +128,49 @@ class ImportController extends Controller
                 return $clients->keyBy('key');
             });
 
-        foreach($rows as $row)
+        $serviceSchedulesGroupedByCompanyAndCode = ServiceSchedule::whereIn('company_id', $companiesGroupedByCode->pluck('id')->toArray())
+                                                     ->get()
+                                                     ->groupBy('company_id')->map(function($serviceSchedules){
+                return $serviceSchedules->keyBy('code');
+            });
+
+        foreach($rows as $index => $row)
         {
             $company = @$companiesGroupedByCode[$row['filial']];
 
             if($company)
             {
-                $code = trim($row['nro_preos']);
+                $code = trim(@$row['id_preos']);
                 $clientEmail = trim(strtolower($row['endeletronic']));
-                $promisedDate = convert_user_date_to_utc(Carbon::createFromFormat('d/m/Y H:i:s', Date::excelToDateTimeObject($row['dtchegada'])->format('d/m/Y').' '.$row['hora'])->format('Y-m-d H:i:s'), $request->utcOffset);
+                try
+                {
+                    $promisedDate = convert_user_date_to_utc(Carbon::createFromFormat('d/m/Y H:i:s', Date::excelToDateTimeObject($row['dtchegada'])->format('d/m/Y').' '.$row['hora'])->format('Y-m-d H:i:s'), $request->utcOffset);
+                } catch(\Exception $exception){
+                    $promisedDate = gmdate('Y-m-d H:i:s');
+                }
 
                 $client = @$clientsGroupedByCompanyAndName[$company->id][\Str::slug($row['cliente'])];
                 $brand = @$brandsGroupedByCompanyAndName[$company->id]['toyota'];
                 $model = @$modelsGroupedByCompanyAndName[$company->id][\Str::slug($row['veiculo'])];
                 $vehicle = @$vehiclesGroupedByCompanyAndModelIdAndName[$company->id][$model->id][\Str::slug($row['modelo'])];
                 $clientVehicle = @$clientVehiclesGroupedByCompanyAndModelIdAndName[$company->id][$model->id][$vehicle->id][\Str::slug($row['placa']).\Str::slug($row['chassis'])];
+                $serviceSchedule = @$serviceSchedulesGroupedByCompanyAndCode[$company->id][$code];
 
                 if(is_null($client)){
                     $client = Client::create([
                                                  'company_id' => $company->id,
-                                                 'document'   => '20916310',
+                                                 'document'   => '00000000',
                                                  'name'       => trim($row['cliente']),
                                                  'address'    => null,
                                                  'email'      => $clientEmail,
                                                  'active'     => true,
                                              ]);
+
+                    if(!isset($clientsGroupedByCompanyAndName[$company->id])){
+                        $clientsGroupedByCompanyAndName[$company->id] = collect();;
+                    }
+
+                    $clientsGroupedByCompanyAndName[$company->id][\Str::slug($row['cliente'])] = $client;
                 }
 
                 if(is_null($brand)){
@@ -162,6 +180,12 @@ class ImportController extends Controller
                                                       'code'       => 'toyota',
                                                       'active'     => true,
                                                   ]);
+
+                    if(!isset($brandsGroupedByCompanyAndName[$company->id])){
+                        $brandsGroupedByCompanyAndName[$company->id] = collect();;
+                    }
+
+                    $brandsGroupedByCompanyAndName[$company->id]['toyota'] = $brand;
                 }
 
                 if(is_null($model)){
@@ -171,6 +195,12 @@ class ImportController extends Controller
                                                       'name'       => trim($row['veiculo']),
                                                       'active'     => true,
                                                   ]);
+
+                    if(!isset($modelsGroupedByCompanyAndName[$company->id])){
+                        $modelsGroupedByCompanyAndName[$company->id] = collect();;
+                    }
+
+                    $modelsGroupedByCompanyAndName[$company->id][\Str::slug($row['veiculo'])] = $model;
                 }
 
                 if(is_null($vehicle)){
@@ -182,6 +212,16 @@ class ImportController extends Controller
                                                    'model_year' => trim($row['fab']).'/'.trim($row['mod']),
                                                    'active'     => true,
                                                ]);
+
+                    if(!isset($vehiclesGroupedByCompanyAndModelIdAndName[$company->id])){
+                        $vehiclesGroupedByCompanyAndModelIdAndName[$company->id] = collect();;
+                    }
+
+                    if(!isset($vehiclesGroupedByCompanyAndModelIdAndName[$company->id][$model->id])){
+                        $vehiclesGroupedByCompanyAndModelIdAndName[$company->id][$model->id] = collect();;
+                    }
+
+                    $vehiclesGroupedByCompanyAndModelIdAndName[$company->id][$model->id][\Str::slug($row['modelo'])] = $vehicle;
                 }
 
                 if(is_null($clientVehicle)){
@@ -192,6 +232,20 @@ class ImportController extends Controller
                                                    'plate'   => trim($row['placa']),
                                                    'mileage' => $row['km']
                                                ]);
+
+                    if(!isset($clientVehiclesGroupedByCompanyAndModelIdAndName[$company->id])){
+                        $clientVehiclesGroupedByCompanyAndModelIdAndName[$company->id] = collect();
+                    }
+
+                    if(!isset($clientVehiclesGroupedByCompanyAndModelIdAndName[$company->id][$model->id])){
+                        $clientVehiclesGroupedByCompanyAndModelIdAndName[$company->id][$model->id] = collect();
+                    }
+
+                    if(!isset($clientVehiclesGroupedByCompanyAndModelIdAndName[$company->id][$model->id][$vehicle->id])){
+                        $clientVehiclesGroupedByCompanyAndModelIdAndName[$company->id][$model->id][$vehicle->id] = collect();
+                    }
+
+                    $clientVehiclesGroupedByCompanyAndModelIdAndName[$company->id][$model->id][$vehicle->id][\Str::slug($row['placa']).\Str::slug($row['chassis'])] = $clientVehicle;
                 } else {
                     unset($clientVehicle->key);
                     unset($clientVehicle->model_id);
@@ -199,15 +253,23 @@ class ImportController extends Controller
                     $clientVehicle->update(['mileage' => trim($row['km'])]);
                 }
 
-                $serviceSchedule = ServiceSchedule::create([
-                                            'code'                    => $code,
-                                            'promised_date'           => $promisedDate,
-                                            'company_id'              => $company->id,
-                                            'checklist_version_id'    => $checklistVersion->id,
-                                            'technical_consultant_id' => null,
-                                            'client_id'               => $client->id,
-                                            'client_vehicle_id'       => $clientVehicle->id,
-                                        ]);
+                if(is_null($serviceSchedule)){
+                    $serviceSchedule = ServiceSchedule::create([
+                                                                   'code'                    => $code,
+                                                                   'promised_date'           => $promisedDate,
+                                                                   'company_id'              => $company->id,
+                                                                   'checklist_version_id'    => $checklistVersion->id,
+                                                                   'technical_consultant_id' => null,
+                                                                   'client_id'               => $client->id,
+                                                                   'client_vehicle_id'       => $clientVehicle->id,
+                                                               ]);
+
+                    if(!isset($serviceSchedulesGroupedByCompanyAndCode[$company->id])){
+                        $serviceSchedulesGroupedByCompanyAndCode[$company->id] = collect();;
+                    }
+
+                    $serviceSchedulesGroupedByCompanyAndCode[$company->id][$code] = $serviceSchedule;
+                }
             }
             else
             {

@@ -53,10 +53,10 @@ const Register = () => {
      */
     const schemaResolver = yupResolver(
         yup.object().shape({
-            name: yup.string().required(t('Por favor, digite Nome Completo')),
-            username: yup.string().required(t('Por favor, digite Usuário')),
-            email: yup.string().required('Por favor, digite Email').email('Por favor insira um e-mail válido'),
-            password: yup.string().required(t('Por favor, digite Senha')),
+            name: yup.string().nullable().required(t('Por favor, digite Nome Completo')),
+            username: yup.string().nullable().required(t('Por favor, digite Usuário')),
+            email: yup.string().nullable().required('Por favor, digite Email').email('Por favor insira um e-mail válido'),
+            password: yup.string().nullable().required(t('Por favor, digite Senha')),
         })
     );
 

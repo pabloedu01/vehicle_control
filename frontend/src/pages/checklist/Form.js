@@ -8,26 +8,34 @@ import moment from 'moment';
 import Select from 'react-select';
 import FileUpload from "../../components/FileUpload";
 import SignatureCanvas from 'react-signature-canvas';
-import {dataURLtoFile, toDataURL} from "../../utils/file";
+import {dataURLtoFile} from "../../utils/file";
 import swal from "sweetalert";
+import {toastService} from "../../services/toast";
 
 const api = new APICore();
 
 const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType> => {
     const history = useNavigate();
-    const {id, type} = useParams();
+    const {id, type, checklistVersionId, checklistId, stageId} = useParams();
     const [data, setData] = useState();
     const [checklistData, setChecklistData] = useState({});
     const [observationsData, setObservationsData] = useState({});
     const [evidences, setEvidences] = useState({});
+    const [vehicleService, setVehicleService] = useState(null);
+    const [forceToMoveStage, setForceToMoveStage] = useState(null);
     const [checklistVersion, setChecklistVersion] = useState(null);
+    const [stage, setStage] = useState(null);
+    const [stages, setStages] = useState([]);
+    const [vehicleServiceStage, setVehicleServiceStage] = useState(null);
+    const [checklistItems, setChecklistItems] = useState([]);
     const [errors, setErrors] = useState(null);
     const [showFileUpload, setShowFileUpload] = useState(false);
     const [fileUploadData, setFileUploadData] = useState([]);
     const [fileUploadId, setFileUploadId] = useState(null);
 
+    const [cleanClientSignature, setCleanClientSignature] = useState(false);
+    const [cleanTechnicalConsultantSignature, setCleanTechnicalConsultantSignature] = useState(false);
     const [drawSignatures, setDrawSignatures] = useState(false);
-    const [signaturesUpdated, setSignaturesUpdated] = useState(false);
     const [clientSignatureImage, setClientSignatureImage] = useState(null);
     const [technicalConsultantSignatureImage, setTechnicalConsultantSignatureImage] = useState(null);
     const [clientSignatureDate, setClientSignatureDate] = useState(null);
@@ -37,143 +45,34 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
     const [clientSignature, setClientSignature] = useState(null);
     const [technicalConsultantSignature, setTechnicalConsultantSignature] = useState(null);
 
-    const onSubmit = () => {
-        const formData = {
-            "checklist_version_id": data.checklistVersion.id,
-            "service_schedule_id": null,
-            "vehicle_id": null,
-            "technical_consultant_id": data.technicalConsultant.id,
-            "brand_id": data.brand.id,
-            "client_id": data.client.id,
-            "client_name": data.client.name,
-            "client_signature": clientSignatureImage,
-            "client_signature_date": clientSignatureStarted ? moment().utc().format('YYYY-MM-DDTHH:mm:00+00:00') : (data.vehicleService?.client_signature_date ? moment(data.vehicleService?.client_signature_date).utc().format('YYYY-MM-DDTHH:mm:00+00:00') : (clientSignatureDate ? moment(clientSignatureDate).utc().format('YYYY-MM-DDTHH:mm:00+00:00') : null)),
-            "technical_consultant_signature": technicalConsultantSignatureImage,
-            "technical_consultant_signature_date": technicalConsultantSignatureStarted ? moment().utc().format('YYYY-MM-DDTHH:mm:00+00:00') : (data.vehicleService?.technical_consultant_signature_date ? moment(data.vehicleService?.technical_consultant_signature_date).utc().format('YYYY-MM-DDTHH:mm:00+00:00') : (technicalConsultantSignatureDate ? moment(technicalConsultantSignatureDate).utc().format('YYYY-MM-DDTHH:mm:00+00:00') : null)),
-            "fuel": checklistData[(checklistVersion?.items || []).find((item) => item.code === 'fuel')?.id] ?? null,
-            "mileage": checklistData[(checklistVersion?.items || []).find((item) => item.code === 'mileage')?.id] ?? null,
-            "checklist": Object.keys(checklistData).map((id) => {
-                return {
-                    id,
-                    value: checklistData[id] !== '' ? checklistData[id] : null,
-                    observations: observationsData.hasOwnProperty(id) && observationsData[id] !== '' ? observationsData[id] : null,
-                    evidence: evidences.hasOwnProperty(id) && evidences[id] !== null && evidences[id].length > 0 ? evidences[id].map((file) => typeof file === 'string' ? file : file?.id) : null,
-                };
-            })
-        };
+    const getChecklistItemValue = (code) => {
+        const item = checklistItems.find((item) => item.code === code);
 
-        switch(type){
-            case 'service-schedules':
-                formData.service_schedule_id = id;
-                formData.vehicle_id = data.vehicle.id;
-                break;
+        function getValue(type, value){
+            return type !== 'boolean' ? (value !== '' ? value : null) : (value ?? false);
         }
 
-        setErrors(null);
-
-        let ajaxCall;
-
-        if(data.vehicleService?.id){
-            ajaxCall = api.update('/vehicle-service/' + data.vehicleService?.id,Object.assign(formData, {claims_service: []}));
-        } else {
-            ajaxCall = api.post('/vehicle-service',Object.assign(formData,{company_id: props.company?.id}));
-        }
-
-        ajaxCall.then((response) => {
-            api.post('/checklist-version/' + data.checklistVersion.id + '/generate-report', {type, id, utcOffset: moment().utcOffset()}).then(() => {
-                setSignaturesUpdated(false);
-                history(`/panel/company/${props.company?.id}/service-schedules/list`);
-            }).catch(() => {
-                swal({
-                    title: 'Error',
-                    text: 'Ocorreu um erro ao gerar o relatório.',
-                    icon: 'error',
-                    buttons: {
-                        confirm: {
-                            text: 'Ok',
-                            value: 'confirm'
-                        }
-                    },
-                    dangerMode: true,
-                });
-            });
-        }, (error) => {
-            setSignaturesUpdated(false);
-
-            if(error.hasOwnProperty('response') && error.response?.status === 400 && error.response?.data.hasOwnProperty('errors')){
-                const errors = [];
-
-                Object.keys(error.response.data.errors).forEach((key) => {
-                    error.response.data.errors[key].forEach((message) => {
-                        if(typeof message === 'string'){
-                            errors.push(message);
-                        } else {
-                            message.forEach((text) => {
-                                errors.push(text);
-                            });
-                        }
-                    });
-                });
-
-                setErrors(errors);
-            }
-        });
+        return item ? getValue(item.validation.type, checklistData[item.id]) : null;
     };
 
-    const uploadSignatures = () => {
-        const files = [];
+    const getFormattedChecklist = (id) => {
+        const item = checklistItems.find((item) => item.id === parseInt(id, 10));
 
-        if(technicalConsultantSignatureStarted){
-            files.push(dataURLtoFile(technicalConsultantSignature.toDataURL('image/png'), 'technicalConsultantSignature.png'));
+        return {
+            id,
+            value: getChecklistItemValue(item.code),
+            observations: observationsData.hasOwnProperty(id) && observationsData[id] !== '' ? observationsData[id] : null,
+            evidence: evidences.hasOwnProperty(id) && evidences[id] !== null && evidences[id].length > 0 ? evidences[id].map((file) => typeof file === 'string' ? file : file?.id) : null,
         }
-
-        if(clientSignatureStarted){
-            files.push(dataURLtoFile(clientSignature.toDataURL('image/png'), 'clientSignature.png'));
-        }
-
-        Promise.all(files.map((file) => new Promise((resolve, reject) => {
-            api.uploadFile('/file-upload/image', {image: file}).then((response) => {
-                if(response.data.hasOwnProperty('data') && response.data.data.hasOwnProperty('id')){
-                    resolve(response.data.data);
-                } else {
-                    reject();
-                }
-            }, (error) => {
-                reject();
-            });
-        }))).then((processedFiles) => {
-            processedFiles.forEach((file) => {
-                if(file.original_name === 'clientSignature.png'){
-                    setClientSignatureImage(file.id);
-                }
-
-                if(file.original_name === 'technicalConsultantSignature.png'){
-                    setTechnicalConsultantSignatureImage(file.id);
-                }
-            });
-
-            setSignaturesUpdated(true);
-        }).catch((error) => {
-            swal({
-                title: 'Error',
-                text: 'Ocorreu um erro ao carregar as assinaturas.',
-                icon: 'error',
-                buttons: {
-                    confirm: {
-                        text: 'Ok',
-                        value: 'confirm'
-                    }
-                },
-                dangerMode: true,
-            });
-        });
     };
 
     const getChecklistVersion = (checklistVersionId) => {
-        api.get('/checklist-version/' + checklistVersionId + '/items').then((response) => {
+        api.get('/checklist-version/' + checklistVersionId + '/details').then((response) => {
             setChecklistVersion(response.data.data);
+            setData({...data, checklistVersion: response.data.data});
         },(error) => {
             setChecklistVersion(null);
+            setData({...data, checklistVersion: null});
         });
     };
 
@@ -183,23 +82,31 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
 
             switch(type){
                 case 'service-schedules':
-                    ajaxCall = api.get('/service-schedule/' + id);
+                    if(checklistId){
+                        ajaxCall = api.get('/vehicle-service/' + checklistId);
+                    } else {
+                        ajaxCall = api.get('/service-schedule/' + id);
+                    }
                     break;
             }
 
             ajaxCall.then((response) => {
                 switch(type){
                     case 'service-schedules':
-                        const {checklist_version: checklistVersion,client_vehicle:{vehicle,vehicle: {model: {brand}}}, client, vehicle_service : vehicleService, technical_consultant: technicalConsultant} = response.data.data;
+                        let data;
 
-                        getChecklistVersion(checklistVersion.id);
+                        if(checklistId){
+                            const {brand,client,vehicle, technical_consultant: technicalConsultant, ...vehicleService} = response.data.data;
+                            data = {brand, client, technicalConsultant, vehicle};
 
-                        setClientSignatureImage(vehicleService?.client_signature);
-                        setTechnicalConsultantSignatureImage(vehicleService?.technical_consultant_signature);
-                        setClientSignatureDate(vehicleService?.client_signature_date);
-                        setTechnicalConsultantSignatureDate(vehicleService?.technical_consultant_signature_date);
-                        setData({brand, client, vehicleService, checklistVersion, technicalConsultant, vehicle});
-                        setDrawSignatures(true);
+                            setVehicleService(vehicleService);
+                        } else {
+                            const {client_vehicle:{vehicle,vehicle: {model: {brand}}}, client , technical_consultant: technicalConsultant} = response.data.data;
+                            data = {brand, client, technicalConsultant, vehicle};
+                            setVehicleService(null);
+                        }
+
+                        setData(data);
                         break;
                     default:
                         setData(response.data.data);
@@ -272,15 +179,199 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
         return width;
     };
 
+    const onPreviousStage = () => {
+        const currentStageIndex = stages.indexOf(stage);
+
+        if(currentStageIndex > 0){
+            moveToStage(stages[currentStageIndex - 1].id);
+        } else {
+            if(stages.length > 0){
+                moveToStage(stages[0].id);
+            }
+        }
+    };
+
+    const onNextStage = () => {
+        const currentStageIndex = stages.indexOf(stage);
+
+        if(stages[currentStageIndex + 1]){
+            moveToStage(stages[currentStageIndex + 1].id);
+        } else {
+            /*swal({
+                title: 'Completado',
+                text: 'Checklist Completado',
+                icon: 'success',
+                buttons: {
+                    confirm: {
+                        text: 'Ok',
+                        value: 'confirm'
+                    }
+                },
+            });*/
+
+            history(`/panel/company/${props.company?.id}/service-schedules/${id}/checklist`);
+        }
+    };
+
+    const moveToStage = (stageId, checkIfIsAvailable = false) => {
+        if(stage?.id !== stageId){
+            if(vehicleService){
+                setCleanClientSignature(!cleanClientSignature);
+
+                history(`/panel/company/${props.company?.id}/service-schedules/${id}/checklist/${vehicleService.id}/edit/${stageId}`, { replace: true });
+            } else {
+                setForceToMoveStage(stageId);
+            }
+        }
+    };
+
+    const onSubmit = (complete) => {
+        const files = [];
+
+        if(!vehicleServiceStage?.completed){
+            if(technicalConsultantSignatureStarted){
+                if(technicalConsultantSignature && !technicalConsultantSignature.isEmpty()){
+                    files.push(dataURLtoFile(technicalConsultantSignature.toDataURL('image/png'), 'technicalConsultantSignature.png'));
+                } else {
+                    setTechnicalConsultantSignatureImage(null);
+                }
+            }
+
+            if(clientSignatureStarted){
+                if(clientSignature && !clientSignature.isEmpty()){
+                    files.push(dataURLtoFile(clientSignature.toDataURL('image/png'), 'clientSignature.png'));
+                } else {
+                    setClientSignatureImage(null);
+                }
+            }
+        }
+
+        Promise.all(files.map((file) => new Promise((resolve, reject) => {
+            api.uploadFile('/file-upload/image', {image: file}).then((response) => {
+                if(response.data.hasOwnProperty('data') && response.data.data.hasOwnProperty('id')){
+                    resolve(response.data.data);
+                } else {
+                    reject();
+                }
+            }, (error) => {
+                reject();
+            });
+        }))).then((processedFiles) => {
+            let localClientSignatureImage = null, localTechnicalConsultantSignatureImage = null;
+
+            processedFiles.forEach((file) => {
+                if(file.original_name === 'clientSignature.png'){
+                    setClientSignatureImage(file.id);
+                    localClientSignatureImage = file.id;
+                }
+
+                if(file.original_name === 'technicalConsultantSignature.png'){
+                    setTechnicalConsultantSignatureImage(file.id);
+                    localTechnicalConsultantSignatureImage = file.id;
+                }
+            });
+
+            (new Promise((resolve, reject) => {
+                if(!vehicleServiceStage?.completed && stage?.items.length > 0){
+                    const formData = {
+                        "stage_id": stage.id,
+                        "checklist_version_id": data.checklistVersion.id,
+                        "service_schedule_id": null,
+                        "technical_consultant_id": data.technicalConsultant.id,
+                        "brand_id": data.brand.id,
+                        "client_id": data.client.id,
+                        "client_name": data.client.name,
+                        "fuel": getChecklistItemValue('fuel'),
+                        "mileage": getChecklistItemValue('mileage'),
+                        "client_signature": localClientSignatureImage ?? clientSignatureImage,
+                        "client_signature_date": clientSignatureStarted ? moment().utc().format('YYYY-MM-DDTHH:mm:00+00:00') : (vehicleService?.client_signature_date ? moment(vehicleService?.client_signature_date).utc().format('YYYY-MM-DDTHH:mm:00+00:00') : (clientSignatureDate ? moment(clientSignatureDate).utc().format('YYYY-MM-DDTHH:mm:00+00:00') : null)),
+                        "technical_consultant_signature": localTechnicalConsultantSignatureImage ?? technicalConsultantSignatureImage,
+                        "technical_consultant_signature_date": technicalConsultantSignatureStarted ? moment().utc().format('YYYY-MM-DDTHH:mm:00+00:00') : (vehicleService?.technical_consultant_signature_date ? moment(vehicleService?.technical_consultant_signature_date).utc().format('YYYY-MM-DDTHH:mm:00+00:00') : (technicalConsultantSignatureDate ? moment(technicalConsultantSignatureDate).utc().format('YYYY-MM-DDTHH:mm:00+00:00') : null)),
+                        "checklist": stage.items.map((item) => getFormattedChecklist(item.id)),
+                        "completed": complete || ((localClientSignatureImage ?? clientSignatureImage) !== null && (localTechnicalConsultantSignatureImage ?? technicalConsultantSignatureImage) !== null)
+                    };
+
+                    switch(type){
+                        case 'service-schedules':
+                            formData.service_schedule_id = id;
+                            formData.vehicle_id = data.vehicle.id;
+                            break;
+                    }
+
+                    setErrors(null);
+
+                    let ajaxCall;
+
+                    if(vehicleService?.id){
+                        ajaxCall = api.update('/vehicle-service/' + vehicleService?.id, formData);
+                    } else {
+                        ajaxCall = api.post('/vehicle-service',Object.assign(formData,{company_id: props.company?.id}));
+                    }
+
+                    ajaxCall.then((response) => {
+                        setVehicleService(response.data.data);
+
+                        resolve();
+                    }, (error) => {
+                        reject(error);
+                    });
+                } else {
+                    resolve();
+                }
+            })).then(() => {
+                history(`/panel/company/${props.company?.id}/service-schedules/${id}/checklist`);
+                /*onNextStage();*/
+            }).catch((error) => {
+                manageAjaxError(error);
+            });
+        }).catch((error) => {
+            swal({
+                title: 'Error',
+                text: 'Ocorreu um erro ao carregar as assinaturas.',
+                icon: 'error',
+                buttons: {
+                    confirm: {
+                        text: 'Ok',
+                        value: 'confirm'
+                    }
+                },
+                dangerMode: true,
+            });
+        });
+    };
+
+    const manageAjaxError = (error) => {
+        if(error.hasOwnProperty('response') && error.response?.status === 400 && error.response?.data.hasOwnProperty('errors')){
+            const errors = [];
+
+            Object.keys(error.response.data.errors).forEach((key) => {
+                error.response.data.errors[key].forEach((message) => {
+                    if(typeof message === 'string'){
+                        errors.push(message);
+                    } else {
+                        message.forEach((text) => {
+                            toastService.show('error', text);
+                            errors.push(text);
+                        });
+                    }
+                });
+            });
+
+            setErrors(errors);
+        }
+    };
+
+    /*se instancian todos los valores de los items*/
     useEffect(() => {
         const newChecklistData = {};
 
-        if(Object.keys(checklistData).length > 0 || data?.vehicleService?.items){
-            if(data.vehicleService?.items){
+        if(Object.keys(checklistData).length > 0 || vehicleService?.items){
+            if(vehicleService?.items){
                 const newObservationsData = {};
                 const newEvidences = {};
-                (data.vehicleService?.items || []).forEach((item) => {
-                    if((checklistVersion?.items || []).find((checklistVersionItem) => checklistVersionItem.id === item.id)){
+
+                checklistItems.concat(vehicleService?.items || []).forEach((item) => {
+                    if((checklistItems).find((checklistVersionItem) => checklistVersionItem.id === item.id)){
                         switch(item.validation.type){
                             case 'boolean':
                                 newChecklistData[item.id] = Boolean(parseInt(item?.pivot.value, 0) ?? false);
@@ -308,7 +399,7 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
             }
         }
         else{
-            (checklistVersion?.items || []).forEach((item) => {
+            (checklistItems).forEach((item) => {
                 switch(item.validation.type){
                     case 'boolean':
                         newChecklistData[item.id] = false;
@@ -323,37 +414,136 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
             });
         }
 
-        setChecklistData(newChecklistData);
-    }, [checklistVersion, data]);
+        setChecklistData({...checklistData,...newChecklistData});
+    }, [checklistVersion, vehicleService, checklistItems]);
 
+    /*si se cambia alguno de los parametros de id tipo o el vehicle service, se reinicializa todo*/
     useEffect(() => {
+        setStage(null);
+        setChecklistVersion(null);
         getData();
-    }, [id, type]);
+    }, [id, type, checklistId]);
 
+    /*si cambia el stage, o se pide redibujar o se cambia la referencia del dibujo*/
     useEffect(() => {
-        if(signaturesUpdated){
-            onSubmit();
+        if(clientSignature && vehicleServiceStage && !clientSignatureStarted){
+            if(vehicleServiceStage?.client_signature_base64){
+                setTimeout(() => {
+                    clientSignature.clear();
+                    clientSignature.fromDataURL(vehicleServiceStage?.client_signature_base64, {width: signatureWidth(),height: 200,ratio: 1});
+                    clientSignature.off();
+                },100);
+            } else {
+                setCleanClientSignature(!cleanClientSignature);
+            }
+        }
+
+        if(technicalConsultantSignature && vehicleServiceStage && !technicalConsultantSignatureStarted){
+            if(vehicleServiceStage?.technical_consultant_signature_base64){
+                setTimeout(() => {
+                    technicalConsultantSignature.clear();
+                    technicalConsultantSignature.fromDataURL(vehicleServiceStage?.technical_consultant_signature_base64, {width: signatureWidth(),height: 200,ratio: 1});
+                    technicalConsultantSignature.off();
+                },100);
+            } else {
+                setCleanTechnicalConsultantSignature(!cleanTechnicalConsultantSignature);
+            }
+        }
+    }, [vehicleServiceStage,drawSignatures, technicalConsultantSignature, clientSignature]);
+
+    /*al cambiar un stage ó el vehicle service, limpiar la firma*/
+    useEffect(() => {
+        if(stage && vehicleService){
+            const vehicleServiceStage = vehicleService.stages.find((localStage) => localStage.id === stage.id);
+
+            setClientSignatureImage(vehicleServiceStage?.pivot?.client_signature ?? null);
+            setTechnicalConsultantSignatureImage(vehicleServiceStage?.pivot?.technical_consultant_signature ?? null);
+            setClientSignatureDate(vehicleServiceStage?.pivot?.client_signature_date ?? null);
+            setTechnicalConsultantSignatureDate(vehicleServiceStage?.pivot?.technical_consultant_signature_date ?? null);
+
+            setVehicleServiceStage({
+                id: vehicleServiceStage?.id ?? null,
+                client_signature_base64: vehicleServiceStage?.pivot?.client_signature_base64 ?? null,
+                technical_consultant_signature_base64: vehicleServiceStage?.pivot?.technical_consultant_signature_base64 ?? null,
+                completed: vehicleServiceStage?.pivot?.completed ?? false
+            });
+        } else {
+            setClientSignatureImage(null);
+            setTechnicalConsultantSignatureImage(null);
+            setClientSignatureDate(null);
+            setTechnicalConsultantSignatureDate(null);
+            setVehicleServiceStage(null);
         }
 
         setClientSignatureStarted(false);
         setTechnicalConsultantSignatureStarted(false);
-    }, [signaturesUpdated]);
 
+    }, [stage, vehicleService]);
+
+    /*setear stages*/
     useEffect(() => {
-        if(drawSignatures){
-            if(data?.vehicleService && data?.vehicleService?.client_signature_base64){
-                clientSignature.fromDataURL(data?.vehicleService && data?.vehicleService?.client_signature_base64);
-                clientSignature.off();
-            }
-
-            if(data?.vehicleService && data?.vehicleService?.technical_consultant_signature_base64){
-                technicalConsultantSignature.fromDataURL(data?.vehicleService?.technical_consultant_signature_base64);
-                technicalConsultantSignature.off();
-            }
-
-            setDrawSignatures(false);
+        if(vehicleService){
+            setStages(vehicleService.stages);
         }
-    }, [data,drawSignatures]);
+    }, [vehicleService]);
+
+    /*setear stages*/
+    useEffect(() => {
+        if(checklistVersion && !vehicleService){
+            setStages(checklistVersion.stages);
+        }
+    }, [checklistVersion]);
+
+    /*setear checklistItems*/
+    useEffect(() => {
+        setChecklistItems([].concat(...stages.map((stage) => stage.items)));
+    }, [stages]);
+
+    /*forzar la limpieza de la firma*/
+    useEffect(() => {
+        setTimeout(() => {
+            if(clientSignature){
+                clientSignature.clear();
+                clientSignature.on();
+            }
+        },100);
+    }, [cleanClientSignature]);
+
+    /*forzar la limpieza de la firma*/
+    useEffect(() => {
+        setTimeout(() => {
+            if(technicalConsultantSignature){
+                technicalConsultantSignature.clear();
+                technicalConsultantSignature.on();
+            }
+        },100);
+    }, [cleanTechnicalConsultantSignature]);
+
+    /*al setear la data, si aún no existe el checklist version, que busque inicializarlo*/
+    useEffect(() => {
+        if(data && !checklistVersion){
+            getChecklistVersion(vehicleService?.checklist_version_id ?? checklistVersionId);
+        }
+    }, [data]);
+
+    /*si al momento de mover hacia un stage, no existe aún el vehicle service, se hace un pequeño forzado para repetir la acción y dejar que el vehicle service se setee*/
+    useEffect(() => {
+        if(forceToMoveStage){
+            moveToStage(forceToMoveStage);
+            setForceToMoveStage(null);
+        }
+    }, [forceToMoveStage]);
+
+    /*setea el stage actual, el que está en la url, de lo contrario tomará el primero*/
+    useEffect(() => {
+        if(stages.length > 0){
+            const firstStage = stages[0];
+            const localStageId = parseInt(stageId ?? firstStage.id, 10);
+            const currentStage = stages.find((stage) => stage.id === localStageId);
+
+            setStage(currentStage ?? firstStage);
+        }
+    }, [stageId, stages]);
 
     return (
         <>
@@ -369,25 +559,32 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                     [{ label: 'Checklist', active: true },]
                 }
                 title={'Checklist ' + (checklistVersion?.name ?? '')}
-                company={props.company}
+                company={props?.company}
             />
 
-            {errors && (
+            {/*{errors && (
                 <Alert variant="danger" className="my-2" dismissible={true} onClose={() => {setErrors(null)}}>
                     <ul className="mb-0">
                         { errors.map((error, index) => <li key={index}>{error}</li>) }
                     </ul>
                 </Alert>
-            )}
+            )}*/}
 
             <FileUpload show={showFileUpload} handleClose={() => { setShowFileUpload(false); }} files={fileUploadData} handleFileUpload={handleUploadImages} validateFile={validateFileImage}/>
 
             <Row>
                 <Col md={12}>
                     <Card>
+                        <Card.Header className="d-flex justify-content-around">
+                            {(stages).map((localStage) => (
+                               <div className="cursor-pointer" key={localStage.id} >
+                                   <h3 className={ stage?.id === localStage.id ? 'text-primary' : '' } onClick={() => {vehicleService ? moveToStage(localStage.id, true) : setStage(localStage);}}>{localStage.name}</h3>
+                               </div>
+                            ))}
+                        </Card.Header>
                         <Card.Body>
                             <form>
-                                {(checklistVersion?.items || []).map((item) => (
+                                {(stage?.items || []).map((item) => (
                                     <div key={item.id}>
                                         <Row className={"mb-3 mt-3 align-items-center"}>
                                             <Col md={3}>
@@ -406,16 +603,16 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                                                                 }}
                                                             />
 
-                                                    :
-                                                        <Form.Control
-                                                            type="text"
-                                                            placeholder={item.name}
-                                                            onChange={(e) => {
-                                                                handleFieldChange(item.id, e.target.value);
-                                                            }}
-                                                            value={checklistData[item.id] ?? ''}
-                                                            autoComplete="off">
-                                                        </Form.Control>
+                                                            :
+                                                            <Form.Control
+                                                                type="text"
+                                                                placeholder={item.name}
+                                                                onChange={(e) => {
+                                                                    handleFieldChange(item.id, e.target.value);
+                                                                }}
+                                                                value={checklistData[item.id] ?? ''}
+                                                                autoComplete="off">
+                                                            </Form.Control>
                                                     )
                                                 }
                                             </Col>
@@ -442,42 +639,96 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                                 ))}
 
                                 <Row className="mb-5 mt-5" id="signatures">
-                                    <Col md={6} className=" justify-content-center text-center" >
+                                    <Col md={6} className=" justify-content-center text-center">
                                         <SignatureCanvas penColor='green'
-                                                         ref={(ref) => { setClientSignature(ref); }}
+                                                         ref={(ref) => {
+                                                             setClientSignature(ref);
+                                                         }}
                                                          onEnd={onEndClientSignature}
-                                                         canvasProps={{width: signatureWidth(), height: 200, className: 'signatureCanvas'}} />
-                                                         <br/>
+                                                         canvasProps={{
+                                                             width: signatureWidth(),
+                                                             height: 200,
+                                                             className: 'signatureCanvas'
+                                                         }}/>
+                                        <br/>
                                         {clientSignatureDate ? moment(clientSignatureDate).format('DD/MM/YYYY H:mma') : ''}
                                         <br/><br/>
 
                                         <Row className="d-flex align-items-center mb-3 position-relative">
-                                            <Button variant="success" className="w-auto position-absolute" style={{right: '3em'}} type="button" onClick={() => { clientSignature.on();clientSignature.clear(); }}><span className="mdi mdi-trash-can-outline"/></Button>
-
+                                            {!vehicleServiceStage?.completed ?
+                                                <Button variant="success" className="w-auto position-absolute" style={{right: '3em'}} type="button" onClick={() => {
+                                                    setClientSignatureStarted(false);
+                                                    setClientSignatureDate(null);
+                                                    setClientSignatureImage(null);
+                                                    clientSignature.on();
+                                                    clientSignature.clear();
+                                                }}><span className="mdi mdi-trash-can-outline"/></Button>
+                                                : null}
                                             <span className="w-auto" style={{margin: '0 auto'}}>Assinatura do cliente</span>
                                         </Row>
                                     </Col>
                                     <Col md={6} className=" justify-content-center text-center">
                                         <SignatureCanvas penColor='green'
-                                                         ref={(ref) => { setTechnicalConsultantSignature(ref); }}
+                                                         ref={(ref) => {
+                                                             const newRefFrom = ref && ref.isEmpty() && technicalConsultantSignature !== null ? 'technicalConsultantSignature' : (ref === null && technicalConsultantSignature !== null ? 'technicalConsultantSignature' : 'ref');
+                                                             let newRef = ref && ref.isEmpty() && technicalConsultantSignature !== null ? technicalConsultantSignature : (ref === null && technicalConsultantSignature !== null ? technicalConsultantSignature : ref);
+
+                                                             if(newRefFrom === 'technicalConsultantSignature' && ref){
+                                                                 ref.fromDataURL(newRef.toDataURL('image/png'), {width: signatureWidth(),height: 200,ratio: 1});
+                                                                 newRef = ref;
+                                                             }
+
+                                                             setTechnicalConsultantSignature(newRef);
+                                                         }}
                                                          onEnd={onEndTechnicalConsultantSignature}
-                                                         canvasProps={{width: signatureWidth(), height: 200, className: 'signatureCanvas'}} />
+                                                         canvasProps={{
+                                                             width: signatureWidth(),
+                                                             height: 200,
+                                                             className: 'signatureCanvas'
+                                                         }}/>
                                         <br/>
                                         <span>{technicalConsultantSignatureDate ? moment(technicalConsultantSignatureDate).format('DD/MM/YYYY H:mma') : ''}</span>
                                         <br/><br/>
                                         <Row className="d-flex align-items-center mb-3 position-relative">
-                                            <Button variant="success" className="w-auto position-absolute" style={{right: '3em'}} type="button" onClick={() => { technicalConsultantSignature.on();technicalConsultantSignature.clear(); }}><span className="mdi mdi-trash-can-outline"/></Button>
-
+                                            {!vehicleServiceStage?.completed ?
+                                                <Button variant="success" className="w-auto position-absolute" style={{right: '3em'}} type="button" onClick={() => {
+                                                    setTechnicalConsultantSignatureStarted(false);
+                                                    setTechnicalConsultantSignatureDate(null);
+                                                    setTechnicalConsultantSignatureImage(null);
+                                                    technicalConsultantSignature.on();
+                                                    technicalConsultantSignature.clear();
+                                                }}><span className="mdi mdi-trash-can-outline"/></Button>
+                                                : null}
                                             <span className="w-auto" style={{margin: '0 auto'}}>Assinatura do Consultor</span>
                                         </Row>
                                     </Col>
                                 </Row>
 
-                                <div className="mb-3 mb-0">
-                                    <Button variant="primary" type="button" onClick={uploadSignatures}>
-                                        Cadastro
-                                    </Button>
-                                </div>
+                                <ul className="list-inline wizard mb-0">
+                                    {!vehicleServiceStage?.completed
+                                        ?
+                                        (<>
+                                            <li className="next list-inline-item">
+                                                <Button type="button" onClick={() => {onSubmit(false)}} variant="primary">
+                                                    Salvar
+                                                </Button>
+                                            </li>
+
+                                            <li className="next list-inline-item">
+                                                <Button type="button" onClick={() => {onSubmit(true);}} variant="primary">
+                                                    Finalizar
+                                                </Button>
+                                            </li>
+                                        </>)
+                                        :
+                                        <li className="next list-inline-item">
+                                            <Button type="button" onClick={() => {onNextStage();}} variant="primary">
+                                                Next
+                                            </Button>
+                                        </li>
+                                    }
+                                </ul>
+
                             </form>
                         </Card.Body>
                     </Card>

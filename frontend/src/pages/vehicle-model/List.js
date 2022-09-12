@@ -118,9 +118,9 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
 
         }));
 
-        document.querySelectorAll('.MuiToolbar-root.MuiToolbar-gutters button.MuiButtonBase-root[aria-label=Search]').forEach(function(element){
+        /*document.querySelectorAll('.MuiToolbar-root.MuiToolbar-gutters button.MuiButtonBase-root[aria-label=Search]').forEach(function(element){
             element.click();
-        });
+        });*/
     }, []);
 
     return (

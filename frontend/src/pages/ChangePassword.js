@@ -53,8 +53,8 @@ const Register = () => {
      */
     const schemaResolver = yupResolver(
         yup.object().shape({
-            password: yup.string().required('Por favor, digite Contraseña'),
-            repeat_password: yup.string().required('Por favor, digite Repetir Contraseña'),
+            password: yup.string().nullable().required('Por favor, digite Contraseña'),
+            repeat_password: yup.string().nullable().required('Por favor, digite Repetir Contraseña'),
         })
     );
 

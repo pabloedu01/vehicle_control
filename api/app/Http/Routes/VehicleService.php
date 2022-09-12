@@ -6,8 +6,6 @@ Route::group([
     'prefix' => 'vehicle-service',
                  'middleware' => [ 'jwt.verify', 'user' ],
              ], function(){
-
-
     Route::group([
                      'middleware' => [ 'company' ],
                  ], function(){
@@ -30,6 +28,10 @@ Route::group([
 
         Route::get('{id}/reports', [
             'uses' => 'VehicleServiceController@reports',
+        ]);
+
+        Route::post('{id}/complete', [
+            'uses' => 'VehicleServiceController@complete',
         ]);
 
         Route::put('{id}', [

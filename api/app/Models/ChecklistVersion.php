@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Casts\Json;
+use App\Rules\ChecklistVersionStages;
 
 class ChecklistVersion extends Base
 {
@@ -39,7 +40,7 @@ class ChecklistVersion extends Base
         });
     }
 
-    public function getItemsAttribute()
+    /*public function getItemsAttribute()
     {
         $items = collect();
         $report = $this->formatted_report;
@@ -88,6 +89,18 @@ class ChecklistVersion extends Base
                 }
             }
         }
+
+        return $items;
+    }*/
+
+    public function getItemsAttribute(){
+        $this->loadMissing(['stages', 'stages.items']);
+
+        $items = collect([]);
+
+        $this->stages->each(function($stage) use($items){
+            $items->push(...$stage->items);
+        });
 
         return $items;
     }
@@ -203,14 +216,23 @@ class ChecklistVersion extends Base
             'name'        => 'required|string|max:100',
             'description' => 'nullable|string',
             'active'      => 'required|boolean',
+            'stages'      => ['required', 'array', new ChecklistVersionStages],
             'report'      => 'nullable|array',
         ];
     }
 
     #has many
-    public function serviceSchedules()
+    public function vehicleServices()
     {
-        return $this->hasMany('App\Models\ServiceSchedule', 'checklist_version_id', 'id');
+        return $this->hasMany('App\Models\VehicleService', 'checklist_version_id', 'id');
+    }
+
+    #has many
+    public function stages()
+    {
+        return $this->hasMany('App\Models\ChecklistVersionStage', 'checklist_version_id', 'id')
+                    ->withoutGlobalScope('orderByCreatedAt')
+                    ->orderBy('id', 'asc');
     }
 }
 

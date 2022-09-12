@@ -35,9 +35,13 @@ const Actions = (props: {tableMeta: any, actions?: Array<string>, handleEdit?: a
         }
 
         {(props.extraButtons ?? []).map((button) =>
-            <OverlayTrigger  key={button.key} placement="left" overlay={<Tooltip>{button.label}</Tooltip>}>
-              <span className="cursor-pointer" onClick={() => {button.action(rowData.id, rowData)}}><i className={classNames(button.icon, 'mdi-24px')}/></span>
-            </OverlayTrigger>
+          !button.hasOwnProperty('condition') || button.condition(rowData) ?
+              (
+                  <OverlayTrigger  key={button.key} placement="left" overlay={<Tooltip>{button.label}</Tooltip>}>
+                    <span className="cursor-pointer" onClick={() => {button.action(rowData.id, rowData)}}><i className={classNames(button.icon, 'mdi-24px')}/></span>
+                  </OverlayTrigger>
+              )
+              : null
         )}
 
         {(!props.hasOwnProperty('actions') || props.actions.indexOf('delete') >= 0) ?

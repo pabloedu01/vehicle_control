@@ -12,7 +12,6 @@ class ServiceSchedule extends Base
         'code',
         'promised_date',
         'company_id',
-        'checklist_version_id',
         'technical_consultant_id',
         'client_id',
         'client_vehicle_id',
@@ -22,12 +21,6 @@ class ServiceSchedule extends Base
     public function company()
     {
         return $this->belongsTo('App\Models\Company', 'company_id', 'id');
-    }
-
-    #belongs to
-    public function checklistVersion()
-    {
-        return $this->belongsTo('App\Models\ChecklistVersion', 'checklist_version_id', 'id')->withTrashed();
     }
 
     #belongs to
@@ -54,10 +47,10 @@ class ServiceSchedule extends Base
         return $this->hasMany('App\Models\ClaimServiceServiceSchedule', 'service_schedule_id', 'id');
     }
 
-    #has one
-    public function vehicleService()
+    #has many
+    public function vehicleServices()
     {
-        return $this->hasOne('App\Models\VehicleService', 'service_schedule_id', 'id');
+        return $this->hasMany('App\Models\VehicleService', 'service_schedule_id', 'id');
     }
 }
 

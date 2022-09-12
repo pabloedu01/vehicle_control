@@ -18,8 +18,12 @@ Route::group([
             'uses' => 'ChecklistVersionController@show',
         ]);
 
-        Route::get('items', [
-            'uses' => 'ChecklistVersionController@items',
+        Route::get('details', [
+            'uses' => 'ChecklistVersionController@details',
+        ]);
+
+        Route::post('validations', [
+            'uses' => 'ChecklistVersionController@validations',
         ]);
 
         Route::post('print', [
@@ -50,6 +54,10 @@ Route::group([
                          'prefix' => '{id}',
                          'middleware' => [ 'checklistVersion' ],
                      ], function(){
+
+            Route::get('stages', [
+                'uses' => 'ChecklistVersionController@stages',
+            ]);
 
             Route::post('report', [
                 'uses' => 'ChecklistVersionController@storeReport',

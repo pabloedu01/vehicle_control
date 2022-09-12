@@ -18,17 +18,17 @@ class ServiceScheduleController extends Controller
         'client',
         'technicalConsultant',
         'technicalConsultant.user',
-        'checklistVersion',
         'claimsService',
         'claimsService.services',
         'claimsService.services.products',
-        'vehicleService'
     ];
 
     public function index(Request $request)
     {
         $serviceSchedules = ServiceSchedule::with(collect(self::$with)->take(7)->toArray())
+                                           ->withoutGlobalScope('orderByCreatedAt')
                                            ->where('company_id', '=', $request->company_id)
+                                           ->orderBy('promised_date', 'desc')
                                            ->get();
 
         $serviceSchedules->each(function($serviceSchedule){$serviceSchedule->clientVehicle->append('name');});
@@ -41,16 +41,27 @@ class ServiceScheduleController extends Controller
         );
     }
 
+    public function vehicleServices(Request $request, $id)
+    {
+        $serviceSchedules = ServiceSchedule::with(['vehicleServices','vehicleServices.checklistVersion'])
+                                           ->where('id', '=', $id)
+                                           ->first();
+
+        $serviceSchedules->vehicleServices->append(['next_stage']);
+
+        return response()->json([
+                                    'msg'  => trans('general.msg.success'),
+                                    'data' => $serviceSchedules->vehicleServices,
+                                ],
+                                Response::HTTP_OK
+        );
+    }
+
     public function show(Request $request, $id)
     {
-        $serviceSchedule = ServiceSchedule::with(array_merge(self::$with, ['vehicleService.items' => function($query){return $query->withTrashed();}]))
+        $serviceSchedule = ServiceSchedule::with(self::$with)
                                           ->where('id', '=', $id)
                                           ->first();
-
-        if($serviceSchedule->vehicleService){
-            $serviceSchedule->vehicleService->append('client_signature_base64');
-            $serviceSchedule->vehicleService->append('technical_consultant_signature_base64');
-        }
 
         $serviceSchedule->clientVehicle->append('name');
 

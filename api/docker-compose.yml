@@ -23,7 +23,7 @@ services:
     volumes:
       - ./laravel_docker/mongo-data:/data/db
     ports:
-      - "57017:27017"
+      - "47017:27017"
     networks:
       - default
   tunap_php_apache:

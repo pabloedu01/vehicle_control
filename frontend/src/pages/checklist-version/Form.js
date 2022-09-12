@@ -8,6 +8,7 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import {useForm} from "react-hook-form";
 import {FormInput} from "../../components";
+import ItemsSelection from "./ItemsSelection";
 
 const api = new APICore();
 
@@ -15,15 +16,16 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     const history = useNavigate();
     const {id} = useParams();
     const [data, setData] = useState();
+    const [stages, setStages] = useState([]);
 
     /*
      * form validation schema
      */
     const schemaResolver = yupResolver(
         yup.object().shape({
-            name: yup.string().required('Por favor, digite Nome'),
-            description: yup.string().nullable(),
-            code: yup.string().required('Por favor, digite Código'),
+            name: yup.string().nullable().required('Por favor, digite Nome'),
+            description: yup.string().nullable().nullable(),
+            code: yup.string().nullable().required('Por favor, digite Código'),
             active: yup.boolean(),
         })
     );
@@ -48,9 +50,9 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         let ajaxCall;
 
         if(id){
-            ajaxCall = api.update('/checklist-version/' + id,formData);
+            ajaxCall = api.update('/checklist-version/' + id,{...formData, stages});
         } else {
-            ajaxCall = api.post('/checklist-version',formData);
+            ajaxCall = api.post('/checklist-version', {...formData, stages});
         }
 
         ajaxCall.then(() => {
@@ -154,6 +156,12 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                                             containerClass={'mb-3'}
                                             {...otherProps}
                                         />
+                                    </Col>
+                                </Row>
+
+                                <Row>
+                                    <Col md={12}>
+                                        <ItemsSelection company={props?.company} id={id} onChange={setStages}/>
                                     </Col>
                                 </Row>
 

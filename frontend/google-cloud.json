@@ -1,0 +1,12 @@
+{
+    "type": "service_account",
+    "project_id": "bi-tunap",
+    "private_key_id": "4c808ded62d246a851dc19800c8540ebf7410ace",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDjVCEFK2OSmBBP\niomkwwyUXDFXtJPmHf6hS15DoyWa4KW4CVouFBVC356Fe6snJz584SPyGshmlJAU\n5+72pRlT4NPCLApY5taZ6At2JGQt9q106YxsB2Z1l2LFTwr2XV28109W6zypFnNG\nYUzDE6Y3v/dQmplrSo3pv854xlnhpVGehlkqubrDSBodQVDbQSWoLSsvvWT+MR1g\nXZJiLgr2I896+81NZL7/RUIkTHc0dWH9Gre2ubae114lnkqEK+JU7miXhggCLhMp\n7lbOVy96z9obTJJGLL4kH3ssfVF9BMOYnVYzPDB864qauIWs3unPKzYMIIVyeQ/k\nDOdsGsp3AgMBAAECggEAFFSAw3qW5BRPWR21o5OB+36nNwXCOFE0ZW5dFsVvZoNy\nrpu/geFv6VQgVCW0L8M1tmtYEJ3OkEX3ALehSlOHiVXQ+kt//WVfidITvFQS1X17\nE7qTQVIEGr4YKjcgbtn4uRu0T7yn5yNH2eJ3v/Zw5gl377BzygGX4XCy4WAzx5cb\nJqhLAtfFI+UxmFcyUySgusmJzn9QQEvsLoDeSfMYvUTHbZST1dFQPd2sqYtrgs0c\n1cypjXCh6aD5jEWobMdFOpBKvmXYWdlewN8r1oDTwwVZ/eVR7ssefXQetdtOcLNB\nkEHio18TU/RnYSS6JV46tpII+DVes3yAiQ9pjGpvIQKBgQD1mjoymnT97e0h6/oA\nvVmjdXRXujMxz2o7M0ydXsLvUTATniNo+03SgRnHegTxJPNRiSiKVjDX5RbjLvx4\nxz5xjLxV+t24xiBLj701D+GBywC89cI4b7M9CNSrHAJCKONVRigJilnGYiU1irXW\nnwYcJq3UAwb21C9luXx8ZN4mcQKBgQDs89rc6mMNIRRR4okFJkrtMUTVYSL/nYnB\nne3vmuwl5JGwUNrzZPPCjbkbCxFFwY7r8QUH8KpxhI5qv3UEsRqalvJ2mw8u+DCF\ngY99e7CW2XkylP6WSLEYQMkUjamm5Ja9cfl5rltUcE8ecMD6hsbCtB6IgXaNfSuo\nFryBv6YDZwKBgQD1I0P1YC9niIRIeGUnOddvjHtcWLBihhkND83nwT6maY2n9w52\n6WYqtssJTCQEoRHvjwwUz6SeyL0IcsxyrMQJyCPvWZ7Wn4J6iPScMsatqvaIpG9/\nrxXi1J6YTzN935vQcF7j7uBeX3WuNE388urBTGXyGDdqRC0uxm2XJ4KIMQKBgGGg\nj1paD/mG2ZJrXb0La++STyQDY6IhzHJDmZcRI57xL72Pcsa5n11Xex7TToiJGVPI\n+COvWupujScaPyJxvd5Xtwp7FKRricJYAUDYR4e/jpnynXpZ9O1jM/YN8ApdQGZJ\noVorJmIB6/dEyZ3vDdGG2NWxUaE2I1icFYr35XSdAoGBALe5WGCKK/9N5J3uz/2a\ndlt+vKtS4AngD3IafpJP8PeeTqiziEybYknoBSFiQHyE0skLYfhZKPsnrQxr2zKM\nO4mK8bNQ6OtY5gOE4kBzQJwWMpy2Ntm3sCzu/ioHFyX/ZjL/NH8zLT8PoEdQMfur\n3TRW/KQ6/6lG+qhDMD7Q/Dzy\n-----END PRIVATE KEY-----\n",
+    "client_email": "intranet@bi-tunap.iam.gserviceaccount.com",
+    "client_id": "107292973967064385135",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/intranet%40bi-tunap.iam.gserviceaccount.com"
+}
