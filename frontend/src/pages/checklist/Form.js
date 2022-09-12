@@ -496,7 +496,7 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
 
     /*setear checklistItems*/
     useEffect(() => {
-        setChecklistItems([].concat(...stages.filter((stage) => stage.items.length > 0).map((stage) => stage.items)));
+        setChecklistItems([].concat(...stages.map((stage) => stage.items)));
     }, [stages]);
 
     /*forzar la limpieza de la firma*/
@@ -576,7 +576,7 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                 <Col md={12}>
                     <Card>
                         <Card.Header className="d-flex justify-content-around">
-                            {(stages).filter((stage) => stage.items.length > 0).map((localStage) => (
+                            {(stages).map((localStage) => (
                                <div className="cursor-pointer" key={localStage.id} >
                                    <h3 className={ stage?.id === localStage.id ? 'text-primary' : '' } onClick={() => {vehicleService ? moveToStage(localStage.id, true) : setStage(localStage);}}>{localStage.name}</h3>
                                </div>
