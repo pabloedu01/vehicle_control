@@ -21,11 +21,11 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
      */
     const schemaResolver = yupResolver(
         yup.object().shape({
-            name: yup.string().required('Por favor, digite Nome do Produto'),
-            product_code: yup.string().required('Por favor, digite Código do Produto'),
-            sale_value: yup.number().required('Por favor, digite Valor de Venda'),
-            guarantee_value: yup.number().required('Por favor, digite Valor da Garantia'),
-            unique_code: yup.string().nullable(),
+            name: yup.string().nullable().required('Por favor, digite Nome do Produto'),
+            product_code: yup.string().nullable().required('Por favor, digite Código do Produto'),
+            sale_value: yup.number().nullable().required('Por favor, digite Valor de Venda'),
+            guarantee_value: yup.number().nullable().required('Por favor, digite Valor da Garantia'),
+            unique_code: yup.string().nullable().nullable(),
             active: yup.boolean(),
         })
     );

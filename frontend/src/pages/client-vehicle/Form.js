@@ -26,14 +26,14 @@ const Form = (props: {company?: any, clientVehicle?: any, isTag?: boolean, previ
      */
     const schemaResolver = yupResolver(
         yup.object().shape({
-            brand_id: yup.number().required('Por favor, digite Marca'),
-            model_id: yup.number().required('Por favor, digite Modelo'),
-            vehicle_id: yup.number().required('Por favor, digite Vehiculo'),
+            brand_id: yup.number().nullable().required('Por favor, digite Marca'),
+            model_id: yup.number().nullable().required('Por favor, digite Modelo'),
+            vehicle_id: yup.number().nullable().required('Por favor, digite Vehiculo'),
             chasis: yup.string().nullable(),
             color: yup.string().nullable(),
             number_motor: yup.string().nullable(),
             renavan: yup.string().nullable(),
-            plate: yup.string().required('Por favor, digite Placa'),
+            plate: yup.string().nullable().required('Por favor, digite Placa'),
             mileage: yup.string().nullable(),
         })
     );

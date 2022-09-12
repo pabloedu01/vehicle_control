@@ -22,9 +22,9 @@ const Form = (props: {company?: any, client?: any, isTag?: boolean, previousButt
      */
     const schemaResolver = yupResolver(
         yup.object().shape({
-            name: yup.string().required('Por favor, digite Nome Completo'),
+            name: yup.string().nullable().required('Informe o nome do cliente'),
             active: yup.boolean(),
-            document: yup.string().required('Por favor, digite Documento'),
+            document: yup.string().nullable().required('Informe o CPF ou CNPJ do cliente'),
             email: yup.string().email('Email Inválido').nullable(),
             address: yup.string().nullable(),
         })

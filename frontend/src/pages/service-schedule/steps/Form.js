@@ -26,11 +26,11 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
      */
     const schemaResolver = yupResolver(
         yup.object().shape({
-            client_vehicle_id: yup.number().required('Por favor, digite Vehiculo'),
+            client_vehicle_id: yup.number().nullable().required('Por favor, digite Vehiculo'),
             code: yup.string().nullable(),
-            promised_date: yup.date().required('Por favor, digite Data Prometida'),
-            client_id: yup.number().required('Por favor, digite Cliente'),
-            technical_consultant_id: yup.number().required('Por favor, digite Consultor Técnico'),
+            promised_date: yup.date().nullable().required('Por favor, digite Data Prometida'),
+            client_id: yup.number().nullable().required('Por favor, digite Cliente'),
+            technical_consultant_id: yup.number().nullable().required('Por favor, digite Consultor Técnico'),
         })
     );
 

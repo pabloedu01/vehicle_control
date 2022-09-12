@@ -8,7 +8,7 @@ const MENU_ITEMS = [
 
     {
         key: 'import',
-        label: 'Importación',
+        label: 'Importação',
         url: '/import/upload',
         icon: 'mdi mdi-file-import-outline',
     },

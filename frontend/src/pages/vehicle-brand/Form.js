@@ -25,7 +25,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     const schemaResolver = yupResolver(
         yup.object().shape({
             code: yup.string().nullable(),
-            name: yup.string().required('Por favor, digite Nome Completo'),
+            name: yup.string().nullable().required('Por favor, digite Nome Completo'),
             active: yup.boolean()
         })
     );
