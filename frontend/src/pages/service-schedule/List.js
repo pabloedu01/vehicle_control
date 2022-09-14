@@ -16,6 +16,8 @@ const api = new APICore();
 const List = (props: {company?: any}): React$Element<React$FragmentType> => {
     const history = useNavigate();
     const [list, setList] = useState([]);
+    const [searchType, setSearchType] = useState(null);
+    const [search, setSearch] = useState(null);
 
     const [tableFields, setTableFields] = useState([]);
     const [tableOptions, setTableOptions] = useState({});
@@ -70,7 +72,16 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
 
 
     const getList = () => {
-        api.get('/service-schedule', {company_id: props.company?.id}).then((response) => {
+        let filter;
+
+        if(search && searchType){
+            filter = {};
+            filter[searchType] = search;
+        }
+
+        api.get('/service-schedule', Object.assign({company_id: props.company?.id}, filter ? filter : {})).then((response) => {
+            setSearchType(null);setSearch(null);
+
             setList(response.data.data.map((item) => {
                 return {
                     id: item.id,
@@ -272,23 +283,28 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                     <Card>
                         <Card.Body>
                             <Row className="mb-2">
-                                <Col xl={8}>
+                                <Col xl={6}>
                                     <InputGroup className="mb-3">
-                                        <Form.Control aria-label="Text input with dropdown button" />
+                                        <Form.Control onChange={(e) => {setSearch(e.target.value);} } aria-label="Text input with dropdown button" />
 
                                                 <DropdownButton
                                               variant="outline-secondary"
-                                              title="Dropdown"
+                                              title={searchType ?? 'Seleccione'}
                                               id="input-group-dropdown-2"
                                               align="end"
                                             >
-                                              <Dropdown.Item href="#">Procurar</Dropdown.Item>
-                                              <Dropdown.Item href="#">Another action</Dropdown.Item>
-                                              <Dropdown.Item href="#">Something else here</Dropdown.Item>
-                                              <Dropdown.Divider />
-                                              <Dropdown.Item href="#">Separated link</Dropdown.Item>
+                                              <Dropdown.Item onClick={() => {setSearchType('chassi')}} href="#">Chassi</Dropdown.Item>
+                                              <Dropdown.Item onClick={() => {setSearchType('plate')}} href="#">Placa</Dropdown.Item>
+                                              <Dropdown.Item onClick={() => {setSearchType('client_name')}} href="#">Cliente</Dropdown.Item>
                                             </DropdownButton>
                                           </InputGroup>
+                                </Col>
+                                <Col xl={2}>
+                                    <div className="text-xl-start mt-xl-0 mt-2">
+                                        <Button variant="primary" className="mb-2 me-2" onClick={() => { getList(); }}>
+                                            <i className="mdi mdi-search-web me-1" /> Buscar
+                                        </Button>
+                                    </div>
                                 </Col>
                                 <Col xl={4}>
                                     <div className="text-xl-end mt-xl-0 mt-2">
