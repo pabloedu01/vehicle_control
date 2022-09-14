@@ -26,16 +26,15 @@ class ServiceScheduleController extends Controller
     public function index(Request $request)
     {
         $serviceSchedules = ServiceSchedule::with(collect(self::$with)->take(7)->toArray())
-                                           ->withoutGlobalScope('orderByCreatedAt')
-                                           ->where('company_id', '=', $request->company_id)
-                                           ->orderBy('promised_date', 'desc')
-                                           ->get();
-
-        $serviceSchedules->each(function($serviceSchedule){$serviceSchedule->clientVehicle->append('name');});
+                                           ->list()
+                                            ->get();
 
         return response()->json([
-                                    'msg'  => trans('general.msg.success'),
-                                    'data' => $serviceSchedules,
+                                    'msg' => trans('general.msg.success'),
+                                    'total_results' => $serviceSchedules->count(),
+                                    'current_page'  => intval(@$request->current_page && is_numeric($request->current_page) ? $request->current_page : 1),
+                                    'total_pages'   => ceil(ServiceSchedule::list()->limit(null)->offset(0)->count()/( @$request->limit ?? 50 )),
+                                    'data'          => $serviceSchedules,
                                 ],
                                 Response::HTTP_OK
         );

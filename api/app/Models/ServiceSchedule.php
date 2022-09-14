@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\DynamicFiltersTrait;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ServiceSchedule extends Base
 {
+    use DynamicFiltersTrait;
+
     protected $table = 'service_schedules';
 
     protected $fillable = [
@@ -16,6 +20,32 @@ class ServiceSchedule extends Base
         'client_id',
         'client_vehicle_id',
     ];
+
+    protected $filterJoins = '
+            INNER JOIN client_vehicles ON client_vehicles.id = service_schedules.client_vehicle_id
+            INNER JOIN vehicles ON vehicles.id = client_vehicles.vehicle_id
+            INNER JOIN vehicle_brands ON vehicle_brands.id = vehicles.brand_id
+    ';
+
+    protected $filters = [
+        'date_scheduled_max' => ['type' => 'dateMax', 'column' => 'promised_date'],
+        'date_scheduled_min' => ['type' => 'dateMin', 'column' => 'promised_date'],
+        'plate' => ['model' => ClientVehicle::class],
+        'chassi' => ['column' => 'chasis', 'model' => ClientVehicle::class],
+        'client_name' => ['column' => 'name', 'model' => Client::class],
+        'vehicle_brand' => ['column' => 'name', 'model' => VehicleBrand::class],
+        'vehicle' => ['column' => 'name', 'model' => VehicleBrand::class],
+    ];
+
+    public function scopeList(Builder $query)
+    {
+        $request = app('request');
+
+        return $query->withoutGlobalScope('orderByCreatedAt')
+                     ->where('company_id', '=', $request->company_id)
+                     ->dynamicFilter()
+                     ->orderBy('promised_date', 'desc');
+    }
 
     #belongs to
     public function company()
