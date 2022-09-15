@@ -20,6 +20,10 @@ Route::group([
             'uses' => 'CompanyController@show',
         ]);
 
+        Route::put('{id}', [
+            'uses' => 'CompanyController@update',
+        ]);
+
         Route::get('vehicles', [
             'uses' => 'CompanyController@vehicles',
         ]);

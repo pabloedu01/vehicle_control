@@ -126,4 +126,42 @@ class CompanyController extends Controller
             );
         }
     }
+
+    public function update(Request $request, $id)
+    {
+        $company = Company::where('id', '=', $id)
+                          ->first();
+
+        $validator = validate($request->all(), Company::rules($company->id));
+
+        if($validator->fails())
+        {
+            return response()->json([
+                                        'msg'    => trans('general.msg.invalidData'),
+                                        'errors' => $validator->errors(),
+                                    ],
+                                    Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        $company->fill($request->only(Company::getFillables()));
+
+        if(secureSave($company))
+        {
+            return response()->json([
+                                        'msg'  => trans('general.msg.success'),
+                                        'data' => $company,
+                                    ],
+                                    Response::HTTP_CREATED
+            );
+        }
+        else
+        {
+            return response()->json([
+                                        'msg' => trans('general.msg.error'),
+                                    ],
+                                    Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
 }

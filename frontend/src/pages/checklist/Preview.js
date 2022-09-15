@@ -168,7 +168,7 @@ const Preview = (props: {company?: any}): React$Element<React$FragmentType> => {
                                     : null
                                 }
 
-                                <Col lg={7}>
+                                <Col lg={5}>
                                     <form className="ps-lg-4">
                                         <h2 className="mt-0">{data?.client?.name}</h2>
                                         <p className="mb-1"><b>Data da vistoria:</b> {moment(data?.serviceSchedule?.promised_date).format('DD/MM/YYYY H:mma')}</p>
@@ -206,6 +206,9 @@ const Preview = (props: {company?: any}): React$Element<React$FragmentType> => {
                                             </div>
                                         </div>
                                     </form>
+                                </Col>
+                                <Col lg={2}>
+                                    <img src={props?.company?.image} alt="Company Logo" className="img-responsive"/>
                                 </Col>
                             </Row>
                             {stages.map((stage) => (
