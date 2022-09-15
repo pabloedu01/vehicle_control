@@ -347,6 +347,7 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
             Object.keys(error.response.data.errors).forEach((key) => {
                 error.response.data.errors[key].forEach((message) => {
                     if(typeof message === 'string'){
+                        toastService.show('error', message);
                         errors.push(message);
                     } else {
                         message.forEach((text) => {

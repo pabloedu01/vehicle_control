@@ -76,7 +76,7 @@ class VehicleService extends FormRequest
                 'nullable', 'date_format:Y-m-d\TH:i:sP'
             ],
             'fuel' => [
-                'nullable', 'integer'
+                'nullable'
             ],
             'mileage' => [
                 'nullable', 'integer'
