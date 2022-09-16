@@ -11,6 +11,17 @@ import SignatureCanvas from 'react-signature-canvas';
 import {dataURLtoFile} from "../../utils/file";
 import swal from "sweetalert";
 import {toastService} from "../../services/toast";
+import './style.css';
+ 
+const elemPrefix = "test";
+const getId = (index: number) => `${elemPrefix}${index}`;
+
+const getItems = () =>
+  Array(20)
+    .fill(0)
+    .map((_, ind) => ({ id: getId(ind) }));
+
+
 
 const api = new APICore();
 
@@ -44,6 +55,8 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
     const [technicalConsultantSignatureStarted, setTechnicalConsultantSignatureStarted] = useState(false);
     const [clientSignature, setClientSignature] = useState(null);
     const [technicalConsultantSignature, setTechnicalConsultantSignature] = useState(null);
+
+  
 
     const getChecklistItemValue = (code) => {
         const item = checklistItems.find((item) => item.code === code);
@@ -577,11 +590,20 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                 <Col md={12}>
                     <Card>
                         <Card.Header className="d-flex justify-content-around">
-                            {(stages).map((localStage) => (
-                               <div className="cursor-pointer" key={localStage.id} >
-                                   <h3 className={ stage?.id === localStage.id ? 'text-primary' : '' } onClick={() => {vehicleService ? moveToStage(localStage.id, true) : setStage(localStage);}}>{localStage.name}</h3>
-                               </div>
-                            ))}
+                    
+                            <div className='scrollmenu'>
+                                    {(stages).map((localStage) => (
+                                        <div className="cursor-pointer" key={localStage.id} >
+                                           <h3 className={ stage?.id === localStage.id ? 'text-primary' : '' } onClick={() => {vehicleService ? moveToStage(localStage.id, true) : setStage(localStage);}}>{localStage.name}</h3>
+                                             </div>
+                                         ))}
+                    </div>
+                        
+
+
+                        
+                            
+                           
                         </Card.Header>
                         <Card.Body>
                             <form>
