@@ -60,7 +60,8 @@ class FileUploadController extends Controller
             );
         }
 
-        if($type == 'image'){
+        /*if($type == 'image'){
+            $image = null;
             try{
                 $newWidth = 300;
 
@@ -75,12 +76,13 @@ class FileUploadController extends Controller
                         });
 
                         $image->save();
+                        //$image->destroy();
                     }
                 }
             }catch(\Exception $e){
 
             }
-        }
+        }*/
 
         if($filename = $file->store(TemporalFile::$path))
         {
