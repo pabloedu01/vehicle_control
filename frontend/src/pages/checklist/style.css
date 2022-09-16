@@ -7,11 +7,14 @@ div.scrollmenu {
   div.scrollmenu div {
     display: inline-block;
     /* color: white; */
-    text-align: center;
+    text-align: left;
     padding: 14px;
     text-decoration: none;
   }
-  
+  /*
   div.scrollmenu div:hover {
-    /* background-color: #777; */
-  }
+     background-color: #777; 
+  }*/
+  div.scrollmenu::-webkit-scrollbar {
+  display:none;
+}
