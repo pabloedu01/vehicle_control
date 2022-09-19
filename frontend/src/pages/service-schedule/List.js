@@ -280,7 +280,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
 
             <Row>
                 <Col xl={12}>
-                    <div className="text-xl-end mt-xl-0 mt-2">
+                    <div className="text-end mt-xl-0 mt-2">
                         <Button variant="danger" className="mb-2 me-2" onClick={() => { history(`/panel/company/${props.company?.id}/service-schedules/create`) }}>
                             <i className="mdi mdi-basket me-1" /> Nova Agenda de Serviço
                         </Button>
@@ -310,9 +310,9 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                                           </InputGroup>
                                 </Col>
                                 <Col xl={2}>
-                                    <div className="text-xl-start mt-xl-0 mt-2">
-                                        <Button variant="primary" className="mb-2 me-2" onClick={() => { getList(); }}>
-                                            <i className="mdi mdi-search-web me-1" /> Buscar
+                                    <div className="text-xl-start text-xs-end mt-xl-0 mt-2">
+                                        <Button variant="primary" className="mb-2" onClick={() => { getList(); }}>
+                                            <i className="mdi mdi-search-web" /> Buscar
                                         </Button>
                                     </div>
                                 </Col>
