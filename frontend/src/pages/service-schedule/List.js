@@ -88,7 +88,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                     vehicle: item.client_vehicle.name,
                     chasis: item.client_vehicle.chasis,
                     plate: item.client_vehicle.plate,
-                    promised_date: moment(item.promised_date).format('DD/MM/YYYY HH:mma'),
+                    promised_date: moment(item.promised_date).utc(true).format('DD/MM/YYYY HH:mm'),
                     client: item.client?.name,
                     technical_consultant: item.technical_consultant?.name,
                     checklist_version_id: item.checklist_version_id,
