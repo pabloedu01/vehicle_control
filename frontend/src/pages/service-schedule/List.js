@@ -279,6 +279,16 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
             />
 
             <Row>
+                <Col xl={12}>
+                    <div className="text-xl-end mt-xl-0 mt-2">
+                        <Button variant="danger" className="mb-2 me-2" onClick={() => { history(`/panel/company/${props.company?.id}/service-schedules/create`) }}>
+                            <i className="mdi mdi-basket me-1" /> Nova Agenda de Serviço
+                        </Button>
+                    </div>
+                </Col>
+            </Row>
+
+            <Row>
                 <Col xs={12}>
                     <Card>
                         <Card.Body>
@@ -306,13 +316,6 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                                         </Button>
                                     </div>
                                 </Col>
-                                <Col xl={4}>
-                                    <div className="text-xl-end mt-xl-0 mt-2">
-                                        <Button variant="danger" className="mb-2 me-2" onClick={() => { history(`/panel/company/${props.company?.id}/service-schedules/create`) }}>
-                                            <i className="mdi mdi-basket me-1" /> Nova Agenda de Serviço
-                                        </Button>
-                                    </div>
-                                </Col>
                             </Row>
                             <Row>
                                 <Col>
@@ -324,8 +327,8 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                                             sizePerPageList={TABLE_OPTIONS.sizePerPageList}
                                             isSortable={true}
                                             pagination={true}
-                                            isSearchable={true}
-                                            isSelectable={true}
+                                            isSearchable={false}
+                                            isSelectable={false}
                                             // isSearchable={true}
                                         />
 

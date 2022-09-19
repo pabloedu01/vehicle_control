@@ -273,9 +273,9 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
                 </Col>
             </Row>
 
-            <div className="mb-3 mb-0">
+            <div className="mt-3 mb-3 mb-0">
                 <Button variant="primary" type="submit">
-                    Cadastro
+                    Salvar
                 </Button>
             </div>
         </form>
