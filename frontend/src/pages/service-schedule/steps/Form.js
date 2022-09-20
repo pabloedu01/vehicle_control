@@ -78,7 +78,7 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
         const defaultData = {
             client_vehicle_id: null,
             code: null,
-            promised_date: new Date(),
+            promised_date: moment().format('YYYY-MM-DDTHH:mm'),
             client_id: null,
             technical_consultant_id: null,
         };
@@ -89,7 +89,7 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
                     const {client_vehicle: clientVehicle, client_vehicle_id,code,promised_date,client_id,technical_consultant_id, client, technical_consultant: technicalConsultant, vehicle_service: vehicleService} = response.data.data;
 
                     resolve({
-                        client_vehicle_id,code,promised_date: new Date(promised_date),client_id,technical_consultant_id, technicalConsultant, client, clientVehicle, vehicleService
+                        client_vehicle_id,code,promised_date: promised_date,client_id,technical_consultant_id, technicalConsultant, client, clientVehicle, vehicleService
                     });
                 },(error) => {
                     resolve(defaultData);
@@ -100,7 +100,7 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
         }).then((data) => {
             const storage = JSON.parse(localStorage.getItem('serviceSchedule'));
             if(storage){
-                storage.promised_date = new Date(storage.promised_date);
+                /*storage.promised_date = new Date(storage.promised_date);*/
 
                 Object.assign(data, storage);
             }
@@ -123,10 +123,6 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
         },(error) => {
             setTechnicalConsultants([]);
         });
-    };
-
-    const handleChangePromisedDate = (date) => {
-        methods.setValue('promised_date', date);
     };
 
     const onClickChecklist = (e) => {
@@ -164,7 +160,7 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
 
     useEffect(() => {
         methods.setValue('code', data?.code ?? null);
-        methods.setValue('promised_date', data?.promised_date ?? new Date());
+        methods.setValue('promised_date', moment(data?.promised_date).format('YYYY-MM-DDTHH:mm') ?? moment().format('YYYY-MM-DDTHH:mm'));
         methods.setValue('client_id', data?.client_id ?? null);
         methods.setValue('technical_consultant_id', data?.technical_consultant_id ?? null);
         methods.setValue('client_vehicle_id', data?.client_vehicle_id ?? null);
@@ -180,11 +176,10 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
                 <Col md={6}>
                     <FormInput
                         label="Data Prometida"
-                        type="datepicker"
+                        type="datetime-local"
                         name="promised_date"
                         placeholder="data prometida"
                         containerClass={'mb-3'}
-                        handleChange={handleChangePromisedDate}
                         {...otherProps}
                     />
 
@@ -216,6 +211,20 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
                             </Button>
                         </Card.Footer>
                     </Card>
+
+                    <div className={classNames({'d-grid': id, 'd-none': !id})}>
+                        <Button className="mb-1" variant="primary" size={'lg'} type="button" onClick={onClickChecklist}>
+                            Pre Ordem serviço
+                        </Button>
+
+                        <Button className="mb-1" variant="primary" size={'lg'} type="button" onClick={onClickChecklist}>
+                            Orçamento
+                        </Button>
+
+                        <Button className="mb-1" variant="primary" size={'lg'} type="button" onClick={onClickChecklist}>
+                            Ordem de serviço
+                        </Button>
+                    </div>
                 </Col>
 
                 <Col md={6}>
@@ -271,16 +280,20 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
                     </Card>
 
                     <div className={classNames({'d-grid': id, 'd-none': !id})}>
-                        <Button variant="primary" size={'lg'} type="button" onClick={onClickChecklist}>
+                        <Button className="mb-1" variant="primary" size={'lg'} type="button" onClick={onClickChecklist}>
                             Checklist
+                        </Button>
+
+                        <Button className="mb-1" variant="primary" size={'lg'} type="button" onClick={onClickChecklist}>
+                            Observaçoes
                         </Button>
                     </div>
                 </Col>
             </Row>
 
-            <div className="mb-3 mb-0">
+            <div className="mt-3 mb-3 mb-0">
                 <Button variant="primary" type="submit">
-                    Cadastro
+                    Salvar
                 </Button>
             </div>
         </form>

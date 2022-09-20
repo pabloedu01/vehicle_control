@@ -89,7 +89,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                     vehicle: item.client_vehicle.name,
                     chasis: item.client_vehicle.chasis,
                     plate: item.client_vehicle.plate,
-                    promised_date: moment(item.promised_date).format('DD/MM/YYYY HH:mma'),
+                    promised_date: moment(item.promised_date).utc(true).format('DD/MM/YYYY HH:mm'),
                     client: item.client?.name,
                     technical_consultant: item.technical_consultant?.name,
                     checklist_version_id: item.checklist_version_id,
@@ -297,6 +297,16 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
             />
 
             <Row>
+                <Col xl={12}>
+                    <div className="text-end mt-xl-0 mt-2">
+                        <Button variant="danger" className="mb-2 me-2" onClick={() => { history(`/panel/company/${props.company?.id}/service-schedules/create`) }}>
+                            <i className="mdi mdi-basket me-1" /> Nova Agenda de Serviço
+                        </Button>
+                    </div>
+                </Col>
+            </Row>
+
+            <Row>
                 <Col xs={12}>
                     <Card>
                         <Card.Body>
@@ -318,16 +328,9 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                                           </InputGroup>
                                 </Col>
                                 <Col xl={2}>
-                                    <div className="text-xl-start mt-xl-0 mt-2">
-                                        <Button variant="primary" className="mb-2 me-2" onClick={() => { getList(); }}>
-                                            <i className="mdi mdi-search-web me-1" /> Buscar
-                                        </Button>
-                                    </div>
-                                </Col>
-                                <Col xl={4}>
-                                    <div className="text-xl-end mt-xl-0 mt-2">
-                                        <Button variant="danger" className="mb-2 me-2" onClick={() => { history(`/panel/company/${props.company?.id}/service-schedules/create`) }}>
-                                            <i className="mdi mdi-basket me-1" /> Nova Agenda de Serviço
+                                    <div className="text-xl-start text-xs-end mt-xl-0 mt-2">
+                                        <Button variant="primary" className="mb-2" onClick={() => { getList(); }}>
+                                            <i className="mdi mdi-search-web" /> Buscar
                                         </Button>
                                     </div>
                                 </Col>
@@ -345,10 +348,11 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                                             sizePerPageList={TABLE_OPTIONS.sizePerPageList}
                                             isSortable={true}
                                             pagination={true}
-                                  
-                                  />
-                                        </div>
-
+                                            isSearchable={false}
+                                            isSelectable={false}
+                                            // isSearchable={true}
+                                        />
+                                    </div>
                                 </Col>
                             </Row>
                         </Card.Body>
