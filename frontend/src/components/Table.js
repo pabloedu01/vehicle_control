@@ -1,5 +1,5 @@
 // @flow
-import React, { useRef, useEffect, forwardRef } from 'react';
+import React, { useRef,useState, useEffect, forwardRef } from 'react';
 import {
     useTable,
     useSortBy,
@@ -10,7 +10,7 @@ import {
     useExpanded,
 } from 'react-table';
 import classNames from 'classnames';
-
+import "./tableStyle.css";
 // components
 import Pagination from './Pagination';
 
@@ -42,7 +42,8 @@ const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, se
 
 const IndeterminateCheckbox = forwardRef(({ indeterminate, ...rest }, ref) => {
     const defaultRef = useRef();
-    const resolvedRef: any = ref || defaultRef;
+    const resolvedRef = ref || defaultRef;
+    const [hoveredRow, setHoveredRow] = useState(null);
 
     useEffect(() => {
         resolvedRef.current.indeterminate = indeterminate;
@@ -58,25 +59,9 @@ const IndeterminateCheckbox = forwardRef(({ indeterminate, ...rest }, ref) => {
     );
 });
 
-type TableProps = {
-    isSearchable?: boolean,
-    isSortable?: boolean,
-    pagination?: boolean,
-    isSelectable?: boolean,
-    isExpandable?: boolean,
-    pageSize: number,
-    columns: Array<any>,
-    data: Array<any>,
-    searchBoxClass?: string,
-    tableClass?: string,
-    theadClass?: string,
-    sizePerPageList: {
-        text: string,
-        value: number,
-    }[],
-};
 
-const Table = (props: TableProps): React$Element<React$FragmentType> => {
+
+const Table = (props) => {
     const isSearchable = props['isSearchable'] || false;
     const isSortable = props['isSortable'] || false;
     const pagination = props['pagination'] || false;
@@ -187,7 +172,10 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
                         {(rows || []).map((row, i) => {
                             dataTable.prepareRow(row);
                             return (
-                                <tr {...row.getRowProps()}>
+                                <tr {...row.getRowProps()} 
+                                
+                                // onClick={() => props.childToParent(row.cells[0].row.values.id)}
+                                >
                                     {row.cells.map((cell) => {
                                         return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
                                     })}

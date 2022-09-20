@@ -70,7 +70,8 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
         },
     ];
 
-
+  
+    
     const getList = () => {
         let filter;
 
@@ -93,9 +94,9 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                     technical_consultant: item.technical_consultant?.name,
                     checklist_version_id: item.checklist_version_id,
                     actions: <div>
-                    <OverlayTrigger placement="left" overlay={<Tooltip>Editar</Tooltip>}>
+                    {/* <OverlayTrigger placement="left" overlay={<Tooltip>Editar</Tooltip>}>
                         <span className="cursor-pointer" onClick={()=>onEdit(item.id)}><i className="mdi mdi-square-edit-outline mdi-24px"/></span>
-                   </OverlayTrigger>
+                   </OverlayTrigger> */}
                    <OverlayTrigger placement="left" overlay={<Tooltip>Excluir</Tooltip>}>
                       <span className="cursor-pointer" onClick={() => deleteItem(item.id)}><i className="mdi mdi-trash-can-outline mdi-24px"/></span>
                   </OverlayTrigger>
@@ -182,7 +183,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     useEffect(() => {
         getList();
-
+        
         setTableFields([
             {
                 label: 'id',
@@ -266,7 +267,24 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
             element.click();
         });*/
     }, []);
-
+    const shoot = () => {
+        alert("Great Shot!");
+      }
+      const [data, setData] = useState('');
+      const childToParent = (childdata) => {
+        setData(childdata);
+        console.log(childdata);
+        onEdit(childdata)
+      }
+      const detectClick = (e) => {
+        if (e.target?.nodeName === "TD") {
+            const code =   (e.target?.parentNode?.innerText).split('	')[0]
+            console.log(code)
+            onEdit(code);
+        } else {
+            return
+        }
+    }
     return (
         <>
             <PageTitle
@@ -317,6 +335,9 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                             <Row>
                                 <Col>
                                     {/* <MUIDataTable data={list} columns={tableFields} options={tableOptions}/> */}
+                                    <div 
+                                        onClick={(e) => detectClick(e)}
+                                        >
                                     <Table
                                             columns={columns}
                                             data={list}
@@ -325,9 +346,11 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                                             isSortable={true}
                                             pagination={true}
                                             isSearchable={true}
-                                            isSelectable={true}
-                                            // isSearchable={true}
+                                     
+                                            // childToParent={childToParent}
+
                                         />
+                                        </div>
 
                                 </Col>
                             </Row>
