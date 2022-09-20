@@ -345,7 +345,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                                             sizePerPageList={TABLE_OPTIONS.sizePerPageList}
                                             isSortable={true}
                                             pagination={true}
-                                            isSearchable={true}
+                                            // isSearchable={true}
                                      
                                             // childToParent={childToParent}
 
