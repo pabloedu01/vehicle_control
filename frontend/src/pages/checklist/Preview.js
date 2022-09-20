@@ -239,29 +239,29 @@ const Preview = (props: { company?: any }): React$Element<React$FragmentType> =>
                                             </ListGroup.Item>
                                             <ListGroup.Item>
                                                 <p>
-                                                    <b>Razão social:</b> TUNAP DO BRASIL LTDA.
+                                                    <b>Razão social:</b> {props?.company?.corporate_name}
                                                 </p>
                                                 <Row>
                                                     <Col lg={6}>
                                                         <p>
-                                                            <b> Endereço:</b> RUA LALALA....{' '}
+                                                            <b> Endereço:</b> {props?.company?.address}
                                                         </p>
                                                     </Col>
                                                     <Col lg={6}>
                                                         <p>
-                                                            <b> CEP:</b> 000.000.000-87{' '}
+                                                            <b> CEP:</b> {props?.company?.postal_code}
                                                         </p>
                                                     </Col>
                                                 </Row>
                                                 <Row>
                                                     <Col lg={6}>
                                                         <p>
-                                                            <b> Telefone: </b>+55(11)333333333{' '}
+                                                            <b> Telefone: </b>{props?.company?.phone}
                                                         </p>
                                                     </Col>
                                                     <Col lg={6}>
                                                         <p>
-                                                            <b> Email::</b> tunap@tunap.com{' '}
+                                                            <b> Email::</b> {props?.company?.email}
                                                         </p>
                                                     </Col>
                                                 </Row>
