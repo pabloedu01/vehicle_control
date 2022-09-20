@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use App\Casts\Json;
+use App\Rules\ArrayEmail;
+use App\Rules\Document;
+
 class Client extends Base
 {
     protected $table = 'clients';
@@ -10,6 +14,8 @@ class Client extends Base
 
     protected $casts = [
         'active' => 'boolean',
+        'email' => Json::class,
+        'phone' => Json::class,
     ];
 
     protected $fillable = [
@@ -26,12 +32,14 @@ class Client extends Base
         return [
             'name'     => 'required|string|max:100',
             'address'  => 'nullable|string',
-            'email'  => 'nullable|string|email',
+            'email'  => ['nullable', 'array', new ArrayEmail],
+            'phone'  => 'nullable|array',
             'document' => [
                 'required',
                 'string',
                 'max:100',
                 self::getUniqueRule($id, [ 'company_id' => $company_id ]),
+                new Document
             ],
             'active'   => 'required|boolean',
         ];
