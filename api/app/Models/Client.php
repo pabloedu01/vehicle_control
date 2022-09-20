@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Casts\Json;
 use App\Rules\ArrayEmail;
+use App\Rules\ArrayInternacionalPhone;
 use App\Rules\Document;
 
 class Client extends Base
@@ -25,6 +26,7 @@ class Client extends Base
         'address',
         'email',
         'active',
+        'phone'
     ];
 
     public static function rules($id = null, $company_id = null)
@@ -33,7 +35,7 @@ class Client extends Base
             'name'     => 'required|string|max:100',
             'address'  => 'nullable|string',
             'email'  => ['nullable', 'array', new ArrayEmail],
-            'phone'  => 'nullable|array',
+            'phone'  => ['nullable', 'array', new ArrayInternacionalPhone],
             'document' => [
                 'required',
                 'string',
