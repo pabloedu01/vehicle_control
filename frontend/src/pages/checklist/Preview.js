@@ -1,16 +1,17 @@
 // @flow
-import React, {useEffect, useState} from 'react';
-import PageTitle from "../../components/PageTitle";
-import {Card, Col, Row, Badge, Carousel, Modal, ProgressBar} from "react-bootstrap";
-import {APICore} from "../../helpers/api/apiCore";
-import {Link, useNavigate, useParams} from "react-router-dom";
-import moment from "moment";
+import React, { useEffect, useState } from 'react';
+import PageTitle from '../../components/PageTitle';
+import { Card, Col, Row, Badge, Carousel, Modal, ProgressBar, ListGroup } from 'react-bootstrap';
+import { APICore } from '../../helpers/api/apiCore';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import moment from 'moment';
+import { Divider } from '@mui/material';
 
 const api = new APICore();
 
-const Preview = (props: {company?: any}): React$Element<React$FragmentType> => {
+const Preview = (props: { company?: any }): React$Element<React$FragmentType> => {
     const history = useNavigate();
-    const {id, type, checklistId} = useParams();
+    const { id, type, checklistId } = useParams();
     const [data, setData] = useState(null);
     const [vehicleService, setVehicleService] = useState(null);
     const [stages, setStages] = useState([]);
@@ -21,52 +22,82 @@ const Preview = (props: {company?: any}): React$Element<React$FragmentType> => {
     const [selectedEvidence, setSelectedEvidence] = useState(null);
 
     const getData = () => {
-        if(id){
+        if (id) {
             let ajaxCall;
 
-            switch(type){
+            switch (type) {
                 case 'service-schedules':
                     ajaxCall = api.get('/vehicle-service/' + checklistId);
                     break;
             }
 
-            ajaxCall.then((response) => {
-                switch(type){
-                    case 'service-schedules':
-                        let data;
-                        const checklistData = {};
+            ajaxCall.then(
+                (response) => {
+                    switch (type) {
+                        case 'service-schedules':
+                            let data;
+                            const checklistData = {};
 
-                        const {brand,client,vehicle, technical_consultant: technicalConsultant,checklist_version: checklistVersion, service_schedule: {client_vehicle: clientVehicle,...serviceSchedule}, ...vehicleService} = response.data.data;
-                        data = {brand, client, technicalConsultant, vehicle, serviceSchedule, checklistVersion, clientVehicle};
-
-                        vehicleService.items.forEach((checklistItem) => {
-                            checklistData[checklistItem.id] = {
-                                id: checklistItem.id,
-                                value: checklistItem.pivot.value,
-                                evidence: checklistItem.pivot.evidence,
-                                observations: checklistItem.pivot.observations,
-                                type: checklistItem.validation.type
+                            console.table(response.data.data);
+                            const {
+                                brand,
+                                client,
+                                vehicle,
+                                technical_consultant: technicalConsultant,
+                                checklist_version: checklistVersion,
+                                service_schedule: { client_vehicle: clientVehicle, ...serviceSchedule },
+                                ...vehicleService
+                            } = response.data.data;
+                            data = {
+                                brand,
+                                client,
+                                technicalConsultant,
+                                vehicle,
+                                serviceSchedule,
+                                checklistVersion,
+                                clientVehicle,
                             };
-                        });
 
-                        const stages = vehicleService.stages.filter((stage) => stage.pivot.processed);
-                        stages.forEach((stage, index) => {
-                            stages[index].evidences = [].concat(...stage.items.map((checklistItem) => (checklistData[checklistItem.id]?.evidence || []).map((evidence) => {return {evidence, name: checklistItem.name, observations: checklistData[checklistItem.id].observations};})));
-                        });
+                            vehicleService.items.forEach((checklistItem) => {
+                                checklistData[checklistItem.id] = {
+                                    id: checklistItem.id,
+                                    value: checklistItem.pivot.value,
+                                    evidence: checklistItem.pivot.evidence,
+                                    observations: checklistItem.pivot.observations,
+                                    type: checklistItem.validation.type,
+                                };
+                            });
 
-                        setEvidences([].concat(...stages.map((stage) => stage.evidences)));
-                        setVehicleService(vehicleService);
-                        setStages(stages);
-                        setChecklistData(checklistData);
-                        setData(data);
-                        break;
-                    default:
-                        setData(response.data.data);
-                        break;
+                            const stages = vehicleService.stages.filter((stage) => stage.pivot.processed);
+                            stages.forEach((stage, index) => {
+                                stages[index].evidences = [].concat(
+                                    ...stage.items.map((checklistItem) =>
+                                        (checklistData[checklistItem.id]?.evidence || []).map((evidence) => {
+                                            return {
+                                                evidence,
+                                                name: checklistItem.name,
+                                                observations: checklistData[checklistItem.id].observations,
+                                            };
+                                        })
+                                    )
+                                );
+                            });
+
+                            setEvidences([].concat(...stages.map((stage) => stage.evidences)));
+                            setVehicleService(vehicleService);
+                            setStages(stages);
+                            setChecklistData(checklistData);
+                            setData(data);
+                            break;
+                        default:
+                            setData(response.data.data);
+                            break;
+                    }
+                },
+                (error) => {
+                    setData(null);
                 }
-            },(error) => {
-                setData(null);
-            });
+            );
         } else {
             setData(null);
         }
@@ -89,7 +120,7 @@ const Preview = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     /*si se cambia alguno de los parametros de id tipo o el vehicle service, se reinicializa todo*/
     useEffect(() => {
-        if(evidences.length > 0){
+        if (evidences.length > 0) {
             setSelectedEvidence(evidences[0]);
         }
     }, [evidences]);
@@ -99,14 +130,21 @@ const Preview = (props: {company?: any}): React$Element<React$FragmentType> => {
         getData();
     }, [id, type, checklistId]);
 
+    const [index, setIndex] = useState(0);
+
+    const handleSelect = (selectedIndex, e) => {
+        setIndex(selectedIndex);
+    };
+    const divStyle = {
+        color: 'white',
+        width: '100%',
+        backgroundColor: 'rgba(0,0,0,.2)',
+    };
     return (
         <>
             <Modal show={showModal} onHide={onHideModal} size="lg" scrollable={true} centered={true}>
-                <Modal.Body className="p-0" style={{minHeight: '300px'}}>
-                    <img
-                        className="d-block w-100"
-                        src={previewImage?.evidence}
-                    />
+                <Modal.Body className="p-0" style={{ minHeight: '300px' }}>
+                    <img className="d-block w-100" src={previewImage?.evidence} />
 
                     <div className="carousel-caption">
                         <h3>{previewImage?.name}</h3>
@@ -128,10 +166,10 @@ const Preview = (props: {company?: any}): React$Element<React$FragmentType> => {
                 <Col xs={12}>
                     <Card>
                         <Card.Body>
-                            <Row className="align-items-center">
-                                {evidences.length > 0 ?
-                                    <Col lg={5}>
-                                        <Link to="#" className="text-center d-block mb-4">
+                            <Row>
+                                {evidences.length > 0 ? (
+                                    <Col lg={6}>
+                                        {/* <Link to="#" className="text-center d-block mb-4">
                                             <img
                                                 onClick={(e) => {
                                                     showImage(selectedEvidence);
@@ -141,107 +179,248 @@ const Preview = (props: {company?: any}): React$Element<React$FragmentType> => {
                                                 style={{ width: '350px', height: '300px' }}
                                                 alt={selectedEvidence?.name}
                                             />
-                                        </Link>
+                                        </Link> */}
 
                                         <div className="d-flex justify-content-center">
-                                            {evidences.map((evidence) => (
-                                                <Link
-                                                    to="#"
-                                                    onMouseOver={(e) => {
-                                                        handleImageChange(e, evidence);
-                                                    }}
-                                                    onClick={(e) => {
-                                                        handleImageChange(e, evidence);
-                                                        showImage(evidence);
-                                                    }}>
-                                                    <img
-                                                        src={evidence.evidence}
-                                                        className="img-fluid img-thumbnail p-2"
-                                                        style={{ width: '75px', height: '70px' }}
-                                                        alt={evidence.name}
-                                                    />
-                                                </Link>
-                                            ))
-                                            }
+                                            <Carousel activeIndex={index} indicators={false} onSelect={handleSelect}>
+                                                {evidences.map((evidence) => (
+                                                    <Carousel.Item>
+                                                        <img
+                                                            className="d-block w-100"
+                                                            src={evidence.evidence}
+                                                            alt={evidence.name}
+                                                        />
+                                                        <Carousel.Caption>
+                                                            <h3 style={divStyle}>{evidence?.name}</h3>
+                                                            <p style={divStyle}>{evidence?.observations}</p>
+                                                        </Carousel.Caption>
+                                                    </Carousel.Item>
+
+                                                    //     to="#"
+                                                    //     onMouseOver={(e) => {
+                                                    //         handleImageChange(e, evidence);
+                                                    //     }}
+                                                    //     onClick={(e) => {
+                                                    //         handleImageChange(e, evidence);
+                                                    //         showImage(evidence);
+                                                    //     }}>
+                                                    //     <img
+                                                    //         src={evidence.evidence}
+                                                    //         className="img-fluid img-thumbnail p-2"
+                                                    //         style={{ width: '75px', height: '70px' }}
+                                                    //         alt={evidence.name}
+                                                    //     />
+                                                    // </Link>
+                                                ))}
+                                            </Carousel>
                                         </div>
                                     </Col>
-                                    : null
-                                }
+                                ) : null}
 
-                                <Col lg={5}>
-                                    <form className="ps-lg-4">
-                                        <h2 className="mt-0">{data?.client?.name}</h2>
-                                        <p className="mb-1"><b>Data da vistoria:</b> {moment(data?.serviceSchedule?.promised_date).format('DD/MM/YYYY H:mma')}</p>
-
-                                        <div className="mt-4">
-                                            <p style={{fontSize: '1.5rem'}}><b>Veículo</b>: {data?.vehicle?.name}</p>
-                                        </div>
-
-                                        <div className="mt-4">
-                                            <p style={{fontSize: '1.5rem'}}><b>Cor</b>: {data?.clientVehicle?.color}</p>
-                                        </div>
-
-                                        <div className="mt-4">
-                                            <p style={{fontSize: '1.5rem'}}><b>Consultor</b>: {data?.technicalConsultant?.name}</p>
-                                        </div>
-
-                                        <div className="mt-4">
-                                            <p style={{fontSize: '1.5rem'}}><b>Placa</b>: {data?.clientVehicle?.plate}</p>
-                                        </div>
-
-                                        <div className="mt-4">
-                                            <p style={{fontSize: '1.5rem'}}><b>Chassi</b>: {data?.clientVehicle?.chasis}</p>
-                                        </div>
-
-                                        <div className="mt-4">
-                                            <div className="row">
-                                                <div className="col-md-4">
-                                                    <h6 className="font-14">Vistorias finalizadas:</h6>
-                                                    <p className="text-sm lh-150">{(vehicleService?.stages || []).filter((stage) => stage.pivot.completed).length}/{(vehicleService?.stages || []).length}</p>
-                                                </div>
-                                                <div className="col-md-4">
+                                <Col lg={6}>
+                                    <Card style={{ width: '100%' }}>
+                                        <Card.Header>
+                                            <Row>
+                                                <Col lg={4}>
+                                                    <img src={props?.company?.image} style={{ height: '100px' }} />
+                                                </Col>
+                                                <Col lg={5}>
+                                                    <h1>{props?.company?.name}</h1>
+                                                </Col>
+                                                <Col lg={3}>
                                                     <h6 className="font-14">Número do checklist:</h6>
                                                     <p className="text-sm lh-150">{vehicleService?.id}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
+                                                </Col>
+                                            </Row>
+                                        </Card.Header>
+                                        <ListGroup variant="flush">
+                                            <ListGroup.Item style={{ textAlign: 'center' }}>
+                                                <b>Informações da Empresa:</b>
+                                            </ListGroup.Item>
+                                            <ListGroup.Item>
+                                                <p>
+                                                    <b>Razão social:</b> TUNAP DO BRASIL LTDA.
+                                                </p>
+                                                <Row>
+                                                    <Col lg={6}>
+                                                        <p>
+                                                            <b> Endereço:</b> RUA LALALA....{' '}
+                                                        </p>
+                                                    </Col>
+                                                    <Col lg={6}>
+                                                        <p>
+                                                            <b> CEP:</b> 000.000.000-87{' '}
+                                                        </p>
+                                                    </Col>
+                                                </Row>
+                                                <Row>
+                                                    <Col lg={6}>
+                                                        <p>
+                                                            <b> Telefone: </b>+55(11)333333333{' '}
+                                                        </p>
+                                                    </Col>
+                                                    <Col lg={6}>
+                                                        <p>
+                                                            <b> Email::</b> tunap@tunap.com{' '}
+                                                        </p>
+                                                    </Col>
+                                                </Row>
+                                            </ListGroup.Item>
+                                            
+                                            
+
+                                        </ListGroup>
+                                    </Card>
+                                    <Card style={{ width: '100%' }}>
+                                        <Card.Header style={{ textAlign: 'center' }}>
+                                            <b>Informações do Cliente:</b>
+                                        </Card.Header>
+
+                                        <ListGroup variant="flush">
+                                            <ListGroup.Item>
+                                                <p>
+                                                    <b>Nome:</b> Pablo Eduardo
+                                                </p>
+                                                <p>
+                                                    <b> CPF:</b> 000.000.000-00{' '}
+                                                </p>
+                                                <Row>
+                                                    <Col lg={6}>
+                                                        <p>
+                                                            <b> Telefone: </b>+55(11)333333333{' '}
+                                                        </p>
+                                                    </Col>
+                                                    <Col lg={6}>
+                                                        <p>
+                                                            <b> Email::</b> tunap@tunap.com{' '}
+                                                        </p>
+                                                    </Col>
+                                                </Row>
+                                            </ListGroup.Item>
+                                        </ListGroup>
+                                    </Card>
+                                    <Card style={{ width: '100%' }}>
+                                        <Card.Header style={{ textAlign: 'center' }}>
+                                            <b>Informações do Veiculo:</b>
+                                        </Card.Header>
+
+                                        <ListGroup variant="flush">
+                                            <ListGroup.Item>
+                                                 
+                                                
+                                                <Row>
+                                                    <Col lg={6}>
+                                                        <p>
+                                                        <b>Veículo</b>: {data?.vehicle?.name}
+                                                        </p>
+                                                    </Col>
+                                                    <Col lg={6}>
+                                                        <p>
+                                                        <b>Cor</b>: {data?.clientVehicle?.color}
+                                                        </p>
+                                                    </Col>
+                                                </Row>
+                                                <Row>
+                                                    <Col lg={6}>
+                                                        <p>
+                                                        <b>Placa</b>: {data?.clientVehicle?.plate}
+                                                        </p>
+                                                    </Col>
+                                                    <Col lg={6}>
+                                                        <p>
+                                                        <b>Chassi</b>: {data?.clientVehicle?.chasis}
+                                                        </p>
+                                                    </Col>
+                                                </Row>
+                                            </ListGroup.Item>
+                                        </ListGroup>
+                                    </Card>
+                                    <Card style={{ width: '100%' }}>
+                                        <Card.Header style={{ textAlign: 'center' }}>
+                                            <b>Informações da Vistoria:</b>
+                                        </Card.Header>
+
+                                        <ListGroup variant="flush">
+                                            <ListGroup.Item>
+                                  
+                                                
+                                                <Row>
+                                                    <Col lg={6}>
+                                                        <p>
+                                                        <b>Consultor</b>: {data?.technicalConsultant?.name}
+                                                        </p>
+                                                    </Col>
+                                                    <Col lg={6}>
+                                                        <p>
+                                                        <b>Data da vistoria:</b>{' '}
+                                                {moment(data?.serviceSchedule?.promised_date).format(
+                                                    'DD/MM/YYYY H:mma'
+                                                )}
+                                                        </p>
+                                                    </Col>
+                                                </Row>
+                                               
+                                            </ListGroup.Item>
+                                        </ListGroup>
+                                    </Card>
+                                    
                                 </Col>
-                                <Col lg={2}>
-                                    <img src={props?.company?.image} alt="Company Logo" className="img-responsive"/>
-                                </Col>
+
+                                {/* <Col lg={2}>
+                                    <img src={props?.company?.image} alt="Company Logo" className="img-responsive" />
+                                </Col> */}
                             </Row>
+
                             {stages.map((stage) => (
-                              <Row>
-                                  <div className="table-responsive mt-4">
-                                      <table className="table table-bordered table-centered mb-0">
-                                          <thead className="table-light">
-                                          <tr>
-                                              <th colSpan={4} className="text-center">{stage.name} {stage.pivot.completed ? '(Finalizado)' : null}</th>
-                                          </tr>
-                                          <tr>
-                                              <th width="40%">Item</th>
-                                              <th width="10%">Imagem ?</th>
-                                              <th width="20%">Resposta</th>
-                                              <th width="30%">Comentário</th>
-                                          </tr>
-                                          </thead>
-                                          <tbody>
-                                          {stage.items.map((checklistItem) => (
-                                              <tr>
-                                                  <td>{checklistItem.name}</td>
-                                                  <td>{checklistData[checklistItem.id]?.evidence && checklistData[checklistItem.id]?.evidence.length > 0 ? 'Sim' : 'Nao'}</td>
-                                                  <td>{checklistData[checklistItem.id]?.type === 'boolean' ? (checklistData[checklistItem.id]?.value ? <Badge className="bg-success-lighten text-success">Sim</Badge> : <Badge className="bg-danger-lighten text-danger">Nao</Badge>) : checklistData[checklistItem.id]?.value}</td>
-                                                  <td>{checklistData[checklistItem.id]?.observations}</td>
-                                              </tr>
-                                          ))
-                                          }
-                                          </tbody>
-                                      </table>
-                                  </div>
-                              </Row>
-                            ))
-                            }
+                                <Row>
+                                    <div className="table-responsive mt-4">
+                                        <table className="table table-bordered table-centered mb-0">
+                                            <thead className="table-light">
+                                                <tr>
+                                                    <th colSpan={4} className="text-center">
+                                                        {stage.name} {stage.pivot.completed ? '(Finalizado)' : null}
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <th width="40%">Item</th>
+                                                    <th width="10%">Imagem ?</th>
+                                                    <th width="20%">Resposta</th>
+                                                    <th width="30%">Comentário</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {stage.items.map((checklistItem) => (
+                                                    <tr>
+                                                        <td>{checklistItem.name}</td>
+                                                        <td>
+                                                            {checklistData[checklistItem.id]?.evidence &&
+                                                            checklistData[checklistItem.id]?.evidence.length > 0
+                                                                ? 'Sim'
+                                                                : 'Nao'}
+                                                        </td>
+                                                        <td>
+                                                            {checklistData[checklistItem.id]?.type === 'boolean' ? (
+                                                                checklistData[checklistItem.id]?.value ? (
+                                                                    <Badge className="bg-success-lighten text-success">
+                                                                        Sim
+                                                                    </Badge>
+                                                                ) : (
+                                                                    <Badge className="bg-danger-lighten text-danger">
+                                                                        Nao
+                                                                    </Badge>
+                                                                )
+                                                            ) : (
+                                                                checklistData[checklistItem.id]?.value
+                                                            )}
+                                                        </td>
+                                                        <td>{checklistData[checklistItem.id]?.observations}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </Row>
+                            ))}
                         </Card.Body>
                     </Card>
                 </Col>
