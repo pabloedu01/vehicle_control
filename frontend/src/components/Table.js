@@ -107,6 +107,7 @@ const Table = (props) => {
                 hooks.visibleColumns.push((columns) => [
                     // Let's make a column for selection
                     {
+                        
                         // Build our expander column
                         id: 'expander', // Make sure it has an ID
                         Header: ({ getToggleAllRowsExpandedProps, isAllRowsExpanded }) => (
