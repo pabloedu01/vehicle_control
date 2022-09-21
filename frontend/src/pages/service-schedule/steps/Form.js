@@ -173,7 +173,9 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
                     <Card.Body>
                         <form onSubmit={handleSubmit(onSubmit)} noValidate>
             <Row>
-                <Col md={6}>
+                <Col md={12}>
+                    <Row>
+                        <Col>
                     <FormInput
                         label="Data Prometida"
                         type="datetime-local"
@@ -182,7 +184,20 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
                         containerClass={'mb-3'}
                         {...otherProps}
                     />
-
+                    </Col>
+                    <Col>
+                    <FormInput
+                        label="Consultor Técnico"
+                        type="select"
+                        name="technical_consultant_id"
+                        containerClass={'mb-3'}
+                        options={technicalConsultants}
+                        {...otherProps}
+                    />
+                    </Col>
+                    </Row>
+                    </Col>
+                    <Col md={6}>
                     <Card>
                         <Card.Header>
                             <h4>Informações do cliente</h4>
@@ -214,15 +229,6 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
                 </Col>
 
                 <Col md={6}>
-                    <FormInput
-                        label="Consultor Técnico"
-                        type="select"
-                        name="technical_consultant_id"
-                        containerClass={'mb-3'}
-                        options={technicalConsultants}
-                        {...otherProps}
-                    />
-
                     {/*<FormInput
                         label="Código"
                         type="text"
