@@ -1,11 +1,10 @@
 // @flow
 import React, { useEffect, useState } from 'react';
 import PageTitle from '../../components/PageTitle';
-import { Card, Col, Row, Badge, Carousel, Modal, ProgressBar, ListGroup } from 'react-bootstrap';
+import { Card, Col, Row, Badge, Modal, ListGroup } from 'react-bootstrap';
 import { APICore } from '../../helpers/api/apiCore';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import moment from 'moment';
-import { Divider } from '@mui/material';
 
 const api = new APICore();
 
@@ -17,9 +16,9 @@ const Preview = (props: { company?: any }): React$Element<React$FragmentType> =>
     const [stages, setStages] = useState([]);
     const [evidences, setEvidences] = useState([]);
     const [checklistData, setChecklistData] = useState({});
-    const [showModal, setShowModal] = useState(false);
+    const [showModalImagePreview, setShowModalImagePreview] = useState(false);
+    const [showModalGallery, setShowModalGallery] = useState(false);
     const [previewImage, setPreviewImage] = useState(null);
-    const [selectedEvidence, setSelectedEvidence] = useState(null);
 
     const getData = () => {
         if (id) {
@@ -37,8 +36,6 @@ const Preview = (props: { company?: any }): React$Element<React$FragmentType> =>
                         case 'service-schedules':
                             let data;
                             const checklistData = {};
-
-                            console.table(response.data.data);
                             const {
                                 brand,
                                 client,
@@ -83,7 +80,6 @@ const Preview = (props: { company?: any }): React$Element<React$FragmentType> =>
                                 );
                             });
 
-                            setEvidences([].concat(...stages.map((stage) => stage.evidences)));
                             setVehicleService(vehicleService);
                             setStages(stages);
                             setChecklistData(checklistData);
@@ -103,38 +99,16 @@ const Preview = (props: { company?: any }): React$Element<React$FragmentType> =>
         }
     };
 
-    const showImage = (evidence) => {
-        setPreviewImage(evidence);
-        setShowModal(true);
-    };
-
-    const handleImageChange = (e, selectedEvidence) => {
-        e.preventDefault();
-        setSelectedEvidence(selectedEvidence);
-    };
-
-    const onHideModal = () => {
+    const onHideModalImagePreview = () => {
         setPreviewImage(null);
-        setShowModal(false);
+        setShowModalImagePreview(false);
     };
-
-    /*si se cambia alguno de los parametros de id tipo o el vehicle service, se reinicializa todo*/
-    useEffect(() => {
-        if (evidences.length > 0) {
-            setSelectedEvidence(evidences[0]);
-        }
-    }, [evidences]);
 
     /*si se cambia alguno de los parametros de id tipo o el vehicle service, se reinicializa todo*/
     useEffect(() => {
         getData();
     }, [id, type, checklistId]);
 
-    const [index, setIndex] = useState(0);
-
-    const handleSelect = (selectedIndex, e) => {
-        setIndex(selectedIndex);
-    };
     const divStyle = {
         color: 'white',
         width: '100%',
@@ -142,14 +116,26 @@ const Preview = (props: { company?: any }): React$Element<React$FragmentType> =>
     };
     return (
         <>
-            <Modal show={showModal} onHide={onHideModal} size="lg" scrollable={true} centered={true}>
-                <Modal.Body className="p-0" style={{ minHeight: '300px' }}>
-                    <img className="d-block w-100" src={previewImage?.evidence} />
+            <Modal show={showModalGallery} onHide={ () => { setShowModalGallery(false);setEvidences([]); } } size="lg" scrollable={true} centered={true}>
+                <Modal.Header closeButton>
+                    <h4 className="modal-title">Evidencias</h4>
+                </Modal.Header>
+                <Modal.Body style={{ minHeight: '300px' }}>
+                    <Row>
+                        {evidences.map((evidence, index) => (
+                            <Col md={4} key={index} className="mb-1">
+                                <Card>
+                                    <img src={evidence} alt={'Evidence ' + (index + 1)} style={{width: '100%', height: '200px'}} onClick={() => { setPreviewImage(evidence);setShowModalImagePreview(true); }}/>
+                                </Card>
+                            </Col>
+                        ))}
+                    </Row>
+                </Modal.Body>
+            </Modal>
 
-                    <div className="carousel-caption">
-                        <h3>{previewImage?.name}</h3>
-                        <p>{previewImage?.observations}</p>
-                    </div>
+            <Modal show={showModalImagePreview} onHide={onHideModalImagePreview} size="lg" scrollable={true} centered={true}>
+                <Modal.Body className="p-0" style={{ minHeight: '300px' }}>
+                    <img className="d-block w-100" src={previewImage} />
                 </Modal.Body>
             </Modal>
 
@@ -167,56 +153,6 @@ const Preview = (props: { company?: any }): React$Element<React$FragmentType> =>
                     <Card>
                         <Card.Body>
                             <Row>
-                                {evidences.length > 0 ? (
-                                    <Col lg={6}>
-                                        {/* <Link to="#" className="text-center d-block mb-4">
-                                            <img
-                                                onClick={(e) => {
-                                                    showImage(selectedEvidence);
-                                                }}
-                                                src={selectedEvidence?.evidence}
-                                                className="img-fluid"
-                                                style={{ width: '350px', height: '300px' }}
-                                                alt={selectedEvidence?.name}
-                                            />
-                                        </Link> */}
-
-                                        <div className="d-flex justify-content-center">
-                                            <Carousel activeIndex={index} indicators={false} onSelect={handleSelect}>
-                                                {evidences.map((evidence) => (
-                                                    <Carousel.Item>
-                                                        <img
-                                                            className="d-block w-100"
-                                                            src={evidence.evidence}
-                                                            alt={evidence.name}
-                                                        />
-                                                        <Carousel.Caption>
-                                                            <h3 style={divStyle}>{evidence?.name}</h3>
-                                                            <p style={divStyle}>{evidence?.observations}</p>
-                                                        </Carousel.Caption>
-                                                    </Carousel.Item>
-
-                                                    //     to="#"
-                                                    //     onMouseOver={(e) => {
-                                                    //         handleImageChange(e, evidence);
-                                                    //     }}
-                                                    //     onClick={(e) => {
-                                                    //         handleImageChange(e, evidence);
-                                                    //         showImage(evidence);
-                                                    //     }}>
-                                                    //     <img
-                                                    //         src={evidence.evidence}
-                                                    //         className="img-fluid img-thumbnail p-2"
-                                                    //         style={{ width: '75px', height: '70px' }}
-                                                    //         alt={evidence.name}
-                                                    //     />
-                                                    // </Link>
-                                                ))}
-                                            </Carousel>
-                                        </div>
-                                    </Col>
-                                ) : null}
-
                                 <Col lg={6}>
                                     <Card style={{ width: '100%' }}>
                                         <Card.Header>
@@ -372,7 +308,7 @@ const Preview = (props: { company?: any }): React$Element<React$FragmentType> =>
                             </Row>
 
                             {stages.map((stage) => (
-                                <Row>
+                                <Row key={stage.id}>
                                     <div className="table-responsive mt-4">
                                         <table className="table table-bordered table-centered mb-0">
                                             <thead className="table-light">
@@ -390,13 +326,17 @@ const Preview = (props: { company?: any }): React$Element<React$FragmentType> =>
                                             </thead>
                                             <tbody>
                                                 {stage.items.map((checklistItem) => (
-                                                    <tr>
+                                                    <tr key={checklistItem.id}>
                                                         <td>{checklistItem.name}</td>
                                                         <td>
                                                             {checklistData[checklistItem.id]?.evidence &&
                                                             checklistData[checklistItem.id]?.evidence.length > 0
-                                                                ? 'Sim'
-                                                                : 'Nao'}
+                                                                ? <Badge className="bg-success-lighten text-success" onClick={() => {console.log(checklistData[checklistItem.id]?.evidence);setEvidences(checklistData[checklistItem.id]?.evidence);setShowModalGallery(true);}}>
+                                                                    Sim
+                                                                </Badge>
+                                                                : <Badge className="bg-danger-lighten text-danger">
+                                                                    Nao
+                                                                </Badge>}
                                                         </td>
                                                         <td>
                                                             {checklistData[checklistItem.id]?.type === 'boolean' ? (
