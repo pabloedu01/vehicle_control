@@ -183,6 +183,15 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
                         {...otherProps}
                     />
 
+                    <FormInput
+                        label="Consultor Técnico"
+                        type="select"
+                        name="technical_consultant_id"
+                        containerClass={'mb-3'}
+                        options={technicalConsultants}
+                        {...otherProps}
+                    />
+
                     <Card>
                         <Card.Header>
                             <h4>Informações do cliente</h4>
@@ -214,15 +223,6 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
                 </Col>
 
                 <Col md={6}>
-                    <FormInput
-                        label="Consultor Técnico"
-                        type="select"
-                        name="technical_consultant_id"
-                        containerClass={'mb-3'}
-                        options={technicalConsultants}
-                        {...otherProps}
-                    />
-
                     {/*<FormInput
                         label="Código"
                         type="text"
@@ -270,19 +270,19 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
                             Checklist
                         </Button>
 
-                        <Button className="mb-1" variant="primary" size={'lg'} type="button" onClick={onClickChecklist}>
+                        <Button className="mb-1" disabled={true} variant="primary" size={'lg'} type="button" onClick={() => {}}>
                             Observaçoes
                         </Button>
 
-                        <Button className="mb-1" variant="primary" size={'lg'} type="button" onClick={onClickChecklist}>
+                        <Button className="mb-1" disabled={true} variant="primary" size={'lg'} type="button" onClick={() => {}}>
                             Pre Ordem serviço
                         </Button>
 
-                        <Button className="mb-1" variant="primary" size={'lg'} type="button" onClick={onClickChecklist}>
+                        <Button className="mb-1" disabled={true} variant="primary" size={'lg'} type="button" onClick={() => {}}>
                             Orçamento
                         </Button>
 
-                        <Button className="mb-1" variant="primary" size={'lg'} type="button" onClick={onClickChecklist}>
+                        <Button className="mb-1" disabled={true} variant="primary" size={'lg'} type="button" onClick={() => {}}>
                             Ordem de serviço
                         </Button>
                     </div>

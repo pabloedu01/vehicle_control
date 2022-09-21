@@ -8,6 +8,8 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import {useForm} from "react-hook-form";
 import {FormInput} from "../../components";
+import {processingFiles, validateFileImage} from "../../utils/file";
+import imageDefault from "../../assets/images/features-1.svg";
 
 const api = new APICore();
 
@@ -16,6 +18,8 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     const {id} = useParams();
     const [data, setData] = useState();
     const [visibleOptions, setVisibleOptions] = useState(false);
+    const [visibleImages, setVisibleImages] = useState(false);
+    const [imagePreview, setImagePreview] = useState({});
 
     /*
      * form validation schema
@@ -59,7 +63,8 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
             validation: {
                 type: formData.type,
                 rule: formData.rule,
-                options: formData.type === 'list' ? formData.options.split(',') : []
+                options: formData.type === 'list' ? formData.options.split(',') : [],
+                images: formData.type === 'visualInspection' ? formData.images : null
             },
             preview_data: {
                 value: formData.preview_data_value
@@ -99,12 +104,14 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
         if(id){
             api.get('/checklist-item/' + id).then((response) => {
-                const {name, description, code, active, validation: {type}, validation: {rule}, validation: {options}, preview_data: {value: preview_data_value}} = response.data.data;
+                const {name, description, code, active, validation: {type}, validation: {rule}, validation: {options}, validation: {images}, preview_data: {value: preview_data_value}} = response.data.data;
 
                 onTypeChange(type);
 
+                setImagePreview(images ?? {});
+
                 setData({
-                    name, description, code, active, type, rule, preview_data_value, options
+                    name, description, code, active, type, rule, preview_data_value, options, images
                 });
             },(error) => {
                 setData(defaultData);
@@ -117,6 +124,34 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     const onTypeChange = (value) => {
         setVisibleOptions(value === 'list');
         methods.setValue('options', null);
+
+        setVisibleImages(value === 'visualInspection');
+        methods.setValue('images', {});
+    };
+
+    const onImageChange = (e, position) => {
+        (new Promise((resolve, reject) => {
+            processingFiles([e.target.files[0]],resolve,reject, false, validateFileImage, (e) => {
+                setImagePreview({...imagePreview, [position]: e.target.result});
+            });
+        })).then((file) => {
+            api.uploadFile('/file-upload/image', {image: file}).then((response) => {
+                if(response.data.hasOwnProperty('data') && response.data.data.hasOwnProperty('id')){
+                    methods.setValue('images', {...methods.getValues('images'), [position]: response.data.data.id});
+                    methods.clearErrors('fileImage' + position);
+                }
+            }, (error) => {
+                methods.setError('fileImage' + position, {type: 'custom', message: error.response.status+'<br>'+error.response.data.message });
+                methods.setValue('images', {...methods.getValues('images'), [position]: data?.images[position] ?? null});
+                methods.setValue('fileImage' + position, null);
+                setImagePreview({...data?.images, [position]: data?.images[position] ?? null});
+            });
+        }).catch((error) => {
+            methods.setError('fileImage' + position, {type: 'custom', message: error});
+            methods.setValue('images', {...methods.getValues('images'), [position]: data?.images[position] ?? null});
+            methods.setValue('fileImage' + position, null);
+            setImagePreview({...data?.images, [position]: data?.images[position] ?? null});
+        });
     };
 
     useEffect(() => {
@@ -132,6 +167,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         methods.setValue('rule', data?.rule ?? null);
         methods.setValue('preview_data_value', data?.preview_data_value ?? null);
         methods.setValue('options', data?.options?.toString() ?? null);
+        methods.setValue('images', data?.images ?? {});
     }, [data]);
 
     return (
@@ -195,7 +231,27 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                                             label="O Tipo"
                                             type="select"
                                             name="type"
-                                            options={[{value: 'boolean', label: 'Boolean'}, {value: 'string', label: 'String'}, {value: 'list', label: 'List'}, {value: 'integer', label: 'Integer'}, {value: 'horizontalBar', label: 'Horizontal Bar'}]}
+                                            options={[
+                                                {
+                                                    value: 'boolean',
+                                                    label: 'Boolean'
+                                                }, {
+                                                    value: 'string',
+                                                    label: 'String'
+                                                }, {
+                                                    value: 'list',
+                                                    label: 'List'
+                                                }, {
+                                                    value: 'integer',
+                                                    label: 'Integer'
+                                                }, {
+                                                    value: 'visualInspection',
+                                                    label: 'Inspeção visual'
+                                                }, {
+                                                    value: 'horizontalBar',
+                                                    label: 'Horizontal Bar'
+                                                }
+                                            ]}
                                             placeholder="Digite O Tipo"
                                             containerClass={'mb-3'}
                                             handleChange={onTypeChange}
@@ -210,6 +266,24 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                                             containerClass={'mb-3'}
                                             {...otherProps}
                                         />:null}
+
+                                        {visibleImages ? [1,2,3,4,5].map((position) => (
+                                            <Row key={position}>
+                                                <Col md={8}>
+                                                    <FormInput
+                                                        label={"Imagen " + position}
+                                                        type="file"
+                                                        name={"fileImage" + position}
+                                                        containerClass={'mb-3'}
+                                                        onChange={(e) => {onImageChange(e, position)}}
+                                                        {...otherProps}
+                                                    />
+                                                </Col>
+                                                <Col className="d-flex justify-content-end" md={4}>
+                                                    <img src={imagePreview[position] ?? imageDefault} alt="Preview" width={150}/>
+                                                </Col>
+                                            </Row>
+                                        )):null}
 
                                         <FormInput
                                             label="Regra"

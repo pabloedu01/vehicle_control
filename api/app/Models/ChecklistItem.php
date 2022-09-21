@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Casts\Json;
+use App\Casts\JsonWithFiles;
 
 class ChecklistItem extends Base
 {
@@ -11,7 +12,7 @@ class ChecklistItem extends Base
 
     protected $casts = [
         'active'     => 'boolean',
-        'validation' => Json::class,
+        'validation' => JsonWithFiles::class,
         'preview_data' => Json::class,
     ];
 
