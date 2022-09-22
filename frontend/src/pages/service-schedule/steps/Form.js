@@ -13,7 +13,7 @@ import {getAllOptions} from "../../../utils/selectOptionsForm";
 
 const api = new APICore();
 
-const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleReturnToClientList?:any, handleReturnToClientVehicleList?:any, pushButton?:any}): React$Element<React$FragmentType> => {
+const Form = (props: { company?: any, clientVehicle?: any, client?: any, handleReturnToClientList?: any, handleReturnToClientVehicleList?: any, pushButton?: any }): React$Element<React$FragmentType> => {
     const history = useNavigate();
     const {id} = useParams();
     const [data, setData] = useState();
@@ -37,17 +37,22 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
     /*
      * form methods
      */
-    const methods = useForm({ resolver: schemaResolver, defaultValues: {} });
+    const methods = useForm({
+        resolver: schemaResolver,
+        defaultValues: {}
+    });
 
     const {
         handleSubmit,
         register,
         control,
-        formState: { errors },
+        formState: {errors},
     } = methods;
 
     const otherProps = {
-        register,errors,control
+        register,
+        errors,
+        control
     };
 
     const onSubmit = (formData) => {
@@ -56,9 +61,13 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
         formData.promised_date = moment(formData.promised_date).utc().format('YYYY-MM-DDTHH:mm:00+00:00');
 
         if(id){
-            ajaxCall = api.update('/service-schedule/' + id,Object.assign(formData, {claims_service: []}));
-        } else {
-            ajaxCall = api.post('/service-schedule',Object.assign(formData,{company_id: props.company?.id, claims_service: []}));
+            ajaxCall = api.update('/service-schedule/' + id, Object.assign(formData, {claims_service: []}));
+        }
+        else{
+            ajaxCall = api.post('/service-schedule', Object.assign(formData, {
+                company_id: props.company?.id,
+                claims_service: []
+            }));
         }
 
         ajaxCall.then(() => {
@@ -67,7 +76,10 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
             if(error.response.status === 400 && error.response.data.hasOwnProperty('errors')){
                 for(let fieldName in error.response.data.errors){
                     if(error.response.data.errors.hasOwnProperty(fieldName)){
-                        methods.setError(fieldName, {type: 'custom', message: error.response.data.errors[fieldName].join('<br>')});
+                        methods.setError(fieldName, {
+                            type: 'custom',
+                            message: error.response.data.errors[fieldName].join('<br>')
+                        });
                     }
                 }
             }
@@ -86,15 +98,24 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
         new Promise((resolve) => {
             if(id){
                 api.get('/service-schedule/' + id).then((response) => {
-                    const {client_vehicle: clientVehicle, client_vehicle_id,code,promised_date,client_id,technical_consultant_id, client, technical_consultant: technicalConsultant, vehicle_service: vehicleService} = response.data.data;
+                    const {client_vehicle: clientVehicle, client_vehicle_id, code, promised_date, client_id, technical_consultant_id, client, technical_consultant: technicalConsultant, vehicle_service: vehicleService} = response.data.data;
 
                     resolve({
-                        client_vehicle_id,code,promised_date: promised_date,client_id,technical_consultant_id, technicalConsultant, client, clientVehicle, vehicleService
+                        client_vehicle_id,
+                        code,
+                        promised_date: promised_date,
+                        client_id,
+                        technical_consultant_id,
+                        technicalConsultant,
+                        client,
+                        clientVehicle,
+                        vehicleService
                     });
-                },(error) => {
+                }, (error) => {
                     resolve(defaultData);
                 });
-            } else {
+            }
+            else{
                 resolve(defaultData);
             }
         }).then((data) => {
@@ -106,11 +127,17 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
             }
 
             if(props?.client){
-                Object.assign(data, {client: props?.client, client_id: props?.client?.id});
+                Object.assign(data, {
+                    client: props?.client,
+                    client_id: props?.client?.id
+                });
             }
 
             if(props?.clientVehicle){
-                Object.assign(data, {clientVehicle: props?.clientVehicle, client_vehicle_id: props?.clientVehicle?.id});
+                Object.assign(data, {
+                    clientVehicle: props?.clientVehicle,
+                    client_vehicle_id: props?.clientVehicle?.id
+                });
             }
 
             setData(data);
@@ -118,9 +145,9 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
     };
 
     const getTechnicalConsultants = () => {
-        api.get('/technical-consultant/active-technical-consultants',{company_id: props.company?.id}).then((response) => {
+        api.get('/technical-consultant/active-technical-consultants', {company_id: props.company?.id}).then((response) => {
             setTechnicalConsultants(getAllOptions(response.data.data, data?.technicalConsultant));
-        },(error) => {
+        }, (error) => {
             setTechnicalConsultants([]);
         });
     };
@@ -132,7 +159,7 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
     };
 
     const onPreviousButton = () => {
-      localStorage.setItem('serviceSchedule', JSON.stringify(methods.getValues()));
+        localStorage.setItem('serviceSchedule', JSON.stringify(methods.getValues()));
     };
 
     useEffect(() => {
@@ -172,131 +199,149 @@ const Form = (props: {company?: any, clientVehicle?:any, client?:any, handleRetu
                 <Card>
                     <Card.Body>
                         <form onSubmit={handleSubmit(onSubmit)} noValidate>
-            <Row>
-                <Col md={6}>
-                    <FormInput
-                        label="Data Prometida"
-                        type="datetime-local"
-                        name="promised_date"
-                        placeholder="data prometida"
-                        containerClass={'mb-3'}
-                        {...otherProps}
-                    />
+                            <Row>
+                                <Col md={12}>
+                                    <Row>
+                                        <Col>
+                                            <FormInput
+                                                label="Data Prometida"
+                                                type="datetime-local"
+                                                name="promised_date"
+                                                placeholder="data prometida"
+                                                containerClass={'mb-3'}
+                                                {...otherProps}
+                                            />
+                                        </Col>
+                                        <Col>
+                                            <FormInput
+                                                label="Consultor Técnico"
+                                                type="select"
+                                                name="technical_consultant_id"
+                                                containerClass={'mb-3'}
+                                                options={technicalConsultants}
+                                                {...otherProps}
+                                            />
 
-                    <Card>
-                        <Card.Header>
-                            <h4>Informações do cliente</h4>
-                        </Card.Header>
-                        <Card.Body>
-                            <table>
-                                <tbody>
-                                <tr>
-                                    <td><b>Nome do cliente</b></td>
-                                    <td>{clientInfo?.name}</td>
-                                </tr>
-                                <tr>
-                                    <td><b>Documento</b></td>
-                                    <td>{clientInfo?.document}</td>
-                                </tr>
-                                <tr>
-                                    <td><b>Endereço</b></td>
-                                    <td>{clientInfo?.address}</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </Card.Body>
-                        <Card.Footer className="text-center">
-                            <Button variant="success" type="buttom" onClick={() => {onPreviousButton();props?.handleReturnToClientList(props?.pushButton);}}>
-                                Editar
-                            </Button>
-                        </Card.Footer>
-                    </Card>
+                                        </Col>
+                                    </Row>
+                                </Col>
+                                <Col md={6}>
+                                    <Card>
+                                        <Card.Header>
+                                            <h4>Informações do cliente</h4>
+                                        </Card.Header>
+                                        <Card.Body>
+                                            <table>
+                                                <tbody>
+                                                <tr>
+                                                    <td><b>Nome do cliente</b></td>
+                                                    <td>{clientInfo?.name}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><b>Documento</b></td>
+                                                    <td>{clientInfo?.document}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><b>Endereço</b></td>
+                                                    <td>{clientInfo?.address}</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </Card.Body>
+                                        <Card.Footer className="text-center">
+                                            <Button variant="success" type="buttom" onClick={() => {
+                                                onPreviousButton();
+                                                props?.handleReturnToClientList(props?.pushButton);
+                                            }}>
+                                                Editar
+                                            </Button>
+                                        </Card.Footer>
+                                    </Card>
+                                </Col>
 
-                    <div className={classNames({'d-grid': id, 'd-none': !id})}>
-                        <Button className="mb-1" variant="primary" size={'lg'} type="button" onClick={onClickChecklist}>
-                            Pre Ordem serviço
-                        </Button>
-
-                        <Button className="mb-1" variant="primary" size={'lg'} type="button" onClick={onClickChecklist}>
-                            Orçamento
-                        </Button>
-
-                        <Button className="mb-1" variant="primary" size={'lg'} type="button" onClick={onClickChecklist}>
-                            Ordem de serviço
-                        </Button>
-                    </div>
-                </Col>
-
-                <Col md={6}>
-                    <FormInput
-                        label="Consultor Técnico"
-                        type="select"
-                        name="technical_consultant_id"
-                        containerClass={'mb-3'}
-                        options={technicalConsultants}
-                        {...otherProps}
-                    />
-
-                    <FormInput
+                                <Col md={6}>
+                                    {/*<FormInput
                         label="Código"
                         type="text"
                         name="code"
                         placeholder="Digite Código"
                         containerClass={'mb-3'}
                         {...otherProps}
-                    />
+                    />*/}
 
-                    <Card>
-                        <Card.Header>
-                            <h4>Informações do veículo</h4>
-                        </Card.Header>
-                        <Card.Body>
-                            <table>
-                                <tbody>
-                                <tr>
-                                    <td><b>Marca</b></td>
-                                    <td>{clientVehicleInfo?.vehicle.model.brand.name}</td>
-                                </tr>
-                                <tr>
-                                    <td><b>Modelo</b></td>
-                                    <td>{clientVehicleInfo?.vehicle.model.name}</td>
-                                </tr>
-                                <tr>
-                                    <td><b>Placa</b></td>
-                                    <td>{clientVehicleInfo?.plate}</td>
-                                </tr>
-                                <tr>
-                                    <td><b>Chassi</b></td>
-                                    <td>{clientVehicleInfo?.chasis}</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </Card.Body>
-                        <Card.Footer className="text-center">
-                            <Button variant="success" type="button" onClick={() => {onPreviousButton();props?.handleReturnToClientVehicleList(props?.pushButton);}}>
-                                Editar
-                            </Button>
-                        </Card.Footer>
-                    </Card>
+                                    <Card>
+                                        <Card.Header>
+                                            <h4>Informações do veículo</h4>
+                                        </Card.Header>
+                                        <Card.Body>
+                                            <table>
+                                                <tbody>
+                                                <tr>
+                                                    <td><b>Marca</b></td>
+                                                    <td>{clientVehicleInfo?.vehicle.model.brand.name}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><b>Modelo</b></td>
+                                                    <td>{clientVehicleInfo?.vehicle.model.name}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><b>Placa</b></td>
+                                                    <td>{clientVehicleInfo?.plate}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><b>Chassi</b></td>
+                                                    <td>{clientVehicleInfo?.chasis}</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </Card.Body>
+                                        <Card.Footer className="text-center">
+                                            <Button variant="success" type="button" onClick={() => {
+                                                onPreviousButton();
+                                                props?.handleReturnToClientVehicleList(props?.pushButton);
+                                            }}>
+                                                Editar
+                                            </Button>
+                                        </Card.Footer>
+                                    </Card>
 
-                    <div className={classNames({'d-grid': id, 'd-none': !id})}>
-                        <Button className="mb-1" variant="primary" size={'lg'} type="button" onClick={onClickChecklist}>
-                            Checklist
-                        </Button>
+                                    <div className={classNames({
+                                        'd-grid': id,
+                                        'd-none': !id
+                                    })}>
+                                        <Button className="mb-1" variant="primary" size={'lg'} type="button" onClick={onClickChecklist}>
+                                            Checklist
+                                        </Button>
 
-                        <Button className="mb-1" variant="primary" size={'lg'} type="button" onClick={onClickChecklist}>
-                            Observaçoes
-                        </Button>
-                    </div>
-                </Col>
-            </Row>
+                                        <Button className="mb-1" disabled={true} variant="primary" size={'lg'} type="button" onClick={() => {
+                                        }}>
+                                            Observaçoes
+                                        </Button>
 
-            <div className="mt-3 mb-3 mb-0">
-                <Button variant="primary" type="submit">
-                    Salvar
-                </Button>
-            </div>
-        </form>
+                                        <Button className="mb-1" disabled={true} variant="primary" size={'lg'} type="button" onClick={() => {
+                                        }}>
+                                            Pre Ordem serviço
+                                        </Button>
+
+                                        <Button className="mb-1" disabled={true} variant="primary" size={'lg'} type="button" onClick={() => {
+                                        }}>
+                                            Orçamento
+                                        </Button>
+
+                                        <Button className="mb-1" disabled={true} variant="primary" size={'lg'} type="button" onClick={() => {
+                                        }}>
+                                            Ordem de serviço
+                                        </Button>
+                                    </div>
+                                </Col>
+                            </Row>
+
+                            <div className="mt-3 mb-3 mb-0">
+                                <Button variant="primary" type="submit">
+                                    Salvar
+                                </Button>
+                            </div>
+                        </form>
                     </Card.Body>
                 </Card>
             </Col>

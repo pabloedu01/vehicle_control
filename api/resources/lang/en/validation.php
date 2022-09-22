@@ -125,7 +125,9 @@ return [
     'url' => 'The :attribute must be a valid URL.',
     'uuid' => 'The :attribute must be a valid UUID.',
     'cpf' => 'The :attribute must be a valid CPF.',
+    'phone' => 'The :attribute must be a valid Phone.',
     'cnpj' => 'The :attribute must be a valid CNPJ.',
+    'document' => 'The :attribute must be a valid CNPJ or CPF.',
     'serviceClaimsOfServiceSchedule' => 'The :attribute contains wrong information.',
     'passwordFormat' => 'The :attribute must be a valid Password (letters and numbers).',
     /*

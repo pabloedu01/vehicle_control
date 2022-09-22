@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Casts\TemporalFile;
 use App\Rules\CNPJ;
 use App\Rules\CPF;
+use App\Rules\InternacionalPhone;
 
 class Company extends Base
 {
@@ -24,7 +25,12 @@ class Company extends Base
         'address_1',
         'address_2',
         'integration_code',
-        'image'
+        'image',
+        'corporate_name',
+        'address',
+        'phone',
+        'postal_code',
+        'email',
     ];
 
     protected $changingColumns = [
@@ -43,7 +49,13 @@ class Company extends Base
             'address_1'        => 'nullable|string',
             'address_2'        => 'nullable|string',
             'integration_code' => 'nullable|string',
-            'image' => ['nullable', new \App\Rules\TemporalFile]
+            'image'            => [ 'nullable', new \App\Rules\TemporalFile ],
+
+            'corporate_name' => 'nullable|string',
+            'address'        => 'nullable|string',
+            'phone'          => [ 'nullable', new InternacionalPhone ],
+            'postal_code'    => 'nullable|string',
+            'email'          => 'nullable|email',
         ];
     }
 

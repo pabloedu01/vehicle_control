@@ -24,8 +24,9 @@ const Form = (props: {company?: any, client?: any, isTag?: boolean, previousButt
         yup.object().shape({
             name: yup.string().nullable().required('Informe o nome do cliente'),
             active: yup.boolean(),
-            document: yup.string().nullable().required('Informe o CPF ou CNPJ do cliente'),
-            email: yup.string().email('Email Inválido').nullable(),
+            document: yup.string().required('Informe o CPF ou CNPJ do cliente'),
+            email: yup.string().nullable(),
+            phone: yup.string().nullable(),
             address: yup.string().nullable(),
         })
     );
@@ -48,6 +49,9 @@ const Form = (props: {company?: any, client?: any, isTag?: boolean, previousButt
 
     const onSubmit = (formData) => {
         let ajaxCall;
+
+        formData.phone = formData.phone ? formData.phone.replace(/\s/g, '').split(',').filter((value) => value.length > 0) : null;
+        formData.email = formData.email ? formData.email.replace(/\s/g, '').split(',').filter((value) => value.length > 0) : null;
 
         if(props?.client || id){
             ajaxCall = api.update('/client/' + (props?.client?.id || id),formData);
@@ -78,25 +82,26 @@ const Form = (props: {company?: any, client?: any, isTag?: boolean, previousButt
             active: true,
             document: null,
             address: null,
-            email: null
+            email: null,
+            phone: null
         };
 
         if(props?.isTag !== true && id){
             api.get('/client/' + id).then((response) => {
-                const {name,active,document,address,email} = response.data.data;
+                const {name,active,document,address,email, phone} = response.data.data;
 
                 setData({
-                    name,active,document,address,email
+                    name,active,document,address,email: email ? email.join(', ') : null,phone: phone ? phone.join(', ') : null
                 });
             },(error) => {
                 setData(defaultData);
             });
         } else {
             if(props?.client){
-                const {name,active,document,address, email} = props?.client;
+                const {name,active,document,address, email, phone} = props?.client;
 
                 setData({
-                    name,active,document,address, email
+                    name,active,document,address,email: email ? email.join(', ') : null,phone: phone ? phone.join(', ') : null
                 });
             } else {
                 setData(defaultData);
@@ -114,6 +119,7 @@ const Form = (props: {company?: any, client?: any, isTag?: boolean, previousButt
         methods.setValue('document', data?.document ?? null);
         methods.setValue('address', data?.address ?? null);
         methods.setValue('email', data?.email ?? null);
+        methods.setValue('phone', data?.phone ?? null);
     }, [data]);
 
     return (
@@ -170,6 +176,15 @@ const Form = (props: {company?: any, client?: any, isTag?: boolean, previousButt
                                             type="email"
                                             name="email"
                                             placeholder="Digite Email"
+                                            containerClass={'mb-3'}
+                                            {...otherProps}
+                                        />
+
+                                        <FormInput
+                                            label="Phone"
+                                            type="phone"
+                                            name="phone"
+                                            placeholder="Digite Phone"
                                             containerClass={'mb-3'}
                                             {...otherProps}
                                         />
