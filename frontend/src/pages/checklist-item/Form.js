@@ -122,7 +122,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     };
 
     const onTypeChange = (value) => {
-        setVisibleOptions(value === 'list');
+        setVisibleOptions(value === 'list' || value === 'visualInspection');
         methods.setValue('options', null);
 
         setVisibleImages(value === 'visualInspection');
@@ -267,20 +267,20 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                                             {...otherProps}
                                         />:null}
 
-                                        {visibleImages ? [1,2,3,4,5].map((position) => (
-                                            <Row key={position}>
+                                        {visibleImages ? ['Frente','Lateral esquerda','Lateral direita', 'Traseira', 'Teto'].map((position, index) => (
+                                            <Row key={(index + 1)}>
                                                 <Col md={8}>
                                                     <FormInput
                                                         label={"Imagen " + position}
                                                         type="file"
-                                                        name={"fileImage" + position}
+                                                        name={"fileImage" + (index + 1) }
                                                         containerClass={'mb-3'}
-                                                        onChange={(e) => {onImageChange(e, position)}}
+                                                        onChange={(e) => {onImageChange(e, (index + 1))}}
                                                         {...otherProps}
                                                     />
                                                 </Col>
                                                 <Col className="d-flex justify-content-end" md={4}>
-                                                    <img src={imagePreview[position] ?? imageDefault} alt="Preview" width={150}/>
+                                                    <img src={imagePreview[(index + 1)] ?? imageDefault} alt="Preview" width={150}/>
                                                 </Col>
                                             </Row>
                                         )):null}

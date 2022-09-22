@@ -30,19 +30,6 @@ class VehicleServiceController extends Controller
         );
     }
 
-    public function reports(Request $request, $id)
-    {
-        $reports = ChecklistReport::where('vehicle_service_id', '=', $id)
-                                         ->get();
-
-        return response()->json([
-                                    'msg'  => trans('general.msg.success'),
-                                    'data' => $reports,
-                                ],
-                                Response::HTTP_OK
-        );
-    }
-
     public function show(Request $request, $id)
     {
         $vehicleService = VehicleService::with(array_merge(self::$with, ['stages.items','items' => function($query){return $query->withTrashed();}]))
@@ -124,6 +111,61 @@ class VehicleServiceController extends Controller
                                     Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
+    }
+
+    public function duplicate(Request $request, $id)
+    {
+        $vehicleService = VehicleService::withoutGlobalScope('joinToData')
+                                        ->where('id', '=', $id)
+                                        ->first();
+
+        $newVehicleService = new VehicleService(array_merge($vehicleService->only(VehicleService::getFillables()),['completed' => false]));
+
+        if(secureSave($newVehicleService)){
+            $newVehicleService->clientData()
+                           ->create($vehicleService->clientData->only(ClientData::getFillables()));
+
+            $newVehicleService->technicalConsultantData()
+                              ->create($vehicleService->technicalConsultantData->only(TechnicalConsultantData::getFillables()));
+
+            $newVehicleService->vehicleData()
+                              ->create($vehicleService->vehicleData->only(VehicleData::getFillables()));
+
+            $newVehicleService->items()->sync($vehicleService->items->keyBy('id')->map(function($item){
+                return [ 'value' => $item->pivot->value, 'evidence' => $item->pivot->evidence, 'observations' => $item->pivot->observations ];
+            })->toArray());
+
+            $newVehicleService->stages()->sync($vehicleService->stages->keyBy('id')->map(function(){
+                return [
+                    'client_signature' => null,
+                    'technical_consultant_signature' => null,
+                    'client_signature_date' => null,
+                    'technical_consultant_signature_date' => null,
+                    'completed' => false,
+                    'processed' => false
+                ];
+            })->toArray());
+
+            #se vuelve a solicitar el vehicle, para que venga con el global scope integrado
+            $newVehicleService = VehicleService::with(array_merge(self::$with, ['stages', 'stages.items','items']))->find($newVehicleService->id);
+
+            return response()->json([
+                                        'msg' => trans('general.msg.success'),
+                                        'data' => $newVehicleService,
+                                    ],
+                                    Response::HTTP_CREATED
+            );
+        }
+        else
+        {
+            return response()->json([
+                                        'msg' => trans('general.msg.error'),
+                                    ],
+                                    Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+
+        dd($vehicleService->toArray(), $newVehicleService->toArray());
     }
 
     public function update(VehicleServiceRequest $request, $id)

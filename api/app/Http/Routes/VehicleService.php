@@ -26,12 +26,8 @@ Route::group([
             'uses' => 'VehicleServiceController@show',
         ]);
 
-        Route::get('{id}/reports', [
-            'uses' => 'VehicleServiceController@reports',
-        ]);
-
-        Route::post('{id}/complete', [
-            'uses' => 'VehicleServiceController@complete',
+        Route::post('{id}/duplicate', [
+            'uses' => 'VehicleServiceController@duplicate',
         ]);
 
         Route::put('{id}', [

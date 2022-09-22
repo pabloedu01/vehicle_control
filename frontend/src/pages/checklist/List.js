@@ -91,53 +91,39 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
         history(`/panel/company/${props.company?.id}/${type}/${id}/checklist/${vehicleServiceId}`);
     };
 
-    const onComplete = (vehicleServiceId, rowData) => {
+    const onDuplicate = (vehicleServiceId, rowData) => {
         swal({
             title: '¿tem certeza?',
-            text: 'Irá completar este registro',
+            text: 'Irá duplicar este checklist',
             icon: 'warning',
             buttons: {
                 cancel: 'Cancelar',
                 confirm: {
-                    text: 'Completar',
+                    text: 'Duplicar',
                     value: 'confirm'
                 }
             },
             dangerMode: true,
         }).then((confirm) => {
             if(confirm){
-                api.post('/vehicle-service/' + vehicleServiceId + '/complete').then((response) => {
-                    getList();
-                }, () => {
+                api.post('/vehicle-service/' + vehicleServiceId + '/duplicate').then((response) => {
+                    swal({
+                        title: 'Duplicado',
+                        text: 'Checklist Duplicado',
+                        icon: 'success',
+                        buttons: {
+                            confirm: {
+                                text: 'Ok',
+                                value: 'confirm'
+                            }
+                        },
+                    });
+                },(error) => {
 
                 });
             }
         });
     };
-
-    /*const onDelete = (registerId, newList) => {
-        swal({
-            title: '¿tem certeza?',
-            text: 'Irá excluir este registro',
-            icon: 'warning',
-            buttons: {
-                cancel: 'Cancelar',
-                confirm: {
-                    text: 'Excluir',
-                    value: 'confirm'
-                }
-            },
-            dangerMode: true,
-        }).then((confirm) => {
-            if(confirm){
-                api.delete('/vehicle-service/' + registerId).then((response) => {
-                    setList(newList);
-                }, () => {
-
-                });
-            }
-        });
-    };*/
 
     const onShowModal = () => {
         setShowModal(true);
@@ -204,7 +190,13 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                                 icon: 'mdi mdi-eye-outline',
                                 label: 'Visualizar',
                                 action: onShow
-                            }
+                            },
+                            {
+                                key: 'duplicate',
+                                icon: 'mdi mdi-clipboard',
+                                label: 'Duplicar',
+                                action: onDuplicate
+                            },
                         ]}/>
                     )
                 },
