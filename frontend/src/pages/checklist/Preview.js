@@ -1,10 +1,14 @@
 // @flow
 import React, { useEffect, useState } from 'react';
 import PageTitle from '../../components/PageTitle';
-import { Card, Col, Row, Badge, Modal, ListGroup } from 'react-bootstrap';
+import { Card, Col, Row, Badge, Modal, ListGroup} from 'react-bootstrap';
 import { APICore } from '../../helpers/api/apiCore';
 import { useNavigate, useParams } from 'react-router-dom';
 import moment from 'moment';
+
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
+import "./style.css";
 
 const api = new APICore();
 
@@ -19,7 +23,11 @@ const Preview = (props: { company?: any }): React$Element<React$FragmentType> =>
     const [showModalImagePreview, setShowModalImagePreview] = useState(false);
     const [showModalGallery, setShowModalGallery] = useState(false);
     const [previewImage, setPreviewImage] = useState(null);
-
+    const renderTooltip = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+          props.text
+        </Tooltip>
+      );
     const getData = () => {
         if (id) {
             let ajaxCall;
@@ -116,6 +124,35 @@ const Preview = (props: { company?: any }): React$Element<React$FragmentType> =>
         width: '100%',
         backgroundColor: 'rgba(0,0,0,.2)',
     };
+    
+    const [isMobile, setIsMobile] = useState(false)
+ 
+    //choose the screen size 
+    const handleResize = () => {
+      if (window.innerWidth < 720) {
+          setIsMobile(true)
+      } else {
+          setIsMobile(false)
+      }
+    }
+    
+    // create an event listener
+    useEffect(() => {
+      window.addEventListener("resize", handleResize)
+    })
+
+    function checkMobile(value) {
+        let val = limit(value,10)
+        if (isMobile) {
+            return val
+        } else {
+            return value
+        }
+    }
+    function limit(text, count){
+        return text.slice(0, count) + (text.length > count ? "..." : "");
+    }
+
     return (
         <>
             <Modal show={showModalGallery} onHide={ () => { setShowModalGallery(false);setEvidences([]); } } size="lg" scrollable={true} centered={true}>
@@ -158,17 +195,23 @@ const Preview = (props: { company?: any }): React$Element<React$FragmentType> =>
                                 <Col lg={12}>
                                     <Card style={{ width: '100%' }}>
                                         <Card.Header>
-                                            <Row>
-                                                <Col lg={4} sm={4} md={4} xs={3}>
-                                                    <img src={props?.company?.image} style={{ height: '3rem' }} />
+                                            <Row >
+                                                <Col lg={4} sm={4} md={4} xs={4}>
+                                                <div className='cabecalho'>
+                                                        <div className='center'>
+                                                        <img src={props?.company?.image} style={{ height: '3rem' }} />
+                                                        </div>
+                                                    </div>
                                                 </Col>
-                                                <Col lg={5} sm={5} md={5} xs={5} >
-                                                    <h1>{props?.company?.name}</h1>
+                                                <Col lg={8} sm={8} md={8} xs={8} >
+                                                    <div className='cabecalho'>
+                                                        <div className='center'>
+                                                        <h2><b>{props?.company?.name}</b></h2>
+                                                        </div>
+                                                    </div>
+                                                        
                                                 </Col>
-                                                <Col lg={3} sm={3} md={3} xs={4}>
-                                                    <h6 className="font-14">Checklist:</h6>
-                                                    <p className="text-sm lh-150">Nº#{vehicleService?.id}</p>
-                                                </Col>
+                                              
                                             </Row>
                                         </Card.Header>
                                         <ListGroup variant="flush">
@@ -290,12 +333,12 @@ const Preview = (props: { company?: any }): React$Element<React$FragmentType> =>
                                   
                                                 
                                                 <Row>
-                                                    <Col lg={6}>
+                                                    <Col lg={4}>
                                                         <p>
                                                         <b>Consultor</b>: {data?.technicalConsultant?.name}
                                                         </p>
                                                     </Col>
-                                                    <Col lg={6}>
+                                                    <Col lg={4}>
                                                         <p>
                                                         <b>Data da vistoria:</b>{' '}
                                                 {moment(data?.serviceSchedule?.promised_date).format(
@@ -303,6 +346,10 @@ const Preview = (props: { company?: any }): React$Element<React$FragmentType> =>
                                                 )}
                                                         </p>
                                                     </Col>
+                                                    <Col lg={4}>
+                                                    <p> <b>Checklist Nº </b>: {vehicleService?.id}</p>
+                                                    </Col>
+                                                    
                                                 </Row>
                                                
                                             </ListGroup.Item>
@@ -327,8 +374,8 @@ const Preview = (props: { company?: any }): React$Element<React$FragmentType> =>
                                                     </th>
                                                 </tr>
                                                 <tr>
-                                                    <th width="40%">Item</th>
-                                                    <th width="10%">Imagem ?</th>
+                                                    <th width="38%">Item</th>
+                                                    <th width="12%">Imagem ?</th>
                                                     <th width="20%">Resposta</th>
                                                     <th width="30%">Comentário</th>
                                                 </tr>
@@ -362,7 +409,23 @@ const Preview = (props: { company?: any }): React$Element<React$FragmentType> =>
                                                                 checklistData[checklistItem.id]?.value
                                                             )}
                                                         </td>
-                                                        <td>{checklistData[checklistItem.id]?.observations}</td>
+                                                        <td>
+                                                            {checklistData[checklistItem.id]?.observations ? (
+                                                                    <OverlayTrigger
+                                                                    placement="top"
+                                                                    delay={{ show: 10, hide: 300 }}
+                                                                    overlay={
+                                                                    <Tooltip id="button-tooltip">
+                                                                    {checklistData[checklistItem.id]?.observations}
+                                                                  </Tooltip>}
+                                                                  >
+                                                                   <p>{checkMobile(checklistData[checklistItem.id]?.observations)}</p>
+                                                                  </OverlayTrigger>
+                                                                //    checklistData[checklistItem.id]?.observations
+                                                            )
+                                                                :null}
+                                                       
+                                                         </td>
                                                     </tr>
                                                 ))}
                                             </tbody>
