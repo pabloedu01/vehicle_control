@@ -157,10 +157,10 @@ const Preview = (props: { company?: any }): React$Element<React$FragmentType> =>
                                     <Card style={{ width: '100%' }}>
                                         <Card.Header>
                                             <Row>
-                                                <Col lg={4} sm={4} md={4} xs={3} style={{borderRight:'1px solid #D3D3D3'}}>
+                                                <Col lg={4} sm={4} md={4} xs={3}>
                                                     <img src={props?.company?.image} style={{ height: '3rem' }} />
                                                 </Col>
-                                                <Col lg={5} sm={5} md={5} xs={5} style={{borderRight:'1px solid #D3D3D3'}}>
+                                                <Col lg={5} sm={5} md={5} xs={5} >
                                                     <h1>{props?.company?.name}</h1>
                                                 </Col>
                                                 <Col lg={3} sm={3} md={3} xs={4}>
