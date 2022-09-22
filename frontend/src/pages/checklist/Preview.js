@@ -32,6 +32,8 @@ const Preview = (props: { company?: any }): React$Element<React$FragmentType> =>
 
             ajaxCall.then(
                 (response) => {
+                    console.log(props?.company);
+                    console.log(response);
                     switch (type) {
                         case 'service-schedules':
                             let data;
@@ -153,19 +155,19 @@ const Preview = (props: { company?: any }): React$Element<React$FragmentType> =>
                     <Card>
                         <Card.Body>
                             <Row>
-                                <Col lg={6}>
+                                <Col lg={12}>
                                     <Card style={{ width: '100%' }}>
                                         <Card.Header>
                                             <Row>
-                                                <Col lg={4}>
-                                                    <img src={props?.company?.image} style={{ height: '100px' }} />
+                                                <Col lg={4} sm={4} md={4} xs={3}>
+                                                    <img src={props?.company?.image} style={{ height: '3rem' }} />
                                                 </Col>
-                                                <Col lg={5}>
+                                                <Col lg={5} sm={5} md={5} xs={5} >
                                                     <h1>{props?.company?.name}</h1>
                                                 </Col>
-                                                <Col lg={3}>
-                                                    <h6 className="font-14">Número do checklist:</h6>
-                                                    <p className="text-sm lh-150">{vehicleService?.id}</p>
+                                                <Col lg={3} sm={3} md={3} xs={4}>
+                                                    <h6 className="font-14">Checklist:</h6>
+                                                    <p className="text-sm lh-150">Nº#{vehicleService?.id}</p>
                                                 </Col>
                                             </Row>
                                         </Card.Header>
@@ -215,20 +217,27 @@ const Preview = (props: { company?: any }): React$Element<React$FragmentType> =>
                                         <ListGroup variant="flush">
                                             <ListGroup.Item>
                                                 <p>
-                                                    <b>Nome:</b> Pablo Eduardo
+                                                    <b>Nome:</b>  {data?.client?.name}
                                                 </p>
                                                 <p>
-                                                    <b> CPF:</b> 000.000.000-00{' '}
+                                                    <b> CPF:</b> {data?.client?.document}{' '}
                                                 </p>
                                                 <Row>
                                                     <Col lg={6}>
                                                         <p>
-                                                            <b> Telefone: </b>+55(11)333333333{' '}
+                                                            <b> Telefone: </b>
+                                                           {data?.client?.phone.map((phone)=> (
+                                                           <p>{phone}</p> 
+                                                           ))} 
+                                                            
                                                         </p>
                                                     </Col>
                                                     <Col lg={6}>
                                                         <p>
-                                                            <b> Email::</b> tunap@tunap.com{' '}
+                                                            <b> Email::</b> 
+                                                            {data?.client?.email.map((email)=> (
+                                                           <p>{email}</p> 
+                                                           ))} 
                                                         </p>
                                                     </Col>
                                                 </Row>
