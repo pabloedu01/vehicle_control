@@ -32,6 +32,8 @@ const Preview = (props: { company?: any }): React$Element<React$FragmentType> =>
 
             ajaxCall.then(
                 (response) => {
+                    console.log(props?.company);
+                    console.log(response);
                     switch (type) {
                         case 'service-schedules':
                             let data;
@@ -215,20 +217,27 @@ const Preview = (props: { company?: any }): React$Element<React$FragmentType> =>
                                         <ListGroup variant="flush">
                                             <ListGroup.Item>
                                                 <p>
-                                                    <b>Nome:</b> Pablo Eduardo
+                                                    <b>Nome:</b>  {data?.client?.name}
                                                 </p>
                                                 <p>
-                                                    <b> CPF:</b> 000.000.000-00{' '}
+                                                    <b> CPF:</b> {data?.client?.document}{' '}
                                                 </p>
                                                 <Row>
                                                     <Col lg={6}>
                                                         <p>
-                                                            <b> Telefone: </b>+55(11)333333333{' '}
+                                                            <b> Telefone: </b>
+                                                           {data?.client?.phone.map((phone)=> (
+                                                           <p>{phone}</p> 
+                                                           ))} 
+                                                            
                                                         </p>
                                                     </Col>
                                                     <Col lg={6}>
                                                         <p>
-                                                            <b> Email::</b> tunap@tunap.com{' '}
+                                                            <b> Email::</b> 
+                                                            {data?.client?.email.map((email)=> (
+                                                           <p>{email}</p> 
+                                                           ))} 
                                                         </p>
                                                     </Col>
                                                 </Row>
