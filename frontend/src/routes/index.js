@@ -105,7 +105,7 @@ const Starter = React.lazy(() => import('../pages/other/Starter'));
 const loading = () => <div className=""></div>;
 const api = new APICore();
 
-const Poc = React.lazy(() => import('../pages/checklist-image/Poc'));
+// const Poc = React.lazy(() => import('../pages/checklist-image/Poc'));
 
 
 const LoadComponent = ({ component: Component }) => {
@@ -205,7 +205,7 @@ const AllRoutes = () => {
             path: 'panel',
             element: <PrivateRoute roles={'Admin'} component={FullLayout} />,
             children: [
-                { path: 'poc', element: <LoadComponent component={Poc} /> },
+                // { path: 'poc', element: <LoadComponent component={Poc} /> },
 
                 { path: 'companies', element: <LoadComponent component={Companies} /> },
                 {
