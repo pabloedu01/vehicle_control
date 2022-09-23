@@ -199,7 +199,7 @@ const Preview = (props: { company?: any }): React$Element<React$FragmentType> =>
                                                 <Col lg={4} sm={4} md={4} xs={4}>
                                                 <div className='cabecalho'>
                                                         <div className='center'>
-                                                        <img src={props?.company?.image} style={{ height: '3rem' }} />
+                                                        <img src={props?.company?.image} style={{ height: '4rem' }} />
                                                         </div>
                                                     </div>
                                                 </Col>
