@@ -145,7 +145,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
 
         setTableFields([
             {
-                label: 'id',
+                label: 'Código',
                 name: 'id',
                 options: {
                     filter: true,
@@ -161,7 +161,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                 },
             },
             {
-                label: 'Versión',
+                label: 'Versão',
                 name: 'version',
                 options: {
                     filter: true,

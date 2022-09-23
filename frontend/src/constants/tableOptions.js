@@ -5,6 +5,11 @@ const TABLE_OPTIONS = {
     responsive: 'vertical',
     tableBodyHeight: 'calc(45vh)',
     searchText: '',
+    textLabels: {
+        body: {
+            noMatch: 'Não existe nenhum checklist criado',
+        }
+    },
     sizePerPageList:[
         {
             text: '5',
