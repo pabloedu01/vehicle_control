@@ -56,7 +56,15 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
     const [clientSignature, setClientSignature] = useState(null);
     const [technicalConsultantSignature, setTechnicalConsultantSignature] = useState(null);
 
-  
+    const getChecklistItemValueById = (id) => {
+        const item = checklistItems.find((item) => item.id === id);
+
+        function getValue(type, value){
+            return type !== 'boolean' ? (value !== '' ? value : null) : (value ?? false);
+        }
+
+        return item ? getValue(item.validation.type, checklistData[item.id]) : null;
+    };
 
     const getChecklistItemValue = (code) => {
         const item = checklistItems.find((item) => item.code === code);
@@ -73,7 +81,7 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
 
         return {
             id,
-            value: getChecklistItemValue(item.code),
+            value: getChecklistItemValueById(item.id),
             observations: observationsData.hasOwnProperty(id) && observationsData[id] !== '' ? observationsData[id] : null,
             evidence: evidences.hasOwnProperty(id) && evidences[id] !== null && evidences[id].length > 0 ? evidences[id].map((file) => typeof file === 'string' ? file : file?.id) : null,
         }
