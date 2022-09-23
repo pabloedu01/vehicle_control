@@ -27,6 +27,17 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
             Header: 'id',
             accessor: 'id',
             sort: true,
+            display: false,
+        },
+        {
+            Header: 'Placa',
+            accessor: 'plate',
+            sort: false,
+        },
+        {
+            Header: 'Chasis',
+            accessor: 'chasis',
+            sort: false,
         },
         {
             Header: 'Nome',
@@ -36,16 +47,6 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
         {
             Header: 'Vehiculo',
             accessor: 'vehicle',
-            sort: false,
-        },
-        {
-            Header: 'Chasis',
-            accessor: 'chasis',
-            sort: false,
-        },
-        {
-            Header: 'Placa',
-            accessor: 'plate',
             sort: false,
         },
         {
@@ -83,14 +84,16 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
         api.get('/service-schedule', Object.assign({company_id: props.company?.id}, filter ? filter : {})).then((response) => {
             setSearchType(null);setSearch(null);
 
+            console.log(response.data.data);
             setList(response.data.data.map((item) => {
                 return {
                     id: item.id,
+                    name: item.client_vehicle.vehicle.model.name,
                     vehicle: item.client_vehicle.name,
                     chasis: item.client_vehicle.chasis,
                     plate: item.client_vehicle.plate,
                     promised_date: moment(item.promised_date).utc(true).format('DD/MM/YYYY HH:mm'),
-                    client: item.client?.name,
+                    client: item.client.name,
                     technical_consultant: item.technical_consultant?.name,
                     checklist_version_id: item.checklist_version_id,
                     actions: <div>

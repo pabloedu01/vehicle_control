@@ -18,3 +18,18 @@ div.scrollmenu {
   div.scrollmenu::-webkit-scrollbar {
   display:none;
 }
+
+.cabecalho { 
+  height: 100px;
+  width: 100%;
+  position: relative;
+}
+
+.center {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
