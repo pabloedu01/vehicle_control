@@ -127,6 +127,23 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                             setVehicleService(null);
                         }
 
+                        if(!data?.technicalConsultant){
+                            swal({
+                                title: 'Error',
+                                text: 'No existe el consultor.',
+                                icon: 'error',
+                                buttons: {
+                                    confirm: {
+                                        text: 'Ok',
+                                        value: 'confirm'
+                                    }
+                                },
+                                dangerMode: true,
+                            }).then(() => {
+                                history(`/panel/company/${props.company?.id}/service-schedules/${id}/edit`);
+                            });
+                        }
+
                         setData(data);
                         break;
                     default:
