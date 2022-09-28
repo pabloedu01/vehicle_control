@@ -268,7 +268,8 @@ const Preview = (props: { company?: any, invite?: any }): React$Element<React$Fr
                                                     <Col lg={6}>
                                                         <p>
                                                             <b> Telefone: </b>
-                                                           {((data?.client?.phone || [])).map((phone)=> (
+                                                           {data?.client?.phone &&
+                                                           data?.client?.phone.map((phone)=> (
                                                            <p>{phone}</p> 
                                                            ))} 
                                                             
@@ -277,7 +278,8 @@ const Preview = (props: { company?: any, invite?: any }): React$Element<React$Fr
                                                     <Col lg={6}>
                                                         <p>
                                                             <b> Email::</b> 
-                                                            {((data?.client?.email || [])).map((email)=> (
+                                                            {data?.client?.email ??
+                                                            data?.client?.email.map((email)=> (
                                                            <p>{email}</p> 
                                                            ))} 
                                                         </p>
