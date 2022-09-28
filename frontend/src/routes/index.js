@@ -12,6 +12,8 @@ import DetachedLayout from '../layouts/Detached';
 import HorizontalLayout from '../layouts/Horizontal';
 import FullLayout from '../layouts/Full';
 import {APICore} from "../helpers/api/apiCore";
+import InviteRoute from "./InviteRoute";
+import InviteLayout from "../layouts/Invite";
 
 // lazy load all the views
 
@@ -108,7 +110,7 @@ const api = new APICore();
 // const Poc = React.lazy(() => import('../pages/checklist-image/Poc'));
 
 
-const LoadComponent = ({ component: Component }) => {
+const LoadComponent = ({ component: Component, invite }) => {
     const history = useNavigate();
     const {companyId} = useParams();
     const [company, setCompany] = useState({id: companyId});
@@ -136,12 +138,14 @@ const LoadComponent = ({ component: Component }) => {
     }, []);
 
     useEffect(() => {
-        getCompany(companyId);
+        if(invite !== true){
+            getCompany(companyId);
+        }
     }, [companyId]);
 
     return (
         <Suspense fallback={loading()}>
-            <Component user={user} company={company}/>
+            <Component user={user} invite={invite} company={company}/>
         </Suspense>
     );
 };
@@ -245,6 +249,20 @@ const AllRoutes = () => {
                             element: <LoadComponent component={ChecklistVersionReport} />,
                         },
                     ]
+                },
+            ]
+        },
+        {
+            path: 'invite/company/:companyId',
+            element: <InviteRoute roles={'Admin'} component={InviteLayout}/>,
+            children: [
+                {
+                    path: 'dashboard',
+                    element: <LoadComponent invite={true} component={CRMDashboard}/>,
+                },
+                {
+                    path: ':type/:id/checklist/:checklistId/token/:token',
+                    element: <LoadComponent invite={true} component={ChecklistPreview} />,
                 },
             ]
         },

@@ -30,6 +30,10 @@ Route::group([
             'uses' => 'VehicleServiceController@duplicate',
         ]);
 
+        Route::post('{id}/generate-token', [
+            'uses' => 'VehicleServiceController@generateToken',
+        ]);
+
         Route::put('{id}', [
             'uses' => 'VehicleServiceController@update',
         ]);
@@ -39,3 +43,7 @@ Route::group([
         ]);
     });
 });
+
+Route::get('invite/vehicle-service/{id}', [
+    'uses' => 'VehicleServiceController@show',
+])->middleware(['vehicleServiceToken']);

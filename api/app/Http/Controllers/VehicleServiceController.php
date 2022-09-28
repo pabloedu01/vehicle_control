@@ -8,6 +8,7 @@ use App\Models\VehicleService;
 use App\Http\Requests\VehicleService as VehicleServiceRequest;
 use App\Models\VehicleServiceClientData as ClientData;
 use App\Models\VehicleServiceTechnicalConsultantData as TechnicalConsultantData;
+use App\Models\VehicleServiceToken;
 use App\Models\VehicleServiceVehicleData as VehicleData;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,7 +33,7 @@ class VehicleServiceController extends Controller
 
     public function show(Request $request, $id)
     {
-        $vehicleService = VehicleService::with(array_merge(self::$with, ['stages.items','items' => function($query){return $query->withTrashed();}]))
+        $vehicleService = VehicleService::with(array_merge(self::$with, ['company','stages.items','items' => function($query){return $query->withTrashed();}]))
                                          ->where('vehicle_services.id', '=', $id)
                                          ->first();
 
@@ -113,6 +114,43 @@ class VehicleServiceController extends Controller
         }
     }
 
+    public function generateToken(Request $request, $id)
+    {
+        $validator = validate($request->all(), VehicleServiceToken::rules());
+
+        if($validator->fails())
+        {
+            return response()->json([
+                                        'msg' => trans('general.msg.invalidData'),
+                                        'errors' => $validator->errors(),
+                                    ],
+                                    Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        $token = new VehicleServiceToken([
+                                             'vehicle_service_id' => $id,
+                                             'user_id'            => \Auth::user()->id,
+                                             'email'              => $request->email,
+                                             'token'              => \Str::random(),
+                                         ]);
+
+        if(secureSave($token)){
+            return response()->json([
+                                        'msg' => trans('general.msg.success'),
+                                        'data' => $token,
+                                    ],
+                                    Response::HTTP_CREATED
+            );
+        } else {
+            return response()->json([
+                                        'msg' => trans('general.msg.error'),
+                                    ],
+                                    Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
     public function duplicate(Request $request, $id)
     {
         $vehicleService = VehicleService::withoutGlobalScope('joinToData')
@@ -164,8 +202,6 @@ class VehicleServiceController extends Controller
                                     Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
-
-        dd($vehicleService->toArray(), $newVehicleService->toArray());
     }
 
     public function update(VehicleServiceRequest $request, $id)

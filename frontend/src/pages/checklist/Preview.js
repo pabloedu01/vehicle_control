@@ -12,9 +12,9 @@ import "./style.css";
 
 const api = new APICore();
 
-const Preview = (props: { company?: any }): React$Element<React$FragmentType> => {
+const Preview = (props: { company?: any, invite?: any }): React$Element<React$FragmentType> => {
     const history = useNavigate();
-    const { id, type, checklistId } = useParams();
+    const { id, type, checklistId, token } = useParams();
     const [data, setData] = useState(null);
     const [vehicleService, setVehicleService] = useState(null);
     const [stages, setStages] = useState([]);
@@ -34,14 +34,12 @@ const Preview = (props: { company?: any }): React$Element<React$FragmentType> =>
 
             switch (type) {
                 case 'service-schedules':
-                    ajaxCall = api.get('/vehicle-service/' + checklistId);
+                    ajaxCall = api.get(props?.invite === true ? '/invite/vehicle-service/' + checklistId + '?token=' + token : '/vehicle-service/' + checklistId);
                     break;
             }
 
             ajaxCall.then(
                 (response) => {
-                    console.log(props?.company);
-                    console.log(response);
                     switch (type) {
                         case 'service-schedules':
                             let data;
@@ -185,6 +183,7 @@ const Preview = (props: { company?: any }): React$Element<React$FragmentType> =>
                 ]}
                 title={'Checklist'}
                 company={props?.company}
+                withoutBreadcrumb={props?.invite === true}
             />
 
             <Row>
@@ -199,14 +198,14 @@ const Preview = (props: { company?: any }): React$Element<React$FragmentType> =>
                                                 <Col lg={4} sm={4} md={4} xs={4}>
                                                 <div className='cabecalho'>
                                                         <div className='center'>
-                                                        <img src={props?.company?.image} style={{ height: '4rem' }} />
+                                                        <img src={vehicleService?.company?.image} style={{ height: '4rem' }} />
                                                         </div>
                                                     </div>
                                                 </Col>
                                                 <Col lg={8} sm={8} md={8} xs={8} >
                                                     <div className='cabecalho'>
                                                         <div className='center'>
-                                                        <h2><b>{props?.company?.name}</b></h2>
+                                                        <h2><b>{vehicleService?.company?.name}</b></h2>
                                                         </div>
                                                     </div>
                                                         
@@ -220,29 +219,29 @@ const Preview = (props: { company?: any }): React$Element<React$FragmentType> =>
                                             </ListGroup.Item>
                                             <ListGroup.Item>
                                                 <p>
-                                                    <b>Razão social:</b> {props?.company?.corporate_name}
+                                                    <b>Razão social:</b> {vehicleService?.company?.corporate_name}
                                                 </p>
                                                 <Row>
                                                     <Col lg={6}>
                                                         <p>
-                                                            <b> Endereço:</b> {props?.company?.address}
+                                                            <b> Endereço:</b> {vehicleService?.company?.address}
                                                         </p>
                                                     </Col>
                                                     <Col lg={6}>
                                                         <p>
-                                                            <b> CEP:</b> {props?.company?.postal_code}
+                                                            <b> CEP:</b> {vehicleService?.company?.postal_code}
                                                         </p>
                                                     </Col>
                                                 </Row>
                                                 <Row>
                                                     <Col lg={6}>
                                                         <p>
-                                                            <b> Telefone: </b>{props?.company?.phone}
+                                                            <b> Telefone: </b>{vehicleService?.company?.phone}
                                                         </p>
                                                     </Col>
                                                     <Col lg={6}>
                                                         <p>
-                                                            <b> Email::</b> {props?.company?.email}
+                                                            <b> Email::</b> {vehicleService?.company?.email}
                                                         </p>
                                                     </Col>
                                                 </Row>
@@ -359,7 +358,7 @@ const Preview = (props: { company?: any }): React$Element<React$FragmentType> =>
                                 </Col>
 
                                 {/* <Col lg={2}>
-                                    <img src={props?.company?.image} alt="Company Logo" className="img-responsive" />
+                                    <img src={vehicleService?.company?.image} alt="Company Logo" className="img-responsive" />
                                 </Col> */}
                             </Row>
 

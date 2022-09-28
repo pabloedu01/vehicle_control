@@ -21,6 +21,8 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
     const history = useNavigate();
     const {id, type} = useParams();
     const [showModal, setShowModal] = useState(false);
+    const [showModalGenerateToken, setShowModalGenerateToken] = useState(false);
+    const [selectedVehicleServiceId, setSelectedVehicleServiceId] = useState(null);
     const [list, setList] = useState([]);
     const [checklistVersions, setChecklistVersions] = useState([]);
     const [tableFields, setTableFields] = useState([]);
@@ -35,10 +37,17 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
         })
     );
 
+    const schemaResolver2 = yupResolver(
+        yup.object().shape({
+            email: yup.string().required('Por favor, digite Email'),
+        })
+    );
+
     /*
      * form methods
      */
     const methods = useForm({ resolver: schemaResolver, defaultValues: {} });
+    const methods2 = useForm({ resolver: schemaResolver2, defaultValues: {} });
 
     const {
         handleSubmit,
@@ -49,6 +58,17 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     const otherProps = {
         register,errors,control
+    };
+
+    const {
+        handleSubmit: handleSubmit2,
+        register:register2,
+        control: control2,
+        formState: { errors: errors2 },
+    } = methods2;
+
+    const otherProps2 = {
+        register: register2, errors: errors2, control: control2
     };
 
     const getList = () => {
@@ -125,12 +145,43 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
         });
     };
 
+    const onSendEmail = (vehicleServiceId, rowData) => {
+        setSelectedVehicleServiceId(vehicleServiceId);
+        setShowModalGenerateToken(true);
+    };
+
+    const onGenerateToken = () => {
+        api.post('/vehicle-service/' + selectedVehicleServiceId + '/generate-token', {email: methods2.getValues('email')}).then((response) => {
+            swal({
+                title: 'Enviado',
+                text: 'Checklist Enviado',
+                icon: 'success',
+                buttons: {
+                    confirm: {
+                        text: 'Ok',
+                        value: 'confirm'
+                    }
+                },
+            });
+        },(error) => {
+
+        });
+    };
+
     const onShowModal = () => {
         setShowModal(true);
     };
 
     const onHideModal = () => {
         setShowModal(false);
+    };
+
+    const onShowModalGenerateToken = () => {
+        setShowModalGenerateToken(true);
+    };
+
+    const onHideModalGenerateToken = () => {
+        setShowModalGenerateToken(false);
     };
 
     const onCreate = () => {
@@ -192,6 +243,12 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                                 action: onShow
                             },
                             {
+                                key: 'send',
+                                icon: 'mdi mdi-email-send-outline',
+                                label: 'Enviar',
+                                action: onSendEmail
+                            },
+                            {
                                 key: 'duplicate',
                                 icon: 'mdi mdi-clipboard',
                                 label: 'Duplicar',
@@ -241,6 +298,33 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                     </Modal.Footer>
                     </form>
                 </Modal>
+
+            <Modal show={showModalGenerateToken} onHide={onHideModalGenerateToken} size="lg" scrollable={true} centered={true}>
+                <form onSubmit={handleSubmit2(onGenerateToken, (e) => {console.log(e);})} noValidate>
+                    <Modal.Header onHide={onHideModal} closeButton>
+                        <h4 className="modal-title">
+                            Enviar checklist
+                        </h4>
+                    </Modal.Header>
+                    <Modal.Body style={{minHeight: '300px'}}>
+                        <FormInput
+                            label="Email"
+                            type="text"
+                            name="email"
+                            containerClass={'mb-3'}
+                            {...otherProps2}
+                        />
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="light" onClick={onHideModalGenerateToken}>
+                            Cerrar
+                        </Button>{' '}
+                        <Button variant="primary" type="submit">
+                            Enviar
+                        </Button>
+                    </Modal.Footer>
+                </form>
+            </Modal>
 
 
 
