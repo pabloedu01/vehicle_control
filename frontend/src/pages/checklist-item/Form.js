@@ -63,7 +63,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
             validation: {
                 type: formData.type,
                 rule: formData.rule,
-                options: formData.type === 'list' ? formData.options.split(',') : [],
+                options: formData.type === 'list' || formData.type === 'visualInspection' ? formData.options.split(',') : [],
                 images: formData.type === 'visualInspection' ? formData.images : null
             },
             preview_data: {

@@ -12,6 +12,7 @@ import {dataURLtoFile} from "../../utils/file";
 import swal from "sweetalert";
 import {toastService} from "../../services/toast";
 import './style.css';
+import VisualInspection from "./visualInspection";
  
 const elemPrefix = "test";
 const getId = (index: number) => `${elemPrefix}${index}`;
@@ -159,6 +160,8 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
     };
 
     const handleFieldChange = (id, value) => {
+        console.log(id, 'nuevo value', value);
+
         setChecklistData({...checklistData, [id]: value});
     };
 
@@ -639,7 +642,8 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                                                 <b>{item.name}</b>
                                             </Col>
                                             <Col className="text-center" md={2}>
-                                                {item.validation.type === 'boolean' ? <Form.Check type="switch" checked={checklistData[item.id] ?? false} onChange={(e) => { handleFieldChange(item.id, e.target.checked); }} name="checklist_version_id"/> :
+                                                {
+                                                    item.validation.type === 'boolean' ? <Form.Check type="switch" checked={checklistData[item.id] ?? false} onChange={(e) => { handleFieldChange(item.id, e.target.checked); }} name="checklist_version_id"/> :
                                                     (item.validation.type === 'list' ?
                                                             <Select
                                                                 className={"react-select"}
@@ -652,15 +656,28 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                                                             />
 
                                                             :
-                                                            <Form.Control
-                                                                type="text"
-                                                                placeholder={item.name}
-                                                                onChange={(e) => {
-                                                                    handleFieldChange(item.id, e.target.value);
-                                                                }}
-                                                                value={checklistData[item.id] ?? ''}
-                                                                autoComplete="off">
-                                                            </Form.Control>
+                                                            (
+                                                                item.validation.type === 'visualInspection' ?
+
+                                                                    <VisualInspection
+                                                                        item={item}
+                                                                        onChange={(data) => {
+                                                                            handleFieldChange(item.id, data);
+                                                                        }}
+                                                                        value={checklistData[item.id] ?? ''}
+                                                                    />
+
+                                                                    :
+                                                                    <Form.Control
+                                                                        type="text"
+                                                                        placeholder={item.name}
+                                                                        onChange={(e) => {
+                                                                            handleFieldChange(item.id, e.target.value);
+                                                                        }}
+                                                                        value={checklistData[item.id] ?? ''}
+                                                                        autoComplete="off">
+                                                                    </Form.Control>
+                                                            )
                                                     )
                                                 }
                                             </Col>
