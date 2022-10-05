@@ -32,7 +32,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
             active: yup.boolean(),
             type: yup.string().nullable().required('Por favor, digite O Tipo'),
             rule: yup.string().nullable().required('Por favor, digite Regra'),
-            preview_data_value: yup.string().nullable().required('Por favor, digite Valor'),
+            preview_data_value: yup.string().nullable(),
         })
     );
 
@@ -63,7 +63,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
             validation: {
                 type: formData.type,
                 rule: formData.rule,
-                options: formData.type === 'list' || formData.type === 'visualInspection' ? formData.options.split(',') : [],
+                options: formData.type === 'list' ? formData.options.split(',') : [],
                 images: formData.type === 'visualInspection' ? formData.images : null
             },
             preview_data: {
@@ -122,7 +122,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     };
 
     const onTypeChange = (value) => {
-        setVisibleOptions(value === 'list' || value === 'visualInspection');
+        setVisibleOptions(value === 'list');
         methods.setValue('options', null);
 
         setVisibleImages(value === 'visualInspection');

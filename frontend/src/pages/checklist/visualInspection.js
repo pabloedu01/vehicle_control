@@ -1,60 +1,75 @@
 // @flow
 import React, { useEffect, useState } from 'react';
-import { APICore } from '../../helpers/api/apiCore';
-import {Button, Card, Col, Modal, Row} from "react-bootstrap";
+import {Button, Col, Modal, Row} from "react-bootstrap";
 import FileUpload from "../../components/FileUpload";
-
-const api = new APICore();
 
 const VisualInspection = (props: { item: any, onChange: any, value: any }): React$Element<React$FragmentType> => {
     const [showModal, setShowModal] = useState(false);
     const [showModalObservations, setShowModalObservations] = useState(false);
     const [currentStep, setCurrentStep]  = useState(1);
-    const [selectedOption, setSelectedOption] = useState(null);
     const [data, setData] = useState({});
+    const [observationsIndex, setObservationsIndex] = useState(null);
+    const [observationsList, setObservationsList] = useState([]);
     const [observations, setObservations] = useState(null);
+    const [position, setPosition] = useState(null);
     const [showFileUpload, setShowFileUpload] = useState(false);
     const [fileUploadData, setFileUploadData] = useState([]);
 
     const steps = {
         '1': 'Frente',
-        '2': 'Traseira',
-        '3': 'Step 3',
-        '4': 'Step 4',
-        '5': 'Step 5',
+        '2': 'Lateral esquerda',
+        '3': 'Lateral direita',
+        '4': 'Traseira',
+        '5': 'Teto',
     };
 
     const onSave = () => {
+        /*al guardar hay que setear bien los ids de las imagenes*/
+        /*currentObservationsList[observationsIndex].images = files.map((file) => typeof file === 'string' ? file : file?.id);*/
+
         props?.onChange(JSON.stringify(data));
         setShowModal(false);
     };
 
     const onSaveObservations = () => {
-        setData({...data, [currentStep]: {...(data[currentStep] ?? {}), observations: observations}});
+        const currentObservationsList = [...observationsList];
+        let newObservationsList;
+
+        if(observationsIndex === null || !currentObservationsList.hasOwnProperty(observationsIndex)){
+            newObservationsList = currentObservationsList.concat([{
+                observations,
+                position,
+                images: []
+            }]);
+
+        } else {
+            currentObservationsList[observationsIndex] = {...currentObservationsList[observationsIndex], observations, position};
+            newObservationsList = currentObservationsList;
+        }
+
+        setObservationsList(newObservationsList);
         setShowModalObservations(false);
     };
 
-    const onNext = () => {
-        setCurrentStep(currentStep + 1);
+    const onCreateObservations = () => {
+        setObservationsIndex(null);
+        setObservations(null);
+        setPosition(null);
+        setShowModalObservations(true);
     };
 
-    const onPrevious = () => {
-        setCurrentStep(currentStep - 1);
+    const onEditObservations = (index) => {
+        setObservationsIndex(index);
+        setObservations(observationsList[index].observations);
+        setPosition(observationsList[index].position);
+        setShowModalObservations(true);
     };
 
-    const handlePositionChange = (e) => {
-        /*
-        const test = {
-            currentStep: {
-                option:{
-                    selectedOption: 'posicion',
-                },
-                images: [],
-                observations: [],
-            }
-        };*/
+    const onDeleteObservations = (index) => {
+        const currentObservationsList = [...observationsList];
 
-        setData({...data, [currentStep]: {...(data[currentStep] ?? {}), option: { ...(data[currentStep]?.option ?? {}), [selectedOption]: e.target.value }}});
+        currentObservationsList.splice(index, 1);
+        setObservationsList(currentObservationsList);
     };
 
     const validateFileImage = (file) => {
@@ -67,17 +82,13 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
         }
     };
 
-    const getSelectedOptionValue = () => {
-        try{
-            return data[currentStep]?.option[selectedOption] ?? '';
-        } catch(e){
-            return '';
-        }
-    };
-
     const handleUploadImages = (files) => {
         setFileUploadData(files);
-        setData({...data, [currentStep]: {...(data[currentStep] ?? {}), images: files.map((file) => typeof file === 'string' ? file : file?.id)}});
+
+        const currentObservationsList = [...observationsList];
+        currentObservationsList[observationsIndex].images = files;
+
+        setObservationsList(currentObservationsList);
     };
 
     useEffect(() => {
@@ -85,12 +96,20 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
     }, [showModal]);
 
     useEffect(() => {
-        setSelectedOption(null);
-    }, [currentStep, showModal]);
+        setObservationsList(data.hasOwnProperty(currentStep) && data[currentStep].hasOwnProperty('observations') ? data[currentStep].observations : []);
+    }, [currentStep]);
 
     useEffect(() => {
-        setData(props?.value && props?.value.length > 0 ? JSON.parse(props?.value) : {});
+        const data = props?.value && props?.value.length > 0 ? JSON.parse(props?.value) : {};
+        setData(data);
+        setObservationsList(data.hasOwnProperty(currentStep) && data[currentStep].hasOwnProperty('observations') ? data[currentStep].observations : []);
     }, [props?.value]);
+
+    useEffect(() => {
+        if(data.hasOwnProperty(currentStep)){
+            setData({...data, [currentStep]: {...(data[currentStep] ?? {}), observations: [...observationsList]}});
+        }
+    }, [observationsList]);
 
     return (
         <>
@@ -103,7 +122,11 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                 <Modal.Body style={{ minHeight: '300px' }}>
                     <Row className="mb-1">
                         <Col md={12}>
-                            <textarea style={{width: '100%'}} rows={5} value={observations ?? ''} onChange={(e) => {setObservations(e.target.value);}}/>
+                            <textarea style={{width: '100%'}} rows={5} value={observations ?? ''} onChange={(e) => {setObservations(e.target.value);}} placeholder="comentarios"/>
+                        </Col>
+
+                        <Col md={2}>
+                            <input value={position ?? ''} onChange={(e) => {setPosition(e.target.value);}} placeholder="posición"/>
                         </Col>
                     </Row>
                 </Modal.Body>
@@ -124,38 +147,54 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                 <Modal.Body style={{ minHeight: '300px' }}>
                     <Row className="mb-1">
                         <Col md={2} className="d-flex" style={{ flexFlow: 'column', justifyContent: 'space-between' }}>
-                            {(props?.item?.validation?.options || []).map((option, index) => (
-                                <div key={index} onClick={() => {setSelectedOption(index);}}>
-                                    {option}
+                            {Object.keys(steps).map((key) => (
+                                <div key={key} onClick={() => {setCurrentStep(parseInt(key, 10));}}>
+                                    {steps[key]}
                                 </div>
                             ))}
                         </Col>
                         <Col md={2} className="d-flex justify-content-center align-items-center" style={{ flexFlow: 'column' }}>
-                            <input value={getSelectedOptionValue()} type="text" placeholder="position" onChange={handlePositionChange} style={{maxWidth: '100%'}} disabled={selectedOption === null}/>
-                            {selectedOption !== null ? props?.item?.validation?.options[selectedOption] : null}
+                            <span><i className="mdi mdi-image-area"/></span>
+                            imagen que se genera automaticamente
                         </Col>
                         <Col md={5} className="d-flex justify-content-center align-items-center" style={{ flexFlow: 'column' }}>
                             {(props?.item?.validation?.images || []).hasOwnProperty(currentStep) ? <img src={props?.item?.validation?.images[currentStep]} style={{maxWidth: '100%'}}/> : 'No image available'}
                             {steps[currentStep]}
                         </Col>
                         <Col md={3} className="d-flex" style={{ flexFlow: 'column', justifyContent: 'space-between' }}>
-                            <Button variant="primary" onClick={() => {setFileUploadData(data[currentStep]?.images ?? []);setShowFileUpload(true);}} size={'lg'}>
-                                Foto
-                            </Button>
-
-                            <Button variant="primary" onClick={() => {console.log(data[currentStep]?.observations);setObservations(data[currentStep]?.observations ?? null);setShowModalObservations(true);}} size={'lg'}>
-                                Comentarios
-                            </Button>
-
-                            <Button variant="primary" onClick={onNext} size={'lg'} disabled={ currentStep === Object.keys(steps).length }>
-                                Avanzar
-                            </Button>
-
-                            <Button variant="primary" onClick={onPrevious} size={'lg'} disabled={ currentStep === 1 }>
-                                Volver
+                            <Button variant="primary" onClick={onCreateObservations} size={'lg'}>
+                                <i className="mdi mdi-plus-circle"/> Comentarios
                             </Button>
                         </Col>
                     </Row>
+                    { observationsList.length > 0 ?
+                        <Row className="mb-1 mt-5">
+                            <h3>Observaciones</h3>
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th>Comentario</th>
+                                    <th>Posición</th>
+                                    <th>Imagenes</th>
+                                    <th>Opciones</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {observationsList.map((observation, index) => (
+                                    <tr key={index}>
+                                        <td>{observation.observations}</td>
+                                        <td>{observation.position}</td>
+                                        <td><span onClick={() => {setObservationsIndex(index);setFileUploadData(observation?.images ?? []);setShowFileUpload(true);}}><i className="mdi mdi-image-area"/></span></td>
+                                        <td>
+                                            <span onClick={() => {onEditObservations(index);}}><i className="mdi mdi-square-edit-outline" /></span>
+                                            <span onClick={() => {onDeleteObservations(index);}}><i className="mdi mdi-trash-can-outline" /></span>
+                                        </td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
+                        </Row>: null
+                    }
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="primary" onClick={() => {setShowModal(false);}}>
