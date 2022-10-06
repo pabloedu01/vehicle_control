@@ -42,7 +42,7 @@ class ValueOfChecklistItem implements CastsAttributes
 
         if(is_array($data) && count($data) > 0){
             $checklistItem = ChecklistItem::withTrashed()->find($model->checklist_item_id);
-            dd($checklistItem);
+            dd($checklistItem, $model->checklist_item_id, $model->toArray());
             if($checklistItem->validation['type'] == 'visualInspection'){
                 foreach($data as $step => $item){
                     foreach($item['observations'] as $observationIndex => $observation){
