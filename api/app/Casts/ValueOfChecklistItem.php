@@ -41,8 +41,8 @@ class ValueOfChecklistItem implements CastsAttributes
         $data = json_decode($value, true);
 
         if(is_array($data) && count($data) > 0){
-            $checklistItem = ChecklistItem::find($model->checklist_item_id);
-
+            $checklistItem = ChecklistItem::withTrashed()->find($model->checklist_item_id);
+            dd($checklistItem);
             if($checklistItem->validation['type'] == 'visualInspection'){
                 foreach($data as $step => $item){
                     foreach($item['observations'] as $observationIndex => $observation){
