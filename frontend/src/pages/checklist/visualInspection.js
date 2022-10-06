@@ -24,9 +24,6 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
     };
 
     const onSave = () => {
-        /*al guardar hay que setear bien los ids de las imagenes*/
-        /*currentObservationsList[observationsIndex].images = files.map((file) => typeof file === 'string' ? file : file?.id);*/
-
         props?.onChange(JSON.stringify(data));
         setShowModal(false);
     };
@@ -48,6 +45,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
         }
 
         setObservationsList(newObservationsList);
+        setData({...data, [currentStep]: {...(data[currentStep] ?? {}), observations: [...newObservationsList]}});
         setShowModalObservations(false);
     };
 

@@ -23,6 +23,13 @@ const Preview = (props: { company?: any, invite?: any }): React$Element<React$Fr
     const [showModalImagePreview, setShowModalImagePreview] = useState(false);
     const [showModalGallery, setShowModalGallery] = useState(false);
     const [previewImage, setPreviewImage] = useState(null);
+    const steps = {
+        '1': 'Frente',
+        '2': 'Lateral esquerda',
+        '3': 'Lateral direita',
+        '4': 'Traseira',
+        '5': 'Teto',
+    };
     const renderTooltip = (props) => (
         <Tooltip id="button-tooltip" {...props}>
           props.text
@@ -382,53 +389,106 @@ const Preview = (props: { company?: any, invite?: any }): React$Element<React$Fr
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {stage.items.map((checklistItem) => (
-                                                    <tr key={checklistItem.id}>
-                                                        <td>{checklistItem.name}</td>
-                                                        <td>
-                                                            {checklistData[checklistItem.id]?.evidence &&
-                                                            checklistData[checklistItem.id]?.evidence.length > 0
-                                                                ? <Badge className="bg-success-lighten text-success" onClick={() => {console.log(checklistData[checklistItem.id]?.evidence);setEvidences(checklistData[checklistItem.id]?.evidence);setShowModalGallery(true);}}>
-                                                                    Sim
-                                                                </Badge>
-                                                                : <Badge className="bg-danger-lighten text-danger">
-                                                                    Nao
-                                                                </Badge>}
-                                                        </td>
-                                                        <td>
-                                                            {checklistData[checklistItem.id]?.type === 'boolean' ? (
-                                                                checklistData[checklistItem.id]?.value ? (
-                                                                    <Badge className="bg-success-lighten text-success">
-                                                                        Sim
-                                                                    </Badge>
-                                                                ) : (
-                                                                    <Badge className="bg-danger-lighten text-danger">
-                                                                        Nao
-                                                                    </Badge>
-                                                                )
-                                                            ) : (
-                                                                checklistData[checklistItem.id]?.value
+                                                {stage.items.map((checklistItem) =>
+                                                    checklistData[checklistItem.id]?.type === 'visualInspection' ?
+                                                        (<>
+                                                            <tr key={checklistItem.id}>
+                                                                <td>{checklistItem.name}</td>
+                                                                <td>
+                                                                    {checklistData[checklistItem.id]?.evidence &&
+                                                                    checklistData[checklistItem.id]?.evidence.length > 0
+                                                                        ? <Badge className="bg-success-lighten text-success" onClick={() => {setEvidences(checklistData[checklistItem.id]?.evidence);setShowModalGallery(true);}}>
+                                                                            Sim
+                                                                        </Badge>
+                                                                        : <Badge className="bg-danger-lighten text-danger">
+                                                                            Nao
+                                                                        </Badge>}
+                                                                </td>
+                                                                <td/>
+                                                                {checklistData[checklistItem.id]?.observations ? (
+                                                                        <OverlayTrigger
+                                                                            placement="top"
+                                                                            delay={{ show: 10, hide: 300 }}
+                                                                            overlay={
+                                                                                <Tooltip id="button-tooltip">
+                                                                                    {checklistData[checklistItem.id]?.observations}
+                                                                                </Tooltip>}
+                                                                        >
+                                                                            <p>{checkMobile(checklistData[checklistItem.id]?.observations)}</p>
+                                                                        </OverlayTrigger>
+                                                                        //    checklistData[checklistItem.id]?.observations
+                                                                    )
+                                                                    :null}
+                                                            </tr>
+
+                                                            {Object.keys(JSON.parse(checklistData[checklistItem.id]?.value)).map((step) =>
+                                                                JSON.parse(checklistData[checklistItem.id]?.value)[step].observations.map((observations, index) => (
+                                                                    <tr key={'visualInspection-' + checklistItem.id + '-' + step}>
+                                                                        <td>{checklistItem.name + ' - ' + steps[step] + ' (Comentário ' + (index + 1) + ')'}</td>
+                                                                        <td>{observations?.images &&
+                                                                        observations?.images.length > 0
+                                                                            ? <Badge className="bg-success-lighten text-success" onClick={() => {setEvidences(observations?.images);setShowModalGallery(true);}}>
+                                                                                Sim
+                                                                            </Badge>
+                                                                            : <Badge className="bg-danger-lighten text-danger">
+                                                                                Nao
+                                                                            </Badge>}</td>
+                                                                        <td/>
+                                                                        <td>{observations.observations}</td>
+                                                                    </tr>
+                                                                ))
                                                             )}
-                                                        </td>
-                                                        <td>
-                                                            {checklistData[checklistItem.id]?.observations ? (
-                                                                    <OverlayTrigger
-                                                                    placement="top"
-                                                                    delay={{ show: 10, hide: 300 }}
-                                                                    overlay={
-                                                                    <Tooltip id="button-tooltip">
-                                                                    {checklistData[checklistItem.id]?.observations}
-                                                                  </Tooltip>}
-                                                                  >
-                                                                   <p>{checkMobile(checklistData[checklistItem.id]?.observations)}</p>
-                                                                  </OverlayTrigger>
-                                                                //    checklistData[checklistItem.id]?.observations
-                                                            )
-                                                                :null}
-                                                       
-                                                         </td>
-                                                    </tr>
-                                                ))}
+
+
+                                                        </>)
+                                                            :
+
+                                                            <tr key={checklistItem.id}>
+                                                                <td>{checklistItem.name}</td>
+                                                                <td>
+                                                                    {checklistData[checklistItem.id]?.evidence &&
+                                                                    checklistData[checklistItem.id]?.evidence.length > 0
+                                                                        ? <Badge className="bg-success-lighten text-success" onClick={() => {console.log(checklistData[checklistItem.id]?.evidence);setEvidences(checklistData[checklistItem.id]?.evidence);setShowModalGallery(true);}}>
+                                                                            Sim
+                                                                        </Badge>
+                                                                        : <Badge className="bg-danger-lighten text-danger">
+                                                                            Nao
+                                                                        </Badge>}
+                                                                </td>
+                                                                <td>
+                                                                    {checklistData[checklistItem.id]?.type === 'boolean' ? (
+                                                                        parseInt(checklistData[checklistItem.id]?.value, 10) ? (
+                                                                            <Badge className="bg-success-lighten text-success">
+                                                                                Sim
+                                                                            </Badge>
+                                                                        ) : (
+                                                                            <Badge className="bg-danger-lighten text-danger">
+                                                                                Nao
+                                                                            </Badge>
+                                                                        )
+                                                                    ) : (
+                                                                        checklistData[checklistItem.id]?.value
+                                                                    )}
+                                                                </td>
+                                                                <td>
+                                                                    {checklistData[checklistItem.id]?.observations ? (
+                                                                            <OverlayTrigger
+                                                                                placement="top"
+                                                                                delay={{ show: 10, hide: 300 }}
+                                                                                overlay={
+                                                                                    <Tooltip id="button-tooltip">
+                                                                                        {checklistData[checklistItem.id]?.observations}
+                                                                                    </Tooltip>}
+                                                                            >
+                                                                                <p>{checkMobile(checklistData[checklistItem.id]?.observations)}</p>
+                                                                            </OverlayTrigger>
+                                                                            //    checklistData[checklistItem.id]?.observations
+                                                                        )
+                                                                        :null}
+
+                                                                </td>
+                                                            </tr>
+                                                )}
                                             </tbody>
                                         </table>
                                     </div>

@@ -40,7 +40,7 @@ const FileUploader = (props: FileUploaderProps): React$Element<any> => {
                     reject();
                 });
             }))).then((processedFiles) => {
-                if (props.onFileUpload) props.onFileUpload((props?.selectedFiles || []).concat(processedFiles));
+                if (props.onFileUpload) props.onFileUpload((props?.selectedFiles || []).concat(processedFiles).filter((file) => file !== null));
             }).catch((error) => {
                 swal({
                     title: 'Error',
@@ -76,7 +76,7 @@ const FileUploader = (props: FileUploaderProps): React$Element<any> => {
     const filesFormat = () => {
         const files = props?.selectedFiles || [];
 
-        return files.map((file) => {
+        return files.filter((file) => file !== null).map((file) => {
             let data;
 
             if(typeof file === 'string'){

@@ -29,6 +29,10 @@ class TemporalFile extends Base
 
         $newValue = null;
 
+        if(is_array($value) && isset($value['id'])){
+            $value = $value['id'];
+        }
+
         if(!is_null($value) && strlen($value) > 0)
         {
             if(is_numeric($value))

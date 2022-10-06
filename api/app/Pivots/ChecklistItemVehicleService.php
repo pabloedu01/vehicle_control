@@ -3,6 +3,7 @@
 namespace App\Pivots;
 
 use App\Casts\MultipleTemporalFiles;
+use App\Casts\ValueOfChecklistItem;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class ChecklistItemVehicleService extends Pivot
@@ -13,10 +14,12 @@ class ChecklistItemVehicleService extends Pivot
     ];
 
     protected $casts = [
+        'value' => ValueOfChecklistItem::class,
         'evidence' => MultipleTemporalFiles::class
     ];
 
     public $filePaths = [
-      'evidence' => 'vehicle_services/evidences'
+      'evidence' => 'vehicle_services/evidences',
+      'value' => 'vehicle_services/evidences/checklist_item',
     ];
 }
