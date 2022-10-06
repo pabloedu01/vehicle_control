@@ -68,7 +68,7 @@ class VehicleServiceController extends Controller
             $vehicleService->vehicleData()->create($request->merge(['brand_id' => $brand_id])->only(VehicleData::getFillables()));
 
             $vehicleService->items()->sync(collect($request->checklist)->keyBy('id')->map(function($item){
-                return [ 'value' => @$item['value'], 'evidence' => @$item['evidence'], 'observations' => @$item['observations'] ];
+                return [ 'value' => @$item['value'], 'evidence' => @$item['evidence'], 'observations' => @$item['observations'], 'checklist_item_id' => @$item['id'] ];
             })->toArray());
 
             $defaultStages = $vehicleService->checklistVersion->stages->keyBy('id')->map(function(){

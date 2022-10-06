@@ -155,7 +155,7 @@ class VehicleService extends Base
     {
         return $this->belongsToMany('App\Models\ChecklistItem', 'checklist_item_vehicle_service', 'vehicle_service_id', 'checklist_item_id')
             ->withTrashed()
-            ->withPivot([ 'value', 'evidence', 'observations' ])
+            ->withPivot([ 'value', 'evidence', 'observations', 'checklist_item_id', 'vehicle_service_id' ])
             ->withTimestamps()
             ->using('App\Pivots\ChecklistItemVehicleService');
     }

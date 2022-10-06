@@ -22,4 +22,12 @@ class ChecklistItemVehicleService extends Pivot
       'evidence' => 'vehicle_services/evidences',
       'value' => 'vehicle_services/evidences/checklist_item',
     ];
+
+    protected $fillable = [
+      'checklist_item_id',
+      'vehicle_service_id',
+      'value',
+      'evidence',
+      'observations'
+    ];
 }
