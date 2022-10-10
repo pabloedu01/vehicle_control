@@ -14,6 +14,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
     const [position, setPosition] = useState(null);
     const [showFileUpload, setShowFileUpload] = useState(false);
     const [fileUploadData, setFileUploadData] = useState([]);
+    const [fileUploadDataTemp, setFileUploadDataTemp] = useState([]);
 
     const steps = {
         '1': 'Frente',
@@ -36,7 +37,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
             newObservationsList = currentObservationsList.concat([{
                 observations,
                 position,
-                images: []
+                images: fileUploadDataTemp
             }]);
 
         } else {
@@ -47,6 +48,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
         setObservationsList(newObservationsList);
         setData({...data, [currentStep]: {...(data[currentStep] ?? {}), observations: [...newObservationsList]}});
         setShowModalObservations(false);
+        setFileUploadDataTemp([]);
     };
 
     const onCreateObservations = () => {
@@ -83,10 +85,14 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
     const handleUploadImages = (files) => {
         setFileUploadData(files);
 
-        const currentObservationsList = [...observationsList];
-        currentObservationsList[observationsIndex].images = files;
+        if(observationsIndex !== null){
+            const currentObservationsList = [...observationsList];
+            currentObservationsList[observationsIndex].images = files;
 
-        setObservationsList(currentObservationsList);
+            setObservationsList(currentObservationsList);
+        } else {
+            setFileUploadDataTemp(files);
+        }
     };
 
     useEffect(() => {
@@ -135,7 +141,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                             {(props?.item?.validation?.images || []).hasOwnProperty(currentStep) ? <img src={props?.item?.validation?.images[currentStep]} style={{maxWidth: '100%'}}/> : 'No image available'}
                             {steps[currentStep]}
                         </Col>
-                        <Col md={4} className="d-flex" style={{ flexFlow: 'column', justifyContent: 'space-between' }}>
+                        <Col md={4} className="d-flex" style={{ flexFlow: 'column', justifyContent: 'space-between', maxHeight: '50vh', overflowY: 'auto' }}>
                             <Button variant="primary" onClick={onCreateObservations} size={'lg'}>
                                 <i className="mdi mdi-plus-circle"/> Comentarios
                             </Button>
@@ -149,13 +155,17 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                                                 <textarea style={{width: '100%'}} rows={5} value={observations ?? ''} onChange={(e) => {setObservations(e.target.value);}} placeholder="comentarios"/>
                                             </Col>
 
-                                            <Col md={12}>
+                                            <Col md={10}>
                                                 <input value={position ?? ''} onChange={(e) => {setPosition(e.target.value);}} placeholder="posición"/>
+                                            </Col>
+
+                                            <Col md={2}>
+                                                <span onClick={() => {setFileUploadData(fileUploadDataTemp ?? []);setShowFileUpload(true);}}><i className="mdi mdi-image-area"/></span>
                                             </Col>
                                         </Row>
                                     </Card.Body>
                                     <Card.Footer>
-                                        <Button variant="primary" onClick={() => {setShowModalObservations(false);}}>
+                                        <Button variant="primary" onClick={() => {setFileUploadDataTemp([]);setShowModalObservations(false);}}>
                                             Cerrar
                                         </Button>
                                         <Button variant="primary" onClick={onSaveObservations}>
