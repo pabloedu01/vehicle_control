@@ -138,7 +138,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                 </Modal.Footer>
             </Modal>
             
-            <Modal show={showModal} onHide={ () => { setShowModal(false); } } size="lg" scrollable={true} centered={true}>
+            <Modal show={showModal} onHide={ () => { setShowModal(false); } } size="xl" fullscreen="lg-down" scrollable={true} centered={true}>
                 <Modal.Header closeButton>
                     <h4 className="modal-title">Inspeção visual</h4>
                 </Modal.Header>
