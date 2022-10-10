@@ -1,6 +1,6 @@
 // @flow
 import React, { useEffect, useState } from 'react';
-import {Button, Col, Modal, Row} from "react-bootstrap";
+import {Button, Col, Modal, Row, Card} from "react-bootstrap";
 import FileUpload from "../../components/FileUpload";
 
 const VisualInspection = (props: { item: any, onChange: any, value: any }): React$Element<React$FragmentType> => {
@@ -112,87 +112,90 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
     return (
         <>
             <FileUpload show={showFileUpload} handleClose={() => { setShowFileUpload(false); }} files={fileUploadData} handleFileUpload={handleUploadImages} validateFile={validateFileImage}/>
-
-            <Modal show={showModalObservations} onHide={ () => { setShowModalObservations(false); } } size="lg" scrollable={true} centered={true}>
-                <Modal.Header closeButton>
-                    <h4 className="modal-title">Comentarios</h4>
-                </Modal.Header>
-                <Modal.Body style={{ minHeight: '300px' }}>
-                    <Row className="mb-1">
-                        <Col md={12}>
-                            <textarea style={{width: '100%'}} rows={5} value={observations ?? ''} onChange={(e) => {setObservations(e.target.value);}} placeholder="comentarios"/>
-                        </Col>
-
-                        <Col md={2}>
-                            <input value={position ?? ''} onChange={(e) => {setPosition(e.target.value);}} placeholder="posición"/>
-                        </Col>
-                    </Row>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="primary" onClick={() => {setShowModalObservations(false);}}>
-                        Cerrar
-                    </Button>
-                    <Button variant="primary" onClick={onSaveObservations}>
-                        Salvar
-                    </Button>
-                </Modal.Footer>
-            </Modal>
             
             <Modal show={showModal} onHide={ () => { setShowModal(false); } } size="xl" fullscreen="lg-down" scrollable={true} centered={true}>
                 <Modal.Header closeButton>
-                    <h4 className="modal-title">Inspeção visual</h4>
+                    <Row className="d-flex w-100">
+                        {Object.keys(steps).map((key) => (
+                            <Col key={key}>
+                                <div  onClick={() => {setCurrentStep(parseInt(key, 10));}}>
+                                    {steps[key]}
+                                </div>
+                            </Col>
+                        ))}
+                    </Row>
                 </Modal.Header>
                 <Modal.Body style={{ minHeight: '300px' }}>
                     <Row className="mb-1">
-                        <Col md={2} className="d-flex" style={{ flexFlow: 'column', justifyContent: 'space-between' }}>
-                            {Object.keys(steps).map((key) => (
-                                <div key={key} onClick={() => {setCurrentStep(parseInt(key, 10));}}>
-                                    {steps[key]}
-                                </div>
-                            ))}
-                        </Col>
                         <Col md={2} className="d-flex justify-content-center align-items-center" style={{ flexFlow: 'column' }}>
                             <span><i className="mdi mdi-image-area"/></span>
                             imagen que se genera automaticamente
                         </Col>
-                        <Col md={5} className="d-flex justify-content-center align-items-center" style={{ flexFlow: 'column' }}>
+                        <Col md={6} className="d-flex justify-content-center align-items-center" style={{ flexFlow: 'column' }}>
                             {(props?.item?.validation?.images || []).hasOwnProperty(currentStep) ? <img src={props?.item?.validation?.images[currentStep]} style={{maxWidth: '100%'}}/> : 'No image available'}
                             {steps[currentStep]}
                         </Col>
-                        <Col md={3} className="d-flex" style={{ flexFlow: 'column', justifyContent: 'space-between' }}>
+                        <Col md={4} className="d-flex" style={{ flexFlow: 'column', justifyContent: 'space-between' }}>
                             <Button variant="primary" onClick={onCreateObservations} size={'lg'}>
                                 <i className="mdi mdi-plus-circle"/> Comentarios
                             </Button>
+
+                            {showModalObservations ?
+
+                                <Card>
+                                    <Card.Body>
+                                        <Row className="mb-1">
+                                            <Col md={12}>
+                                                <textarea style={{width: '100%'}} rows={5} value={observations ?? ''} onChange={(e) => {setObservations(e.target.value);}} placeholder="comentarios"/>
+                                            </Col>
+
+                                            <Col md={12}>
+                                                <input value={position ?? ''} onChange={(e) => {setPosition(e.target.value);}} placeholder="posición"/>
+                                            </Col>
+                                        </Row>
+                                    </Card.Body>
+                                    <Card.Footer>
+                                        <Button variant="primary" onClick={() => {setShowModalObservations(false);}}>
+                                            Cerrar
+                                        </Button>
+                                        <Button variant="primary" onClick={onSaveObservations}>
+                                            Salvar
+                                        </Button>
+                                    </Card.Footer>
+                                </Card>
+
+                                : null}
+
+                            { observationsList.length > 0 ?
+                                <>
+                                    <h3>Observaciones</h3>
+
+                                    {observationsList.map((observation, index) => (
+                                        <Card key={index}>
+                                            <Card.Header>
+                                                Title
+
+                                                <div className="float-end">
+                                                    <span onClick={() => {onEditObservations(index);}}><i className="mdi mdi-square-edit-outline" /></span>
+                                                    <span onClick={() => {onDeleteObservations(index);}}><i className="mdi mdi-trash-can-outline" /></span>
+                                                </div>
+                                            </Card.Header>
+                                            <Card.Body>
+                                                <Row>
+                                                    <Col sm={9}>
+                                                        {observation.observations}
+                                                    </Col>
+                                                    <Col sm={3}>
+                                                        <span onClick={() => {setObservationsIndex(index);setFileUploadData(observation?.images ?? []);setShowFileUpload(true);}}><i className="mdi mdi-image-area"/></span>
+                                                    </Col>
+                                                </Row>
+                                            </Card.Body>
+                                        </Card>
+                                    ))}
+                                </>: null
+                            }
                         </Col>
                     </Row>
-                    { observationsList.length > 0 ?
-                        <Row className="mb-1 mt-5">
-                            <h3>Observaciones</h3>
-                            <table>
-                                <thead>
-                                <tr>
-                                    <th>Comentario</th>
-                                    <th>Posición</th>
-                                    <th>Imagenes</th>
-                                    <th>Opciones</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {observationsList.map((observation, index) => (
-                                    <tr key={index}>
-                                        <td>{observation.observations}</td>
-                                        <td>{observation.position}</td>
-                                        <td><span onClick={() => {setObservationsIndex(index);setFileUploadData(observation?.images ?? []);setShowFileUpload(true);}}><i className="mdi mdi-image-area"/></span></td>
-                                        <td>
-                                            <span onClick={() => {onEditObservations(index);}}><i className="mdi mdi-square-edit-outline" /></span>
-                                            <span onClick={() => {onDeleteObservations(index);}}><i className="mdi mdi-trash-can-outline" /></span>
-                                        </td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </table>
-                        </Row>: null
-                    }
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="primary" onClick={() => {setShowModal(false);}}>
