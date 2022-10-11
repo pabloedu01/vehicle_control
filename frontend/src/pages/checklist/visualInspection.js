@@ -17,6 +17,8 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
     const [showFileUpload, setShowFileUpload] = useState(false);
     const [fileUploadData, setFileUploadData] = useState([]);
     const [fileUploadDataTemp, setFileUploadDataTemp] = useState([]);
+    const [markupActual, setMarkupActual] = useState(null)
+    const [markups, setMarkups] = useState([]);
 
     const constraintsRef = useRef(null); 
 
@@ -49,17 +51,27 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
             newObservationsList = currentObservationsList;
         }
 
+
+        const markupActualSave = {
+            ...markupActual,
+            active: false
+        }
+
+        setMarkups(prevState => [...prevState, markupActualSave])
+        setMarkupActual(null)
         setObservationsList(newObservationsList);
         setData({...data, [currentStep]: {...(data[currentStep] ?? {}), observations: [...newObservationsList]}});
         setShowModalObservations(false);
         setFileUploadDataTemp([]);
+
     };
 
-    const onCreateObservations = () => {
+    const onCreateObservations = (type) => {
         setObservationsIndex(null);
         setObservations(null);
         setPosition(null);
         setShowModalObservations(true);
+        createPositionDrag(type)
     };
 
     const onEditObservations = (index) => {
@@ -119,13 +131,43 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
         }
     }, [observationsList]);
 
+    function updatePositionMarkup(positionTop, positionLeft) {
+        setMarkupActual(prevState => {
+            console.log('actual', {
+                top: prevState.position.top + positionTop,
+                left: prevState.position.left + positionLeft
+            })
+            return {
+                ...prevState,
+                position: {
+                    top: prevState.position.top + positionTop,
+                    left: prevState.position.left + positionLeft
+                },
+            }
+        })
+    }
+
+    function createPositionDrag(type) {
+        
+        const markup = {
+            position: {
+                top: 0,
+                left: 0
+            },
+            type,
+            number: markups.length + 1,
+            active: true
+        }
+        setMarkupActual(markup)
+    }
+
     return (
         <>
             <FileUpload show={showFileUpload} handleClose={() => { setShowFileUpload(false); }} files={fileUploadData} handleFileUpload={handleUploadImages} validateFile={validateFileImage}/>
             
             <Modal show={showModal} onHide={ () => { setShowModal(false); } } size="xl" fullscreen="lg-down" scrollable={true} centered={true}>
-                <Modal.Header closeButton>
-                    <Row className="d-flex w-100">
+                <Modal.Header >
+                    <Row className="d-flex w-100 justify-content-center align-items-center">
                         {Object.keys(steps).map((key) => (
                             <Col key={key}>
                                 <div  onClick={() => {setCurrentStep(parseInt(key, 10));}}>
@@ -138,25 +180,25 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                 <Modal.Body style={{ minHeight: '300px' }}>
                     <Row className="">
                         <Col md={2} className="d-flex justify-content-center align-items-center" style={{ flexFlow: 'column' }}>
-                        <Button variant="primary" id="kneadedButton" onClick={onCreateObservations} style={{ borderRadius: '50%' }} >
+                        <Button variant="primary" id="kneadedButton" onClick={() => onCreateObservations('A')} style={{ borderRadius: '50%' }} >
                             A
                         </Button>
                         <label htmlFor="kneadedButton" className="d-flex flex-column justify-content-center align-items-center mb-1">
                             AMASSADO
                         </label>
-                        <Button variant="primary" id="scratchedButton" onClick={onCreateObservations} style={{ borderRadius: '50%' }} >
+                        <Button variant="primary" id="scratchedButton" onClick={() => onCreateObservations('R')} style={{ borderRadius: '50%' }} >
                             R
                         </Button>
                         <label htmlFor="scratchedButton" className="d-flex flex-column justify-content-center align-items-center mb-1">
                             RISCADO
                         </label>
-                        <Button variant="primary" id="brokeButton" onClick={onCreateObservations} style={{ borderRadius: '50%' }} >
+                        <Button variant="primary" id="brokeButton" onClick={() => onCreateObservations('X')} style={{ borderRadius: '50%' }} >
                             X
                         </Button>
                         <label htmlFor="brokeButton" className="d-flex flex-column justify-content-center align-items-center mb-1">
                             QUEBRADO
                         </label>
-                        <Button variant="primary" id="missingButton" onClick={onCreateObservations} style={{ borderRadius: '50%' }} >
+                        <Button variant="primary" id="missingButton" onClick={() => onCreateObservations('F')} style={{ borderRadius: '50%' }} >
                             F
                         </Button>
                         <label htmlFor="missingButton" className="d-flex flex-column justify-content-center align-items-center ">
@@ -168,42 +210,78 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                             <motion.div ref={constraintsRef} className="d-flex justify-content-center align-items-center" style={{ flexFlow: 'column', width: '500px', height: '270px',position: 'relative',background: 'blue' }}>
                                 {(props?.item?.validation?.images || []).hasOwnProperty(currentStep) ? <img src={props?.item?.validation?.images[currentStep]} className="overflow-hidden" style={{maxWidth: '100%'}}/> : 'No image available'}
                                 {steps[currentStep]}
-                            <motion.div 
-                                className="pos"
-                                style={{ background: "#fd7e14",
-                                borderRadius: "50%",
-                                width: "35px",
-                                height: "35px",
-                                position: "absolute",
-                                zIndex: 1000,
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                color: "#fff",
-                                border: "2px solid #fff",
-                                fontWeight: "bold"}}
-                                dragConstraints={constraintsRef}
-                                initial={{ top: 0, left:0 }}
-                    
-                                dragTransition={{ bounceStiffness: 100, bounceDamping: 10, min: 0, max: 4 }}
-                                drag={true} // parar drag
+                            {markups.length > 0 && markups.map(m => (
+                                <motion.div 
+                                    key={m.number + (Math.random() * (10000 - 1) + 1) } 
+                                    className="pos"
+                                    style={{ background: "#fd7e14",
+                                    borderRadius: "50%",
+                                    width: "35px",
+                                    height: "35px",
+                                    position: "absolute",
+                                    zIndex: 1000,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    color: "#fff",
+                                    border: "2px solid #fff",
+                                    fontWeight: "bold"}}
+                                    dragConstraints={constraintsRef}
+                                    initial={{ top: m.position.top, left:m.position.left }}
                         
-                                onDragEnd={
-                                  (event, info) => {
-                                    console.log("end", info.offset.x, info.offset.y)
-                                    // const positionTop = m.positionDrag.top + info.offset.y
-                                    // const positionLeft = m.positionDrag.left + info.offset.x
-                                    // updatePositionDrag(m.number, m.type, positionTop, positionLeft)
-                                  }
-                                }
-                              >
-                                1
-                              </motion.div>
-
+                                    dragTransition={{ bounceStiffness: 100, bounceDamping: 10, min: 0, max: 4 }}
+                                    drag 
+                                    dragListener={m.active}
+                                    onDragEnd={
+                                        (event, info) => {
+                                            console.log({ top: m.position.top, left:m.position.left })
+                                            console.log("end", info.offset.x, info.offset.y)
+                                            const positionTop = info.offset.y
+                                            const positionLeft = info.offset.x
+                                            updatePositionMarkup(positionTop, positionLeft)
+                                        }
+                                    }
+                                    >
+                                        {m.number + m.type}
+                                    </motion.div>
+                                ))}
+                                {markupActual && (
+                                    <motion.div 
+                                    className="pos"
+                                    style={{ background: "#fd7e14",
+                                    borderRadius: "50%",
+                                    width: "35px",
+                                    height: "35px",
+                                    position: "absolute",
+                                    zIndex: 1000,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    color: "#fff",
+                                    border: "2px solid #fff",
+                                    fontWeight: "bold"}}
+                                    dragConstraints={constraintsRef}
+                                    initial={{ top: markupActual.position.top, left:markupActual.position.left }}
+                                //    initial={{ left:224.54544067382812, top:127.27273559570312 }}
+                        
+                                    dragTransition={{ bounceStiffness: 100, bounceDamping: 10, min: 0, max: 4 }}
+                                    drag 
+                
+                                    onDragEnd={
+                                        (event, info) => {
+                                            console.log("end", info.offset.x, info.offset.y)
+                                            const positionTop = info.offset.y
+                                            const positionLeft = info.offset.x
+                                            updatePositionMarkup(positionTop, positionLeft)
+                                        }
+                                    }
+                                    >
+                                        {markupActual.number + markupActual.type}
+                                    </motion.div>
+                                )}
                             </motion.div>
                         </Col>
-                        <Col md={3} className="d-flex" style={{ flexFlow: 'column', justifyContent: 'space-between', maxHeight: '50vh', overflowY: 'auto' }}>
-                     
+                        <Col md={4} className="d-flex" style={{ flexFlow: 'column', justifyContent: 'space-between', maxHeight: '270px', overflowY: 'auto' }}>
 
                             {showModalObservations ?
 
