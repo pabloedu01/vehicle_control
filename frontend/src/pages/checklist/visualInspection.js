@@ -169,7 +169,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                 <Modal.Header >
                     <Row className="d-flex w-100 justify-content-center align-items-center">
                         {Object.keys(steps).map((key) => (
-                            <Col key={key}>
+                            <Col key={key} className="d-flex justify-content-center align-items-center">
                                 <div  onClick={() => {setCurrentStep(parseInt(key, 10));}}>
                                     {steps[key]}
                                 </div>
