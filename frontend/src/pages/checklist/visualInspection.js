@@ -164,8 +164,8 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                         </label>
                         
                         </Col>
-                        <Col md={7} className="d-flex justify-content-center align-items-center" style={{ flexFlow: 'column', width: '500px', height: '300px' }}>
-                            <motion.div ref={constraintsRef} className="d-flex justify-content-center align-items-center" style={{ flexFlow: 'column', width: '500px', height: '300px',position: 'relative',background: 'blue' }}>
+                        <Col md={7} className="d-flex justify-content-center align-items-center" style={{ flexFlow: 'column', width: '500px', height: '270px' }}>
+                            <motion.div ref={constraintsRef} className="d-flex justify-content-center align-items-center" style={{ flexFlow: 'column', width: '500px', height: '270px',position: 'relative',background: 'blue' }}>
                                 {(props?.item?.validation?.images || []).hasOwnProperty(currentStep) ? <img src={props?.item?.validation?.images[currentStep]} className="overflow-hidden" style={{maxWidth: '100%'}}/> : 'No image available'}
                                 {steps[currentStep]}
                             <motion.div 
@@ -209,17 +209,20 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
 
                                 <Card>
                                     <Card.Body>
-                                        <Row className="mb-1">
+                                        <Row className="">
                                             <Col md={12}>
-                                                <textarea style={{width: '100%'}} rows={5} value={observations ?? ''} onChange={(e) => {setObservations(e.target.value);}} placeholder="comentarios"/>
+                                            <Card.Title>1 - Amassado</Card.Title>
+                                            </Col>
+                                            <Col md={12}>
+                                                <textarea style={{width: '100%'}} rows={4} value={observations ?? ''} onChange={(e) => {setObservations(e.target.value);}} placeholder="comentarios"/>
                                             </Col>
 
-                                            <Col md={2}>
-                                                <span onClick={() => {setFileUploadData(fileUploadDataTemp ?? []);setShowFileUpload(true);}}><i className="mdi mdi-image-area"/></span>
+                                            <Col md={12} className="d-flex justify-content-center align-items-center">
+                                                <Button variant="primary" onClick={() => {setFileUploadData(fileUploadDataTemp ?? []);setShowFileUpload(true);}}>Anexar Imagem</Button>
                                             </Col>
                                         </Row>
                                     </Card.Body>
-                                    <Card.Footer>
+                                    <Card.Footer className="d-flex justify-content-center align-items-center gap-2">
                                         <Button variant="primary" onClick={() => {setFileUploadDataTemp([]);setShowModalObservations(false);}}>
                                             Sair
                                         </Button>
@@ -233,7 +236,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
 
                             { observationsList.length > 0 ?
                                 <>
-                                    <h3>Observaciones</h3>
+                                    <h3>Observações</h3>
 
                                     {observationsList.map((observation, index) => (
                                         <Card key={index}>
