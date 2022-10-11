@@ -1,7 +1,9 @@
 // @flow
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {Button, Col, Modal, Row, Card} from "react-bootstrap";
 import FileUpload from "../../components/FileUpload";
+import {AnimatePresence, motion} from "framer-motion/dist/framer-motion";
+
 
 const VisualInspection = (props: { item: any, onChange: any, value: any }): React$Element<React$FragmentType> => {
     const [showModal, setShowModal] = useState(false);
@@ -15,6 +17,8 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
     const [showFileUpload, setShowFileUpload] = useState(false);
     const [fileUploadData, setFileUploadData] = useState([]);
     const [fileUploadDataTemp, setFileUploadDataTemp] = useState([]);
+
+    const constraintsRef = useRef(null); 
 
     const steps = {
         '1': 'Frente',
@@ -132,19 +136,74 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                     </Row>
                 </Modal.Header>
                 <Modal.Body style={{ minHeight: '300px' }}>
-                    <Row className="mb-1">
+                    <Row className="">
                         <Col md={2} className="d-flex justify-content-center align-items-center" style={{ flexFlow: 'column' }}>
-                            <span><i className="mdi mdi-image-area"/></span>
-                            imagen que se genera automaticamente
+                        <Button variant="primary" id="kneadedButton" onClick={onCreateObservations} style={{ borderRadius: '50%' }} >
+                            A
+                        </Button>
+                        <label htmlFor="kneadedButton" className="d-flex flex-column justify-content-center align-items-center mb-1">
+                            AMASSADO
+                        </label>
+                        <Button variant="primary" id="scratchedButton" onClick={onCreateObservations} style={{ borderRadius: '50%' }} >
+                            R
+                        </Button>
+                        <label htmlFor="scratchedButton" className="d-flex flex-column justify-content-center align-items-center mb-1">
+                            RISCADO
+                        </label>
+                        <Button variant="primary" id="brokeButton" onClick={onCreateObservations} style={{ borderRadius: '50%' }} >
+                            X
+                        </Button>
+                        <label htmlFor="brokeButton" className="d-flex flex-column justify-content-center align-items-center mb-1">
+                            QUEBRADO
+                        </label>
+                        <Button variant="primary" id="missingButton" onClick={onCreateObservations} style={{ borderRadius: '50%' }} >
+                            F
+                        </Button>
+                        <label htmlFor="missingButton" className="d-flex flex-column justify-content-center align-items-center ">
+                            FALTANTE
+                        </label>
+                        
                         </Col>
-                        <Col md={6} className="d-flex justify-content-center align-items-center" style={{ flexFlow: 'column' }}>
-                            {(props?.item?.validation?.images || []).hasOwnProperty(currentStep) ? <img src={props?.item?.validation?.images[currentStep]} style={{maxWidth: '100%'}}/> : 'No image available'}
-                            {steps[currentStep]}
+                        <Col md={7} className="d-flex justify-content-center align-items-center" style={{ flexFlow: 'column', width: '500px', height: '300px' }}>
+                            <motion.div ref={constraintsRef} className="d-flex justify-content-center align-items-center" style={{ flexFlow: 'column', width: '500px', height: '300px',position: 'relative',background: 'blue' }}>
+                                {(props?.item?.validation?.images || []).hasOwnProperty(currentStep) ? <img src={props?.item?.validation?.images[currentStep]} className="overflow-hidden" style={{maxWidth: '100%'}}/> : 'No image available'}
+                                {steps[currentStep]}
+                            <motion.div 
+                                className="pos"
+                                style={{ background: "#fd7e14",
+                                borderRadius: "50%",
+                                width: "35px",
+                                height: "35px",
+                                position: "absolute",
+                                zIndex: 1000,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                color: "#fff",
+                                border: "2px solid #fff",
+                                fontWeight: "bold"}}
+                                dragConstraints={constraintsRef}
+                                initial={{ top: 0, left:0 }}
+                    
+                                dragTransition={{ bounceStiffness: 100, bounceDamping: 10, min: 0, max: 4 }}
+                                drag={true} // parar drag
+                        
+                                onDragEnd={
+                                  (event, info) => {
+                                    console.log("end", info.offset.x, info.offset.y)
+                                    // const positionTop = m.positionDrag.top + info.offset.y
+                                    // const positionLeft = m.positionDrag.left + info.offset.x
+                                    // updatePositionDrag(m.number, m.type, positionTop, positionLeft)
+                                  }
+                                }
+                              >
+                                1
+                              </motion.div>
+
+                            </motion.div>
                         </Col>
-                        <Col md={4} className="d-flex" style={{ flexFlow: 'column', justifyContent: 'space-between', maxHeight: '50vh', overflowY: 'auto' }}>
-                            <Button variant="primary" onClick={onCreateObservations} size={'lg'}>
-                                <i className="mdi mdi-plus-circle"/> Comentarios
-                            </Button>
+                        <Col md={3} className="d-flex" style={{ flexFlow: 'column', justifyContent: 'space-between', maxHeight: '50vh', overflowY: 'auto' }}>
+                     
 
                             {showModalObservations ?
 
@@ -155,10 +214,6 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                                                 <textarea style={{width: '100%'}} rows={5} value={observations ?? ''} onChange={(e) => {setObservations(e.target.value);}} placeholder="comentarios"/>
                                             </Col>
 
-                                            <Col md={10}>
-                                                <input value={position ?? ''} onChange={(e) => {setPosition(e.target.value);}} placeholder="posición"/>
-                                            </Col>
-
                                             <Col md={2}>
                                                 <span onClick={() => {setFileUploadData(fileUploadDataTemp ?? []);setShowFileUpload(true);}}><i className="mdi mdi-image-area"/></span>
                                             </Col>
@@ -166,7 +221,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                                     </Card.Body>
                                     <Card.Footer>
                                         <Button variant="primary" onClick={() => {setFileUploadDataTemp([]);setShowModalObservations(false);}}>
-                                            Cerrar
+                                            Sair
                                         </Button>
                                         <Button variant="primary" onClick={onSaveObservations}>
                                             Salvar
@@ -209,7 +264,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="primary" onClick={() => {setShowModal(false);}}>
-                        Cerrar
+                        Sair
                     </Button>
                     <Button variant="primary" onClick={onSave}>
                         Salvar
