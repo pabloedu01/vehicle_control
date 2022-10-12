@@ -1,0 +1,31 @@
+@import "variables";
+
+@import "helpers/color-bg";
+@import "helpers/padding-margin";
+@import "helpers/text";
+
+// reset
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  color-adjust: exact !important;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+body {
+  font-size: 0.64rem;
+  font-family: "Roboto", sans-serif;
+}
+
+.page {
+  width: 21cm;
+  min-height: 29.7cm;
+  max-height: 29.7cm;
+  padding: 1cm;
+  margin: 0 auto;
+  border: 1px #d3d3d3 solid;
+  border-radius: 5px;
+  background: white;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}

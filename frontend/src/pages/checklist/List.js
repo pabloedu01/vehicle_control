@@ -111,6 +111,10 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
         history(`/panel/company/${props.company?.id}/${type}/${id}/checklist/${vehicleServiceId}`);
     };
 
+    const onPrint = (vehicleServiceId, rowData) => {
+        history(`/panel/company/${props.company?.id}/${type}/${id}/checklist/${vehicleServiceId}/print`);
+    };
+
     const onDuplicate = (vehicleServiceId, rowData) => {
         swal({
             title: '¿tem certeza?',
@@ -253,6 +257,13 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                                 icon: 'mdi mdi-clipboard',
                                 label: 'Duplicar',
                                 action: onDuplicate
+                            },
+
+                            {
+                                key: 'print',
+                                icon: 'mdi mdi-printer-outline',
+                                label: 'Imprimir',
+                                action: onPrint
                             },
                         ]}/>
                     )

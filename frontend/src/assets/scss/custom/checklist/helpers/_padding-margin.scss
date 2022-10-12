@@ -1,0 +1,36 @@
+@each $value in $spacers {
+  $radius: $value * 0.5;
+
+  @each $i, $v in ("m": "margin", "p": "padding") {
+    .#{$i}-#{$value} {
+      #{$v}: #{$radius}mm;
+    }
+    @each $d, $direction in $directions {
+      .#{$i}#{$d}-#{$value} {
+        #{$v}-#{$direction}: #{$radius}mm;
+      }
+    }
+    @each $s, $side in $sides {
+      .#{$i}#{$s}-#{$value} {
+        @each $sid in $side {
+          #{$v}-#{$sid}: #{$radius}mm !important;
+        }
+      }
+    }
+  }
+
+  .round-#{$value} {
+    border-radius: #{$radius}mm;
+  }
+
+  .b-#{$value} {
+    border: #{$radius * 0.75}mm solid $black;
+  }
+}
+
+@for $i from 1 through 12 {
+  .col-#{$i} {
+    flex: 0 0 auto;
+    width: calc(($i * 100%) / 12);
+  }
+}

@@ -1,0 +1,53 @@
+$primary: #13618d;
+$secondary: #d3d3d3;
+$success: #149f50;
+$info: #eee;
+$warning: #ffa441;
+$danger: #ee1e32;
+$light: #eee;
+$dark: #eee;
+
+$black: #000;
+$white: #fff;
+$body-color: #eee;
+
+$gray-600: #6c757d !default;
+
+$body-bg: $white !default;
+
+$text-muted: $gray-600 !default;
+
+$theme-colors: (
+  "primary": $primary,
+  "secondary": $secondary,
+  "success": $success,
+  "info": $info,
+  "warning": $warning,
+  "danger": $danger,
+  "light": $light,
+  "dark": $dark,
+  "white": $white,
+  "black": $black,
+) !default;
+
+$spacers: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10) !default;
+
+$directions: (
+  "s": "left",
+  "t": "top",
+  "e": "right",
+  "b": "bottom",
+) !default;
+
+$sides: (
+  "x": (
+    "left",
+    "right",
+  ),
+  "y": (
+    "top",
+    "bottom",
+  ),
+) !default;
+
+$fWeights: (100, 300, 400, 500, 700, 900);
