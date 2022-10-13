@@ -163,7 +163,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
         <>
             <FileUpload show={showFileUpload} handleClose={() => { setShowFileUpload(false); }} files={fileUploadData} handleFileUpload={handleUploadImages} validateFile={validateFileImage}/>
             
-            <Modal show={showModal} onHide={ () => { setShowModal(false); } } size="xl" fullscreen="lg-down" scrollable={true} centered={true}>
+            <Modal show={showModal} onHide={ () => { setShowModal(false); } } size="xl"  fullscreen="lg-down" scrollable={true} centered={true}>
                 <Modal.Header >
                     <Row className="d-flex w-100 justify-content-center align-items-center">
                         {Object.keys(steps).map((key) => (
@@ -175,7 +175,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                         ))}
                     </Row>
                 </Modal.Header>
-                <Modal.Body style={{ minHeight: '300px' }}>
+                <Modal.Body style={{ minHeight: '300px' }} >
                     <Row className="">
                         <Col md={2} className="d-flex justify-content-center align-items-center" style={{ flexFlow: 'column' }}>
                         <Button variant="primary" id="kneadedButton" onClick={() => onCreateObservations('A')} style={{ borderRadius: '50%' }} >
@@ -277,7 +277,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                                 )}
                             </motion.div>
                         </Col>
-                        <Col md={4} className="d-flex" style={{ flexFlow: 'column', justifyContent: 'space-between', maxHeight: '270px', overflowY: 'auto' }}>
+                        <Col md={3} className="d-flex" style={{ flexFlow: 'column', flex: 1 ,maxHeight: '270px', overflowY: 'auto' }}>
 
                             {showModalObservations ?
 
