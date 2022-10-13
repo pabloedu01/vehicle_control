@@ -227,7 +227,6 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                                     alignItems: "center",
                                     justifyContent: "center",
                                     color: "#fff",
-                                    border: "2px solid #fff",
                                     cursor: "pointer",
                                     fontWeight: "bold"}}
                                     dragConstraints={constraintsRef}
@@ -260,7 +259,6 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                                     alignItems: "center",
                                     justifyContent: "center",
                                     color: "#fff",
-                                    border: "2px solid #fff",
                                     lineHeight: "16px",
                                     fontSize: "16px",
                                     fontWeight: "bold"}}
