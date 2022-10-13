@@ -176,7 +176,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                     </Row>
                 </Modal.Header>
                 <Modal.Body style={{ minHeight: '300px' }} >
-                    <Row className="">
+                    <Row >
                         <Col md={2} className="d-flex justify-content-center align-items-center" style={{ flexFlow: 'column' }}>
                         <Button variant="primary" id="kneadedButton" onClick={() => onCreateObservations('A')} style={{ borderRadius: '50%' }} >
                             A
@@ -204,8 +204,8 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                         </label>
                         
                         </Col>
-                        <Col md={7} className="d-flex justify-content-center align-items-center" style={{ flexFlow: 'column', width: '500px', height: '270px' }}>
-                            <motion.div ref={constraintsRef} className="d-flex justify-content-center align-items-center" style={{ flexFlow: 'column', width: '500px', height: '270px',position: 'relative'}}>
+                        <Col md={4} className="d-flex justify-content-center align-items-center" style={{ flexFlow: 'column', width: '450px', height: '270px'}}>
+                            <motion.div ref={constraintsRef} className="d-flex justify-content-center align-items-center" style={{ flexFlow: 'column', width: '450px', height: '270px',position: 'relative'}}>
                                 {(props?.item?.validation?.images || []).hasOwnProperty(currentStep) ? <img src={props?.item?.validation?.images[currentStep]} className="overflow-hidden" style={{maxWidth: '100%'}}/> : 'No image available'}
                                 {steps[currentStep]}
                             {observationsList.length > 0 && observationsList.map(m => (
@@ -277,7 +277,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                                 )}
                             </motion.div>
                         </Col>
-                        <Col md={3} className="d-flex" style={{ flexFlow: 'column', flex: 1 ,maxHeight: '270px', overflowY: 'auto' }}>
+                        <Col md={6} className="d-flex" style={{ flexFlow: 'column', flex: 1 ,maxHeight: '270px', overflowY: 'auto' }}>
 
                             {showModalObservations ?
 
