@@ -168,7 +168,11 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                     <Row className="d-flex w-100 justify-content-center align-items-center">
                         {Object.keys(steps).map((key) => (
                             <Col key={key} className="d-flex justify-content-center align-items-center">
-                                <div  onClick={() => {setCurrentStep(parseInt(key, 10));}}>
+                                <div  onClick={() => {
+                                    setCurrentStep(parseInt(key, 10));
+                                    setMarkupActual(null)
+                                    setShowModalObservations(false);
+                                }}>
                                     {steps[key]}
                                 </div>
                             </Col>
@@ -208,7 +212,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                             <motion.div ref={constraintsRef} className="d-flex justify-content-center align-items-center" style={{ flexFlow: 'column', width: '450px', height: '270px',position: 'relative'}}>
                                 {(props?.item?.validation?.images || []).hasOwnProperty(currentStep) ? <img src={props?.item?.validation?.images[currentStep]} className="overflow-hidden" style={{maxWidth: '100%'}}/> : 'No image available'}
                                 {steps[currentStep]}
-                            {observationsList.length > 0 && observationsList.map(m => (
+                            {observationsList.length > 0 && observationsList.map((m, index)=> (
                                 <motion.div 
                                     key={m.markup.type + (Math.random() * (10000 - 1) + 1) } 
                                     style={{ background: "#198754",
@@ -222,10 +226,11 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                                     justifyContent: "center",
                                     color: "#fff",
                                     border: "2px solid #fff",
+                                    cursor: "pointer",
                                     fontWeight: "bold"}}
                                     dragConstraints={constraintsRef}
                                     initial={{ top: m.markup.position.top, left:m.markup.position.left }}
-                        
+                                    onClick={() => {onEditObservations(index);}}
                                     dragTransition={{ bounceStiffness: 100, bounceDamping: 10, min: 0, max: 4 }}
                                     drag 
                                     dragListener={m.markup.active}
@@ -297,7 +302,12 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                                         </Row>
                                     </Card.Body>
                                     <Card.Footer className="d-flex justify-content-center align-items-center gap-2">
-                                        <Button variant="primary" onClick={() => {setFileUploadDataTemp([]);setShowModalObservations(false);}}>
+                                        <Button variant="primary" onClick={() => {
+                                            setFileUploadDataTemp([]);
+                                            setShowModalObservations(false);
+                                            setMarkupActual(null)
+                        
+                                        }}>
                                             Sair
                                         </Button>
                                         <Button variant="primary" onClick={onSaveObservations}>
@@ -313,22 +323,19 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                                     <h3>Observações</h3>
 
                                     {observationsList.map((observation, index) => (
-                                        <Card key={index}>
+                                        <Card key={index} style={{border: '1px solid #000'}} >
                                             <Card.Header>
-                                                {typeMarkups[observation.markup.type]}
-
+                                                <span onClick={() => {onEditObservations(index);}}>
+                                                    {typeMarkups[observation.markup.type]}
+                                                </span>
                                                 <div className="float-end">
-                                                    <span onClick={() => {onEditObservations(index);}}><i className="mdi mdi-square-edit-outline" /></span>
-                                                    <span onClick={() => {onDeleteObservations(index);}}><i className="mdi mdi-trash-can-outline" /></span>
+                                                    <span onClick={() => {onDeleteObservations(index);}}><i className="mdi mdi-close" /></span>
                                                 </div>
                                             </Card.Header>
-                                            <Card.Body>
+                                            <Card.Body onClick={() => {onEditObservations(index);}}>
                                                 <Row>
                                                     <Col sm={9}>
                                                         {observation.observations}
-                                                    </Col>
-                                                    <Col sm={3}>
-                                                        <span onClick={() => {setObservationsIndex(index);setFileUploadData(observation?.images ?? []);setShowFileUpload(true);}}><i className="mdi mdi-image-area"/></span>
                                                     </Col>
                                                 </Row>
                                             </Card.Body>
