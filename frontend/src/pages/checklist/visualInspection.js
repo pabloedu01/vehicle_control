@@ -347,7 +347,11 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                     </Row>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="primary" onClick={() => {setShowModal(false);}}>
+                    <Button variant="primary" onClick={() => {
+                        setShowModal(false);
+                        setMarkupActual(null)
+                        setShowModalObservations(false);
+                    }}>
                         Sair
                     </Button>
                     <Button variant="primary" onClick={onSave}>
