@@ -13,12 +13,10 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
     const [observationsIndex, setObservationsIndex] = useState(null);
     const [observationsList, setObservationsList] = useState([]);
     const [observations, setObservations] = useState(null);
-    const [position, setPosition] = useState(null);
     const [showFileUpload, setShowFileUpload] = useState(false);
     const [fileUploadData, setFileUploadData] = useState([]);
     const [fileUploadDataTemp, setFileUploadDataTemp] = useState([]);
     const [markupActual, setMarkupActual] = useState(null)
-    const [markups, setMarkups] = useState([]);
 
     const constraintsRef = useRef(null); 
 
@@ -30,6 +28,13 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
         '5': 'Teto',
     };
 
+    const typeMarkups = {
+        A: 'Amassado',
+        R: 'Riscado',
+        X: 'Quebrado',
+        F: 'Faltante'
+    }
+
     const onSave = () => {
         props?.onChange(JSON.stringify(data));
         setShowModal(false);
@@ -38,26 +43,25 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
     const onSaveObservations = () => {
         const currentObservationsList = [...observationsList];
         let newObservationsList;
-
-        if(observationsIndex === null || !currentObservationsList.hasOwnProperty(observationsIndex)){
-            newObservationsList = currentObservationsList.concat([{
-                observations,
-                position,
-                images: fileUploadDataTemp
-            }]);
-
-        } else {
-            currentObservationsList[observationsIndex] = {...currentObservationsList[observationsIndex], observations, position};
-            newObservationsList = currentObservationsList;
-        }
-
-
+        
         const markupActualSave = {
             ...markupActual,
             active: false
         }
+        console.log(markupActualSave);
 
-        setMarkups(prevState => [...prevState, markupActualSave])
+        if(observationsIndex === null || !currentObservationsList.hasOwnProperty(observationsIndex)){
+            newObservationsList = currentObservationsList.concat([{
+                observations,
+                markup: {...markupActualSave},
+                images: fileUploadDataTemp
+            }]);
+
+        } else {
+            currentObservationsList[observationsIndex] = {...currentObservationsList[observationsIndex], observations, markup: {...markupActualSave}};
+            newObservationsList = currentObservationsList;
+        }
+
         setMarkupActual(null)
         setObservationsList(newObservationsList);
         setData({...data, [currentStep]: {...(data[currentStep] ?? {}), observations: [...newObservationsList]}});
@@ -69,7 +73,6 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
     const onCreateObservations = (type) => {
         setObservationsIndex(null);
         setObservations(null);
-        setPosition(null);
         setShowModalObservations(true);
         createPositionDrag(type)
     };
@@ -77,8 +80,8 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
     const onEditObservations = (index) => {
         setObservationsIndex(index);
         setObservations(observationsList[index].observations);
-        setPosition(observationsList[index].position);
         setShowModalObservations(true);
+        setMarkupActual({...observationsList[index].markup, active: true})
     };
 
     const onDeleteObservations = (index) => {
@@ -133,10 +136,6 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
 
     function updatePositionMarkup(positionTop, positionLeft) {
         setMarkupActual(prevState => {
-            console.log('actual', {
-                top: prevState.position.top + positionTop,
-                left: prevState.position.left + positionLeft
-            })
             return {
                 ...prevState,
                 position: {
@@ -155,7 +154,6 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                 left: 0
             },
             type,
-            number: markups.length + 1,
             active: true
         }
         setMarkupActual(markup)
@@ -207,14 +205,13 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                         
                         </Col>
                         <Col md={7} className="d-flex justify-content-center align-items-center" style={{ flexFlow: 'column', width: '500px', height: '270px' }}>
-                            <motion.div ref={constraintsRef} className="d-flex justify-content-center align-items-center" style={{ flexFlow: 'column', width: '500px', height: '270px',position: 'relative',background: 'blue' }}>
+                            <motion.div ref={constraintsRef} className="d-flex justify-content-center align-items-center" style={{ flexFlow: 'column', width: '500px', height: '270px',position: 'relative'}}>
                                 {(props?.item?.validation?.images || []).hasOwnProperty(currentStep) ? <img src={props?.item?.validation?.images[currentStep]} className="overflow-hidden" style={{maxWidth: '100%'}}/> : 'No image available'}
                                 {steps[currentStep]}
-                            {markups.length > 0 && markups.map(m => (
+                            {observationsList.length > 0 && observationsList.map(m => (
                                 <motion.div 
-                                    key={m.number + (Math.random() * (10000 - 1) + 1) } 
-                                    className="pos"
-                                    style={{ background: "#fd7e14",
+                                    key={m.markup.type + (Math.random() * (10000 - 1) + 1) } 
+                                    style={{ background: "#198754",
                                     borderRadius: "50%",
                                     width: "35px",
                                     height: "35px",
@@ -227,22 +224,20 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                                     border: "2px solid #fff",
                                     fontWeight: "bold"}}
                                     dragConstraints={constraintsRef}
-                                    initial={{ top: m.position.top, left:m.position.left }}
+                                    initial={{ top: m.markup.position.top, left:m.markup.position.left }}
                         
                                     dragTransition={{ bounceStiffness: 100, bounceDamping: 10, min: 0, max: 4 }}
                                     drag 
-                                    dragListener={m.active}
+                                    dragListener={m.markup.active}
                                     onDragEnd={
                                         (event, info) => {
-                                            console.log({ top: m.position.top, left:m.position.left })
-                                            console.log("end", info.offset.x, info.offset.y)
                                             const positionTop = info.offset.y
                                             const positionLeft = info.offset.x
                                             updatePositionMarkup(positionTop, positionLeft)
                                         }
                                     }
                                     >
-                                        {m.number + m.type}
+                                        {m.markup.type}
                                     </motion.div>
                                 ))}
                                 {markupActual && (
@@ -259,6 +254,8 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                                     justifyContent: "center",
                                     color: "#fff",
                                     border: "2px solid #fff",
+                                    lineHeight: "16px",
+                                    fontSize: "16px",
                                     fontWeight: "bold"}}
                                     dragConstraints={constraintsRef}
                                     initial={{ top: markupActual.position.top, left:markupActual.position.left }}
@@ -269,14 +266,13 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                 
                                     onDragEnd={
                                         (event, info) => {
-                                            console.log("end", info.offset.x, info.offset.y)
                                             const positionTop = info.offset.y
                                             const positionLeft = info.offset.x
                                             updatePositionMarkup(positionTop, positionLeft)
                                         }
                                     }
                                     >
-                                        {markupActual.number + markupActual.type}
+                                        {markupActual.type}
                                     </motion.div>
                                 )}
                             </motion.div>
@@ -287,9 +283,9 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
 
                                 <Card>
                                     <Card.Body>
-                                        <Row className="">
+                                        <Row className="" >
                                             <Col md={12}>
-                                            <Card.Title>1 - Amassado</Card.Title>
+                                            <Card.Title>{typeMarkups[markupActual.type]}</Card.Title>
                                             </Col>
                                             <Col md={12}>
                                                 <textarea style={{width: '100%'}} rows={4} value={observations ?? ''} onChange={(e) => {setObservations(e.target.value);}} placeholder="comentarios"/>
@@ -319,7 +315,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                                     {observationsList.map((observation, index) => (
                                         <Card key={index}>
                                             <Card.Header>
-                                                Title
+                                                {typeMarkups[observation.markup.type]}
 
                                                 <div className="float-end">
                                                     <span onClick={() => {onEditObservations(index);}}><i className="mdi mdi-square-edit-outline" /></span>
