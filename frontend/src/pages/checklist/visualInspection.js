@@ -38,6 +38,8 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
     const onSave = () => {
         props?.onChange(JSON.stringify(data));
         setShowModal(false);
+        setMarkupActual(null)
+        setShowModalObservations(false);
     };
 
     const onSaveObservations = () => {
