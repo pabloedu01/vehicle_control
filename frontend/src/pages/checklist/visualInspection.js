@@ -331,7 +331,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                                     <h3>Observações</h3>
 
                                     {observationsList.map((observation, index) => (
-                                        <Card key={index} style={{border: '1px solid #000', background: `${selectedCardMakup === index ? 'rgba(0, 0, 0, 0.1)' : 'none'}`}} onMouseOver={() => onMouseOverSelected(index)} onMouseOut={() => onMouseOverSelected(null)}>
+                                        <Card key={index} style={{border: '1px solid #000'}} onMouseOver={() => onMouseOverSelected(index)} onMouseOut={() => onMouseOverSelected(null)}>
                                             <Card.Header className='d-flex justify-content-between align-items-center' style={{ background: `${selectedCardMakup === index ? 'rgba(0, 0, 0, 0.1)' : 'none'}`}}>
                                                 <span onClick={() => {onEditObservations(index);}} style={{display: 'flex', width: '100%', flex: 1,  }}>
                                                     {typeMarkups[observation.markup.type]}
