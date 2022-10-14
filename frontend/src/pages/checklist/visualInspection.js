@@ -17,6 +17,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
     const [fileUploadData, setFileUploadData] = useState([]);
     const [fileUploadDataTemp, setFileUploadDataTemp] = useState([]);
     const [markupActual, setMarkupActual] = useState(null)
+    const [selectedCardMakup, setSelectedCardMakup] = useState(null)
 
     const constraintsRef = useRef(null); 
 
@@ -161,6 +162,10 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
         setMarkupActual(markup)
     }
 
+    function onMouseOverSelected(index) {
+        setSelectedCardMakup(index)
+    }
+
     return (
         <>
             <FileUpload show={showFileUpload} handleClose={() => { setShowFileUpload(false); }} files={fileUploadData} handleFileUpload={handleUploadImages} validateFile={validateFileImage}/>
@@ -217,7 +222,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                             {observationsList.length > 0 && observationsList.map((m, index)=> (
                                 <motion.div 
                                     key={m.markup.type + (Math.random() * (10000 - 1) + 1) } 
-                                    style={{ background: "#198754",
+                                    style={{ background: `${selectedCardMakup === index ? '#000' : '#198754'}`,
                                     borderRadius: "50%",
                                     width: "35px",
                                     height: "35px",
@@ -232,6 +237,8 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                                     dragConstraints={constraintsRef}
                                     initial={{ top: m.markup.position.top, left:m.markup.position.left }}
                                     onClick={() => {onEditObservations(index);}}
+                                    onMouseOver={() => onMouseOverSelected(index)} 
+                                    onMouseOut={() => onMouseOverSelected(null)}
                                     dragTransition={{ bounceStiffness: 100, bounceDamping: 10, min: 0, max: 4 }}
                                     drag 
                                     dragListener={m.markup.active}
@@ -249,7 +256,8 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                                 {markupActual && (
                                     <motion.div 
                                     className="pos"
-                                    style={{ background: "#fd7e14",
+                                    style={{ 
+                                    background: "#fd7e14",
                                     borderRadius: "50%",
                                     width: "35px",
                                     height: "35px",
@@ -323,13 +331,13 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                                     <h3>Observações</h3>
 
                                     {observationsList.map((observation, index) => (
-                                        <Card key={index} style={{border: '1px solid #000'}} >
-                                            <Card.Header>
-                                                <span onClick={() => {onEditObservations(index);}}>
+                                        <Card key={index} style={{border: '1px solid #000', background: `${selectedCardMakup === index ? 'rgba(0, 0, 0, 0.1)' : 'none'}`}} onMouseOver={() => onMouseOverSelected(index)} onMouseOut={() => onMouseOverSelected(null)}>
+                                            <Card.Header className='d-flex justify-content-between align-items-center' style={{ background: `${selectedCardMakup === index ? 'rgba(0, 0, 0, 0.1)' : 'none'}`}}>
+                                                <span onClick={() => {onEditObservations(index);}} style={{display: 'flex', width: '100%', flex: 1,  }}>
                                                     {typeMarkups[observation.markup.type]}
                                                 </span>
-                                                <div className="float-end">
-                                                    <span onClick={() => {onDeleteObservations(index);}}><i className="mdi mdi-close" /></span>
+                                                <div className="float-end d-flex justify-content-center align-items-center px-1" onClick={() => {onDeleteObservations(index);}}>
+                                                    <span ><i className="mdi mdi-close" /></span>
                                                 </div>
                                             </Card.Header>
                                             <Card.Body onClick={() => {onEditObservations(index);}}>
