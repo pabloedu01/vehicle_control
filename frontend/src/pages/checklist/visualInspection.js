@@ -18,6 +18,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
     const [fileUploadDataTemp, setFileUploadDataTemp] = useState([]);
     const [markupActual, setMarkupActual] = useState(null)
     const [selectedCardMakup, setSelectedCardMakup] = useState(null)
+    const [isEditingIndex, setIsEditingIndex] = useState(null)
 
     const constraintsRef = useRef(null); 
 
@@ -41,6 +42,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
         setShowModal(false);
         setMarkupActual(null)
         setShowModalObservations(false);
+        setIsEditingIndex(null)
     };
 
     const onSaveObservations = () => {
@@ -51,8 +53,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
             ...markupActual,
             active: false
         }
-        console.log(markupActualSave);
-
+       
         if(observationsIndex === null || !currentObservationsList.hasOwnProperty(observationsIndex)){
             newObservationsList = currentObservationsList.concat([{
                 observations,
@@ -64,7 +65,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
             currentObservationsList[observationsIndex] = {...currentObservationsList[observationsIndex], observations, markup: {...markupActualSave}};
             newObservationsList = currentObservationsList;
         }
-
+        setIsEditingIndex(null)
         setMarkupActual(null)
         setObservationsList(newObservationsList);
         setData({...data, [currentStep]: {...(data[currentStep] ?? {}), observations: [...newObservationsList]}});
@@ -83,7 +84,8 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
     const onEditObservations = (index) => {
         setObservationsIndex(index);
         setObservations(observationsList[index].observations);
-        setShowModalObservations(true);
+        setIsEditingIndex(index)
+        console.log(index)
         setMarkupActual({...observationsList[index].markup, active: true})
     };
 
@@ -292,59 +294,90 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                         </Col>
                         <Col md={6} className="d-flex" style={{ flexFlow: 'column', flex: 1 ,maxHeight: '270px', overflowY: 'auto' }}>
 
-                            {showModalObservations ?
-
-                                <Card>
-                                    <Card.Body>
-                                        <Row className="" >
+                            {showModalObservations && 
+                                <Card style={{border: '1px solid #000'}}>
+                                <Card.Header className='d-flex justify-content-between align-items-center'>
+                                    <span style={{display: 'flex', width: '100%', flex: 1, fontWeight: 'bold'  }}>
+                                        {typeMarkups[markupActual.type]}
+                                    </span>
+                                </Card.Header>
+                                <Card.Body>
+                                    <Row>
+                                        <>
                                             <Col md={12}>
-                                            <Card.Title>{typeMarkups[markupActual.type]}</Card.Title>
-                                            </Col>
-                                            <Col md={12}>
-                                                <textarea style={{width: '100%'}} rows={4} value={observations ?? ''} onChange={(e) => {setObservations(e.target.value);}} placeholder="comentarios"/>
+                                                <textarea style={{width: '100%', height: '80px'}} rows={4} value={observations ?? ''} onChange={(e) => {
+                                                    console.log(e.target.value);
+                                                    setObservations(e.target.value);
+                                                }} placeholder="comentarios"/>
                                             </Col>
 
-                                            <Col md={12} className="d-flex justify-content-center align-items-center">
-                                                <Button variant="primary" onClick={() => {setFileUploadData(fileUploadDataTemp ?? []);setShowFileUpload(true);}}>Anexar Imagem</Button>
+                                            <Col md={12} className="d-flex justify-content-between align-items-center">
+                                            <Button variant="primary" onClick={() => {setFileUploadData(fileUploadDataTemp ?? []);setShowFileUpload(true);}}>Anexar Imagem</Button>
+                                            <div className="d-flex gap-2 align-items-center">
+                                                <Button variant="primary" onClick={() => {
+                                                    setFileUploadDataTemp([]);
+                                                    setShowModalObservations(false);
+                                                    setMarkupActual(null)
+                                                }}>
+                                                    Sair
+                                                </Button>
+                                                <Button variant="primary" onClick={onSaveObservations}>
+                                                    Salvar
+                                                </Button>
+                                            </div>
                                             </Col>
-                                        </Row>
-                                    </Card.Body>
-                                    <Card.Footer className="d-flex justify-content-center align-items-center gap-2">
-                                        <Button variant="primary" onClick={() => {
-                                            setFileUploadDataTemp([]);
-                                            setShowModalObservations(false);
-                                            setMarkupActual(null)
-                        
-                                        }}>
-                                            Sair
-                                        </Button>
-                                        <Button variant="primary" onClick={onSaveObservations}>
-                                            Salvar
-                                        </Button>
-                                    </Card.Footer>
-                                </Card>
+                                        </>
+                                    </Row>
+                                </Card.Body>
+                            </Card>
+                            }
 
-                                : null}
-
-                            { observationsList.length > 0 ?
+                            { observationsList.length > 0  ?
                                 <>
-                                    <h3>Observações</h3>
-
                                     {observationsList.map((observation, index) => (
                                         <Card key={index} style={{border: '1px solid #000'}} onMouseOver={() => onMouseOverSelected(index)} onMouseOut={() => onMouseOverSelected(null)}>
                                             <Card.Header className='d-flex justify-content-between align-items-center' style={{ background: `${selectedCardMakup === index ? 'rgba(0, 0, 0, 0.1)' : 'none'}`}}>
-                                                <span onClick={() => {onEditObservations(index);}} style={{display: 'flex', width: '100%', flex: 1,  }}>
+                                                <span onClick={() => {onEditObservations(index);}} style={{display: 'flex', width: '100%', flex: 1, fontWeight: 'bold'  }}>
                                                     {typeMarkups[observation.markup.type]}
                                                 </span>
                                                 <div className="float-end d-flex justify-content-center align-items-center px-1" onClick={() => {onDeleteObservations(index);}}>
                                                     <span ><i className="mdi mdi-close" /></span>
                                                 </div>
                                             </Card.Header>
-                                            <Card.Body onClick={() => {onEditObservations(index);}}>
+                                            <Card.Body onClick={() => {observationsIndex === index || onEditObservations(index);}}>
                                                 <Row>
-                                                    <Col sm={9}>
+                                                
+                                                {isEditingIndex === index ? (
+                                                    <>
+                                                        <Col md={12}>
+                                                            <textarea style={{width: '100%', height: '80px'}} rows={4} value={observations ?? ''} onChange={(e) => {
+                                                                console.log('editing',e.target.value)
+                                                                setObservations(e.target.value)
+                                                            }} placeholder="comentários"/>
+                                                        </Col>
+    
+                                                        <Col md={12} className="d-flex justify-content-between align-items-center">
+                                                        <Button variant="primary" onClick={() => {setFileUploadData(fileUploadDataTemp ?? []);setShowFileUpload(true);}}>Anexar Imagem</Button>
+                                                        <div className="d-flex gap-2 align-items-center">
+                                                            <Button variant="primary" onClick={() => {
+                                                                setFileUploadDataTemp([]);
+                                                                setShowModalObservations(false);
+                                                                setMarkupActual(null)
+                                                                setIsEditingIndex(null)
+                                                            }}>
+                                                                Sair
+                                                            </Button>
+                                                            <Button variant="primary" onClick={onSaveObservations}>
+                                                                Salvar
+                                                            </Button>
+                                                        </div>
+                                                        </Col>
+                                                    </>
+                                                ):
+                                                    (<Col sm={9}>
                                                         {observation.observations}
-                                                    </Col>
+                                                    </Col> )
+                                                }
                                                 </Row>
                                             </Card.Body>
                                         </Card>
@@ -359,6 +392,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                         setShowModal(false);
                         setMarkupActual(null)
                         setShowModalObservations(false);
+                        setIsEditingIndex(null)
                     }}>
                         Sair
                     </Button>
