@@ -265,7 +265,9 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                         <div/>
                                                     </div>
                                                     <div className="blue-slots">
-                                                        <div/>
+                                                        <div>
+                                                            <div className="form-slot"/>
+                                                        </div>
                                                         <div>
                                                             <div className="form-slot"/>
                                                         </div>
@@ -318,7 +320,9 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                         <div/>
                                                     </div>
                                                     <div className="blue-slots">
-                                                        <div/>
+                                                        <div>
+                                                            <div className="form-slot"/>
+                                                        </div>
                                                         <div>
                                                             <div className="form-slot"/>
                                                         </div>
@@ -582,9 +586,12 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
 
                                     {/* seção */}
                                     <div className="icon-header p-1 text-white mt-1">
-                                        <div className="row">
+                                        <div className="row" style={{width: '100%', justifyContent: 'space-between'}}>
                                             <div className="col-auto">TIPO DE SERVIÇO</div>
-                                            <div className="col-auto">Revisão</div>
+                                            <div className="col-auto square-check"><div/>&nbsp;&nbsp;Revisão</div>
+                                            <div className="col-auto square-check"><div/>&nbsp;&nbsp;Diagnóstivo</div>
+                                            <div className="col-auto square-check"><div/>&nbsp;&nbsp;Reparo</div>
+                                            <div className="col-auto square-check"><div/>&nbsp;&nbsp;Outros <div className="form-slot input"/></div>
                                         </div>
                                     </div>
                                     <div className="row align-items-baseline ls-05">
@@ -599,13 +606,13 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                     <td width={5}>
                                                         <TripleSquareCheck />
                                                     </td>
-                                                    <td>Relogio e computador de bordo</td>
+                                                    <td>Relógio e computador de bordo</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
                                                         <TripleSquareCheck third={{ checked: true }} />
                                                     </td>
-                                                    <td>Luzes do painel e de cortesia •</td>
+                                                    <td>Luzes do painel e de cortesia</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
@@ -617,13 +624,13 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                     <td>
                                                         <TripleSquareCheck second={{ checked: true }} />
                                                     </td>
-                                                    <td>Ventilador / Desembacadores</td>
+                                                    <td>Ventilador / Desembaçadores</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
                                                         <TripleSquareCheck />
                                                     </td>
-                                                    <td>Retrovisor e para-sois</td>
+                                                    <td>Retrovisor e para-sóis</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
@@ -641,29 +648,35 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                     <td>
                                                         <TripleSquareCheck />
                                                     </td>
-                                                    <td>Ar-condicionado •</td>
+                                                    <td>Aquecedor elétrico dos bancos (se aplicável)</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
                                                         <TripleSquareCheck first={{ checked: true }} />
                                                     </td>
-                                                    <td>Radio / Multimidia •</td>
+                                                    <td>Ar-condicionado</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
                                                         <TripleSquareCheck />
                                                     </td>
-                                                    <td>Bancos e cintos de seguranca</td>
+                                                    <td>Rádio / Multimídia</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
                                                         <TripleSquareCheck first={{ checked: true }} />
                                                     </td>
-                                                    <td>Vidros e trava eletrica</td>
+                                                    <td>Bancos e cintos de segurança</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
                                                         <TripleSquareCheck second={{ checked: true }} />
+                                                    </td>
+                                                    <td>Vidros e trava elétrica</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <TripleSquareCheck first={{ checked: true }} />
                                                     </td>
                                                     <td>Freios de estacionamento</td>
                                                 </tr>
@@ -675,42 +688,9 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <TripleSquareCheck first={{ checked: true }} />
-                                                    </td>
-                                                    <td>Filtro de ar-condicionado</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
                                                         <TripleSquareCheck third={{ checked: true }} />
                                                     </td>
-                                                    <td>Alavanca de mudanca de marcha</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <TripleSquareCheck />
-                                                    </td>
-                                                    <td>
-                                                        Medidor de combustivel - substituicao a cada 72 meses (motor
-                                                        flex)
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <TripleSquareCheck />
-                                                    </td>
-                                                    <td>
-                                                        Filtro de succao da bomba de combustivel -limpeza a cada 36
-                                                        meses (Corolla)
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <TripleSquareCheck />
-                                                    </td>
-                                                    <td>
-                                                        Filtro de succao da bomba de combustivel - substituicao a
-                                                        cada 60.000 km ou 72 meses (Etios)
-                                                    </td>
+                                                    <td>Filtro de ar-condicionado</td>
                                                 </tr>
                                                 </tbody>
                                             </table>
@@ -724,7 +704,7 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                     <td width={5}>
                                                         <TripleSquareCheck first={{ checked: true }} />
                                                     </td>
-                                                    <td>Iluminação dianteira e traseira •</td>
+                                                    <td>Iluminação dianteira e traseira</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
@@ -732,10 +712,15 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                     </td>
                                                     <td>Tampa do tanque de combustível</td>
                                                 </tr>
+                                                <tr>
+                                                    <td>
+                                                        <TripleSquareCheck second={{ checked: true }} />
+                                                    </td>
+                                                    <td>Fumaça do motor (motor diesel)</td>
+                                                </tr>
                                                 </tbody>
                                             </table>
-                                        </div>
-                                        <div className="col-4 px-2">
+
                                             <div className="icon-header mb-1 mt-1">
                                                 <span>COM O CAPÔ ABERTO</span>
                                                 <div className="icon">icon</div>
@@ -746,11 +731,7 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                     <td width={5}>
                                                         <TripleSquareCheck first={{ checked: true }} />
                                                     </td>
-                                                    <td>
-                                                        Vazamentos de óleo, água, combustível
-                                                        <br />
-                                                        e/ou outros fluídos
-                                                    </td>
+                                                    <td>Vazamentos de óleo, água, combustível e/ou outros fluídos</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
@@ -762,33 +743,60 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                     <td>
                                                         <TripleSquareCheck second={{ checked: true }} />
                                                     </td>
-                                                    <td>
-                                                        Velas de ignição (veículos flex - a cada 1 O revisões)
-                                                    </td>
+                                                    <td>Folga das válvulas (se aplicável)</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
                                                         <TripleSquareCheck second={{ checked: true }} />
                                                     </td>
-                                                    <td>Condicões da bateria</td>
+                                                    <td>velas de ignição (conforme ano/modelo do veículo)</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
                                                         <TripleSquareCheck first={{ checked: true }} />
                                                     </td>
-                                                    <td>
-                                                        Tensão da bateria. Encontrado:{" "}
-                                                        <span className="mx-10 px-5"/>V •
-                                                    </td>
+                                                    <td>condições da bateria</td>
                                                 </tr>
+                                                <tr>
+                                                    <td>
+                                                        <TripleSquareCheck first={{ checked: true }} />
+                                                    </td>
+                                                    <td>Tensão da bateria. Encontrado [     v]</td>
+                                                </tr>
+
+
+                                                <tr>
+                                                    <td>
+                                                        <TripleSquareCheck first={{ checked: true }} />
+                                                    </td>
+                                                    <td>Cânister de carvão ativado (se aplicável)</td>
+                                                </tr>
+
                                                 <tr>
                                                     <td>
                                                         <TripleSquareCheck first={{ checked: true }} />
                                                     </td>
                                                     <td>Filtro de ar</td>
                                                 </tr>
+
+                                                <tr>
+                                                    <td>
+                                                        <TripleSquareCheck first={{ checked: true }} />
+                                                    </td>
+                                                    <td>Filtro de combustível (motor diesel ou flex)</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>
+                                                        <TripleSquareCheck first={{ checked: true }} />
+                                                    </td>
+                                                    <td>Filtro de combustível (2º filtro)(se aplicável)</td>
+                                                </tr>
                                                 </tbody>
                                             </table>
+                                        </div>
+                                        <div className="col-4 px-2">
+
                                             <div className="icon-header my-1">
                                                 <span>FLUÍDOS</span>
                                                 <div className="icon">icon</div>
@@ -799,43 +807,55 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                     <td width={5}>
                                                         <TripleSquareCheck first={{ checked: true }} />
                                                     </td>
-                                                    <td>Óleo do motor • </td>
+                                                    <td>Óleo do motor</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
                                                         <TripleSquareCheck second={{ checked: true }} />
                                                     </td>
-                                                    <td>Fluído do lavador de para-brisa • </td>
+                                                    <td>Fluido do lavador de para-brisa</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
                                                         <TripleSquareCheck />
                                                     </td>
-                                                    <td>Fluído do sistema de arrefecimento do motor </td>
+                                                    <td>Fluido  do sistema de arrefecimento do motor</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
                                                         <TripleSquareCheck />
                                                     </td>
-                                                    <td>Fluído de freio e embreagem</td>
+                                                    <td>Fluido de freio e embreagem</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
                                                         <TripleSquareCheck />
                                                     </td>
-                                                    <td>
-                                                        Fluído de transmissão automática
-                                                        <br />
-                                                        <span className="smallest">
-                      (se equipado com vareta de inspeção)
-                    </span>
-                                                    </td>
+                                                    <td>Fluido de transmissão automática (se equipado com vareta de inspeção)</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
                                                         <TripleSquareCheck />
                                                     </td>
                                                     <td>Óleo da transmissão manual</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <TripleSquareCheck />
+                                                    </td>
+                                                    <td>Fluido da direção hidráulica (se aplicável)</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <TripleSquareCheck />
+                                                    </td>
+                                                    <td>Óleo da caixa de tranferência (se aplicável)</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <TripleSquareCheck />
+                                                    </td>
+                                                    <td>Óleo do diferencial dianteiro e traseiro (se aplicável)</td>
                                                 </tr>
                                                 </tbody>
                                             </table>
@@ -855,15 +875,13 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                     <td>
                                                         <TripleSquareCheck second={{ checked: true }} />
                                                     </td>
-                                                    <td>Cânister de carvão ativado (se aplicavel)</td>
+                                                    <td>Tubulação do sistema de freio</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
                                                         <TripleSquareCheck />
                                                     </td>
-                                                    <td className="smallest">
-                                                        Vazamentos de óleo, água, combustivel e/ou outros fluidos
-                                                    </td>
+                                                    <td>Vazamentos de óleo, água, combustível e/ou outros fluidos</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
@@ -875,7 +893,13 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                     <td>
                                                         <TripleSquareCheck />
                                                     </td>
-                                                    <td>Coifas das semi-árvores</td>
+                                                    <td>Coifas dos eixos de tração</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <TripleSquareCheck />
+                                                    </td>
+                                                    <td>Suspensão dianteira e traseira</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
@@ -887,7 +911,19 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                     <td>
                                                         <TripleSquareCheck />
                                                     </td>
-                                                    <td>Filtro de combustivel</td>
+                                                    <td>Cânister de carvão ativado (RAV4 - se aplicável)</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <TripleSquareCheck />
+                                                    </td>
+                                                    <td>Limpeza das superfícies dos cubos de roda, disco e tambor de freio e rodas</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <TripleSquareCheck />
+                                                    </td>
+                                                    <td>Lubrificação da árvore de transmissão</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
@@ -895,6 +931,27 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                     </td>
                                                     <td>Juntas esféricas da suspensão e guarda-pó</td>
                                                 </tr>
+                                                <tr>
+                                                    <td>
+                                                        <TripleSquareCheck />
+                                                    </td>
+                                                    <td>Parafusso da árvore de transmissão</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>
+                                                        <TripleSquareCheck />
+                                                    </td>
+                                                    <td>Medidor de combustível - substituição a cada 72 meses (motor flex)</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>
+                                                        <TripleSquareCheck />
+                                                    </td>
+                                                    <td>Filtro de succção da bomba de combustível - limpeza a cada 36 meses (motor flex)</td>
+                                                </tr>
+
                                                 </tbody>
                                             </table>
                                         </div>
