@@ -54,7 +54,6 @@ export function CardObservation({
                 <>
                     <Col md={12} >
                         <textarea style={{width: '100%', height: '80px'}} rows={4} value={observations ?? ''} onChange={(e) => {
-                            console.log('editing',e.target.value)
                             setObservations(e.target.value)
                         }} placeholder="comentários"/>
                     </Col>
