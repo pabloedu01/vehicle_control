@@ -1,8 +1,12 @@
-@each $color, $value in $theme-colors {
-  .bg-#{$color} {
-    background-color: $value !important;
-  }
-  .text-#{$color} {
-    color: $value !important;
+.print-checklist{
+  @each $color, $value in $theme-colors {
+    .bg-#{$color} {
+      background-color: $value !important;
+    }
+    .text-#{$color} {
+      color: $value !important;
+    }
   }
 }
+
+

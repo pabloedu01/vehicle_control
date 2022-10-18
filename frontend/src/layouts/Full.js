@@ -3,6 +3,8 @@ import React, { Suspense, useCallback, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Container } from 'react-bootstrap';
 import { Outlet } from 'react-router-dom';
+// For Saas import Saas.scss
+import './../assets/scss/Saas.scss';
 
 // actions
 import { changeSidebarType } from '../redux/actions';

@@ -1,371 +1,397 @@
 @import "./style.scss";
 
-.d-flex {
-  display: flex;
-}
-.flex-col {
-  flex-direction: column;
-}
-.d-block {
-  display: block;
-}
-.align-items-center {
-  align-items: center;
-}
-.align-self-start {
-  align-self: start;
-}
-.align-items-start {
-  align-items: start !important;
-}
-.justify-content-center {
-  justify-content: center;
-}
-.justify-content-between {
-  justify-content: space-between;
-}
-.text-center {
-  text-align: center;
-}
-.text-start {
-  text-align: left;
-}
-.text-end {
-  text-align: right;
-}
-.text-justify {
-  text-align: justify;
-}
-.ls-05 {
-  letter-spacing: -0.28px;
-}
-.ls-1 {
-  letter-spacing: -0.75px;
-}
-.lh-100 {
-  line-height: 100%;
-}
-.lh-150 {
-  line-height: 150%;
-}
-.small {
-  font-size: 0.5rem;
-}
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
 
-.smallest {
-  font-size: 0.48rem;
-}
-
-.row {
-  display: flex;
-  align-items: center;
-}
-
-.col {
-  flex: 1 0 0%;
-}
-
-.col-auto {
-  flex: 0 0 auto;
-  width: auto;
-}
-
-.col-35 {
-  max-width: 35mm;
-  height: 9mm;
-}
-.col-40 {
-  max-width: 40mm;
-  min-width: 40mm;
-  height: 9mm;
-}
-
-.h-7 {
-  min-height: 7mm;
-}
-.border-1 {
-  border: thin solid $black;
-}
-
-.vh-100 {
-  height: inherit;
-  min-height: 100%;
-  border: thin solid red;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
-.form-slot {
-  min-height: 7mm;
-  border: thin solid black;
-  border-radius: 1mm;
-  label {
-    font-size: 9px;
-    font-weight: 500;
-    letter-spacing: -0.35px;
-    margin-left: 0.5mm;
+.print-checklist{
+  .d-flex {
+    display: flex !important;
   }
-  &.placa {
-    min-height: 9mm;
+  .flex-col {
+    flex-direction: column !important;
   }
-}
-
-.border-wrapper {
-  border: thin solid black;
-  border-radius: 1mm;
-  height: 100%;
-}
-
-header > .row img {
-  width: 34mm;
-}
-
-.red-tag {
-  max-height: 19mm;
-  min-height: 19mm;
-  background-color: $danger;
-  padding: 2mm 0mm 2mm 2mm;
-  font-size: 11.5px;
-  line-height: 140%;
-  border-radius: 1mm;
-  > div:first-child {
-    letter-spacing: -0.5px;
+  .d-block {
+    display: block !important;
   }
-}
+  .align-items-center {
+    align-items: center !important;
+  }
 
-.blue-slots {
-  div {
-    border-radius: 0.6mm;
-    background-color: $primary;
-    margin-top: 0.3mm;
-    padding: 1mm;
-    color: $white;
-    line-height: 96%;
-    min-height: 6.8mm;
-    max-height: 6.8mm;
-    display: flex;
+  .align-items-baseline {
+    align-items: baseline !important;
+  }
+  .align-self-start {
+    align-self: start !important;
+  }
+  .align-items-start {
+    align-items: start !important;
+  }
+  .justify-content-center {
+    justify-content: center !important;
+  }
+  .justify-content-between {
+    justify-content: space-between !important;
+  }
+  .text-center {
+    text-align: center !important;
+  }
+  .text-start {
+    text-align: left !important;
+  }
+  .text-end {
+    text-align: right !important;
+  }
+  .text-justify {
+    text-align: justify !important;
+  }
+  .ls-05 {
+    letter-spacing: -0.28px !important;
+  }
+  .ls-1 {
+    letter-spacing: -0.75px !important;
+  }
+  .lh-100 {
+    line-height: 100% !important;
+  }
+  .lh-150 {
+    line-height: 150% !important;
+  }
+  .small {
+    font-size: 0.5rem !important;
+  }
+
+  .smallest {
+    font-size: 0.48rem !important;
+  }
+
+  .row {
+    display: flex !important;
     align-items: center;
-    letter-spacing: -0.5px;
-    &.bg-secondary {
-      justify-content: center;
+  }
+
+  .col {
+    flex: 1 0 0% !important;
+  }
+
+  .col-auto {
+    flex: 0 0 auto !important;
+    width: auto !important;
+  }
+
+  .col-35 {
+    max-width: 35mm !important;
+    height: 9mm !important;
+  }
+  .col-40 {
+    max-width: 40mm !important;
+    min-width: 40mm !important;
+    height: 9mm !important;
+  }
+
+  .h-7 {
+    min-height: 7mm !important;
+  }
+  .border-1 {
+    border: thin solid $black !important;
+  }
+
+  .vh-100 {
+    height: inherit !important;
+    min-height: 100% !important;
+    border: thin solid red !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 !important;
+  }
+
+  .form-slot {
+    min-height: 7mm !important;
+    border: thin solid black !important;
+    border-radius: 1mm !important;
+    label {
+      font-size: 9px !important;
+      font-weight: 500 !important;
+      letter-spacing: -0.35px !important;
+      margin-left: 0.5mm !important;
     }
-
-    .form-slot {
-      width: 100% !important;
-      background-color: white;
-      max-height: 5.4mm;
-      height: 5.4mm;
-      min-height: 3.4mm;
-      border: none;
-      margin-bottom: 1px;
+    &.placa {
+      min-height: 9mm !important;
     }
   }
-}
 
-.icon-header {
-  display: flex;
-  align-items: center;
-  background-color: $primary;
-  color: white;
-  min-height: 4mm;
-  border-radius: 0.6mm;
-  span {
-    width: 100%;
-    display: block;
-    padding: 1mm;
-    border-radius: inherit;
+  .border-wrapper {
+    border: thin solid black !important;
+    border-radius: 1mm !important;
+    height: 100% !important;
   }
-  .icon {
-    background-color: rgba($black, 0.2);
-    margin-left: auto;
-    padding: 1mm;
-    min-height: inherit;
-    border-radius: inherit;
+
+  header > .row img {
+    width: 34mm !important;
   }
-}
 
-.row {
-  &.three-checkboxes,
-  &.two-checkboxes {
-    justify-content: space-around;
-    min-height: 6mm;
-    max-height: 6mm;
-    padding: 0.45mm 0;
+  .red-tag {
+    max-height: 19mm !important;
+    min-height: 19mm !important;
+    background-color: $danger !important;
+    padding: 2mm 0mm 2mm 2mm !important;
+    font-size: 11.5px !important;
+    line-height: 140% !important;
+    border-radius: 1mm !important;
+    > div:first-child {
+      letter-spacing: -0.5px !important;
+    }
+  }
 
+  .blue-slots {
     div {
-      border: 0.5mm solid $black;
-      min-height: 3mm;
-      min-width: 3mm;
-      border-radius: 0.6mm;
+      border-radius: 0.6mm !important;
+      background-color: $primary;
+      margin-top: 0.3mm !important;
+      padding: 1mm !important;
+      color: $white;
+      line-height: 96% !important;
+      min-height: 6.8mm !important;
+      max-height: 6.8mm !important;
+      display: flex !important;
+      align-items: center !important;
+      letter-spacing: -0.5px !important;
+      &.bg-secondary {
+        justify-content: center !important;
+      }
+
+      .form-slot {
+        width: 100% !important;
+        background-color: white !important;
+        max-height: 5.4mm !important;
+        height: 5.4mm !important;
+        min-height: 3.4mm !important;
+        border: none !important;
+        margin-bottom: 1px !important;
+      }
+    }
+  }
+
+  .icon-header {
+    display: flex !important;
+    align-items: center !important;
+    background-color: $primary !important;
+    color: white !important;
+    min-height: 4mm !important;
+    border-radius: 0.6mm !important;
+    span {
+      width: 100% !important;
+      display: block !important;
+      padding: 1mm !important;
+      border-radius: inherit !important;
+    }
+    .icon {
+      background-color: rgba($black, 0.2) !important;
+      margin-left: auto !important;
+      padding: 1mm !important;
+      min-height: inherit !important;
+      border-radius: inherit !important;
+    }
+  }
+
+  .row {
+    &.three-checkboxes,
+    &.two-checkboxes {
+      justify-content: space-around !important;
+      min-height: 6mm !important;
+      max-height: 6mm !important;
+      padding: 0.45mm 0 !important;
+
+      div {
+        border: 0.5mm solid $black !important;
+        min-height: 3mm !important;
+        min-width: 3mm !important;
+        border-radius: 0.6mm !important;
+        &.checked {
+          position: relative !important;
+          display: flex !important;
+          justify-content: center !important;
+          align-items: center !important;
+          &:after,
+          &:before {
+            content: "" !important;
+            background-color: $black !important;
+            position: absolute !important;
+            width: 0.5mm !important;
+            height: 150% !important;
+            transform: rotateZ(-45deg) !important;
+          }
+          &:after {
+            transform: rotateZ(45deg) !important;
+          }
+        }
+      }
+    }
+    &.les-tres {
+      height: 87mm !important;
+      .col {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        min-height: 100% !important;
+      }
+    }
+
+    &.three-checkboxes {
+      font-size: 0.5rem !important;
+      letter-spacing: -0.5px !important;
+      div {
+      }
+      min-height: 5.4mm !important;
+      max-height: 5.4mm !important;
+    }
+
+    .col > div.form-slot {
+      &:last-child {
+        height: 6.8mm !important;
+        min-height: 6.8mm !important;
+      }
+    }
+  }
+
+  hr {
+    border: none !important;
+    border-bottom: thin solid #aaa !important;
+  }
+
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    font-size: 0.44rem !important;
+    height: 1px !important;
+    &.checks {
+      font-size: 0.5rem !important;
+      tr {
+        td {
+          vertical-align: middle !important;
+          &:last-child {
+            padding: 0.6mm 0.8mm !important;
+          }
+        }
+        &:not(:last-child) {
+          td {
+            border-bottom: 0.01mm solid #eee !important;
+          }
+        }
+      }
+
+      &.last-checks {
+        td {
+          padding: 0.4mm 0.8mm !important;
+          &[rowspan] {
+            border: none !important;
+          }
+          &:last-child {
+            padding: 0 !important;
+          }
+        }
+      }
+    }
+    tr {
+      height: 100% !important;
+    }
+    td {
+      height: 100% !important;
+    }
+    td > div {
+      height: 100% !important;
+    }
+    &.bordered {
+      td,
+      th {
+        border: thin solid $black !important;
+        padding: 1px 2px !important;
+      }
+    }
+    &.table {
+      &-head {
+        th {
+          background-color: #ddd !important;
+        }
+      }
+    }
+    &.cell-h-sm {
+      th,
+      td {
+        height: 4.3mm !important;
+      }
+    }
+  }
+
+  .square-check {
+    display: inline-flex !important;
+    height: inherit !important;
+    min-height: 3mm !important;
+    padding: 2px !important;
+    align-items: center !important;
+    div {
+      width: 2.3mm !important;
+      height: 2.3mm !important;
+      border-radius: 0.4mm !important;
+      background-color: $white !important;
       &.checked {
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        position: relative !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
         &:after,
         &:before {
-          content: "";
-          background-color: $black;
-          position: absolute;
-          width: 0.5mm;
-          height: 150%;
-          transform: rotateZ(-45deg);
+          content: "" !important;
+          background-color: $black !important;
+          position: absolute !important;
+          width: 0.5mm !important;
+          height: 150% !important;
+          transform: rotateZ(-45deg) !important;
         }
         &:after {
-          transform: rotateZ(45deg);
+          transform: rotateZ(45deg) !important;
         }
       }
     }
   }
-  &.les-tres {
-    height: 87mm;
-    .col {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      min-height: 100%;
+  .tripe-square-check {
+    height: inherit !important;
+    display: inline-flex !important;
+  }
+
+  figure {
+    img {
+      max-width: 100% !important;
+    }
+    &.carrinho {
     }
   }
 
-  &.three-checkboxes {
-    font-size: 0.5rem;
-    letter-spacing: -0.5px;
-    div {
-    }
-    min-height: 5.4mm;
-    max-height: 5.4mm;
-  }
-
-  .col > div.form-slot {
-    &:last-child {
-      height: 6.8mm;
-      min-height: 6.8mm;
-    }
-  }
-}
-
-hr {
-  border: none;
-  border-bottom: thin solid #aaa;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.44rem;
-  height: 1px;
-  &.checks {
-    font-size: 0.5rem;
-    tr {
-      td {
-        vertical-align: middle;
-        &:last-child {
-          padding: 0.6mm 0.8mm;
-        }
-      }
-      &:not(:last-child) {
-        td {
-          border-bottom: 0.01mm solid #eee;
-        }
-      }
-    }
-
-    &.last-checks {
-      td {
-        padding: 0.4mm 0.8mm;
-        &[rowspan] {
-          border: none;
-        }
-        &:last-child {
-          padding: 0;
-        }
-      }
-    }
-  }
-  tr {
-    height: 100%;
-  }
-  td {
-    height: 100%;
-  }
-  td > div {
-    height: 100%;
-  }
-  &.bordered {
-    td,
-    th {
-      border: thin solid $black;
-      padding: 1px 2px;
-    }
-  }
-  &.table {
-    &-head {
-      th {
-        background-color: #ddd;
-      }
-    }
-  }
-  &.cell-h-sm {
-    th,
-    td {
-      height: 4.3mm;
-    }
-  }
-}
-
-.square-check {
-  display: inline-flex;
-  height: inherit;
-  min-height: 3mm;
-  padding: 2px;
-  align-items: center;
-  div {
-    width: 2.3mm;
-    height: 2.3mm;
-    border-radius: 0.4mm;
-    background-color: $white;
-    &.checked {
-      position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      &:after,
-      &:before {
-        content: "";
-        background-color: $black;
-        position: absolute;
-        width: 0.5mm;
-        height: 150%;
-        transform: rotateZ(-45deg);
-      }
-      &:after {
-        transform: rotateZ(45deg);
-      }
-    }
-  }
-}
-.tripe-square-check {
-  height: inherit;
-  display: inline-flex;
-}
-
-figure {
-  img {
-    max-width: 100%;
-  }
-  &.carrinho {
-  }
-}
-
-.equal-form-slots {
-  .form-slot {
-    padding: 0.5mm;
-    margin-bottom: 0.5mm;
-  }
-  &.h-12mm {
+  .equal-form-slots {
     .form-slot {
-      min-height: 12mm;
+      padding: 0.5mm !important;
+      margin-bottom: 0.5mm !important;
     }
+    &.h-12mm {
+      .form-slot {
+        min-height: 12mm !important;
+      }
+    }
+  }
+
+  /*
+   * arreglos
+   */
+  .row > * {
+    width: unset;
+  }
+
+  h3{
+    font-size: unset;
+  }
+
+  color: #000 !important;
+  font-weight: unset !important;
+
+  .table{
+    color: #000 !important;
   }
 }

@@ -4,28 +4,33 @@
 @import "helpers/padding-margin";
 @import "helpers/text";
 
-// reset
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  color-adjust: exact !important;
-  -webkit-print-color-adjust: exact !important;
-  print-color-adjust: exact !important;
-}
-body {
-  font-size: 0.64rem;
-  font-family: "Roboto", sans-serif;
+@import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+
+.print-checklist{
+  font-size: 0.64rem !important;
+  font-family: "Roboto", sans-serif !important;
+
+  // reset
+  * {
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .page {
+    width: 21cm !important;
+    min-height: 29.7cm !important;
+    /*max-height: 29.7cm !important;*/
+    padding: 1cm !important;
+    margin: 20px auto !important;
+    border: 1px #d3d3d3 solid !important;
+    border-radius: 5px !important;
+    background: white !important;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1) !important;
+  }
 }
 
-.page {
-  width: 21cm;
-  min-height: 29.7cm;
-  max-height: 29.7cm;
-  padding: 1cm;
-  margin: 0 auto;
-  border: 1px #d3d3d3 solid;
-  border-radius: 5px;
-  background: white;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-}
+

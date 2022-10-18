@@ -141,7 +141,7 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                 company={props?.company}
             />
 
-            <Row>
+            <Row className="print-checklist">
                 <Col xs={12}>
                     <Card>
                         <Card.Body>
@@ -587,7 +587,7 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                             <div className="col-auto">Revisão</div>
                                         </div>
                                     </div>
-                                    <div className="row align-items-start ls-05">
+                                    <div className="row align-items-baseline ls-05">
                                         <div className="col-4 pe-1">
                                             <div className="icon-header my-1">
                                                 <span>PARTE INTERNA</span>

@@ -14,6 +14,7 @@ import FullLayout from '../layouts/Full';
 import {APICore} from "../helpers/api/apiCore";
 import InviteRoute from "./InviteRoute";
 import InviteLayout from "../layouts/Invite";
+import BlankLayout from "../layouts/Blank";
 
 // lazy load all the views
 
@@ -269,6 +270,16 @@ const AllRoutes = () => {
         },
         {
             path: 'panel/company/:companyId',
+            element: <PrivateRoute roles={'Admin'} component={Layout}/>,
+            children: [
+                {
+                    path: ':type/:id/checklist/:checklistId/print',
+                    element: <LoadComponent component={ChecklistPrint} />,
+                },
+            ]
+        },
+        {
+            path: 'panel/company/:companyId',
             element: <PrivateRoute roles={'Admin'} component={Layout} />,
             children: [
                 {
@@ -497,11 +508,6 @@ const AllRoutes = () => {
                 {
                     path: ':type/:id/checklist/:checklistId',
                     element: <LoadComponent component={ChecklistPreview} />,
-                },
-
-                {
-                    path: ':type/:id/checklist/:checklistId/print',
-                    element: <LoadComponent component={ChecklistPrint} />,
                 },
             ]
         },
