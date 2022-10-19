@@ -159,12 +159,11 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                     </div>
                                     <div className="row red-tag">
                                         <div className="col text-white">
-                                            <b>Sorocaba</b>• Av. Dom Aguirre, 2001 • Sta. Rosalia • CEP: 18090-002 • (15) 3224-5444 <br />
-                                            <b>Itapetininga</b> • {vehicleService?.company?.address} • CEP: {vehicleService?.company?.postal_code} • {vehicleService?.company?.phone}<br />
-                                            <b>Tatui</b> • Rua XI deAgosto,2621 • Jardim Lucila • CEP:18277-000 • (15)3451-1777 <br />
-                                            <b>Itapeva</b> • Av. Paulina de Morais, 777 • Central Park • CEP: 18407-110 • (15) 3524-4848
+                                            <b>Endereço</b> • {vehicleService?.company?.address} • CEP:  • {vehicleService?.company?.phone}<br />
+                                            <b>CEP</b> • {vehicleService?.company?.postal_code}<br />
+                                            <b>Telefone</b> • {vehicleService?.company?.phone}
                                         </div>
-                                        <div className="col-35">Toyota Ramires</div>
+                                        <div className="col-35"><img src={vehicleService?.company?.image} alt="Company Logo" className="img-responsive" /></div>
                                     </div>
                                 </header>
                                 <div className="container-fluid">
@@ -186,13 +185,15 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
 
                                     <div className="row mb-1">
                                         <div className="col-5">
-                                            <div className="form-slot me-2">
+                                            <div className="form-slot me-2 d-flex">
                                                 <label>Cliente:</label>
+                                                <span className="align-self-center">{data?.client?.name}</span>
                                             </div>
                                             <div className="row mt-1 les-tres">
                                                 <div className="col">
-                                                    <div className="form-slot placa">
+                                                    <div className="form-slot placa d-flex">
                                                         <label>Placa:</label>
+                                                        <span className="align-self-center">{data?.clientVehicle?.plate}</span>
                                                     </div>
                                                     <div className="blue-slots">
                                                         <div>Cliente acompanha inspeção?</div>
