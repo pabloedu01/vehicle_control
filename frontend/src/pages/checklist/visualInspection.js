@@ -39,8 +39,6 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
         F: 'Faltante'
     }
 
-    const createCardObservationRef = useRef(null)
-
     const onSave = () => {
         props?.onChange(JSON.stringify(data));
         setShowModal(false);
@@ -96,6 +94,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
         const currentObservationsList = [...observationsList];
         currentObservationsList.splice(index, 1);
         setObservationsList(currentObservationsList);
+        setMarkupActual(null)
     };
 
     const validateFileImage = (file) => {

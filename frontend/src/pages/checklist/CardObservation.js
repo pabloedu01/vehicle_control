@@ -1,11 +1,12 @@
-import React, {  useRef } from 'react';
+import React, {  useRef, useState } from 'react';
 import {Button, Col, Row, Card} from "react-bootstrap";
 
 export function CardObservation({
   index, 
   selectedCardMakup, 
   onMouseOverSelected, 
-  onEditObservations, typeMarkups,
+  onEditObservations,
+  typeMarkups,
   observation,
   observationsIndex,
   setObservations,
@@ -22,12 +23,21 @@ export function CardObservation({
   onSaveObservations
 }) {
   const cardRef = useRef(null)
+  
 
-    if (index === isEditingIndex) {
+  if (index === isEditingIndex) {
     if (cardRef.current) {
       cardRef.current.scrollIntoView({ block: "start", behavior: "smooth" })
     }
   }
+
+  function close() {
+    setFileUploadDataTemp([]);
+    setShowModalObservations(false);
+    setMarkupActual(null)
+    setIsEditingIndex(null)
+  }
+
 
   return (
     <Card key={index} ref={cardRef} style={{ border: '1px solid #000' }} onMouseOver={() => {
@@ -43,8 +53,17 @@ export function CardObservation({
             <span onClick={() => {onEditObservations(index);}} style={{display: 'flex', width: '100%', flex: 1, fontWeight: 'bold'  }}>
                 {typeMarkups[observation.markup.type]}
             </span>
-            <div className="float-end d-flex justify-content-center align-items-center px-1" onClick={() => {onDeleteObservations(index);}}>
-                <span ><i className="mdi mdi-close" /></span>
+        <div className="float-end d-flex justify-content-center align-items-center px-1" onClick={() => {
+          if (isEditingIndex === index) {
+            close()
+          } else {
+            onEditObservations(index)
+          }
+
+        
+        }}>
+          <span ><i className={isEditingIndex === index ? "mdi mdi-close-box" : 'mdi mdi-square-edit-outline'}
+          /></span>
             </div>
         </Card.Header>
         <Card.Body  onClick={() => {observationsIndex === index || onEditObservations(index);}}>
@@ -62,12 +81,13 @@ export function CardObservation({
                     <Button variant="primary" onClick={() => {setFileUploadData(fileUploadDataTemp ?? []);setShowFileUpload(true);}}>Anexar Imagem</Button>
                     <div className="d-flex gap-2 align-items-center">
                         <Button variant="primary" onClick={() => {
-                            setFileUploadDataTemp([]);
-                            setShowModalObservations(false);
-                            setMarkupActual(null)
-                            setIsEditingIndex(null)
+                            // setFileUploadDataTemp([]);
+                            // setShowModalObservations(false);
+                            // setMarkupActual(null)
+                            // setIsEditingIndex(null)
+                          onDeleteObservations(index)
                         }}>
-                            Sair
+                            Excluir
                         </Button>
                         <Button variant="primary" onClick={onSaveObservations}>
                             Salvar
