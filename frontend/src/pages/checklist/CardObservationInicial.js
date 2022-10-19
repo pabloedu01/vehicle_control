@@ -1,4 +1,4 @@
-import React, {  useRef } from 'react';
+import React, {  useRef, useEffect } from 'react';
 import {Button, Col, Row, Card} from "react-bootstrap";
 
 export function CardObservationInicial({
@@ -16,9 +16,11 @@ export function CardObservationInicial({
 }) {
   const createCardObservationRef = useRef(null)
 
-  if (createCardObservationRef.current) {
-    createCardObservationRef.current.scrollIntoView({ block: "start", behavior: "smooth" })
-  }
+    useEffect(() => { 
+        if (createCardObservationRef.current) {
+            createCardObservationRef.current.scrollIntoView({ block: "start", behavior: "smooth" })
+        }
+    }, [])
   
 
   return (

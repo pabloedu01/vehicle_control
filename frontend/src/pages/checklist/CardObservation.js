@@ -1,4 +1,4 @@
-import React, {  useRef, useState } from 'react';
+import React, {  useEffect, useRef, useState } from 'react';
 import {Button, Col, Row, Card} from "react-bootstrap";
 
 export function CardObservation({
@@ -24,12 +24,19 @@ export function CardObservation({
 }) {
   const cardRef = useRef(null)
   
-
-  if (index === isEditingIndex) {
-    if (cardRef.current) {
-      cardRef.current.scrollIntoView({ block: "start", behavior: "smooth" })
-    }
+  useEffect(() => {
+    if (index === isEditingIndex) {
+      if (cardRef.current) {
+        cardRef.current.scrollIntoView({ block: "end", behavior: "smooth" })
+      }
   }
+  }, [index,isEditingIndex])
+
+  // if (index === isEditingIndex) {
+  //   if (cardRef.current) {
+  //     cardRef.current.scrollIntoView({ block: "end", behavior: "smooth" })
+  //   }
+  // }
 
   function close() {
     setFileUploadDataTemp([]);
