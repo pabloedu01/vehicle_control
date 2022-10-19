@@ -153,22 +153,16 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                         </div>
                                         <div>
                                             <h3>
-                                                FOLHA DE INSPEÇÃO - CONDIÇÕES DE ENTRADA E SAÍDA DO VEÍCULO -
-                                                SEDAN
+                                                Folha de inspeção
                                             </h3>
                                         </div>
                                     </div>
                                     <div className="row red-tag">
                                         <div className="col text-white">
-                                            <b>Sorocaba</b> • Av. Dom Aguirre, 2001 • Sta. Rosalia • CEP:
-                                                            18090-002 • (15) 3224-5444 <br />
-                                            <b>Itapetininga</b> • Rod. Raposo Tavares, Km 164.100 • Vila Nova
-                                                            Itapetininga • CEP: 18203-340 • (15) 3472-1130
-                                            <br />
-                                            <b>Tatui</b> • Rua XI deAgosto,2621 • Jardim Lucila • CEP:18277-000
-                                                            • (15)3451-1777 <br />
-                                            <b>Itapeva</b> • Av. Paulina de Morais, 777 • Central Park • CEP:
-                                                            18407-110 • (15) 3524-4848
+                                            <b>Sorocaba</b>• Av. Dom Aguirre, 2001 • Sta. Rosalia • CEP: 18090-002 • (15) 3224-5444 <br />
+                                            <b>Itapetininga</b> • {vehicleService?.company?.address} • CEP: {vehicleService?.company?.postal_code} • {vehicleService?.company?.phone}<br />
+                                            <b>Tatui</b> • Rua XI deAgosto,2621 • Jardim Lucila • CEP:18277-000 • (15)3451-1777 <br />
+                                            <b>Itapeva</b> • Av. Paulina de Morais, 777 • Central Park • CEP: 18407-110 • (15) 3524-4848
                                         </div>
                                         <div className="col-35">Toyota Ramires</div>
                                     </div>
