@@ -180,12 +180,12 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                     <Row className="d-flex w-100 justify-content-center align-items-center w-100 m-0">
                         <Nav as="ul" variant="pills" className="nav nav-pills bg-nav-pills nav-justified w-100 p-0" defaultActiveKey="1">
                             {Object.keys(steps).map((key) => (
-                            <Nav.Item as="li" className="nav-item" key={steps[key] + key} onClick={() => {
+                                <Nav.Item as="li" className="nav-item"  key={steps[key] + key} onClick={() => {
                                     setCurrentStep(parseInt(key, 10));
                                     setMarkupActual(null);
                                     setShowModalObservations(false);
                                 }}>
-                                    <Nav.Link href="#" eventKey={`${key}`} className="nav-link rounded-0 py-2">
+                                    <Nav.Link href="#" eventKey={`${key}`} className="nav-link rounded-0 d-flex justify-content-center align-items-center h-100 py-2">
                                     <span className="d-lg-block">{steps[key]}</span>
                                 </Nav.Link>
                             </Nav.Item>
@@ -195,35 +195,47 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                 </Modal.Header>
                 <Modal.Body style={{ minHeight: '300px'}} >
                     <Row >
-                        <Col md={2} className="d-flex justify-content-center align-items-center" style={{ flexFlow: 'column' }}>
-                        <Button variant="primary" id="kneadedButton" onClick={() => onCreateObservations('A')} style={{ borderRadius: '50%' }} >
-                            A
-                        </Button>
-                        <label htmlFor="kneadedButton" className="d-flex flex-column justify-content-center align-items-center mb-1">
-                            AMASSADO
-                        </label>
-                        <Button variant="primary" id="scratchedButton" onClick={() => onCreateObservations('R')} style={{ borderRadius: '50%' }} >
-                            R
-                        </Button>
-                        <label htmlFor="scratchedButton" className="d-flex flex-column justify-content-center align-items-center mb-1">
-                            RISCADO
-                        </label>
-                        <Button variant="primary" id="brokeButton" onClick={() => onCreateObservations('X')} style={{ borderRadius: '50%' }} >
-                            X
-                        </Button>
-                        <label htmlFor="brokeButton" className="d-flex flex-column justify-content-center align-items-center mb-1">
-                            QUEBRADO
-                        </label>
-                        <Button variant="primary" id="missingButton" onClick={() => onCreateObservations('F')} style={{ borderRadius: '50%' }} >
-                            F
-                        </Button>
-                        <label htmlFor="missingButton" className="d-flex flex-column justify-content-center align-items-center ">
-                            FALTANTE
-                        </label>
+                        <Col md={2} className="d-flex justify-content-center align-items-center button-markups" >
+                            <div className="d-flex flex-column justify-content-center align-items-center">
+                                <Button variant="primary" id="kneadedButton" onClick={() => onCreateObservations('A')} style={{ borderRadius: '50%' }} >
+                                A
+                            </Button>
+                            <label htmlFor="kneadedButton" className="d-flex flex-column justify-content-center align-items-center mb-1">
+                                AMASSADO
+                            </label>
+                            
+                            </div>
+                            <div className="d-flex flex-column justify-content-center align-items-center">     
+                                <Button variant="primary" id="scratchedButton" onClick={() => onCreateObservations('R')} style={{ borderRadius: '50%' }} >
+                                    R
+                                </Button>
+                                <label htmlFor="scratchedButton" className="d-flex flex-column justify-content-center align-items-center mb-1">
+                                    RISCADO
+                                </label>
+                            </div>
+                            <div className="d-flex flex-column justify-content-center align-items-center">
+                                <Button variant="primary" id="brokeButton" onClick={() => onCreateObservations('X')} style={{ borderRadius: '50%' }} >
+                                    X
+                                </Button>
+                                <label htmlFor="brokeButton" className="d-flex flex-column justify-content-center align-items-center mb-1">
+                                QUEBRADO
+                                </label>
+                            
+                            </div>
+                            <div className="d-flex flex-column justify-content-center align-items-center">
+                                <Button variant="primary" id="brokeButton" onClick={() => onCreateObservations('X')} style={{ borderRadius: '50%' }} >
+                                    F
+                                </Button>
+                                <label htmlFor="brokeButton" className="d-flex flex-column justify-content-center align-items-center mb-1">
+                                FALTANTE
+                                </label>
+                            
+                            </div>
+                    
                         
                         </Col>
                         <Col md={4} className="d-flex justify-content-center align-items-center" style={{ flexFlow: 'column', width: '450px', height: '270px', position: 'relative'}}>
-                            <motion.div ref={constraintsRef} className="d-flex justify-content-center align-items-center" style={{ flexFlow: 'column', width: '450px', height: '270px'}}>
+                            <motion.div ref={constraintsRef} className="d-flex justify-content-center align-items-center " style={{ flexFlow: 'column', width: '450px', height: '270px'}}>
                                 {(props?.item?.validation?.images || []).hasOwnProperty(currentStep) ? <img src={props?.item?.validation?.images[currentStep]} className="overflow-hidden" style={{maxWidth: '100%'}}/> : 'No image available'}
                                 {steps[currentStep]}
                             {observationsList.length > 0 && observationsList.map((m, index)=> (
@@ -296,7 +308,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                                 )}
                             </motion.div>
                         </Col>
-                        <Col md={6} className="d-flex" style={{ flexFlow: 'column', flex: 1 ,maxHeight: '270px', overflowY: 'auto', position: 'relative' }}>
+                        <Col md={6} className="observationsContainer" >
 
                             {showModalObservations && 
                                 (
