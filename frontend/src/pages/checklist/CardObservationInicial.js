@@ -40,17 +40,17 @@ export function CardObservationInicial({
                     </Col>
 
                     <Col md={12} className="d-flex justify-content-between align-items-center">
-                    <Button variant="primary" onClick={() => {setFileUploadData(fileUploadDataTemp ?? []);setShowFileUpload(true);}}>Anexar Imagem</Button>
+                    <Button variant="primary" onClick={() => {setFileUploadData(fileUploadDataTemp ?? []);setShowFileUpload(true);}}><span ><i className="dripicons-cloud-upload"/></span></Button>
                     <div className="d-flex gap-2 align-items-center">
                         <Button variant="primary" onClick={() => {
                             setFileUploadDataTemp([]);
                             setShowModalObservations(false);
                             setMarkupActual(null)
                         }}>
-                            Sair
+                            <span ><i className="mdi mdi-exit-to-app"/></span>
                         </Button>
                         <Button variant="primary" onClick={onSaveObservations}>
-                            Salvar
+                            <span ><i className="mdi mdi-content-save"/></span>
                         </Button>
                     </div>
                     </Col>

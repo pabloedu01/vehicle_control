@@ -56,7 +56,7 @@ export function CardObservation({
         onMouseOverSelected(null)
       }
     }}>
-        <Card.Header className='d-flex justify-content-between align-items-center' style={{ background: `${selectedCardMakup === index ? 'rgba(0, 0, 0, 0.1)' : 'none'}`}}>
+        <Card.Header className='d-flex justify-content-between align-items-center' style={{ background: `${  selectedCardMakup === index ? 'rgba(0, 0, 0, 0.1)' : 'none'}`}}>
             <span onClick={() => {onEditObservations(index);}} style={{display: 'flex', width: '100%', flex: 1, fontWeight: 'bold'  }}>
                 {typeMarkups[observation.markup.type]}
             </span>
@@ -85,19 +85,15 @@ export function CardObservation({
                     </Col>
 
                     <Col md={12} className="d-flex justify-content-between align-items-center">
-                    <Button variant="primary" onClick={() => {setFileUploadData(fileUploadDataTemp ?? []);setShowFileUpload(true);}}>Anexar Imagem</Button>
+                    <Button variant="primary" onClick={() => {setFileUploadData(fileUploadDataTemp ?? []);setShowFileUpload(true);}}><span ><i className="dripicons-cloud-upload"/></span></Button>
                     <div className="d-flex gap-2 align-items-center">
                         <Button variant="primary" onClick={() => {
-                            // setFileUploadDataTemp([]);
-                            // setShowModalObservations(false);
-                            // setMarkupActual(null)
-                            // setIsEditingIndex(null)
                           onDeleteObservations(index)
                         }}>
-                            Excluir
+                             <span ><i className="mdi mdi-delete"/></span>
                         </Button>
                         <Button variant="primary" onClick={onSaveObservations}>
-                            Salvar
+                            <span ><i className="mdi mdi-content-save"/></span>
                         </Button>
                     </div>
                     </Col>
