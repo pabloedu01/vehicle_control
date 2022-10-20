@@ -1,7 +1,8 @@
 // @flow
 import React, { useEffect, useState, useRef } from 'react';
-import {Button, Col, Modal, Row, Card} from "react-bootstrap";
+import {Button, Col, Modal, Row, Card, Nav} from "react-bootstrap";
 import FileUpload from "../../components/FileUpload";
+import classnames from 'classnames';
 import { AnimatePresence, motion } from "framer-motion/dist/framer-motion";
 import { CardObservation } from './CardObservation'
 import { CardObservationInicial } from './CardObservationInicial'
@@ -62,7 +63,6 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                 markup: {...markupActualSave},
                 images: fileUploadDataTemp
             }]);
-
         } else {
             currentObservationsList[observationsIndex] = {...currentObservationsList[observationsIndex], observations, markup: {...markupActualSave}};
             newObservationsList = currentObservationsList;
@@ -176,22 +176,24 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
             <FileUpload show={showFileUpload} handleClose={() => { setShowFileUpload(false); }} files={fileUploadData} handleFileUpload={handleUploadImages} validateFile={validateFileImage}/>
             
             <Modal show={showModal} onHide={ () => { setShowModal(false); } } size="xl"  fullscreen="lg-down" scrollable={true} centered={true}>
-                <Modal.Header >
-                    <Row className="d-flex w-100 justify-content-center align-items-center">
-                        {Object.keys(steps).map((key) => (
-                            <Col key={key} className="d-flex justify-content-center align-items-center">
-                                <div  onClick={() => {
+                <Modal.Header style={{padding: 0}} >
+                    <Row className="d-flex w-100 justify-content-center align-items-center w-100 m-0">
+                        <Nav as="ul" variant="pills" className="nav nav-pills bg-nav-pills nav-justified w-100 p-0" defaultActiveKey="1">
+                            {Object.keys(steps).map((key) => (
+                            <Nav.Item as="li" className="nav-item" key={steps[key] + key} onClick={() => {
                                     setCurrentStep(parseInt(key, 10));
-                                    setMarkupActual(null)
+                                    setMarkupActual(null);
                                     setShowModalObservations(false);
                                 }}>
-                                    {steps[key]}
-                                </div>
-                            </Col>
-                        ))}
+                                    <Nav.Link href="#" eventKey={`${key}`} className="nav-link rounded-0 py-2">
+                                    <span className="d-lg-block">{steps[key]}</span>
+                                </Nav.Link>
+                            </Nav.Item>
+                            ))}
+                        </Nav>
                     </Row>
                 </Modal.Header>
-                <Modal.Body style={{ minHeight: '300px' }} >
+                <Modal.Body style={{ minHeight: '300px'}} >
                     <Row >
                         <Col md={2} className="d-flex justify-content-center align-items-center" style={{ flexFlow: 'column' }}>
                         <Button variant="primary" id="kneadedButton" onClick={() => onCreateObservations('A')} style={{ borderRadius: '50%' }} >
@@ -227,7 +229,8 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                             {observationsList.length > 0 && observationsList.map((m, index)=> (
                                 <motion.div 
                                     key={m.markup.type + (Math.random() * (10000 - 1) + 1) } 
-                                    style={{ background: `${selectedCardMakup === index ? '#000' : '#198754'}`,
+                                    style={{
+                                    background: `${selectedCardMakup === index ? isEditingIndex === index ? 'transparent' :'#000' : '#198754'}`,
                                     borderRadius: "50%",
                                     width: "35px",
                                     height: "35px",
@@ -236,7 +239,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                                     display: "flex",
                                     alignItems: "center",
                                     justifyContent: "center",
-                                    color: "#fff",
+                                    color: `${isEditingIndex === index ? 'transparent': '#fff'}`,
                                     cursor: "pointer",
                                     fontWeight: "bold"}}
                                     dragConstraints={constraintsRef}
@@ -277,8 +280,6 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                                     fontWeight: "bold"}}
                                     dragConstraints={constraintsRef}
                                     initial={{ top: markupActual.position.top, left:markupActual.position.left }}
-                                //    initial={{ left:224.54544067382812, top:127.27273559570312 }}
-                        
                                     dragTransition={{ bounceStiffness: 100, bounceDamping: 10, min: 0, max: 4 }}
                                     drag 
                 
