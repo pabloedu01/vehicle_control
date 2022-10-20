@@ -77,10 +77,12 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
     };
 
     const onCreateObservations = (type) => {
-        setObservationsIndex(null);
-        setObservations(null);
-        setShowModalObservations(true);
-        createPositionDrag(type)
+        if (!isEditingIndex) {
+            setObservationsIndex(null);
+            setObservations(null);
+            setShowModalObservations(true);
+            createPositionDrag(type)
+        }
     };
 
     const onEditObservations = (index) => {
