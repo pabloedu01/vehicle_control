@@ -242,7 +242,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                                 <motion.div 
                                     key={m.markup.type + (Math.random() * (10000 - 1) + 1) } 
                                     style={{
-                                    background: `${selectedCardMakup === index ? isEditingIndex === index ? 'transparent' :'#000' : '#198754'}`,
+                                    background: `${selectedCardMakup === index || isEditingIndex === index ? '#000' : '#198754'}`,
                                     borderRadius: "50%",
                                     width: "35px",
                                     height: "35px",
@@ -251,7 +251,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                                     display: "flex",
                                     alignItems: "center",
                                     justifyContent: "center",
-                                    color: `${isEditingIndex === index ? 'transparent': '#fff'}`,
+                                    color: '#fff',
                                     cursor: "pointer",
                                     fontWeight: "bold"}}
                                     dragConstraints={constraintsRef}
