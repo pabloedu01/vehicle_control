@@ -8,6 +8,7 @@ import moment from 'moment';
 import "../../assets/scss/custom/checklist/ChecklistPrint.scss";
 import carrinho from "../../assets/images/carrinho.jpg";
 import toyota from "../../assets/images/toyota.png";
+import classNames from 'classnames';
 
 const api = new APICore();
 
@@ -82,24 +83,26 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                             };
 
                             vehicleService.items.forEach((checklistItem) => {
-                                checklistData[checklistItem.id] = {
-                                    id: checklistItem.id,
-                                    value: checklistItem.pivot.value,
-                                    evidence: checklistItem.pivot.evidence,
-                                    observations: checklistItem.pivot.observations,
-                                    type: checklistItem.validation.type,
-                                };
+                                if(checklistItem.code !== null){
+                                    checklistData[checklistItem.code] = {
+                                        id: checklistItem.id,
+                                        value: checklistItem.pivot.value,
+                                        evidence: checklistItem.pivot.evidence,
+                                        observations: checklistItem.pivot.observations,
+                                        type: checklistItem.validation.type,
+                                    };
+                                }
                             });
 
                             const stages = vehicleService.stages.filter((stage) => stage.pivot.processed);
                             stages.forEach((stage, index) => {
                                 stages[index].evidences = [].concat(
                                     ...stage.items.map((checklistItem) =>
-                                        (checklistData[checklistItem.id]?.evidence || []).map((evidence) => {
+                                        (checklistData[checklistItem.code]?.evidence || []).map((evidence) => {
                                             return {
                                                 evidence,
                                                 name: checklistItem.name,
-                                                observations: checklistData[checklistItem.id].observations,
+                                                observations: checklistData[checklistItem.code].observations,
                                             };
                                         })
                                     )
@@ -232,46 +235,46 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                         </div>
                                                     </div>
                                                     <div className="row two-checkboxes">
-                                                        <div/>
-                                                        <div/>
+                                                        <div className={classNames({checked: checklistData['1']?.value.toString() === '1' })}/>
+                                                        <div className={classNames({checked: checklistData['1']?.value.toString() === '0' })}/>
                                                     </div>
                                                     <div className="row two-checkboxes">
-                                                        <div/>
-                                                        <div/>
+                                                        <div className={classNames({checked: checklistData['2']?.value.toString() === '1' })}/>
+                                                        <div className={classNames({checked: checklistData['2']?.value.toString() === '0' })}/>
                                                     </div>
                                                     <div className="row two-checkboxes">
-                                                        <div className="checked"/>
-                                                        <div/>
+                                                        <div className={classNames({checked: checklistData['3']?.value.toString() === '1' })}/>
+                                                        <div className={classNames({checked: checklistData['3']?.value.toString() === '0' })}/>
                                                     </div>
                                                     <div className="row two-checkboxes">
-                                                        <div/>
-                                                        <div/>
+                                                        <div className={classNames({checked: checklistData['4']?.value.toString() === '1' })}/>
+                                                        <div className={classNames({checked: checklistData['4']?.value.toString() === '0' })}/>
                                                     </div>
                                                     <div className="row two-checkboxes">
-                                                        <div/>
-                                                        <div/>
+                                                        <div className={classNames({checked: checklistData['5']?.value.toString() === '1' })}/>
+                                                        <div className={classNames({checked: checklistData['5']?.value.toString() === '0' })}/>
                                                     </div>
                                                     <div className="row two-checkboxes">
-                                                        <div/>
-                                                        <div className="checked"/>
+                                                        <div className={classNames({checked: checklistData['6']?.value.toString() === '1' })}/>
+                                                        <div className={classNames({checked: checklistData['6']?.value.toString() === '0' })}/>
                                                     </div>
                                                     <div className="row two-checkboxes">
-                                                        <div/>
-                                                        <div/>
+                                                        <div className={classNames({checked: checklistData['7']?.value.toString() === '1' })}/>
+                                                        <div className={classNames({checked: checklistData['7']?.value.toString() === '0' })}/>
                                                     </div>
                                                     <div className="blue-slots">
                                                         <div>
-                                                            <div className="form-slot"/>
+                                                            <div className="form-slot"><span className="text-black">{checklistData['8']?.value ?? ''}</span></div>
                                                         </div>
                                                         <div>
-                                                            <div className="form-slot"/>
+                                                            <div className="form-slot"><span className="text-black">{checklistData['9']?.value ?? ''}</span></div>
                                                         </div>
                                                     </div>
 
                                                     <div className="row three-checkboxes">
-                                                        <div/> Boa
-                                                        <div/> Regular
-                                                        <div/> Ruim
+                                                        <div className={classNames({checked: checklistData['10']?.value.toString().toLowerCase() === 'boa' })}/> Boa
+                                                        <div className={classNames({checked: checklistData['10']?.value.toString().toLowerCase() === 'regular' })}/> Regular
+                                                        <div className={classNames({checked: checklistData['10']?.value.toString().toLowerCase() === 'ruim' })}/> Ruim
                                                     </div>
                                                     <div className="form-slot"/>
                                                 </div>
@@ -287,46 +290,46 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                         </div>
                                                     </div>
                                                     <div className="row two-checkboxes">
-                                                        <div/>
-                                                        <div/>
+                                                        <div className={classNames({checked: checklistData['99']?.value.toString() === '1' })}/>
+                                                        <div className={classNames({checked: checklistData['99']?.value.toString() === '0' })}/>
                                                     </div>
                                                     <div className="row two-checkboxes">
-                                                        <div/>
-                                                        <div/>
+                                                        <div className={classNames({checked: checklistData['100']?.value.toString() === '1' })}/>
+                                                        <div className={classNames({checked: checklistData['100']?.value.toString() === '0' })}/>
                                                     </div>
                                                     <div className="row two-checkboxes">
-                                                        <div className="checked"/>
-                                                        <div/>
+                                                        <div className={classNames({checked: checklistData['101']?.value.toString() === '1' })}/>
+                                                        <div className={classNames({checked: checklistData['101']?.value.toString() === '0' })}/>
                                                     </div>
                                                     <div className="row two-checkboxes">
-                                                        <div/>
-                                                        <div/>
+                                                        <div className={classNames({checked: checklistData['102']?.value.toString() === '1' })}/>
+                                                        <div className={classNames({checked: checklistData['102']?.value.toString() === '0' })}/>
                                                     </div>
                                                     <div className="row two-checkboxes">
-                                                        <div/>
-                                                        <div/>
+                                                        <div className={classNames({checked: checklistData['103']?.value.toString() === '1' })}/>
+                                                        <div className={classNames({checked: checklistData['103']?.value.toString() === '0' })}/>
                                                     </div>
                                                     <div className="row two-checkboxes">
-                                                        <div/>
-                                                        <div className="checked"/>
+                                                        <div className={classNames({checked: checklistData['104']?.value.toString() === '1' })}/>
+                                                        <div className={classNames({checked: checklistData['104']?.value.toString() === '0' })}/>
                                                     </div>
                                                     <div className="row two-checkboxes">
-                                                        <div/>
-                                                        <div/>
+                                                        <div className={classNames({checked: checklistData['105']?.value.toString() === '1' })}/>
+                                                        <div className={classNames({checked: checklistData['105']?.value.toString() === '0' })}/>
                                                     </div>
                                                     <div className="blue-slots">
                                                         <div>
-                                                            <div className="form-slot"/>
+                                                            <div className="form-slot"><span className="text-black">{checklistData['106']?.value ?? ''}</span></div>
                                                         </div>
                                                         <div>
-                                                            <div className="form-slot"/>
+                                                            <div className="form-slot"><span className="text-black">{checklistData['107']?.value ?? ''}</span></div>
                                                         </div>
                                                     </div>
 
                                                     <div className="row three-checkboxes">
-                                                        <div/> Boa
-                                                        <div/> Regular
-                                                        <div/> Ruim
+                                                        <div className={classNames({checked: checklistData['108']?.value.toString().toLowerCase() === 'boa' })}/> Boa
+                                                        <div className={classNames({checked: checklistData['108']?.value.toString().toLowerCase() === 'regular' })}/> Regular
+                                                        <div className={classNames({checked: checklistData['108']?.value.toString().toLowerCase() === 'ruim' })}/> Ruim
                                                     </div>
                                                     <div className="form-slot"/>
                                                 </div>
@@ -360,28 +363,28 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                             <tbody>
                                                             <tr>
                                                                 <td>Dianteiro Esquerdo</td>
-                                                                <td/>
+                                                                <td>{checklistData['91']?.value ?? ''}</td>
                                                                 <td className="text-end">
                                                                     ______(mm) <TripleSquareCheck />
                                                                 </td>
                                                             </tr>
                                                             <tr>
                                                                 <td>Traseiro Esquerdo</td>
-                                                                <td/>
+                                                                <td>{checklistData['93']?.value ?? ''}</td>
                                                                 <td className="text-end">
                                                                     ______(mm) <TripleSquareCheck />
                                                                 </td>
                                                             </tr>
                                                             <tr>
                                                                 <td>Dianteiro Direito</td>
-                                                                <td/>
+                                                                <td>{checklistData['92']?.value ?? ''}</td>
                                                                 <td className="text-end">
                                                                     ______(mm) <TripleSquareCheck />
                                                                 </td>
                                                             </tr>
                                                             <tr>
                                                                 <td>Dianteiro Direito</td>
-                                                                <td/>
+                                                                <td>{checklistData['94']?.value ?? ''}</td>
                                                                 <td className="text-end">
                                                                     ______(mm) <TripleSquareCheck />
                                                                 </td>
