@@ -130,7 +130,8 @@ const FormWizard = (props: {company?: any}): React$Element<React$FragmentType> =
             />
             <Row>
                 <Col xs={12}>
-                    <>
+                    <Card>
+                        <Card.Body className="p-0">
                             <Wizard
                                 render={({step, steps}) => (<>
                                     <ProgressBar
@@ -215,7 +216,8 @@ const FormWizard = (props: {company?: any}): React$Element<React$FragmentType> =
                                     }
                                 </>)}
                             />
-                    </>
+                        </Card.Body>
+                    </Card>
                 </Col>
             </Row>
         </>

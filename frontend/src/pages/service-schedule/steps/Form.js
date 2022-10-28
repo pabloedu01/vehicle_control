@@ -8,7 +8,8 @@ import * as yup from "yup";
 import {useForm} from "react-hook-form";
 import {FormInput} from "../../../components";
 import moment from 'moment';
-import classNames from "classnames";
+import MaskedInput from 'react-text-mask';
+// import classNames from "classnames";
 import {getAllOptions} from "../../../utils/selectOptionsForm";
 
 const api = new APICore();
@@ -195,153 +196,199 @@ const Form = (props: { company?: any, clientVehicle?: any, client?: any, handleR
 
     return (
         <Row>
-            <Col xs={12}>
+            <Col lg={7}>
+                <Card>
+                    <Card.Body className="pt-4 px-4 pb-4">
+                        <h4 className="header-title mb-4" style={{color: '#727CF5'}}>Cliente</h4>
+                        <Row className="mt-3">
+                            <Col lg={2} className="d-flex align-items-center">
+                                <span>Nome :</span>
+                            </Col>
+                            <Col lg={10}>
+                                <FormInput
+                                    type="Text"
+                                    name="name"
+                                    placeholder="Digite seu Nome"  
+                                />
+                            </Col>
+                        </Row>
+                        <Row className="mt-3">
+                            <Col lg={2} className="d-flex align-items-center">
+                                <span>CPF :</span>
+                            </Col>
+                            <Col lg={10}>
+                                <FormInput
+                                    type="text"
+                                    name="cpf"
+                                    placeholder="Digite seu CPF"
+                                />
+                            </Col>
+                        </Row>
+                        <Row className="mt-3">
+                            <Col lg={2} className="d-flex align-items-center">
+                                <span>Telefone :</span>
+                            </Col>
+                            <Col lg={10}>
+                                <Row >
+                                    <Col lg={9} >
+                                          <MaskedInput
+                                mask={[
+                                    '(',
+                                    /[1-9]/,
+                                    /\d/,
+                                    ')',
+                                    ' ',
+                                    /\d/,
+                                    /\d/,
+                                    /\d/,
+                                    /\d/,
+                                    '-',
+                                    /\d/,
+                                    /\d/,
+                                    /\d/,
+                                    /\d/,
+                                ]}
+                                placeholder="(__) ____-____"
+                                className="form-control"
+                            />
+                                    </Col>
+                                    <Col lg={3} >
+                                        <Button  variant="primary" type="button" style={{width: '100%', minWidth: '60px'}} >
+                                            Adicionar
+                                        </Button>
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
+                        <Row className="mt-3">
+                            <Col lg={2} className="d-flex align-items-center">
+                                <span>Email :</span>
+                            </Col>
+                            <Col lg={10}>
+                                <Row>
+                                    <Col lg={9} >
+                                        <FormInput
+                                            type="Text"
+                                            name="name"
+                                            placeholder="Digite seu email"
+                                        />
+                                            </Col>
+                                    <Col lg={3} >
+                                        <Button  variant="primary" type="button" style={{width: '100%', minWidth: '60px'}} >
+                                            Adicionar
+                                        </Button>
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
+                        <Row className="mt-3">
+                            <Col lg={2} className="d-flex align-items-center">
+                                <span>Endereço :</span>
+                            </Col>
+                            <Col lg={10}>
+                                <Row>
+                                    <Col lg={9} >
+                                        <FormInput
+                                            type="Text"
+                                            name="name"
+                                            placeholder="Digite seu endereço"
+                                        />
+                                            </Col>
+                                    <Col lg={3} >
+                                        <Button  variant="primary" type="button" style={{width: '100%', minWidth: '60px'}}>
+                                            Adicionar
+                                        </Button>
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
+                       
+                    </Card.Body>
+                </Card>
+                <Card>
+                    <Card.Body className="pt-4 px-4 pb-4">
+                        <h4 className="header-title mb-4" style={{color: '#727CF5'}}>Veículo</h4>
+                        <Row className="mt-3">
+                            <Col lg={2} className="d-flex align-items-center">
+                                <span>Marca :</span>
+                            </Col>
+                            <Col lg={10}>
+                                <FormInput
+                                    type="Text"
+                                    name="name"
+                                    placeholder="Digite a marca"  
+                                />
+                            </Col>
+                        </Row>
+                        <Row className="mt-3">
+                            <Col lg={2} className="d-flex align-items-center">
+                                <span>Modelo :</span>
+                            </Col>
+                            <Col lg={10}>
+                                <FormInput
+                                    type="text"
+                                    name="cpf"
+                                    placeholder="Digite o modelo"
+                                />
+                            </Col>
+                        </Row>
+                        <Row className="mt-3">
+                            <Col lg={2} className="d-flex align-items-center">
+                                <span>Veículo :</span>
+                            </Col>
+                            <Col lg={10}>
+                                <FormInput
+                                    type="text"
+                                    name="cpf"
+                                    placeholder="Digite o veículo"
+                                />
+                            </Col>
+                        </Row>
+                        <Row className="mt-3">
+                            <Col lg={2} className="d-flex align-items-center">
+                                <span>Chassi :</span>
+                            </Col>
+                            <Col lg={10}>
+                                <FormInput
+                                    type="text"
+                                    name="cpf"
+                                    placeholder="Digite o chassi"
+                                />
+                            </Col>
+                        </Row>
+                        <Row className="mt-3">
+                            <Col lg={2} className="d-flex align-items-center">
+                                <span>Placa :</span>
+                            </Col>
+                            <Col lg={10}>
+                                <FormInput
+                                    type="text"
+                                    name="cpf"
+                                    placeholder="Digite placa"
+                                />
+                            </Col>
+                        </Row>
+                    
+
+
+                       
+                    </Card.Body>
+                </Card>
+            </Col>
+
+             
+
+            <Col lg={5}>
                 <Card>
                     <Card.Body>
-                        <form onSubmit={handleSubmit(onSubmit)} noValidate>
-                            <Row>
-                                <Col md={12}>
-                                    <Row>
-                                        <Col>
-                                            <FormInput
-                                                label="Data Prometida"
-                                                type="datetime-local"
-                                                name="promised_date"
-                                                placeholder="data prometida"
-                                                containerClass={'mb-3'}
-                                                {...otherProps}
-                                            />
-                                        </Col>
-                                        <Col>
-                                            <FormInput
-                                                label="Consultor Técnico"
-                                                type="select"
-                                                name="technical_consultant_id"
-                                                containerClass={'mb-3'}
-                                                options={technicalConsultants}
-                                                {...otherProps}
-                                            />
-
-                                        </Col>
-                                    </Row>
-                                </Col>
-                                <Col md={6}>
-                                    <Card>
-                                        <Card.Header>
-                                            <h4>Informações do cliente</h4>
-                                        </Card.Header>
-                                        <Card.Body>
-                                            <table>
-                                                <tbody>
-                                                <tr>
-                                                    <td><b>Nome do cliente</b></td>
-                                                    <td>{clientInfo?.name}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><b>Documento</b></td>
-                                                    <td>{clientInfo?.document}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><b>Endereço</b></td>
-                                                    <td>{clientInfo?.address}</td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </Card.Body>
-                                        <Card.Footer className="text-center">
-                                            <Button variant="success" type="buttom" onClick={() => {
-                                                onPreviousButton();
-                                                props?.handleReturnToClientList(props?.pushButton);
-                                            }}>
-                                                Editar
-                                            </Button>
-                                        </Card.Footer>
-                                    </Card>
-                                </Col>
-
-                                <Col md={6}>
-                                    {/*<FormInput
-                        label="Código"
-                        type="text"
-                        name="code"
-                        placeholder="Digite Código"
-                        containerClass={'mb-3'}
-                        {...otherProps}
-                    />*/}
-
-                                    <Card>
-                                        <Card.Header>
-                                            <h4>Informações do veículo</h4>
-                                        </Card.Header>
-                                        <Card.Body>
-                                            <table>
-                                                <tbody>
-                                                <tr>
-                                                    <td><b>Marca</b></td>
-                                                    <td>{clientVehicleInfo?.vehicle.model.brand.name}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><b>Modelo</b></td>
-                                                    <td>{clientVehicleInfo?.vehicle.model.name}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><b>Placa</b></td>
-                                                    <td>{clientVehicleInfo?.plate}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><b>Chassi</b></td>
-                                                    <td>{clientVehicleInfo?.chasis}</td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </Card.Body>
-                                        <Card.Footer className="text-center">
-                                            <Button variant="success" type="button" onClick={() => {
-                                                onPreviousButton();
-                                                props?.handleReturnToClientVehicleList(props?.pushButton);
-                                            }}>
-                                                Editar
-                                            </Button>
-                                        </Card.Footer>
-                                    </Card>
-
-                                    <div className={classNames({
-                                        'd-grid': id,
-                                        'd-none': !id
-                                    })}>
-                                        <Button className="mb-1" variant="primary" size={'lg'} type="button" onClick={onClickChecklist}>
-                                            Checklist
-                                        </Button>
-
-                                        <Button className="mb-1" disabled={true} variant="primary" size={'lg'} type="button" onClick={() => {
-                                        }}>
-                                            Observaçoes
-                                        </Button>
-
-                                        <Button className="mb-1" disabled={true} variant="primary" size={'lg'} type="button" onClick={() => {
-                                        }}>
-                                            Pre Ordem serviço
-                                        </Button>
-
-                                        <Button className="mb-1" disabled={true} variant="primary" size={'lg'} type="button" onClick={() => {
-                                        }}>
-                                            Orçamento
-                                        </Button>
-
-                                        <Button className="mb-1" disabled={true} variant="primary" size={'lg'} type="button" onClick={() => {
-                                        }}>
-                                            Ordem de serviço
-                                        </Button>
-                                    </div>
-                                </Col>
-                            </Row>
-
-                            <div className="mt-3 mb-3 mb-0">
-                                <Button variant="primary" type="submit">
-                                    Salvar
-                                </Button>
-                            </div>
-                        </form>
+                        <Row>
+                            <Col lg={6}>
+                                
+                            </Col>
+                            <Col lg={6}>
+                              
+                            </Col>
+                        </Row>
                     </Card.Body>
                 </Card>
             </Col>
