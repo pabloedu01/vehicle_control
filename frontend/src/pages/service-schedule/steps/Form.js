@@ -400,9 +400,16 @@ const Form = (props: { company?: any, clientVehicle?: any, client?: any, handleR
              
 
             <Col xxl={5}>
+                <Row className='mb-3'>
+                    <Col xs={12}>
+                        <Button  variant="primary" type="button" style={{width: '100%', minWidth: '62px', fontSize: '20px'}} >
+                            Salvar
+                        </Button>
+                    </Col>
+                </Row>
                 <Card>
                     <Card.Body>
-                     <h4 className="header-title mb-4" style={{color: '#727CF5'}}>Cliente</h4>
+                     <h4 className="header-title mb-4" style={{color: '#727CF5'}}>Consultor Técnico</h4>
                         <Row className="mt-3">
                             <Col sm={10} md={10}>
                                 <FormInput
