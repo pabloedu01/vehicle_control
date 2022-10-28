@@ -8,7 +8,8 @@ import * as yup from "yup";
 import {useForm} from "react-hook-form";
 import {FormInput} from "../../../components";
 import moment from 'moment';
-import classNames from "classnames";
+import MaskedInput from 'react-text-mask';
+// import classNames from "classnames";
 import {getAllOptions} from "../../../utils/selectOptionsForm";
 
 const api = new APICore();
@@ -198,7 +199,7 @@ const Form = (props: { company?: any, clientVehicle?: any, client?: any, handleR
             <Col lg={7}>
                 <Card>
                     <Card.Body className="pt-4 px-4 pb-4">
-                        <h4 className="header-title mb-4">Cliente</h4>
+                        <h4 className="header-title mb-4" style={{color: '#727CF5'}}>Cliente</h4>
                         <Row className="mt-3">
                             <Col lg={2} className="d-flex align-items-center">
                                 <span>Nome :</span>
@@ -228,16 +229,31 @@ const Form = (props: { company?: any, clientVehicle?: any, client?: any, handleR
                                 <span>Telefone :</span>
                             </Col>
                             <Col lg={10}>
-                                <Row>
-                                    <Col lg={10} >
-                                        <FormInput
-                                            type="Text"
-                                            name="name"
-                                            placeholder="Digite seu telefone"
-                                        />
-                                            </Col>
-                                    <Col lg={2} >
-                                        <Button  variant="primary" type="button" className="w-100" >
+                                <Row >
+                                    <Col lg={9} >
+                                          <MaskedInput
+                                mask={[
+                                    '(',
+                                    /[1-9]/,
+                                    /\d/,
+                                    ')',
+                                    ' ',
+                                    /\d/,
+                                    /\d/,
+                                    /\d/,
+                                    /\d/,
+                                    '-',
+                                    /\d/,
+                                    /\d/,
+                                    /\d/,
+                                    /\d/,
+                                ]}
+                                placeholder="(__) ____-____"
+                                className="form-control"
+                            />
+                                    </Col>
+                                    <Col lg={3} >
+                                        <Button  variant="primary" type="button" style={{width: '100%', minWidth: '60px'}} >
                                             Adicionar
                                         </Button>
                                     </Col>
@@ -250,15 +266,15 @@ const Form = (props: { company?: any, clientVehicle?: any, client?: any, handleR
                             </Col>
                             <Col lg={10}>
                                 <Row>
-                                    <Col lg={10} >
+                                    <Col lg={9} >
                                         <FormInput
                                             type="Text"
                                             name="name"
                                             placeholder="Digite seu email"
                                         />
                                             </Col>
-                                    <Col lg={2} >
-                                        <Button  variant="primary" type="button" >
+                                    <Col lg={3} >
+                                        <Button  variant="primary" type="button" style={{width: '100%', minWidth: '60px'}} >
                                             Adicionar
                                         </Button>
                                     </Col>
@@ -271,15 +287,15 @@ const Form = (props: { company?: any, clientVehicle?: any, client?: any, handleR
                             </Col>
                             <Col lg={10}>
                                 <Row>
-                                    <Col lg={10} >
+                                    <Col lg={9} >
                                         <FormInput
                                             type="Text"
                                             name="name"
                                             placeholder="Digite seu endereço"
                                         />
                                             </Col>
-                                    <Col lg={2} >
-                                        <Button  variant="primary" type="button">
+                                    <Col lg={3} >
+                                        <Button  variant="primary" type="button" style={{width: '100%', minWidth: '60px'}}>
                                             Adicionar
                                         </Button>
                                     </Col>
@@ -289,7 +305,79 @@ const Form = (props: { company?: any, clientVehicle?: any, client?: any, handleR
                        
                     </Card.Body>
                 </Card>
+                <Card>
+                    <Card.Body className="pt-4 px-4 pb-4">
+                        <h4 className="header-title mb-4" style={{color: '#727CF5'}}>Veículo</h4>
+                        <Row className="mt-3">
+                            <Col lg={2} className="d-flex align-items-center">
+                                <span>Marca :</span>
+                            </Col>
+                            <Col lg={10}>
+                                <FormInput
+                                    type="Text"
+                                    name="name"
+                                    placeholder="Digite a marca"  
+                                />
+                            </Col>
+                        </Row>
+                        <Row className="mt-3">
+                            <Col lg={2} className="d-flex align-items-center">
+                                <span>Modelo :</span>
+                            </Col>
+                            <Col lg={10}>
+                                <FormInput
+                                    type="text"
+                                    name="cpf"
+                                    placeholder="Digite o modelo"
+                                />
+                            </Col>
+                        </Row>
+                        <Row className="mt-3">
+                            <Col lg={2} className="d-flex align-items-center">
+                                <span>Veículo :</span>
+                            </Col>
+                            <Col lg={10}>
+                                <FormInput
+                                    type="text"
+                                    name="cpf"
+                                    placeholder="Digite o veículo"
+                                />
+                            </Col>
+                        </Row>
+                        <Row className="mt-3">
+                            <Col lg={2} className="d-flex align-items-center">
+                                <span>Chassi :</span>
+                            </Col>
+                            <Col lg={10}>
+                                <FormInput
+                                    type="text"
+                                    name="cpf"
+                                    placeholder="Digite o chassi"
+                                />
+                            </Col>
+                        </Row>
+                        <Row className="mt-3">
+                            <Col lg={2} className="d-flex align-items-center">
+                                <span>Placa :</span>
+                            </Col>
+                            <Col lg={10}>
+                                <FormInput
+                                    type="text"
+                                    name="cpf"
+                                    placeholder="Digite placa"
+                                />
+                            </Col>
+                        </Row>
+                    
+
+
+                       
+                    </Card.Body>
+                </Card>
             </Col>
+
+             
+
             <Col lg={5}>
                 <Card>
                     <Card.Body>
