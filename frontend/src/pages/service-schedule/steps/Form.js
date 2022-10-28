@@ -196,15 +196,16 @@ const Form = (props: { company?: any, clientVehicle?: any, client?: any, handleR
 
     return (
         <Row>
-            <Col lg={7}>
+            <Col xxl={7}>
+                
                 <Card>
                     <Card.Body className="pt-4 px-4 pb-4">
                         <h4 className="header-title mb-4" style={{color: '#727CF5'}}>Cliente</h4>
                         <Row className="mt-3">
-                            <Col lg={2} className="d-flex align-items-center">
-                                <span>Nome :</span>
+                            <Col sm={2} md={2}  className="d-flex align-items-center">
+                                <span>Nome:</span>
                             </Col>
-                            <Col lg={10}>
+                            <Col sm={10} md={10}>
                                 <FormInput
                                     type="Text"
                                     name="name"
@@ -213,47 +214,63 @@ const Form = (props: { company?: any, clientVehicle?: any, client?: any, handleR
                             </Col>
                         </Row>
                         <Row className="mt-3">
-                            <Col lg={2} className="d-flex align-items-center">
-                                <span>CPF :</span>
+                            <Col sm={2} md={2} className="d-flex align-items-center">
+                                <span>CPF:</span>
                             </Col>
-                            <Col lg={10}>
-                                <FormInput
-                                    type="text"
-                                    name="cpf"
-                                    placeholder="Digite seu CPF"
-                                />
-                            </Col>
-                        </Row>
-                        <Row className="mt-3">
-                            <Col lg={2} className="d-flex align-items-center">
-                                <span>Telefone :</span>
-                            </Col>
-                            <Col lg={10}>
-                                <Row >
-                                    <Col lg={9} >
-                                          <MaskedInput
+                            <Col sm={10} md={10}>
+                             <MaskedInput
                                 mask={[
-                                    '(',
                                     /[1-9]/,
                                     /\d/,
-                                    ')',
-                                    ' ',
                                     /\d/,
+                                    '\.',
+                                    /\d/,
+                                    /\d/,
+                                    /\d/,
+                                    '\.',
                                     /\d/,
                                     /\d/,
                                     /\d/,
                                     '-',
                                     /\d/,
                                     /\d/,
-                                    /\d/,
-                                    /\d/,
+                                    
                                 ]}
-                                placeholder="(__) ____-____"
+                                placeholder="999.999.999-99"
                                 className="form-control"
                             />
+                            </Col>
+                        </Row>
+                        <Row className="mt-3">
+                            <Col sm={2} md={2} className="d-flex align-items-center">
+                                <span>Telefone:</span>
+                            </Col>
+                            <Col sm={10} md={10} >
+                                <Row >
+                                    <Col lg={9} md={9} sm={8}>
+                                        <MaskedInput
+                                            mask={[
+                                                '(',
+                                                /[1-9]/,
+                                                /\d/,
+                                                ')',
+                                                ' ',
+                                                /\d/,
+                                                /\d/,
+                                                /\d/,
+                                                /\d/,
+                                                '-',
+                                                /\d/,
+                                                /\d/,
+                                                /\d/,
+                                                /\d/,
+                                            ]}
+                                            placeholder="(__) ____-____"
+                                            className="form-control"
+                                        />
                                     </Col>
-                                    <Col lg={3} >
-                                        <Button  variant="primary" type="button" style={{width: '100%', minWidth: '60px'}} >
+                                    <Col lg={3} md={3} sm={4}>
+                                        <Button  variant="primary" type="button" style={{width: '100%', minWidth: '62px'}} >
                                             Adicionar
                                         </Button>
                                     </Col>
@@ -261,20 +278,20 @@ const Form = (props: { company?: any, clientVehicle?: any, client?: any, handleR
                             </Col>
                         </Row>
                         <Row className="mt-3">
-                            <Col lg={2} className="d-flex align-items-center">
-                                <span>Email :</span>
+                            <Col sm={2} md={2} className="d-flex align-items-center">
+                                <span>Email:</span>
                             </Col>
-                            <Col lg={10}>
-                                <Row>
-                                    <Col lg={9} >
+                            <Col sm={10} md={10} >
+                                <Row >
+                                    <Col lg={9} md={9} sm={8}>
                                         <FormInput
                                             type="Text"
                                             name="name"
                                             placeholder="Digite seu email"
                                         />
-                                            </Col>
-                                    <Col lg={3} >
-                                        <Button  variant="primary" type="button" style={{width: '100%', minWidth: '60px'}} >
+                                    </Col>
+                                    <Col lg={3} md={3} sm={4}>
+                                        <Button  variant="primary" type="button" style={{width: '100%', minWidth: '62px'}} >
                                             Adicionar
                                         </Button>
                                     </Col>
@@ -282,27 +299,26 @@ const Form = (props: { company?: any, clientVehicle?: any, client?: any, handleR
                             </Col>
                         </Row>
                         <Row className="mt-3">
-                            <Col lg={2} className="d-flex align-items-center">
-                                <span>Endereço :</span>
+                            <Col sm={2} md={2} className="d-flex align-items-center">
+                                <span>Endereço:</span>
                             </Col>
-                            <Col lg={10}>
-                                <Row>
-                                    <Col lg={9} >
+                            <Col sm={10} md={10} >
+                                <Row >
+                                    <Col lg={9} md={9} sm={8}>
                                         <FormInput
                                             type="Text"
                                             name="name"
                                             placeholder="Digite seu endereço"
                                         />
-                                            </Col>
-                                    <Col lg={3} >
-                                        <Button  variant="primary" type="button" style={{width: '100%', minWidth: '60px'}}>
+                                    </Col>
+                                    <Col lg={3} md={3} sm={4}>
+                                        <Button  variant="primary" type="button" style={{width: '100%', minWidth: '62px'}} >
                                             Adicionar
                                         </Button>
                                     </Col>
                                 </Row>
                             </Col>
-                        </Row>
-                       
+                        </Row>                       
                     </Card.Body>
                 </Card>
                 <Card>
@@ -310,7 +326,7 @@ const Form = (props: { company?: any, clientVehicle?: any, client?: any, handleR
                         <h4 className="header-title mb-4" style={{color: '#727CF5'}}>Veículo</h4>
                         <Row className="mt-3">
                             <Col lg={2} className="d-flex align-items-center">
-                                <span>Marca :</span>
+                                <span>Marca:</span>
                             </Col>
                             <Col lg={10}>
                                 <FormInput
@@ -322,7 +338,7 @@ const Form = (props: { company?: any, clientVehicle?: any, client?: any, handleR
                         </Row>
                         <Row className="mt-3">
                             <Col lg={2} className="d-flex align-items-center">
-                                <span>Modelo :</span>
+                                <span>Modelo:</span>
                             </Col>
                             <Col lg={10}>
                                 <FormInput
@@ -346,7 +362,7 @@ const Form = (props: { company?: any, clientVehicle?: any, client?: any, handleR
                         </Row>
                         <Row className="mt-3">
                             <Col lg={2} className="d-flex align-items-center">
-                                <span>Chassi :</span>
+                                <span>Chassi:</span>
                             </Col>
                             <Col lg={10}>
                                 <FormInput
@@ -356,9 +372,9 @@ const Form = (props: { company?: any, clientVehicle?: any, client?: any, handleR
                                 />
                             </Col>
                         </Row>
-                        <Row className="mt-3">
+                        <Row className="mt-3" >
                             <Col lg={2} className="d-flex align-items-center">
-                                <span>Placa :</span>
+                                <span>Placa:</span>
                             </Col>
                             <Col lg={10}>
                                 <FormInput
@@ -375,12 +391,11 @@ const Form = (props: { company?: any, clientVehicle?: any, client?: any, handleR
                     </Card.Body>
                 </Card>
             </Col>
-
              
 
-            <Col lg={5}>
+            <Col xxl={5}>
                 <Card>
-                    <Card.Body>
+                    <Card.Body style={{background: 'red'}}>
                         <Row>
                             <Col lg={6}>
                                 
