@@ -10,8 +10,9 @@ import {FormInput} from "../../../components";
 import moment from 'moment';
 import MaskedInput from 'react-text-mask';
 // import classNames from "classnames";
-import {getAllOptions} from "../../../utils/selectOptionsForm";
-
+import { getAllOptions } from "../../../utils/selectOptionsForm";
+import HyperDatepicker from "../../../components/Datepicker"
+ 
 const api = new APICore();
 
 const Form = (props: { company?: any, clientVehicle?: any, client?: any, handleReturnToClientList?: any, handleReturnToClientVehicleList?: any, pushButton?: any }): React$Element<React$FragmentType> => {
@@ -21,7 +22,12 @@ const Form = (props: { company?: any, clientVehicle?: any, client?: any, handleR
     const [technicalConsultants, setTechnicalConsultants] = useState([]);
     const [clientInfo, setClientInfo] = useState();
     const [clientVehicleInfo, setClientVehicleInfo] = useState(null);
-
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const onDateChange = (date) => {
+        if (date) {
+            setSelectedDate(date);
+        }
+    };
     /*
      * form validation schema
      */
@@ -395,17 +401,128 @@ const Form = (props: { company?: any, clientVehicle?: any, client?: any, handleR
 
             <Col xxl={5}>
                 <Card>
-                    <Card.Body style={{background: 'red'}}>
-                        <Row>
-                            <Col lg={6}>
-                                
+                    <Card.Body>
+                     <h4 className="header-title mb-4" style={{color: '#727CF5'}}>Cliente</h4>
+                        <Row className="mt-3">
+                            <Col sm={10} md={10}>
+                                <FormInput
+                                    type="Text"
+                                    name="name"
+                                    placeholder="Digite seu Nome"  
+                                />
                             </Col>
-                            <Col lg={6}>
-                              
+                            <Col sm={2} md={2} >
+                                <Button variant="primary" type="button"  >
+                                            <i className="mdi mdi-magnify search-icon"></i>
+                                </Button>
+                            </Col>
+                        </Row>
+                        <Row className="mt-3">
+                            <Col sm={12} md={12}>
+                                <p>Nome:{' Pablo Eduardo Lima Celestino'}</p>
+                                <p>Código consultor:{'  PELC'}</p>
                             </Col>
                         </Row>
                     </Card.Body>
                 </Card>
+                <Card>
+                    <Card.Body>
+                     <h4 className="header-title mb-4" style={{color: '#727CF5'}}>agendamento</h4>
+                        <Row className="mt-3">
+                            <Row>
+                                <Col sm={12} md={12}>
+                                    <p>Número do atendimento:{' 99'}</p>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col sm={3} md={3} className="d-flex align-items-center">
+                                     <span>Data da visita:</span>
+                                </Col> 
+                                <Col sm={5} md={5}>
+                                        <HyperDatepicker
+                                            hideAddon={true}
+                                            // showTimeSelect
+                                            locale="pt-BR"
+                                            timeFormat="HH:mm"
+                                            tI={30}
+                                            dateFormat="dd/MM/yyyy"
+                                            timeCaption="time"
+                                            value={selectedDate}
+                                            onChange={(date) => {
+                                                onDateChange(date);
+                                            }}
+                                    
+                                        />
+                                </Col> 
+                                <Col sm={1} md={1} className="d-flex align-items-center">
+                                     <span> Hora:</span>
+                                </Col> 
+                                <Col sm={3} md={3}>
+                                    <MaskedInput
+                                        mask={[/\d/, /\d/, ':', /\d/, /\d/,]}
+                                        placeholder="__:__"
+                                        className="form-control"
+                                    />
+                                </Col>
+                            </Row>
+                            <Row className='mt-2'>
+                                <Col sm={3} md={3} className="d-flex align-items-center">
+                                     <span>Data da criação:</span>
+                                </Col> 
+                                <Col sm={5} md={5}>
+                                        <HyperDatepicker
+                                            hideAddon={true}
+                                            // showTimeSelect
+                                            locale="pt-BR"
+                                            timeFormat="HH:mm"
+                                            tI={30}
+                                            dateFormat="dd/MM/yyyy"
+                                            timeCaption="time"
+                                            value={selectedDate}
+                                            onChange={(date) => {
+                                                onDateChange(date);
+                                            }}
+                                    
+                                        />
+                                </Col> 
+                                <Col sm={1} md={1} className="d-flex align-items-center">
+                                     <span> Hora:</span>
+                                </Col> 
+                                <Col sm={3} md={3}>
+                                    <MaskedInput
+                                        mask={[/\d/, /\d/, ':', /\d/, /\d/,]}
+                                        placeholder="__:__"
+                                        className="form-control"
+                                    />
+                                </Col>
+                            </Row>
+                        </Row>
+                    </Card.Body>
+                </Card>
+                <Row className="mt-3">
+                    <Col sm={8} md={8}>
+                        <Button  variant="primary" type="button" style={{width: '100%', minWidth: '62px', fontSize: '20px'}} >
+                            Listar checklists
+                        </Button>
+                    </Col>
+                    <Col sm={4} md={4} >
+                        <Button  variant="primary" type="button" style={{width: '100%', minWidth: '62px', fontSize: '20px'}} >
+                           <i className='mdi mdi-clipboard-list-outline p-0' ></i> Novo
+                        </Button>
+                    </Col>
+                </Row>
+                <Row className="mt-2">
+                    <Col sm={8} md={8}>
+                        <Button  variant="primary" type="button" style={{width: '100%', minWidth: '62px', fontSize: '20px'}} >
+                            Listar orçamentos
+                        </Button>
+                    </Col>
+                    <Col sm={4} md={4} >
+                        <Button  variant="primary" type="button" style={{width: '100%', minWidth: '62px', fontSize: '20px'}} >
+                           <i className='mdi mdi-clipboard-list-outline p-0' ></i> Novo
+                        </Button>
+                    </Col>
+                </Row>
             </Col>
         </Row>
     );
