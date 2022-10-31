@@ -12,8 +12,12 @@ import MaskedInput from 'react-text-mask';
 // import classNames from "classnames";
 import { getAllOptions } from "../../../utils/selectOptionsForm";
 import HyperDatepicker from "../../../components/Datepicker"
+
+import { useMediaQuery } from '../../../hooks/useMediaQuery'
+
  
 const api = new APICore();
+
 
 const Form = (props: { company?: any, clientVehicle?: any, client?: any, handleReturnToClientList?: any, handleReturnToClientVehicleList?: any, pushButton?: any }): React$Element<React$FragmentType> => {
     const history = useNavigate();
@@ -28,6 +32,13 @@ const Form = (props: { company?: any, clientVehicle?: any, client?: any, handleR
             setSelectedDate(date);
         }
     };
+
+      /*
+     * Hook Media Query
+     */
+
+    const isPageFull = useMediaQuery('(min-width: 768px)')
+    console.log('isPageMobile', isPageFull)
     /*
      * form validation schema
      */
@@ -253,7 +264,7 @@ const Form = (props: { company?: any, clientVehicle?: any, client?: any, handleR
                             </Col>
                             <Col sm={10} md={10} >
                                 <Row >
-                                    <Col lg={9} md={9} sm={8}>
+                                    <Col lg={10} md={10} sm={10} xs={9}>
                                         <MaskedInput
                                             mask={[
                                                 '(',
@@ -275,9 +286,9 @@ const Form = (props: { company?: any, clientVehicle?: any, client?: any, handleR
                                             className="form-control"
                                         />
                                     </Col>
-                                    <Col lg={3} md={3} sm={4}>
-                                        <Button  variant="primary" type="button" style={{width: '100%', minWidth: '62px'}} >
-                                            Adicionar
+                                    <Col lg={2} md={2} sm={2} xs={3}>
+                                        <Button  className="btn-icon btn btn-light w-100" >
+                                            <i className="mdi mdi-phone-plus-outline"></i>
                                         </Button>
                                     </Col>
                                 </Row>
@@ -289,16 +300,16 @@ const Form = (props: { company?: any, clientVehicle?: any, client?: any, handleR
                             </Col>
                             <Col sm={10} md={10} >
                                 <Row >
-                                    <Col lg={9} md={9} sm={8}>
+                                    <Col lg={10} md={10} sm={10} xs={9}>
                                         <FormInput
                                             type="Text"
                                             name="name"
                                             placeholder="Digite seu email"
                                         />
                                     </Col>
-                                    <Col lg={3} md={3} sm={4}>
-                                        <Button  variant="primary" type="button" style={{width: '100%', minWidth: '62px'}} >
-                                            Adicionar
+                                    <Col lg={2} md={2} sm={2} xs={3}>
+                                        <Button  className="btn-icon btn btn-light w-100" >
+                                            <i className="mdi mdi-email-plus-outline"></i>
                                         </Button>
                                     </Col>
                                 </Row>
@@ -310,16 +321,16 @@ const Form = (props: { company?: any, clientVehicle?: any, client?: any, handleR
                             </Col>
                             <Col sm={10} md={10} >
                                 <Row >
-                                    <Col lg={9} md={9} sm={8}>
+                                    <Col lg={10} md={10} sm={10} xs={9}>
                                         <FormInput
                                             type="Text"
                                             name="name"
                                             placeholder="Digite seu endereço"
                                         />
                                     </Col>
-                                    <Col lg={3} md={3} sm={4}>
-                                        <Button  variant="primary" type="button" style={{width: '100%', minWidth: '62px'}} >
-                                            Adicionar
+                                    <Col lg={2} md={2} sm={2} xs={3}>
+                                        <Button  className="btn-icon btn btn-light w-100" >
+                                            <i className="mdi mdi-home-plus-outline"></i>
                                         </Button>
                                     </Col>
                                 </Row>
@@ -411,14 +422,14 @@ const Form = (props: { company?: any, clientVehicle?: any, client?: any, handleR
                     <Card.Body>
                      <h4 className="header-title mb-4" style={{color: '#727CF5'}}>Consultor Técnico</h4>
                         <Row className="mt-3">
-                            <Col sm={10} md={10}>
+                            <Col sm={10} md={10} xs={9}>
                                 <FormInput
                                     type="Text"
                                     name="name"
                                     placeholder="Digite seu Nome"  
                                 />
                             </Col>
-                            <Col sm={2} md={2} >
+                            <Col sm={2} md={2} xs={3}>
                                 <Button variant="primary" type="button"  >
                                             <i className="mdi mdi-magnify search-icon"></i>
                                 </Button>
@@ -507,24 +518,24 @@ const Form = (props: { company?: any, clientVehicle?: any, client?: any, handleR
                     </Card.Body>
                 </Card>
                 <Row className="mt-3">
-                    <Col sm={8} md={8}>
+                    <Col sm={8} md={8} xs={7}>
                         <Button  variant="primary" type="button" style={{width: '100%', minWidth: '62px', fontSize: '20px'}} >
                             Listar checklists
                         </Button>
                     </Col>
-                    <Col sm={4} md={4} >
+                    <Col sm={4} md={4} xs={5}>
                         <Button  variant="primary" type="button" style={{width: '100%', minWidth: '62px', fontSize: '20px'}} >
                            <i className='mdi mdi-clipboard-list-outline p-0' ></i> Novo
                         </Button>
                     </Col>
                 </Row>
                 <Row className="mt-2">
-                    <Col sm={8} md={8}>
+                    <Col sm={8} md={8} xs={7}>
                         <Button  variant="primary" type="button" style={{width: '100%', minWidth: '62px', fontSize: '20px'}} >
                             Listar orçamentos
                         </Button>
                     </Col>
-                    <Col sm={4} md={4} >
+                    <Col sm={4} md={4} xs={5}>
                         <Button  variant="primary" type="button" style={{width: '100%', minWidth: '62px', fontSize: '20px'}} >
                            <i className='mdi mdi-clipboard-list-outline p-0' ></i> Novo
                         </Button>
