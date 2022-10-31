@@ -247,9 +247,10 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                                                 }, {
                                                     value: 'visualInspection',
                                                     label: 'Inspeção visual'
-                                                }, {
-                                                    value: 'horizontalBar',
-                                                    label: 'Horizontal Bar'
+                                                },
+                                                {
+                                                    value: 'signature',
+                                                    label: 'Firma'
                                                 }
                                             ]}
                                             placeholder="Digite O Tipo"

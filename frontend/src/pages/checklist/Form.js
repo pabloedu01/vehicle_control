@@ -13,6 +13,7 @@ import swal from "sweetalert";
 import {toastService} from "../../services/toast";
 import './style.css';
 import VisualInspection from "./visualInspection";
+import Signature from "./signature";
  
 const elemPrefix = "test";
 const getId = (index: number) => `${elemPrefix}${index}`;
@@ -61,7 +62,24 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
         const item = checklistItems.find((item) => item.id === id);
 
         function getValue(type, value){
-            return type !== 'boolean' ? (value !== '' ? value : null) : (value ?? false);
+            switch(type){
+                case 'boolean':
+                    return (value ?? false);
+                case 'signature':
+                    const data = value && value.length > 0 ? JSON.parse(value) : null;
+
+                    if(data){
+                        if(data.hasOwnProperty('base64')){
+                            delete data.base64;
+                        }
+
+                        return JSON.stringify(data);
+                    } else {
+                        return null;
+                    }
+                default:
+                   return (value !== '' ? value : null);
+            }
         }
 
         return item ? getValue(item.validation.type, checklistData[item.id]) : null;
@@ -79,7 +97,6 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
 
     const getFormattedChecklist = (id) => {
         const item = checklistItems.find((item) => item.id === parseInt(id, 10));
-
         return {
             id,
             value: getChecklistItemValueById(item.id),
@@ -160,8 +177,6 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
     };
 
     const handleFieldChange = (id, value) => {
-        console.log(id, 'nuevo value', value);
-
         setChecklistData({...checklistData, [id]: value});
     };
 
@@ -298,6 +313,7 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                 reject();
             });
         }))).then((processedFiles) => {
+
             let localClientSignatureImage = null, localTechnicalConsultantSignatureImage = null;
 
             processedFiles.forEach((file) => {
@@ -668,15 +684,29 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                                                                     />
 
                                                                     :
-                                                                    <Form.Control
-                                                                        type="text"
-                                                                        placeholder={item.name}
-                                                                        onChange={(e) => {
-                                                                            handleFieldChange(item.id, e.target.value);
-                                                                        }}
-                                                                        value={checklistData[item.id] ?? ''}
-                                                                        autoComplete="off">
-                                                                    </Form.Control>
+
+                                                                    (
+                                                                        item.validation.type === 'signature' ?
+                                                                <Signature item={item}
+                                                                           onChange={(data) => {
+                                                                               handleFieldChange(item.id, data);
+                                                                           }}
+                                                                           value={checklistData[item.id] ?? ''}
+                                                                           onManageAjaxError={manageAjaxError}/>
+                                                                        :
+
+                                                    <Form.Control
+                                                        type="text"
+                                                        placeholder={item.name}
+                                                        onChange={(e) => {
+                                                        handleFieldChange(item.id, e.target.value);
+                                                    }}
+                                                        value={checklistData[item.id] ?? ''}
+                                                        autoComplete="off">
+                                                        </Form.Control>
+                                                                    )
+
+
                                                             )
                                                     )
                                                 }
