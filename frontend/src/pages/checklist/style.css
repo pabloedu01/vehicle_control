@@ -33,3 +33,44 @@ div.scrollmenu {
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
 }
+
+
+.button-markups {
+  flex-flow: column;
+}
+
+.observationsContainer {
+  flex-flow: 'column'; 
+  flex: 1;
+  max-height: 270px; 
+  overflow-y: auto; 
+  position: relative;
+  min-width: 380px;
+}
+
+/* @media only screen and (min-device-width: 380px) 
+                   and (max-device-width: 640px) 
+                   and (orientation: landscape) {
+
+  .button-markups {
+    background: red;
+  }
+} */
+@media only screen and (min-width: 380px) and (max-width: 760px) and (orientation: portrait) {
+  .button-markups {
+    display: flex;
+    flex-flow: row;
+    font-size: 12px;
+    gap: 30px;
+  }
+  .observationsContainer {
+    max-height: 350px; 
+  }
+}
+
+@media only screen and (min-width: 761px) and (max-width: 1000px) and (orientation: portrait) {
+  .observationsContainer {
+    max-height: 600px; 
+  }
+
+}
