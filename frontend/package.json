@@ -60,6 +60,7 @@
     "react-hook-form": "^7.27.1",
     "react-horizontal-scrolling-menu": "^3.2.0",
     "react-i18next": "^11.15.5",
+    "react-input-mask": "^2.0.4",
     "react-konva": "^18.2.1",
     "react-rating": "^2.0.5",
     "react-redux": "^7.2.6",

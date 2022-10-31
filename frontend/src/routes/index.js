@@ -48,6 +48,7 @@ const ClientVehicleForm = React.lazy(() => import('../pages/client-vehicle/Form'
 
 const ServiceScheduleList = React.lazy(() => import('../pages/service-schedule/List'));
 const ServiceScheduleWizard = React.lazy(() => import('../pages/service-schedule/Wizard'));
+const ServiceScheduleEdit = React.lazy(() => import('../pages/service-schedule/FormEdit'));
 
 const ClientList = React.lazy(() => import('../pages/client/List'));
 const ClientForm = React.lazy(() => import('../pages/client/Form'));
@@ -385,7 +386,7 @@ const AllRoutes = () => {
                         },
                         {
                             path: ':id/edit',
-                            element: <LoadComponent component={ServiceScheduleWizard} />,
+                            element: <LoadComponent component={ServiceScheduleEdit} />,
                         },
                     ]
                 },
