@@ -1,6 +1,6 @@
 // @flow
 import React, {useEffect, useState} from 'react';
-import {Button, Card, Col, Row} from "react-bootstrap";
+import {Button, Card, Col, Row, Form} from "react-bootstrap";
 import {APICore} from "../../helpers/api/apiCore";
 import {useNavigate, useParams} from "react-router-dom";
 import {yupResolver} from "@hookform/resolvers/yup";
@@ -11,6 +11,7 @@ import moment from 'moment';
 import MaskedInput from 'react-text-mask';
 // import classNames from "classnames";
 import PageTitle from "../../components/PageTitle";
+import SearchModified from "../../components/SearchModify";
 import { getAllOptions } from "../../utils/selectOptionsForm";
 import HyperDatepicker from "../../components/Datepicker"
 
@@ -84,7 +85,15 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         defaultValues: {
             clientName: '',
             clientCpf: '',
-            clientPhone: ''
+            clientPhone: '',
+            clientEmail: '',
+            clientAddress: '',
+
+            vehicleBrand:'',
+            vehicleMode: '',
+            vehicleVehicle: '',
+            vehicleChassi: '',
+            vehicleBoard: ''
         }
     });
 
@@ -119,11 +128,11 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                 title={'Agenda de Serviços'}
                 company={props?.company}
                 />
-            <form onSubmit={handleSubmit(onSubmit)}>
+            
                
             <Row>
                 <Col xxl={7}>
-                    
+                    <form onSubmit={handleSubmit(onSubmit)} id="form-client-vehicle" >
                     <Card>
                         <Card.Body className="pt-4 px-4 pb-4">
                             <h4 className="header-title mb-4" style={{color: '#727CF5'}}>Cliente</h4>
@@ -135,8 +144,9 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                     <FormInput
                                         type="text"
                                         name="clientName"
-                                        // options={technicalConsultants}
+                                        key="clientName"
                                         {...otherProps}
+                                        placeholder="Dígite seu nome"
                                      />
                                 </Col>
                             </Row>
@@ -150,7 +160,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                             control={control}
                                             {...otherProps}
                                             render={({ field }) => 
-                                                 <MaskedInput
+                                            <MaskedInput
                                             mask={[
                                                 /[1-9]/,
                                                 /\d/,
@@ -170,7 +180,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                             ]}
                                             placeholder="999.999.999-99"
                                             className="form-control"
-                                            key="number"
+                                            key="clientCpf"
                                             { ...field }
                                                 />
                                             }
@@ -190,7 +200,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                             control={control}
                                             {...otherProps}
                                             render={({ field }) => 
-                                                 <MaskedInput
+                                            <MaskedInput
                                             mask={[
                                                     '(',
                                                     /[1-9]/,
@@ -210,6 +220,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                                     {...field}
                                                     placeholder="(__) ____-____"
                                                     className="form-control"
+                                                    key="clientPhone"
                                                 />
                                             }
                                         />
@@ -231,9 +242,11 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                     <Row >
                                         <Col lg={10} md={10} sm={10} xs={9}>
                                             <FormInput
-                                                type="Text"
-                                                name="name"
-                                                placeholder="Digite seu email"
+                                                type="text"
+                                                name="clientEmail"
+                                                key="clientEmail"
+                                                {...otherProps}
+                                                placeholder="Dígite seu email"
                                             />
                                         </Col>
                                         <Col lg={2} md={2} sm={2} xs={3}>
@@ -252,9 +265,11 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                     <Row >
                                         <Col lg={10} md={10} sm={10} xs={9}>
                                             <FormInput
-                                                type="Text"
-                                                name="name"
-                                                placeholder="Digite seu endereço"
+                                                type="text"
+                                                name="clientAddress"
+                                                key="clientAddress"
+                                                {...otherProps}
+                                                placeholder="Dígite seu endereço"
                                             />
                                         </Col>
                                         <Col lg={2} md={2} sm={2} xs={3}>
@@ -276,10 +291,12 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                 </Col>
                                 <Col lg={10}>
                                     <FormInput
-                                        type="Text"
-                                        name="name"
-                                        placeholder="Digite a marca"  
-                                    />
+                                        type="text"
+                                        name="vehicleBrand"
+                                        key="vehicleBrand"
+                                        {...otherProps}
+                                        placeholder="Dígite a marca"
+                                     />
                                 </Col>
                             </Row>
                             <Row className="mt-3">
@@ -289,9 +306,11 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                 <Col lg={10}>
                                     <FormInput
                                         type="text"
-                                        name="cpf"
-                                        placeholder="Digite o modelo"
-                                    />
+                                        name="vehicleModel"
+                                        key="vehicleModel"
+                                        {...otherProps}
+                                        placeholder="Dígite o modelo"
+                                     />
                                 </Col>
                             </Row>
                             <Row className="mt-3">
@@ -301,9 +320,11 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                 <Col lg={10}>
                                     <FormInput
                                         type="text"
-                                        name="cpf"
-                                        placeholder="Digite o veículo"
-                                    />
+                                        name="vehicleVehicle"
+                                        key="vehicleVehicle"
+                                        {...otherProps}
+                                        placeholder="Dígite o veículo"
+                                     />
                                 </Col>
                             </Row>
                             <Row className="mt-3">
@@ -313,9 +334,11 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                 <Col lg={10}>
                                     <FormInput
                                         type="text"
-                                        name="cpf"
-                                        placeholder="Digite o chassi"
-                                    />
+                                        name="vehicleChassi"
+                                        key="vehicleChassi"
+                                        {...otherProps}
+                                        placeholder="Dígite o chassi"
+                                     />
                                 </Col>
                             </Row>
                             <Row className="mt-3" >
@@ -325,22 +348,21 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                 <Col lg={10}>
                                     <FormInput
                                         type="text"
-                                        name="cpf"
-                                        placeholder="Digite placa"
+                                        name="vehicleBoard"
+                                        key="vehicleBoard"
+                                        {...otherProps}
+                                        placeholder="Dígite a placa"
                                     />
                                 </Col>
                             </Row>
-                        
-
-
-                        
                         </Card.Body>
                     </Card>
+                </form>
                 </Col>
                 <Col xxl={5}>
                     <Row className='mb-3'>
                         <Col xs={12}>
-                            <Button  variant="primary" type="submit" style={{width: '100%', minWidth: '62px', fontSize: '20px'}} >
+                            <Button form='form-client-vehicle' variant="primary" type="submit" style={{width: '100%', minWidth: '62px', fontSize: '20px'}} >
                                 Salvar
                             </Button>
                         </Col>
@@ -349,17 +371,8 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                         <Card.Body>
                         <h4 className="header-title mb-4" style={{color: '#727CF5'}}>Consultor Técnico</h4>
                             <Row className="mt-3">
-                                <Col sm={10} md={10} xs={9}>
-                                    <FormInput
-                                        type="Text"
-                                        name="name"
-                                        placeholder="Digite seu Nome"  
-                                    />
-                                </Col>
-                                <Col sm={2} md={2} xs={3}>
-                                    <Button variant="primary" type="button"  >
-                                                <i className="mdi mdi-magnify search-icon"></i>
-                                    </Button>
+                                <Col sm={12} md={12} xs={12}>
+                                    <SearchModified />
                                 </Col>
                             </Row>
                             <Row className="mt-3">
@@ -470,7 +483,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                     </Row>
                 </Col>
             </Row>
-            </form>
+            
         </>
     );
 };
