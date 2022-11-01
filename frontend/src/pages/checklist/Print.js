@@ -276,7 +276,9 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                         <div className={classNames({checked: checklistData['10']?.value.toString().toLowerCase() === 'regular' })}/> Regular
                                                         <div className={classNames({checked: checklistData['10']?.value.toString().toLowerCase() === 'ruim' })}/> Ruim
                                                     </div>
-                                                    <div className="form-slot"/>
+                                                    <div className="form-slot">
+                                                        {checklistData['148']?.value && checklistData['148']?.value.length > 0 ? <img style={{height: '100%', width: 'auto !important'}} src={JSON.parse(checklistData['148']?.value)?.signatureImage} /> : ''}
+                                                    </div>
                                                 </div>
                                                 <div className="col px-2">
                                                     <div>
@@ -331,7 +333,9 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                         <div className={classNames({checked: checklistData['108']?.value.toString().toLowerCase() === 'regular' })}/> Regular
                                                         <div className={classNames({checked: checklistData['108']?.value.toString().toLowerCase() === 'ruim' })}/> Ruim
                                                     </div>
-                                                    <div className="form-slot"/>
+                                                    <div className="form-slot">
+                                                        {checklistData['151']?.value && checklistData['151']?.value.length > 0 ? <img style={{height: '100%', width: 'auto !important'}} src={JSON.parse(checklistData['151']?.value)?.signatureImage} /> : ''}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -608,19 +612,19 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <TripleSquareCheck third={{ checked: true }} />
+                                                        <TripleSquareCheck />
                                                     </td>
                                                     <td>Luzes do painel e de cortesia</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <TripleSquareCheck first={{ checked: true }} />
+                                                        <TripleSquareCheck />
                                                     </td>
                                                     <td>Lavadores e limpadores</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <TripleSquareCheck second={{ checked: true }} />
+                                                        <TripleSquareCheck  />
                                                     </td>
                                                     <td>Ventilador / Desembaçadores</td>
                                                 </tr>
@@ -638,7 +642,7 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <TripleSquareCheck third={{ checked: true }} />
+                                                        <TripleSquareCheck  />
                                                     </td>
                                                     <td>Volante e coluna de direção</td>
                                                 </tr>
@@ -650,7 +654,7 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <TripleSquareCheck first={{ checked: true }} />
+                                                        <TripleSquareCheck />
                                                     </td>
                                                     <td>Ar-condicionado</td>
                                                 </tr>
@@ -662,31 +666,31 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <TripleSquareCheck first={{ checked: true }} />
+                                                        <TripleSquareCheck />
                                                     </td>
                                                     <td>Bancos e cintos de segurança</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <TripleSquareCheck second={{ checked: true }} />
+                                                        <TripleSquareCheck  />
                                                     </td>
                                                     <td>Vidros e trava elétrica</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <TripleSquareCheck first={{ checked: true }} />
+                                                        <TripleSquareCheck />
                                                     </td>
                                                     <td>Freios de estacionamento</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <TripleSquareCheck first={{ checked: true }} />
+                                                        <TripleSquareCheck  />
                                                     </td>
                                                     <td>Pedal de freio</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <TripleSquareCheck third={{ checked: true }} />
+                                                        <TripleSquareCheck />
                                                     </td>
                                                     <td>Filtro de ar-condicionado</td>
                                                 </tr>
@@ -700,19 +704,19 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                 <tbody>
                                                 <tr>
                                                     <td width={5}>
-                                                        <TripleSquareCheck first={{ checked: true }} />
+                                                        <TripleSquareCheck  />
                                                     </td>
                                                     <td>Iluminação dianteira e traseira</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <TripleSquareCheck second={{ checked: true }} />
+                                                        <TripleSquareCheck />
                                                     </td>
                                                     <td>Tampa do tanque de combustível</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <TripleSquareCheck second={{ checked: true }} />
+                                                        <TripleSquareCheck  />
                                                     </td>
                                                     <td>Fumaça do motor (motor diesel)</td>
                                                 </tr>
@@ -727,37 +731,37 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                 <tbody>
                                                 <tr>
                                                     <td width={5}>
-                                                        <TripleSquareCheck first={{ checked: true }} />
+                                                        <TripleSquareCheck  />
                                                     </td>
                                                     <td>Vazamentos de óleo, água, combustível e/ou outros fluídos</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <TripleSquareCheck second={{ checked: true }} />
+                                                        <TripleSquareCheck  />
                                                     </td>
                                                     <td>Correias de acionamento</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <TripleSquareCheck second={{ checked: true }} />
+                                                        <TripleSquareCheck  />
                                                     </td>
                                                     <td>Folga das válvulas (se aplicável)</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <TripleSquareCheck second={{ checked: true }} />
+                                                        <TripleSquareCheck />
                                                     </td>
                                                     <td>velas de ignição (conforme ano/modelo do veículo)</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <TripleSquareCheck first={{ checked: true }} />
+                                                        <TripleSquareCheck  />
                                                     </td>
                                                     <td>condições da bateria</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <TripleSquareCheck first={{ checked: true }} />
+                                                        <TripleSquareCheck />
                                                     </td>
                                                     <td>Tensão da bateria. Encontrado [     v]</td>
                                                 </tr>
@@ -765,28 +769,28 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
 
                                                 <tr>
                                                     <td>
-                                                        <TripleSquareCheck first={{ checked: true }} />
+                                                        <TripleSquareCheck />
                                                     </td>
                                                     <td>Cânister de carvão ativado (se aplicável)</td>
                                                 </tr>
 
                                                 <tr>
                                                     <td>
-                                                        <TripleSquareCheck first={{ checked: true }} />
+                                                        <TripleSquareCheck />
                                                     </td>
                                                     <td>Filtro de ar</td>
                                                 </tr>
 
                                                 <tr>
                                                     <td>
-                                                        <TripleSquareCheck first={{ checked: true }} />
+                                                        <TripleSquareCheck />
                                                     </td>
                                                     <td>Filtro de combustível (motor diesel ou flex)</td>
                                                 </tr>
 
                                                 <tr>
                                                     <td>
-                                                        <TripleSquareCheck first={{ checked: true }} />
+                                                        <TripleSquareCheck />
                                                     </td>
                                                     <td>Filtro de combustível (2º filtro)(se aplicável)</td>
                                                 </tr>
@@ -803,13 +807,13 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                 <tbody>
                                                 <tr>
                                                     <td width={5}>
-                                                        <TripleSquareCheck first={{ checked: true }} />
+                                                        <TripleSquareCheck />
                                                     </td>
                                                     <td>Óleo do motor</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <TripleSquareCheck second={{ checked: true }} />
+                                                        <TripleSquareCheck />
                                                     </td>
                                                     <td>Fluido do lavador de para-brisa</td>
                                                 </tr>
@@ -865,13 +869,13 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                 <tbody>
                                                 <tr>
                                                     <td width={5}>
-                                                        <TripleSquareCheck first={{ checked: true }} />
+                                                        <TripleSquareCheck  />
                                                     </td>
                                                     <td>Caixa de direção e barra de direção</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <TripleSquareCheck second={{ checked: true }} />
+                                                        <TripleSquareCheck  />
                                                     </td>
                                                     <td>Tubulação do sistema de freio</td>
                                                 </tr>
