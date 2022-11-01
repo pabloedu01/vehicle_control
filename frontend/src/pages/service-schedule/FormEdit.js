@@ -407,7 +407,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                                         }
                                                     />
                                                 </Col>
-                                                {index === 0 &&
+                                                {index === 0 ?
                                                     (<Col lg={2} md={2} sm={2} xs={3}>
                                                     <Button className="btn-icon btn btn-light w-100"
                                                         onClick={() => {
@@ -417,7 +417,18 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                                     >
                                                             <i className="mdi mdi-phone-plus-outline"></i>
                                                         </Button>
-                                                    </Col>)}
+                                                    </Col>) : 
+                                                   (<Col lg={2} md={2} sm={2} xs={3}>
+                                                        <Button className="btn-icon btn btn-light w-100"
+                                                            onClick={() => {
+                                                                setPhoneList(prevState => [...prevState, ''])
+                                                            }}
+                                                        key={index + getRandomNumber()}
+                                                        >
+                                                            <i className="mdi mdi-trash-can-outline"></i>
+                                                        </Button>
+                                                    </Col>)
+                                                }
                                                 </Row>
                                             )
                                                     
