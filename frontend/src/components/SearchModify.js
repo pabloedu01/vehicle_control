@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React,{useState} from 'react';
 import { Link } from 'react-router-dom';
 import Select, { components } from 'react-select';
 
@@ -44,7 +44,7 @@ const IndicatorsContainer = (props) => {
         <div style={{}}>
             <components.IndicatorsContainer {...props} className="input-group">
                 <button className="btn btn-primary input-group-text" onMouseDown={handleClick}>
-                    Search
+                    Selecionar
                 </button>
             </components.IndicatorsContainer>
         </div>
@@ -71,6 +71,7 @@ const handleFormatOptionLabel = (option) => {
 // type TopbarSearchProps = {};
 
 const SearchModified = (props: TopbarSearchProps): React$Element<any> => {
+    const [technicalConsultantSelected, setTechnicalConsultantSelected] = useState()
     const options = [
         {
             label: 'Erwin Brown',
@@ -78,7 +79,7 @@ const SearchModified = (props: TopbarSearchProps): React$Element<any> => {
             userDetails: {
                 firstname: 'Erwin',
                 lastname: 'Brown',
-                position: 'UI Designer',
+                cod: '0001'
             },
         },
         {
@@ -87,7 +88,16 @@ const SearchModified = (props: TopbarSearchProps): React$Element<any> => {
             userDetails: {
                 firstname: 'Jacob',
                 lastname: 'Deo',
-                position: 'Developer',
+                cod: '0002'
+            },
+        },
+        {
+            label: 'Pablo Eduardo Lima Celestino',
+            value: 'users3',
+            userDetails: {
+                firstname: 'Pablo',
+                lastname: 'Celestino',
+                cod: 'PELC'
             },
         },
     ];
@@ -95,6 +105,7 @@ const SearchModified = (props: TopbarSearchProps): React$Element<any> => {
     const onClick = (e) => {
         e.preventDefault();
         e.stopPropagation();
+        props.handleTechnicalConsultantSelected(technicalConsultantSelected)
     };
 
     return (
@@ -113,7 +124,7 @@ const SearchModified = (props: TopbarSearchProps): React$Element<any> => {
                 name="search-app"
                 className="app-search dropdown"
                 classNamePrefix="react-select"
-                onChange={(item) => console.log(item)}
+                onChange={(item) => setTechnicalConsultantSelected(item)}
             />
         </>
     );

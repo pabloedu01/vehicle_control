@@ -51,10 +51,19 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
     const history = useNavigate();
     const {id} = useParams();
     const [data, setData] = useState();
+    const [dateVisitSelected, setDateVisitSelected] = useState(new Date());
+    const [technicalConsultantSelectedSearch, setTechnicalConsultantSelectedSearch] = useState({
+        label: '',
+        value: '',
+        userDetails: {
+            firstname: '',
+            lastname: '',
+        }
+    })
     // const [technicalConsultants, setTechnicalConsultants] = useState([]);
     // const [clientInfo, setClientInfo] = useState();
     // const [clientVehicleInfo, setClientVehicleInfo] = useState(null);
-    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [selectedDate, setSelectedDate] = useState(moment().format("yyyy-MM-DDThh:mm"));
     const onDateChange = (date) => {
         if (date) {
             setSelectedDate(date);
@@ -93,7 +102,10 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
             vehicleMode: '',
             vehicleVehicle: '',
             vehicleChassi: '',
-            vehicleBoard: ''
+            vehicleBoard: '',
+
+            scheludesVisited: moment().format("yyyy-MM-DDThh:mm"),
+            scheludesCreated: moment().format("yyyy-MM-DDThh:mm"),
         }
     });
 
@@ -110,7 +122,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         errors,
         control
     };
-    console.log(watch('clientPhone'))
+    console.log(watch('scheludesVisited'))
 
     const onSubmit = (formData) => {      
         console.log("enviou")
@@ -372,19 +384,22 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                         <h4 className="header-title mb-4" style={{color: '#727CF5'}}>Consultor Técnico</h4>
                             <Row className="mt-3">
                                 <Col sm={12} md={12} xs={12}>
-                                    <SearchModified />
+                                    <SearchModified
+                                        handleTechnicalConsultantSelected={setTechnicalConsultantSelectedSearch}
+                                    />
                                 </Col>
                             </Row>
                             <Row className="mt-3">
                                 <Col sm={12} md={12}>
-                                    <p>Nome:{' Pablo Eduardo Lima Celestino'}</p>
-                                    <p>Código consultor:{'  PELC'}</p>
+                                    <p>Nome:{technicalConsultantSelectedSearch.label}</p>
+                                    <p>Código consultor:{technicalConsultantSelectedSearch.userDetails.cod}</p>
                                 </Col>
                             </Row>
                         </Card.Body>
                     </Card>
                     <Card>
                         <Card.Body>
+                        <form onSubmit={handleSubmit(onSubmit)} id="form-client-vehicle" >
                         <h4 className="header-title mb-4" style={{color: '#727CF5'}}>agendamento</h4>
                             <Row className="mt-3">
                                 <Row>
@@ -396,65 +411,33 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                     <Col sm={3} md={3} className="d-flex align-items-center">
                                         <span>Data da visita:</span>
                                     </Col> 
-                                    <Col sm={5} md={5}>
-                                            <HyperDatepicker
-                                                hideAddon={true}
-                                                // showTimeSelect
-                                                locale="pt-BR"
-                                                timeFormat="HH:mm"
-                                                tI={30}
-                                                dateFormat="dd/MM/yyyy"
-                                                timeCaption="time"
-                                                value={selectedDate}
-                                                onChange={(date) => {
-                                                    onDateChange(date);
-                                                }}
-                                        
-                                            />
-                                    </Col> 
-                                    <Col sm={1} md={1} className="d-flex align-items-center">
-                                        <span> Hora:</span>
-                                    </Col> 
-                                    <Col sm={3} md={3}>
-                                        <MaskedInput
-                                            mask={[/\d/, /\d/, ':', /\d/, /\d/,]}
-                                            placeholder="__:__"
-                                            className="form-control"
+                                    <Col sm={5} md={5} lg={6} xs={12}>
+                                        <FormInput 
+                                            type="datetime-local"
+                                            id="scheludesVisited"
+                                            name="scheludesVisited"
+                                            // value={moment().format("yyyy-MM-DDThh:mm")}
+                                            // "2018-06-12T19:30"
+                                            // value={selectedDate}
+                                            {...otherProps}
+                                            // onChange={e => {
+                                            //     setDateVisitSelected(e.target.value)
+                                            //     console.log('moment -', moment().format("yyyy-MM-DDThh:mm"))
+                                            //     console.log('input -',e.target.value)
+                                            // }}
                                         />
-                                    </Col>
+                                    </Col> 
                                 </Row>
                                 <Row className='mt-2'>
-                                    <Col sm={3} md={3} className="d-flex align-items-center">
+                                    <Col sm={3} md={3} lg={3} xs={12} className="d-flex align-items-center">
                                         <span>Data da criação:</span>
                                     </Col> 
-                                    <Col sm={5} md={5}>
-                                            <HyperDatepicker
-                                                hideAddon={true}
-                                                // showTimeSelect
-                                                locale="pt-BR"
-                                                timeFormat="HH:mm"
-                                                tI={30}
-                                                dateFormat="dd/MM/yyyy"
-                                                timeCaption="time"
-                                                value={selectedDate}
-                                                onChange={(date) => {
-                                                    onDateChange(date);
-                                                }}
-                                        
-                                            />
-                                    </Col> 
-                                    <Col sm={1} md={1} className="d-flex align-items-center">
-                                        <span> Hora:</span>
-                                    </Col> 
-                                    <Col sm={3} md={3}>
-                                        <MaskedInput
-                                            mask={[/\d/, /\d/, ':', /\d/, /\d/,]}
-                                            placeholder="__:__"
-                                            className="form-control"
-                                        />
-                                    </Col>
+                                    <Col sm={5} md={5} lg={6} xs={12}>
+                                            
+                                    </Col>  
                                 </Row>
-                            </Row>
+                                </Row>
+                            </form>
                         </Card.Body>
                     </Card>
                     <Row className="mt-3">
