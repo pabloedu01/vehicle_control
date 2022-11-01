@@ -20,38 +20,15 @@ import { useMediaQuery } from '../../hooks/useMediaQuery'
  
 const api = new APICore();
 
-const allDataForm = {
-    client: {
-        name: '',
-        cpf: '',
-        telefone: [''],
-        email: [''],
-        address: ['']
-    },
-    vehicle: {
-        brand: '',
-        mode: '',
-        vehicle: '',
-        chassi: '',
-        board: ''
-    },
-    technicalConsultant: {
-        name: '',
-        cod: ''
-    },
-    schedules: {
-        numberAttendance: 0,
-        dateVisit: '',
-        dateCreated: ''
-    }
-}
+
 
 
 const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, handleReturnToClientList?: any, handleReturnToClientVehicleList?: any, pushButton?: any }): React$Element<React$FragmentType> => {
     const history = useNavigate();
     const {id} = useParams();
     const [data, setData] = useState();
-    const [dateVisitSelected, setDateVisitSelected] = useState(new Date());
+    const [phoneList, setPhoneList] = useState([]);
+    const [emailList, setEmailList] = useState([]);
     const [technicalConsultantSelectedSearch, setTechnicalConsultantSelectedSearch] = useState({
         label: '',
         value: '',
@@ -70,6 +47,95 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         }
     };
 
+    console.log(data)
+
+       const getData = () => {
+        // const defaultData = {
+        //     client_vehicle_id: null,
+        //     code: null,
+        //     promised_date: moment().format('YYYY-MM-DDTHH:mm'),
+        //     client_id: null,
+        //     technical_consultant_id: null,
+        // };
+           
+        const defaultData = {
+            clientName: '',
+            clientCpf: '',
+            clientPhone:  '',
+            clientEmail: '',
+            clientAddress: '',
+
+            vehicleBrand:'',
+            vehicleMode: '',
+            vehicleVehicle: '',
+            vehicleChassi: '',
+            vehicleBoard: '',
+
+            scheludesVisited: moment().format("yyyy-MM-DDThh:mm"),
+            scheludesCreated: moment().format("yyyy-MM-DDThh:mm"),
+        };
+
+        new Promise((resolve) => {
+            if(id){
+                api.get('/service-schedule/' + id).then((response) => {
+                    const {client_vehicle: clientVehicle, client_vehicle_id, code, promised_date, client_id, technical_consultant_id, client, technical_consultant: technicalConsultant, vehicle_service: vehicleService} = response.data.data;
+                    //console.log(response.data.data)
+                    resolve({
+                        client_vehicle_id,
+                        code,
+                        promised_date: promised_date,
+                        client_id,
+                        technical_consultant_id,
+                        technicalConsultant,
+                        client,
+                        clientVehicle,
+                        vehicleService
+                    });
+                }, (error) => {
+                    resolve(defaultData);
+                });
+            }
+            else{
+                resolve(defaultData);
+            }
+        }).then((data) => {
+            const storage = JSON.parse(localStorage.getItem('serviceSchedule'));
+            if(storage){
+                /*storage.promised_date = new Date(storage.promised_date);*/
+
+                Object.assign(data, storage);
+            }
+
+            if(props?.client){
+                Object.assign(data, {
+                    client: props?.client,
+                    client_id: props?.client?.id
+                });
+            }
+
+            if(props?.clientVehicle){
+                Object.assign(data, {
+                    clientVehicle: props?.clientVehicle,
+                    client_vehicle_id: props?.clientVehicle?.id
+                });
+            }
+
+            setData(data);
+        });
+    };
+
+    
+
+    // const getTechnicalConsultants = () => {
+    //     api.get('/technical-consultant/active-technical-consultants', {company_id: props.company?.id}).then((response) => {
+    //         setTechnicalConsultants(getAllOptions(response.data.data, data?.technicalConsultant));
+    //     }, (error) => {
+    //         setTechnicalConsultants([]);
+    //     });
+    // };
+
+
+    
       /*
      * Hook Media Query
      */
@@ -89,14 +155,39 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
     /*
      * form methods
      */
-    const methods = useForm({
-        resolver: schemaResolver,
-        defaultValues: {
-            clientName: '',
+
+    const generateDefaultValuesPhone = () => {
+        const newObject = {}
+        if (phoneList.length > 0) {
+            phoneList.forEach((item, index) => {
+                newObject[`clientPhone${index + 1}`] = ''  
+            }) 
+        }
+        return newObject
+    }
+
+    const generateDefaultValuesEmail = () => {
+        const newObject = {}
+        if (data?.client.email.length > 0) {
+            data.client.phone.forEach((item, index) => {
+                newObject[`clientEmail${index + 1}`] = ''  
+            }) 
+        }
+        return newObject
+    }
+
+
+    const defaultValuesPhoneCreated = generateDefaultValuesPhone()
+    const defaultValuesEmailCreated = generateDefaultValuesEmail()
+  
+
+    const defaultValues = {
+            ...defaultValuesPhoneCreated,
+            ...defaultValuesEmailCreated,
+            clientName: '' ,
             clientCpf: '',
-            clientPhone: '',
-            clientEmail: '',
-            clientAddress: '',
+            clientAddress:  '',
+    
 
             vehicleBrand:'',
             vehicleMode: '',
@@ -106,7 +197,29 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
 
             scheludesVisited: moment().format("yyyy-MM-DDThh:mm"),
             scheludesCreated: moment().format("yyyy-MM-DDThh:mm"),
-        }
+    }
+
+
+    const methods = useForm({
+        resolver: schemaResolver,
+        defaultValues
+        // defaultValues: {
+        //     ...defaultValuesPhoneCreated,
+        //     ...defaultValuesEmailCreated,
+        //     clientName: '' ,
+        //     clientCpf: '',
+        //     clientAddress:  '',
+    
+
+        //     vehicleBrand:'',
+        //     vehicleMode: '',
+        //     vehicleVehicle: '',
+        //     vehicleChassi: '',
+        //     vehicleBoard: '',
+
+        //     scheludesVisited: moment().format("yyyy-MM-DDThh:mm"),
+        //     scheludesCreated: moment().format("yyyy-MM-DDThh:mm"),
+        // }
     });
 
     const {
@@ -122,12 +235,66 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         errors,
         control
     };
-    console.log(watch('scheludesVisited'))
+    
+   
+    console.log( watch('clientPhone3'))
+    
+      /*
+     * useEffect 
+     */
 
+    useEffect(() => {
+        getData();
+    }, [id]);
+
+    useEffect(() => {
+        methods.setValue('clientName', data?.client.name ?? null);
+        methods.setValue('clientCpf', data?.client.document ?? null);
+        if (data?.client.phone.length > 0) {
+            setPhoneList(prevState => {
+                console.log('state phone', data?.client.phone)
+                return [...data?.client.phone] 
+            })
+            data.client.phone.forEach((item, index) => {
+                const phoneFormatted = item.split('+55')[1]
+                methods.setValue(`clientPhone${index + 1}`,  phoneFormatted ?? null);  
+            }) 
+        }
+  
+        if (data?.client.email.length > 0) {
+            setEmailList(prevState => {
+                return [...data?.client.email] 
+            })
+            data.client.email.forEach((item, index) => {
+                methods.setValue(`clientEmail${index + 1}`,  item ?? null);  
+            }) 
+        }
+        methods.setValue('clientAddress', data?.client.address ?? null);
+        
+        
+        methods.setValue('vehicleBrand', data?.clientVehicle.name ?? null);
+        methods.setValue('client_id', data?.client_id ?? null);
+        
+        // methods.setValue('clientCpf', moment(data?.promised_date).format('YYYY-MM-DDTHH:mm') ?? moment().format('YYYY-MM-DDTHH:mm'));
+    }, [data]);
+
+    // useEffect(() => {
+    //     if (data?.client.phone) {
+    //         setEmailList(data?.client.phone)
+    //     }
+    //     if (data?.client.email) {
+    //         setEmailList(data?.client.email)
+    //     }
+    // }, [data?.client.phone, data?.client.email,phoneList,emailList ]);
+   
     const onSubmit = (formData) => {      
         console.log("enviou")
         console.log(formData)
         console.log(formData.clientCpf.length)
+    }
+
+    function getRandomNumber(min = 1, max = 100000) {
+        return Math.random() * (max - min) + min;
     }
 
     return (
@@ -205,45 +372,56 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                     <span>Telefone:</span>
                                 </Col>
                                 <Col sm={10} md={10} >
-                                    <Row >
-                                        <Col lg={10} md={10} sm={10} xs={9}>
-                                        <Controller
-                                            name="clientPhone"
-                                            control={control}
-                                            {...otherProps}
-                                            render={({ field }) => 
-                                            <MaskedInput
-                                            mask={[
-                                                    '(',
-                                                    /[1-9]/,
-                                                    /\d/,
-                                                    ')',
-                                                    ' ',
-                                                    /\d/,
-                                                    /\d/,
-                                                    /\d/,
-                                                    /\d/,
-                                                    '-',
-                                                    /\d/,
-                                                    /\d/,
-                                                    /\d/,
-                                                    /\d/,
-                                                    ]}
-                                                    {...field}
-                                                    placeholder="(__) ____-____"
-                                                    className="form-control"
-                                                    key="clientPhone"
-                                                />
-                                            }
-                                        />
-                                            
-                                        </Col>
-                                        <Col lg={2} md={2} sm={2} xs={3}>
-                                            <Button  className="btn-icon btn btn-light w-100" >
-                                                <i className="mdi mdi-phone-plus-outline"></i>
-                                            </Button>
-                                        </Col>
-                                    </Row>
+                                    {phoneList.length > 0 && phoneList.map((item, index) => {
+                                        return (
+                                            <Row key={item + index + getRandomNumber()}>
+                                                <Col lg={10} md={10} sm={10} xs={9} className={`${index > 0 ? 'mt-2': ''}`} key={item + index + getRandomNumber()}>
+                                                    <Controller
+                                                        name={`clientPhone${index + 1}`}
+                                                        control={control}
+                                                        {...otherProps}
+                                                        render={({ field }) => 
+                                                        <MaskedInput
+                                                        mask={[
+                                                                '(',
+                                                                /[1-9]/,
+                                                                /\d/,
+                                                                ')',
+                                                                ' ',
+                                                                /\d/,
+                                                                /\d/,
+                                                                /\d/,
+                                                                /\d/,
+                                                                /\d/,
+                                                                '-',
+                                                                /\d/,
+                                                                /\d/,
+                                                                /\d/,
+                                                                /\d/,
+                                                                ]}
+                                                                {...field}
+                                                                placeholder="(__) _____-____"
+                                                                className="form-control"
+                                                                key="clientPhone"
+                                                            />
+                                                        }
+                                                    />
+                                                </Col>
+                                                {index === 0 &&
+                                                    (<Col lg={2} md={2} sm={2} xs={3}>
+                                                    <Button className="btn-icon btn btn-light w-100"
+                                                        onClick={() => {
+                                                            setPhoneList(prevState => [...prevState, ''])
+                                                        }}
+                                                    key={index + getRandomNumber()}
+                                                    >
+                                                            <i className="mdi mdi-phone-plus-outline"></i>
+                                                        </Button>
+                                                    </Col>)}
+                                                </Row>
+                                            )
+                                                    
+                                            })}
                                 </Col>
                             </Row>
                             <Row className="mt-3">
@@ -255,7 +433,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                         <Col lg={10} md={10} sm={10} xs={9}>
                                             <FormInput
                                                 type="text"
-                                                name="clientEmail"
+                                                name="clientEmail1"
                                                 key="clientEmail"
                                                 {...otherProps}
                                                 placeholder="Dígite seu email"
