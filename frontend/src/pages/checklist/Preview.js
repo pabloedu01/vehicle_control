@@ -467,6 +467,12 @@ const Preview = (props: { company?: any, invite?: any }): React$Element<React$Fr
                                                                             </Badge>
                                                                         )
                                                                     ) : (
+
+                                                                        checklistData[checklistItem.id]?.type === 'signature' ?
+
+                                                                            <img className="d-block w-100" src={checklistData[checklistItem.id]?.value && checklistData[checklistItem.id]?.value.length > 0 ? JSON.parse(checklistData[checklistItem.id]?.value)?.signatureImage : ''} />
+
+                                                                        :
                                                                         checklistData[checklistItem.id]?.value
                                                                     )}
                                                                 </td>

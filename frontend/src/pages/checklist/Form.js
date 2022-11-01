@@ -4,11 +4,8 @@ import PageTitle from "../../components/PageTitle";
 import {Button, Card, Col, Row, Form, Alert} from "react-bootstrap";
 import {APICore} from "../../helpers/api/apiCore";
 import {useNavigate, useParams} from "react-router-dom";
-import moment from 'moment';
 import Select from 'react-select';
 import FileUpload from "../../components/FileUpload";
-import SignatureCanvas from 'react-signature-canvas';
-import {dataURLtoFile} from "../../utils/file";
 import swal from "sweetalert";
 import {toastService} from "../../services/toast";
 import './style.css';
@@ -45,18 +42,6 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
     const [showFileUpload, setShowFileUpload] = useState(false);
     const [fileUploadData, setFileUploadData] = useState([]);
     const [fileUploadId, setFileUploadId] = useState(null);
-
-    const [cleanClientSignature, setCleanClientSignature] = useState(false);
-    const [cleanTechnicalConsultantSignature, setCleanTechnicalConsultantSignature] = useState(false);
-    const [drawSignatures, setDrawSignatures] = useState(false);
-    const [clientSignatureImage, setClientSignatureImage] = useState(null);
-    const [technicalConsultantSignatureImage, setTechnicalConsultantSignatureImage] = useState(null);
-    const [clientSignatureDate, setClientSignatureDate] = useState(null);
-    const [technicalConsultantSignatureDate, setTechnicalConsultantSignatureDate] = useState(null);
-    const [clientSignatureStarted, setClientSignatureStarted] = useState(false);
-    const [technicalConsultantSignatureStarted, setTechnicalConsultantSignatureStarted] = useState(false);
-    const [clientSignature, setClientSignature] = useState(null);
-    const [technicalConsultantSignature, setTechnicalConsultantSignature] = useState(null);
 
     const getChecklistItemValueById = (id) => {
         const item = checklistItems.find((item) => item.id === id);
@@ -213,28 +198,6 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
         setShowFileUpload(true);
     };
 
-    const onEndTechnicalConsultantSignature = () => {
-        setTechnicalConsultantSignatureStarted(true);
-        setTechnicalConsultantSignatureDate(moment().utc().format('YYYY-MM-DDTHH:mm:00+00:00'));
-    };
-
-    const onEndClientSignature = () => {
-        setClientSignatureStarted(true);
-        setClientSignatureDate(moment().utc().format('YYYY-MM-DDTHH:mm:00+00:00'));
-    };
-
-    const signatureWidth = () => {
-        let width = document.getElementById('signatures')?.offsetWidth || 1000;
-
-        if(width > 800){
-            width = (width/2)*0.7;
-        } else {
-            width = (width)*0.9;
-        }
-
-        return width;
-    };
-
     const onPreviousStage = () => {
         const currentStageIndex = stages.indexOf(stage);
 
@@ -272,8 +235,6 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
     const moveToStage = (stageId, checkIfIsAvailable = false) => {
         if(stage?.id !== stageId){
             if(vehicleService){
-                setCleanClientSignature(!cleanClientSignature);
-
                 history(`/panel/company/${props.company?.id}/service-schedules/${id}/checklist/${vehicleService.id}/edit/${stageId}`, { replace: true });
             } else {
                 setForceToMoveStage(stageId);
@@ -282,118 +243,54 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
     };
 
     const onSubmit = (complete) => {
-        const files = [];
+        (new Promise((resolve, reject) => {
+            if(!vehicleServiceStage?.completed && stage?.items.length > 0){
+                const formData = {
+                    "stage_id": stage.id,
+                    "checklist_version_id": data.checklistVersion.id,
+                    "service_schedule_id": null,
+                    "technical_consultant_id": data.technicalConsultant.id,
+                    "brand_id": data.brand.id,
+                    "client_id": data.client.id,
+                    "client_name": data.client.name,
+                    "fuel": getChecklistItemValue('fuel'),
+                    "mileage": getChecklistItemValue('mileage'),
+                    "checklist": stage.items.map((item) => getFormattedChecklist(item.id)),
+                    "completed": complete
+                };
 
-        if(!vehicleServiceStage?.completed){
-            if(technicalConsultantSignatureStarted){
-                if(technicalConsultantSignature && !technicalConsultantSignature.isEmpty()){
-                    files.push(dataURLtoFile(technicalConsultantSignature.toDataURL('image/png'), 'technicalConsultantSignature.png'));
+                switch(type){
+                    case 'service-schedules':
+                        formData.service_schedule_id = id;
+                        formData.vehicle_id = data.vehicle.id;
+                        break;
+                }
+
+                setErrors(null);
+
+                let ajaxCall;
+
+                if(vehicleService?.id){
+                    ajaxCall = api.update('/vehicle-service/' + vehicleService?.id, formData);
                 } else {
-                    setTechnicalConsultantSignatureImage(null);
-                }
-            }
-
-            if(clientSignatureStarted){
-                if(clientSignature && !clientSignature.isEmpty()){
-                    files.push(dataURLtoFile(clientSignature.toDataURL('image/png'), 'clientSignature.png'));
-                } else {
-                    setClientSignatureImage(null);
-                }
-            }
-        }
-
-        Promise.all(files.map((file) => new Promise((resolve, reject) => {
-            api.uploadFile('/file-upload/image', {image: file}).then((response) => {
-                if(response.data.hasOwnProperty('data') && response.data.data.hasOwnProperty('id')){
-                    resolve(response.data.data);
-                } else {
-                    reject();
-                }
-            }, (error) => {
-                reject();
-            });
-        }))).then((processedFiles) => {
-
-            let localClientSignatureImage = null, localTechnicalConsultantSignatureImage = null;
-
-            processedFiles.forEach((file) => {
-                if(file.original_name === 'clientSignature.png'){
-                    setClientSignatureImage(file.id);
-                    localClientSignatureImage = file.id;
+                    ajaxCall = api.post('/vehicle-service',Object.assign(formData,{company_id: props.company?.id}));
                 }
 
-                if(file.original_name === 'technicalConsultantSignature.png'){
-                    setTechnicalConsultantSignatureImage(file.id);
-                    localTechnicalConsultantSignatureImage = file.id;
-                }
-            });
+                ajaxCall.then((response) => {
+                    setVehicleService(response.data.data);
 
-            (new Promise((resolve, reject) => {
-                if(!vehicleServiceStage?.completed && stage?.items.length > 0){
-                    const formData = {
-                        "stage_id": stage.id,
-                        "checklist_version_id": data.checklistVersion.id,
-                        "service_schedule_id": null,
-                        "technical_consultant_id": data.technicalConsultant.id,
-                        "brand_id": data.brand.id,
-                        "client_id": data.client.id,
-                        "client_name": data.client.name,
-                        "fuel": getChecklistItemValue('fuel'),
-                        "mileage": getChecklistItemValue('mileage'),
-                        "client_signature": localClientSignatureImage ?? clientSignatureImage,
-                        "client_signature_date": clientSignatureStarted ? moment().utc().format('YYYY-MM-DDTHH:mm:00+00:00') : (vehicleService?.client_signature_date ? moment(vehicleService?.client_signature_date).utc().format('YYYY-MM-DDTHH:mm:00+00:00') : (clientSignatureDate ? moment(clientSignatureDate).utc().format('YYYY-MM-DDTHH:mm:00+00:00') : null)),
-                        "technical_consultant_signature": localTechnicalConsultantSignatureImage ?? technicalConsultantSignatureImage,
-                        "technical_consultant_signature_date": technicalConsultantSignatureStarted ? moment().utc().format('YYYY-MM-DDTHH:mm:00+00:00') : (vehicleService?.technical_consultant_signature_date ? moment(vehicleService?.technical_consultant_signature_date).utc().format('YYYY-MM-DDTHH:mm:00+00:00') : (technicalConsultantSignatureDate ? moment(technicalConsultantSignatureDate).utc().format('YYYY-MM-DDTHH:mm:00+00:00') : null)),
-                        "checklist": stage.items.map((item) => getFormattedChecklist(item.id)),
-                        "completed": complete || ((localClientSignatureImage ?? clientSignatureImage) !== null && (localTechnicalConsultantSignatureImage ?? technicalConsultantSignatureImage) !== null)
-                    };
-
-                    switch(type){
-                        case 'service-schedules':
-                            formData.service_schedule_id = id;
-                            formData.vehicle_id = data.vehicle.id;
-                            break;
-                    }
-
-                    setErrors(null);
-
-                    let ajaxCall;
-
-                    if(vehicleService?.id){
-                        ajaxCall = api.update('/vehicle-service/' + vehicleService?.id, formData);
-                    } else {
-                        ajaxCall = api.post('/vehicle-service',Object.assign(formData,{company_id: props.company?.id}));
-                    }
-
-                    ajaxCall.then((response) => {
-                        setVehicleService(response.data.data);
-
-                        resolve();
-                    }, (error) => {
-                        reject(error);
-                    });
-                } else {
                     resolve();
-                }
-            })).then(() => {
-                history(`/panel/company/${props.company?.id}/service-schedules/${id}/checklist`);
-                /*onNextStage();*/
-            }).catch((error) => {
-                manageAjaxError(error);
-            });
+                }, (error) => {
+                    reject(error);
+                });
+            } else {
+                resolve();
+            }
+        })).then(() => {
+            history(`/panel/company/${props.company?.id}/service-schedules/${id}/checklist`);
+            /*onNextStage();*/
         }).catch((error) => {
-            swal({
-                title: 'Error',
-                text: 'Ocorreu um erro ao carregar as assinaturas.',
-                icon: 'error',
-                buttons: {
-                    confirm: {
-                        text: 'Ok',
-                        value: 'confirm'
-                    }
-                },
-                dangerMode: true,
-            });
+            manageAjaxError(error);
         });
     };
 
@@ -482,62 +379,6 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
         getData();
     }, [id, type, checklistId]);
 
-    /*si cambia el stage, o se pide redibujar o se cambia la referencia del dibujo*/
-    useEffect(() => {
-        if(clientSignature && vehicleServiceStage && !clientSignatureStarted){
-            if(vehicleServiceStage?.client_signature_base64){
-                setTimeout(() => {
-                    clientSignature.clear();
-                    clientSignature.fromDataURL(vehicleServiceStage?.client_signature_base64, {width: signatureWidth(),height: 200,ratio: 1});
-                    clientSignature.off();
-                },100);
-            } else {
-                setCleanClientSignature(!cleanClientSignature);
-            }
-        }
-
-        if(technicalConsultantSignature && vehicleServiceStage && !technicalConsultantSignatureStarted){
-            if(vehicleServiceStage?.technical_consultant_signature_base64){
-                setTimeout(() => {
-                    technicalConsultantSignature.clear();
-                    technicalConsultantSignature.fromDataURL(vehicleServiceStage?.technical_consultant_signature_base64, {width: signatureWidth(),height: 200,ratio: 1});
-                    technicalConsultantSignature.off();
-                },100);
-            } else {
-                setCleanTechnicalConsultantSignature(!cleanTechnicalConsultantSignature);
-            }
-        }
-    }, [vehicleServiceStage,drawSignatures, technicalConsultantSignature, clientSignature]);
-
-    /*al cambiar un stage ó el vehicle service, limpiar la firma*/
-    useEffect(() => {
-        if(stage && vehicleService){
-            const vehicleServiceStage = vehicleService.stages.find((localStage) => localStage.id === stage.id);
-
-            setClientSignatureImage(vehicleServiceStage?.pivot?.client_signature ?? null);
-            setTechnicalConsultantSignatureImage(vehicleServiceStage?.pivot?.technical_consultant_signature ?? null);
-            setClientSignatureDate(vehicleServiceStage?.pivot?.client_signature_date ?? null);
-            setTechnicalConsultantSignatureDate(vehicleServiceStage?.pivot?.technical_consultant_signature_date ?? null);
-
-            setVehicleServiceStage({
-                id: vehicleServiceStage?.id ?? null,
-                client_signature_base64: vehicleServiceStage?.pivot?.client_signature_base64 ?? null,
-                technical_consultant_signature_base64: vehicleServiceStage?.pivot?.technical_consultant_signature_base64 ?? null,
-                completed: vehicleServiceStage?.pivot?.completed ?? false
-            });
-        } else {
-            setClientSignatureImage(null);
-            setTechnicalConsultantSignatureImage(null);
-            setClientSignatureDate(null);
-            setTechnicalConsultantSignatureDate(null);
-            setVehicleServiceStage(null);
-        }
-
-        setClientSignatureStarted(false);
-        setTechnicalConsultantSignatureStarted(false);
-
-    }, [stage, vehicleService]);
-
     /*setear stages*/
     useEffect(() => {
         if(vehicleService){
@@ -556,26 +397,6 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
     useEffect(() => {
         setChecklistItems([].concat(...stages.map((stage) => stage.items)));
     }, [stages]);
-
-    /*forzar la limpieza de la firma*/
-    useEffect(() => {
-        setTimeout(() => {
-            if(clientSignature){
-                clientSignature.clear();
-                clientSignature.on();
-            }
-        },100);
-    }, [cleanClientSignature]);
-
-    /*forzar la limpieza de la firma*/
-    useEffect(() => {
-        setTimeout(() => {
-            if(technicalConsultantSignature){
-                technicalConsultantSignature.clear();
-                technicalConsultantSignature.on();
-            }
-        },100);
-    }, [cleanTechnicalConsultantSignature]);
 
     /*al setear la data, si aún no existe el checklist version, que busque inicializarlo*/
     useEffect(() => {
@@ -732,72 +553,6 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                                         <hr/>
                                     </div>
                                 ))}
-
-                                <Row className="mb-5 mt-5" id="signatures">
-                                    <Col md={6} className=" justify-content-center text-center">
-                                        <SignatureCanvas penColor='green'
-                                                         ref={(ref) => {
-                                                             setClientSignature(ref);
-                                                         }}
-                                                         onEnd={onEndClientSignature}
-                                                         canvasProps={{
-                                                             width: signatureWidth(),
-                                                             height: 200,
-                                                             className: 'signatureCanvas'
-                                                         }}/>
-                                        <br/>
-                                        {clientSignatureDate ? moment(clientSignatureDate).format('DD/MM/YYYY H:mma') : ''}
-                                        <br/><br/>
-
-                                        <Row className="d-flex align-items-center mb-3 position-relative">
-                                            {!vehicleServiceStage?.completed ?
-                                                <Button variant="success" className="w-auto position-absolute" style={{right: '3em'}} type="button" onClick={() => {
-                                                    setClientSignatureStarted(false);
-                                                    setClientSignatureDate(null);
-                                                    setClientSignatureImage(null);
-                                                    clientSignature.on();
-                                                    clientSignature.clear();
-                                                }}><span className="mdi mdi-trash-can-outline"/></Button>
-                                                : null}
-                                            <span className="w-auto" style={{margin: '0 auto'}}>Assinatura do cliente</span>
-                                        </Row>
-                                    </Col>
-                                    <Col md={6} className=" justify-content-center text-center">
-                                        <SignatureCanvas penColor='green'
-                                                         ref={(ref) => {
-                                                             const newRefFrom = ref && ref.isEmpty() && technicalConsultantSignature !== null ? 'technicalConsultantSignature' : (ref === null && technicalConsultantSignature !== null ? 'technicalConsultantSignature' : 'ref');
-                                                             let newRef = ref && ref.isEmpty() && technicalConsultantSignature !== null ? technicalConsultantSignature : (ref === null && technicalConsultantSignature !== null ? technicalConsultantSignature : ref);
-
-                                                             if(newRefFrom === 'technicalConsultantSignature' && ref){
-                                                                 ref.fromDataURL(newRef.toDataURL('image/png'), {width: signatureWidth(),height: 200,ratio: 1});
-                                                                 newRef = ref;
-                                                             }
-
-                                                             setTechnicalConsultantSignature(newRef);
-                                                         }}
-                                                         onEnd={onEndTechnicalConsultantSignature}
-                                                         canvasProps={{
-                                                             width: signatureWidth(),
-                                                             height: 200,
-                                                             className: 'signatureCanvas'
-                                                         }}/>
-                                        <br/>
-                                        <span>{technicalConsultantSignatureDate ? moment(technicalConsultantSignatureDate).format('DD/MM/YYYY H:mma') : ''}</span>
-                                        <br/><br/>
-                                        <Row className="d-flex align-items-center mb-3 position-relative">
-                                            {!vehicleServiceStage?.completed ?
-                                                <Button variant="success" className="w-auto position-absolute" style={{right: '3em'}} type="button" onClick={() => {
-                                                    setTechnicalConsultantSignatureStarted(false);
-                                                    setTechnicalConsultantSignatureDate(null);
-                                                    setTechnicalConsultantSignatureImage(null);
-                                                    technicalConsultantSignature.on();
-                                                    technicalConsultantSignature.clear();
-                                                }}><span className="mdi mdi-trash-can-outline"/></Button>
-                                                : null}
-                                            <span className="w-auto" style={{margin: '0 auto'}}>Assinatura do Consultor</span>
-                                        </Row>
-                                    </Col>
-                                </Row>
 
                                 <ul className="list-inline wizard mb-0">
                                     {!vehicleServiceStage?.completed

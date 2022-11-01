@@ -166,7 +166,7 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                             <b>CEP</b> • {vehicleService?.company?.postal_code}<br />
                                             <b>Telefone</b> • {vehicleService?.company?.phone}
                                         </div>
-                                        <div className="col-35"><img src={vehicleService?.company?.image} alt="Company Logo" className="img-responsive" /></div>
+                                        <div className="col-35"><img src={vehicleService?.company?.image} alt="Company Logo" className="img-responsive print-company-logo" /></div>
                                     </div>
                                 </header>
                                 <div className="container-fluid">

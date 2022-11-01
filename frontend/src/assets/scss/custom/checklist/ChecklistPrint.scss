@@ -124,7 +124,7 @@
     height: 100% !important;
   }
 
-  header > .row img {
+  header > .row img:not(.print-company-logo) {
     width: 34mm !important;
   }
 
@@ -398,5 +398,10 @@
   .form-slot.input{
     width: 120px !important;
     max-width: 100%;
+  }
+
+  .print-company-logo{
+    height: 100%;
+    width:  auto !important;
   }
 }
