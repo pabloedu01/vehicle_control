@@ -27,8 +27,8 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
     const history = useNavigate();
     const {id} = useParams();
     const [data, setData] = useState();
-    const [phoneList, setPhoneList] = useState([]);
-    const [emailList, setEmailList] = useState([]);
+    const [phoneList, setPhoneList] = useState(['clientEmail1']);
+    const [emailList, setEmailList] = useState(['clientEmail1']);
     const [technicalConsultantSelectedSearch, setTechnicalConsultantSelectedSearch] = useState({
         label: '',
         value: '',
@@ -203,20 +203,6 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
     const methods = useForm({
         resolver: schemaResolver,
         defaultValues
-        // defaultValues: {
-        //     ...defaultValuesPhoneCreated,
-        //     ...defaultValuesEmailCreated,
-        //     clientName: '' ,
-        //     clientCpf: '',
-        //     clientAddress:  '',
-    
-
-        //     vehicleBrand:'',
-        //     vehicleMode: '',
-        //     vehicleVehicle: '',
-        //     vehicleChassi: '',
-        //     vehicleBoard: '',
-
         //     scheludesVisited: moment().format("yyyy-MM-DDThh:mm"),
         //     scheludesCreated: moment().format("yyyy-MM-DDThh:mm"),
         // }
@@ -251,10 +237,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         methods.setValue('clientName', data?.client.name ?? null);
         methods.setValue('clientCpf', data?.client.document ?? null);
         if (data?.client.phone.length > 0) {
-            setPhoneList(prevState => {
-                console.log('state phone', data?.client.phone)
-                return [...data?.client.phone] 
-            })
+            setPhoneList([...data?.client.phone])
             data.client.phone.forEach((item, index) => {
                 const phoneFormatted = item.split('+55')[1]
                 methods.setValue(`clientPhone${index + 1}`,  phoneFormatted ?? null);  
@@ -262,9 +245,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         }
   
         if (data?.client.email.length > 0) {
-            setEmailList(prevState => {
-                return [...data?.client.email] 
-            })
+            setEmailList([...data?.client.email])
             data.client.email.forEach((item, index) => {
                 methods.setValue(`clientEmail${index + 1}`,  item ?? null);  
             }) 
@@ -277,15 +258,6 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         
         // methods.setValue('clientCpf', moment(data?.promised_date).format('YYYY-MM-DDTHH:mm') ?? moment().format('YYYY-MM-DDTHH:mm'));
     }, [data]);
-
-    // useEffect(() => {
-    //     if (data?.client.phone) {
-    //         setEmailList(data?.client.phone)
-    //     }
-    //     if (data?.client.email) {
-    //         setEmailList(data?.client.email)
-    //     }
-    // }, [data?.client.phone, data?.client.email,phoneList,emailList ]);
    
     const onSubmit = (formData) => {      
         console.log("enviou")
@@ -295,6 +267,21 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
 
     function getRandomNumber(min = 1, max = 100000) {
         return Math.random() * (max - min) + min;
+    }
+
+    function handlePhoneListRemove(index) {
+        setPhoneList(prevState => {
+            const prevStateRemoveItem = [...prevState]
+            prevStateRemoveItem.splice(index,1)
+            return prevStateRemoveItem
+        })
+    }
+    function handleEmailListRemove(index) {
+        setEmailList(prevState => {
+            const prevStateRemoveItem = [...prevState]
+            prevStateRemoveItem.splice(index,1)
+            return prevStateRemoveItem
+        })
     }
 
     return (
@@ -372,7 +359,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                     <span>Telefone:</span>
                                 </Col>
                                 <Col sm={10} md={10} >
-                                    {phoneList.length > 0 && phoneList.map((item, index) => {
+                                    {phoneList.length > 0 ? phoneList.map((item, index) => {
                                         return (
                                             <Row key={item + index + getRandomNumber()}>
                                                 <Col lg={10} md={10} sm={10} xs={9} className={`${index > 0 ? 'mt-2': ''}`} key={item + index + getRandomNumber()}>
@@ -402,7 +389,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                                                 {...field}
                                                                 placeholder="(__) _____-____"
                                                                 className="form-control"
-                                                                key="clientPhone"
+                                                                key={`clientPhone${index + 1}`}
                                                             />
                                                         }
                                                     />
@@ -420,10 +407,8 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                                     </Col>) : 
                                                    (<Col lg={2} md={2} sm={2} xs={3} className={`mt-2`}>
                                                         <Button className="btn-icon btn btn-light w-100"
-                                                            onClick={() => {
-                                                                // setPhoneList(prevState => [...prevState, ''])
-                                                            }}
-                                                        key={index + getRandomNumber()}
+                                                            onClick={() => handlePhoneListRemove(index) }
+                                                            key={index + getRandomNumber()}
                                                         >
                                                             <i className="mdi mdi-trash-can-outline"></i>
                                                         </Button>
@@ -432,32 +417,119 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                                 </Row>
                                             )
                                                     
-                                            })}
+                                    }) : (
+                                               <Row >
+                                                <Col lg={10} md={10} sm={10} xs={9}>
+                                                    <Controller
+                                                        name={`clientPhone1}`}
+                                                        control={control}
+                                                        {...otherProps}
+                                                        render={({ field }) => 
+                                                        <MaskedInput
+                                                        mask={[
+                                                                '(',
+                                                                /[1-9]/,
+                                                                /\d/,
+                                                                ')',
+                                                                ' ',
+                                                                /\d/,
+                                                                /\d/,
+                                                                /\d/,
+                                                                /\d/,
+                                                                /\d/,
+                                                                '-',
+                                                                /\d/,
+                                                                /\d/,
+                                                                /\d/,
+                                                                /\d/,
+                                                                ]}
+                                                                {...field}
+                                                                placeholder="(__) _____-____"
+                                                                className="form-control"
+                                                                key={`clientPhone1`}
+                                                            />
+                                                        }
+                                                    />
+                                                </Col>
+                                                <Col lg={2} md={2} sm={2} xs={3}>
+                                                    <Button className="btn-icon btn btn-light w-100"
+                                                        onClick={() => {
+                                                            setPhoneList(prevState => [...prevState, ''])
+                                                        }}
+                                                    >
+                                                            <i className="mdi mdi-phone-plus-outline"></i>
+                                                        </Button>
+                                                    </Col>
+                                                </Row>   
+                                            )}
                                 </Col>
-                            </Row>
-                            <Row className="mt-3">
+                                </Row>
+                                <Row className="mt-3">
                                 <Col sm={2} md={2} className="d-flex align-items-center">
                                     <span>Email:</span>
                                 </Col>
                                 <Col sm={10} md={10} >
-                                    <Row >
-                                        <Col lg={10} md={10} sm={10} xs={9}>
-                                            <FormInput
-                                                type="text"
-                                                name="clientEmail1"
-                                                key="clientEmail"
-                                                {...otherProps}
-                                                placeholder="Dígite seu email"
-                                            />
-                                        </Col>
-                                        <Col lg={2} md={2} sm={2} xs={3}>
-                                            <Button  className="btn-icon btn btn-light w-100" >
-                                                <i className="mdi mdi-email-plus-outline"></i>
-                                            </Button>
-                                        </Col>
-                                    </Row>
+                                    {emailList.length > 0 ? emailList.map((item, index) => {
+                                        return (
+                                            <Row key={item + index + getRandomNumber()}>
+                                                <Col lg={10} md={10} sm={10} xs={9} className={`${index > 0 ? 'mt-2': ''}`} key={item + index + getRandomNumber()}>
+                                                    <FormInput
+                                                        type="text"
+                                                        name={`clientEmail${index + 1}`}
+                                                        key={`clientEmail${index + 1}`}
+                                                        {...otherProps}
+                                                            placeholder="Dígite seu email"
+                                                    />
+                                                </Col>
+                                                {index === 0 ?
+                                                    (<Col lg={2} md={2} sm={2} xs={3}>
+                                                    <Button className="btn-icon btn btn-light w-100"
+                                                        onClick={() => {
+                                                            setEmailList(prevState => [...prevState, ''])
+                                                        }}
+                                                    key={index + getRandomNumber()}
+                                                    >
+                                                            <i className="mdi mdi-email-plus-outline"></i>
+                                                        </Button>
+                                                    </Col>) : 
+                                                   (<Col lg={2} md={2} sm={2} xs={3} className={`mt-2`}>
+                                                        <Button className="btn-icon btn btn-light w-100"
+                                                            onClick={() => handleEmailListRemove(index) }
+                                                            key={index + getRandomNumber()}
+                                                        >
+                                                            <i className="mdi mdi-trash-can-outline"></i>
+                                                        </Button>
+                                                    </Col>)
+                                                }
+                                                </Row>
+                                            )
+                                                    
+                                    }) : (
+                                            <Row>
+                                                <Col lg={10} md={10} sm={10} xs={9}>
+                                                    <FormInput
+                                                        type="text"
+                                                        name={`clientEmail1}`}
+                                                        key={`clientEmail1`}
+                                                        {...otherProps}
+                                                            placeholder="Dígite seu email"
+                                                    />
+                                                    </Col>
+                                                <Col lg={2} md={2} sm={2} xs={3}>
+                                                    <Button className="btn-icon btn btn-light w-100"
+                                                        onClick={() => {
+                                                            setEmailList(prevState => [...prevState, ''])
+                                                        }}
+                                                    >
+                                                            <i className="mdi mdi-email-plus-outline"></i>
+                                                        </Button>
+                                                    </Col>    
+                                            </Row>
+                                            ) 
+                                        }
                                 </Col>
                             </Row>
+                           
                             <Row className="mt-3">
                                 <Col sm={2} md={2} className="d-flex align-items-center">
                                     <span>Endereço:</span>
