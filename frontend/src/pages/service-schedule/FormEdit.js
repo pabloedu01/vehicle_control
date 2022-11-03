@@ -29,6 +29,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
     const [data, setData] = useState();
     const [phoneList, setPhoneList] = useState(['clientEmail1']);
     const [emailList, setEmailList] = useState(['clientEmail1']);
+    const [technicalConsultantSearchList, setTechnicalConsultantSearchList] = useState([])
     const [technicalConsultantSelectedSearch, setTechnicalConsultantSelectedSearch] = useState({
         label: '',
         value: '',
@@ -43,16 +44,10 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
     const [selectedDate, setSelectedDate] = useState();
 
 
-    console.log(data)
+    //console.log(data)
 
        const getData = () => {
-        // const defaultData = {
-        //     client_vehicle_id: null,
-        //     code: null,
-        //     promised_date: moment().format('YYYY-MM-DDTHH:mm'),
-        //     client_id: null,
-        //     technical_consultant_id: null,
-        // };
+
            
         const defaultData = {
             clientName: '',
@@ -87,6 +82,8 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                         clientVehicle,
                         vehicleService
                     });
+
+                api.get(`/technical-consultant?company_id=${props.company.id}`)
                 }, (error) => {
                     resolve(defaultData);
                 });
@@ -257,6 +254,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         methods.setValue('vehicleColor', data?.clientVehicle.color ?? null);
         methods.setValue('vehiclePlate', data?.clientVehicle.plate ?? null);
         methods.setValue('client_id', data?.client_id ?? null);
+        methods.setValue('scheludesVisited', moment(data?.promised_date).format("yyyy-MM-DDThh:mm") ?? moment().format("yyyy-MM-DDThh:mm"));
 
         setTechnicalConsultantSelectedSearch({
             label: data?.technicalConsultant.name ?? '',
@@ -266,9 +264,6 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                 cod: data?.technicalConsultant.id ?? ''
             }
         })
-        
-        setSelectedDate(moment(data?.promised_date).format("yyyy-MM-DDThh:mm") ?? moment().format("yyyy-MM-DDThh:mm"))
-
         // methods.setValue('clientCpf', moment(data?.promised_date).format('YYYY-MM-DDTHH:mm') ?? moment().format('YYYY-MM-DDTHH:mm'));
     }, [data]);
    
@@ -302,12 +297,12 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         history(`/panel/company/${props.company?.id}/service-schedules/${id}/checklist`);
     }
 
-    function onDateChange(date) {
-        if (date) {
-            console.log(moment('2022-10-19 14:16:00+00').format("yyyy-MM-DDThh:mm"))
-            setSelectedDate(date);
-        }
-    };
+    // function onDateChange(date) {
+    //     if (date) {
+    //         console.log(moment('2022-10-19 14:16:00+00').format("yyyy-MM-DDThh:mm"))
+    //         setSelectedDate(date);
+    //     }
+    // };
 
     return (
         <>
@@ -718,13 +713,13 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                             name="scheludesVisited"
                                             // value={moment().format("yyyy-MM-DDThh:mm")}
                                             // "2018-06-12T19:30"
-                                            value={selectedDate}
+                                           // value={selectedDate}
                                             {...otherProps}
-                                            onChange={e => {
-                                                onDateChange(e.target.value)
-                                                // console.log('moment -', moment().format("yyyy-MM-DDThh:mm"))
-                                                // console.log('input -',e.target.value)
-                                            }}
+                                            // onChange={e => {
+                                            //     onDateChange(e.target.value)
+                                            //     console.log('moment -', moment().format("yyyy-MM-DDThh:mm"))
+                                            //     console.log('input -',e.target.value)
+                                            // }}
                                         />
                                     </Col> 
                                 </Row>
