@@ -652,8 +652,8 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                             </Row>
                             <Row className="mt-3">
                                 <Col sm={12} md={12}>
-                                    <p>Nome:{technicalConsultantSelectedSearch.label}</p>
-                                    <p>Código consultor:{technicalConsultantSelectedSearch.userDetails.cod}</p>
+                                    <p>Nome:{technicalConsultantSelectedSearch?.label && technicalConsultantSelectedSearch?.label}</p>
+                                    <p>Código consultor:{technicalConsultantSelectedSearch?.userDetails.cod && technicalConsultantSelectedSearch?.userDetails.cod}</p>
                                 </Col>
                             </Row>
                         </Card.Body>

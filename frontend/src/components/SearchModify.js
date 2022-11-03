@@ -105,26 +105,34 @@ const SearchModified = (props: TopbarSearchProps): React$Element<any> => {
     const onClick = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        props.handleTechnicalConsultantSelected(technicalConsultantSelected)
+        // props.handleTechnicalConsultantSelected(technicalConsultantSelected)
+        console.log(onClick)
     };
 
     return (
         <>
             <Select
                 {...props}
-                components={{ Control, IndicatorsContainer, MenuList }}
+                components={{
+                    Control,
+                    // IndicatorsContainer,
+                    MenuList
+                }}
                 placeholder={'Procurar...'}
                 options={options}
                 formatOptionLabel={handleFormatOptionLabel}
                 // isOptionDisabled={(option) => option.type === 'title'}
                 maxMenuHeight="350px"
-                handleClick={onClick}
+                // handleClick={onClick}
                 isSearchable
                 isClearable
                 name="search-app"
                 className="app-search dropdown"
                 classNamePrefix="react-select"
-                onChange={(item) => setTechnicalConsultantSelected(item)}
+                onChange={(item) => {
+                    console.log(item)
+                    props.handleTechnicalConsultantSelected(item)
+                }}
             />
         </>
     );
