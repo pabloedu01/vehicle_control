@@ -40,12 +40,8 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
     // const [technicalConsultants, setTechnicalConsultants] = useState([]);
     // const [clientInfo, setClientInfo] = useState();
     // const [clientVehicleInfo, setClientVehicleInfo] = useState(null);
-    const [selectedDate, setSelectedDate] = useState(moment().format("yyyy-MM-DDThh:mm"));
-    const onDateChange = (date) => {
-        if (date) {
-            setSelectedDate(date);
-        }
-    };
+    const [selectedDate, setSelectedDate] = useState();
+
 
     console.log(data)
 
@@ -192,8 +188,9 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
             vehicleBrand:'',
             vehicleMode: '',
             vehicleVehicle: '',
+            vehicleColor: '',
             vehicleChassi: '',
-            vehicleBoard: '',
+            vehiclePlate: '',
 
             scheludesVisited: moment().format("yyyy-MM-DDThh:mm"),
             scheludesCreated: moment().format("yyyy-MM-DDThh:mm"),
@@ -223,7 +220,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
     };
     
    
-    console.log( watch('clientPhone3'))
+    //console.log( watch('clientPhone3'))
     
       /*
      * useEffect 
@@ -253,16 +250,31 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         methods.setValue('clientAddress', data?.client.address ?? null);
         
         
-        methods.setValue('vehicleBrand', data?.clientVehicle.name ?? null);
+        methods.setValue('vehicleBrand', data?.clientVehicle.vehicle.model.brand.name ?? null);
+        methods.setValue('vehicleModel', data?.clientVehicle.vehicle.model.name ?? null);
+        methods.setValue('vehicleVehicle', data?.clientVehicle.vehicle.name ?? null);
+        methods.setValue('vehicleChassi', data?.clientVehicle.chasis ?? null);
+        methods.setValue('vehicleColor', data?.clientVehicle.color ?? null);
+        methods.setValue('vehiclePlate', data?.clientVehicle.plate ?? null);
         methods.setValue('client_id', data?.client_id ?? null);
+
+        setTechnicalConsultantSelectedSearch({
+            label: data?.technicalConsultant.name ?? '',
+            value: data?.technicalConsultant.id ?? '',
+            userDetails: {
+                name: data?.technicalConsultant.name ?? '',
+                cod: data?.technicalConsultant.id ?? ''
+            }
+        })
         
+        setSelectedDate(moment(data?.promised_date).format("yyyy-MM-DDThh:mm") ?? moment().format("yyyy-MM-DDThh:mm"))
+
         // methods.setValue('clientCpf', moment(data?.promised_date).format('YYYY-MM-DDTHH:mm') ?? moment().format('YYYY-MM-DDTHH:mm'));
     }, [data]);
    
     const onSubmit = (formData) => {      
         console.log("enviou")
         console.log(formData)
-        console.log(formData.clientCpf.length)
     }
 
     function getRandomNumber(min = 1, max = 100000) {
@@ -284,6 +296,19 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         })
     }
 
+    function onClickChecklist(e){
+        e.preventDefault();
+
+        history(`/panel/company/${props.company?.id}/service-schedules/${id}/checklist`);
+    }
+
+    function onDateChange(date) {
+        if (date) {
+            console.log(moment('2022-10-19 14:16:00+00').format("yyyy-MM-DDThh:mm"))
+            setSelectedDate(date);
+        }
+    };
+
     return (
         <>
              <PageTitle
@@ -303,7 +328,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                         <Card.Body className="pt-4 px-4 pb-4">
                             <h4 className="header-title mb-4" style={{color: '#727CF5'}}>Cliente</h4>
                             <Row className="mt-3">
-                                <Col sm={2} md={2}  className="d-flex align-items-center">
+                                <Col sm={2} md={2}  className="d-flex align-items-center fw-bold">
                                     <span>Nome:</span>
                                 </Col>
                                 <Col sm={10} md={10}>
@@ -316,8 +341,8 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                      />
                                 </Col>
                             </Row>
-                            <Row className="mt-3">
-                                <Col sm={2} md={2} className="d-flex align-items-center">
+                            <Row className="mt-3 ">
+                                <Col sm={2} md={2} className="d-flex align-items-center fw-bold">
                                     <span>CPF:</span>
                                 </Col>
                                     <Col sm={10} md={10}>
@@ -355,7 +380,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                 </Col>
                             </Row>
                             <Row className="mt-3">
-                                <Col sm={2} md={2} className="d-flex align-items-center">
+                                <Col sm={2} md={2} className="d-flex align-items-center fw-bold">
                                     <span>Telefone:</span>
                                 </Col>
                                 <Col sm={10} md={10} >
@@ -465,7 +490,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                 </Col>
                                 </Row>
                                 <Row className="mt-3">
-                                <Col sm={2} md={2} className="d-flex align-items-center">
+                                <Col sm={2} md={2} className="d-flex align-items-center fw-bold">
                                     <span>Email:</span>
                                 </Col>
                                 <Col sm={10} md={10} >
@@ -531,7 +556,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                             </Row>
                            
                             <Row className="mt-3">
-                                <Col sm={2} md={2} className="d-flex align-items-center">
+                                <Col sm={2} md={2} className="d-flex align-items-center fw-bold">
                                     <span>Endereço:</span>
                                 </Col>
                                 <Col sm={10} md={10} >
@@ -559,8 +584,8 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                         <Card.Body className="pt-4 px-4 pb-4">
                             <h4 className="header-title mb-4" style={{color: '#727CF5'}}>Veículo</h4>
                             <Row className="mt-3">
-                                <Col lg={2} className="d-flex align-items-center">
-                                    <span>Marca:</span>
+                                <Col lg={2} className="d-flex align-items-center fw-bold">
+                                    <span >Marca:</span>
                                 </Col>
                                 <Col lg={10}>
                                     <FormInput
@@ -573,7 +598,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                 </Col>
                             </Row>
                             <Row className="mt-3">
-                                <Col lg={2} className="d-flex align-items-center">
+                                <Col lg={2} className="d-flex align-items-center fw-bold">
                                     <span>Modelo:</span>
                                 </Col>
                                 <Col lg={10}>
@@ -587,7 +612,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                 </Col>
                             </Row>
                             <Row className="mt-3">
-                                <Col lg={2} className="d-flex align-items-center">
+                                <Col lg={2} className="d-flex align-items-center fw-bold">
                                     <span>Veículo :</span>
                                 </Col>
                                 <Col lg={10}>
@@ -601,6 +626,20 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                 </Col>
                             </Row>
                             <Row className="mt-3">
+                                <Col lg={2} className="d-flex align-items-center font-weight-bold fw-bold">
+                                    <span>Cor :</span>
+                                </Col>
+                                <Col lg={10}>
+                                    <FormInput
+                                        type="text"
+                                        name="vehicleColor"
+                                        key="vehicleColor"
+                                        {...otherProps}
+                                        placeholder="Dígite o veículo"
+                                     />
+                                </Col>
+                            </Row>
+                            <Row className="mt-3 fw-bold">
                                 <Col lg={2} className="d-flex align-items-center">
                                     <span>Chassi:</span>
                                 </Col>
@@ -615,14 +654,14 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                 </Col>
                             </Row>
                             <Row className="mt-3" >
-                                <Col lg={2} className="d-flex align-items-center">
+                                <Col lg={2} className="d-flex align-items-center fw-bold">
                                     <span>Placa:</span>
                                 </Col>
                                 <Col lg={10}>
                                     <FormInput
                                         type="text"
-                                        name="vehicleBoard"
-                                        key="vehicleBoard"
+                                        name="vehiclePlate"
+                                        key="vehiclePlate"
                                         {...otherProps}
                                         placeholder="Dígite a placa"
                                     />
@@ -652,8 +691,8 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                             </Row>
                             <Row className="mt-3">
                                 <Col sm={12} md={12}>
-                                    <p>Nome:{technicalConsultantSelectedSearch?.label && technicalConsultantSelectedSearch?.label}</p>
-                                    <p>Código consultor:{technicalConsultantSelectedSearch?.userDetails.cod && technicalConsultantSelectedSearch?.userDetails.cod}</p>
+                                    <p className="fw-bold">Nome: <span className="fw-normal">{ technicalConsultantSelectedSearch?.userDetails.name && technicalConsultantSelectedSearch?.userDetails.name}</span></p>
+                                    <p className="fw-bold">Código consultor: <span className="fw-normal">{ technicalConsultantSelectedSearch?.userDetails.cod && technicalConsultantSelectedSearch?.userDetails.cod}</span></p>
                                 </Col>
                             </Row>
                         </Card.Body>
@@ -665,12 +704,12 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                             <Row className="mt-3">
                                 <Row>
                                     <Col sm={12} md={12}>
-                                        <p>Número do atendimento:{' 99'}</p>
+                                        <p className="fw-bold">Número do atendimento: <span className="fw-normal">{ id}</span></p>
                                     </Col>
                                 </Row>
                                 <Row>
                                     <Col sm={3} md={3} className="d-flex align-items-center">
-                                        <span>Data da visita:</span>
+                                        <span className="fw-bold">Data da visita:</span>
                                     </Col> 
                                     <Col sm={5} md={5} lg={6} xs={12}>
                                         <FormInput 
@@ -679,19 +718,19 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                             name="scheludesVisited"
                                             // value={moment().format("yyyy-MM-DDThh:mm")}
                                             // "2018-06-12T19:30"
-                                            // value={selectedDate}
+                                            value={selectedDate}
                                             {...otherProps}
-                                            // onChange={e => {
-                                            //     setDateVisitSelected(e.target.value)
-                                            //     console.log('moment -', moment().format("yyyy-MM-DDThh:mm"))
-                                            //     console.log('input -',e.target.value)
-                                            // }}
+                                            onChange={e => {
+                                                onDateChange(e.target.value)
+                                                // console.log('moment -', moment().format("yyyy-MM-DDThh:mm"))
+                                                // console.log('input -',e.target.value)
+                                            }}
                                         />
                                     </Col> 
                                 </Row>
                                 <Row className='mt-2'>
                                     <Col sm={3} md={3} lg={3} xs={12} className="d-flex align-items-center">
-                                        <span>Data da criação:</span>
+                                        <p className="fw-bold">Data da criação:</p>
                                     </Col> 
                                     <Col sm={5} md={5} lg={6} xs={12}>
                                             
@@ -703,7 +742,11 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                     </Card>
                     <Row className="mt-3">
                         <Col sm={8} md={8} xs={7}>
-                            <Button  variant="primary" type="button" style={{width: '100%', minWidth: '62px', fontSize: '20px'}} >
+                            <Button
+                                variant="primary" type="button"
+                                style={{ width: '100%', minWidth: '62px', fontSize: '20px' }}
+                                onClick={onClickChecklist}
+                            >
                                 Listar checklists
                             </Button>
                         </Col>
@@ -715,7 +758,13 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                     </Row>
                     <Row className="mt-2">
                         <Col sm={8} md={8} xs={7}>
-                            <Button  variant="primary" type="button" style={{width: '100%', minWidth: '62px', fontSize: '20px'}} >
+                            <Button
+                                variant="primary"
+                                type="button"
+                                style={{ width: '100%', minWidth: '62px', fontSize: '20px' }}
+                                onClick={() => {
+                                        }}
+                            >
                                 Listar orçamentos
                             </Button>
                         </Col>
