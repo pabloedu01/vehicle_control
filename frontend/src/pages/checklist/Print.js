@@ -277,7 +277,7 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                         <div className={classNames({checked: checklistData['10']?.value.toString().toLowerCase() === 'ruim' })}/> Ruim
                                                     </div>
                                                     <div className="form-slot">
-                                                        {checklistData['148']?.value && checklistData['148']?.value.length > 0 ? <img style={{height: '100%', width: 'auto !important'}} src={JSON.parse(checklistData['148']?.value)?.signatureImage} /> : ''}
+                                                        {checklistData['151']?.value && checklistData['151']?.value.length > 0 ? <img style={{height: '100%', width: 'auto !important'}} src={JSON.parse(checklistData['151']?.value)?.signatureImage} /> : ''}
                                                     </div>
                                                 </div>
                                                 <div className="col px-2">
@@ -334,7 +334,7 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                         <div className={classNames({checked: checklistData['108']?.value.toString().toLowerCase() === 'ruim' })}/> Ruim
                                                     </div>
                                                     <div className="form-slot">
-                                                        {checklistData['151']?.value && checklistData['151']?.value.length > 0 ? <img style={{height: '100%', width: 'auto !important'}} src={JSON.parse(checklistData['151']?.value)?.signatureImage} /> : ''}
+                                                        {checklistData['152']?.value && checklistData['152']?.value.length > 0 ? <img style={{height: '100%', width: 'auto !important'}} src={JSON.parse(checklistData['152']?.value)?.signatureImage} /> : ''}
                                                     </div>
                                                 </div>
                                             </div>
@@ -383,14 +383,14 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                                 <td>Dianteiro Direito</td>
                                                                 <td>{checklistData['92']?.value ?? ''}</td>
                                                                 <td className="text-end">
-                                                                    ______(mm) <TripleSquareCheck />
+                                                                    <span style={{textDecoration: 'underline'}}>&nbsp;&nbsp;{checklistData['97']?.value ?? ''}&nbsp;&nbsp;</span>(mm) <TripleSquareCheck />
                                                                 </td>
                                                             </tr>
                                                             <tr>
-                                                                <td>Dianteiro Direito</td>
+                                                                <td>Traseiro Direito</td>
                                                                 <td>{checklistData['94']?.value ?? ''}</td>
                                                                 <td className="text-end">
-                                                                    ______(mm) <TripleSquareCheck />
+                                                                    <span style={{textDecoration: 'underline'}}>&nbsp;&nbsp;{checklistData['95']?.value ?? ''}&nbsp;&nbsp;</span>(mm) <TripleSquareCheck />
                                                                 </td>
                                                             </tr>
                                                             </tbody>
