@@ -1,6 +1,6 @@
 // @flow
 import React, {useEffect, useState} from 'react';
-import {Button, Card, Col, Row, Form} from "react-bootstrap";
+import {Button, Card, Col, Row, Form, Modal} from "react-bootstrap";
 import {APICore} from "../../helpers/api/apiCore";
 import {useNavigate, useParams} from "react-router-dom";
 import {yupResolver} from "@hookform/resolvers/yup";
@@ -29,7 +29,9 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
     const [data, setData] = useState();
     const [phoneList, setPhoneList] = useState(['clientEmail1']);
     const [emailList, setEmailList] = useState(['clientEmail1']);
+    const [showModal, setShowModal] = useState(false);
     const [technicalConsultantSearchList, setTechnicalConsultantSearchList] = useState([])
+    const [checklistVersions, setChecklistVersions] = useState([]);
     const [technicalConsultantSelectedSearch, setTechnicalConsultantSelectedSearch] = useState({
         label: '',
         value: '',
@@ -83,7 +85,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                         vehicleService
                     });
 
-                api.get(`/technical-consultant?company_id=${props.company.id}`)
+                
                 }, (error) => {
                     resolve(defaultData);
                 });
@@ -191,6 +193,8 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
 
             scheludesVisited: moment().format("yyyy-MM-DDThh:mm"),
             scheludesCreated: moment().format("yyyy-MM-DDThh:mm"),
+
+            checklist_version_id: ''
     }
 
 
@@ -216,8 +220,9 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         control
     };
     
+    
    
-    //console.log( watch('clientPhone3'))
+    //console.log( watch('checklist_version_id'))
     
       /*
      * useEffect 
@@ -267,10 +272,22 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         // methods.setValue('clientCpf', moment(data?.promised_date).format('YYYY-MM-DDTHH:mm') ?? moment().format('YYYY-MM-DDTHH:mm'));
     }, [data]);
    
+    // useEffect(() => {
+    //     getChecklistVersions()
+    // },[showModal])
+
     const onSubmit = (formData) => {      
         console.log("enviou")
         console.log(formData)
     }
+
+     function getChecklistVersions () {
+        api.get('/checklist-version/active-checklist-versions').then((response) => {
+            setChecklistVersions(getAllOptions(response.data.data));
+        },(error) => {
+            setChecklistVersions([])
+        });
+    };
 
     function getRandomNumber(min = 1, max = 100000) {
         return Math.random() * (max - min) + min;
@@ -291,22 +308,31 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         })
     }
 
+    function onShowModal() {
+        getChecklistVersions()
+        setShowModal(true);
+    };
+
     function onClickChecklist(e){
         e.preventDefault();
 
         history(`/panel/company/${props.company?.id}/service-schedules/${id}/checklist`);
     }
 
-    // function onDateChange(date) {
-    //     if (date) {
-    //         console.log(moment('2022-10-19 14:16:00+00').format("yyyy-MM-DDThh:mm"))
-    //         setSelectedDate(date);
-    //     }
-    // };
+ 
+    function onHideModal () {
+        setShowModal(false)
+    }
+
+    function onCreate() {
+        const type = 'service-schedules'
+        setShowModal(false);
+        history(`/panel/company/${props.company?.id}/${type}/${id}/checklist/create/${methods.getValues('checklist_version_id')}`);
+    }
 
     return (
         <>
-             <PageTitle
+            <PageTitle
                 breadCrumbItems={[
                     { label: 'Agenda de Serviços', path: '/service-schedules/list' },
                     { label: 'Edição', path: '/service-schedules/id' + '/edit', active: true },
@@ -315,7 +341,6 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                 company={props?.company}
                 />
             
-               
             <Row>
                 <Col xxl={7}>
                     <form onSubmit={handleSubmit(onSubmit)} id="form-client-vehicle" >
@@ -746,7 +771,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                             </Button>
                         </Col>
                         <Col sm={4} md={4} xs={5}>
-                            <Button  variant="primary" type="button" style={{width: '100%', minWidth: '62px', fontSize: '20px'}} >
+                            <Button  variant="primary" type="button" style={{width: '100%', minWidth: '62px', fontSize: '20px'}}  onClick={onShowModal}>
                             <i className='mdi mdi-clipboard-list-outline p-0' ></i> Novo
                             </Button>
                         </Col>
@@ -771,6 +796,34 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                     </Row>
                 </Col>
             </Row>
+
+                            <Modal show={showModal} onHide={onHideModal} size="lg" scrollable={true} centered={true}>
+                    <form onSubmit={handleSubmit(onCreate)} noValidate>
+                    <Modal.Header onHide={onHideModal} closeButton>
+                        <h4 className="modal-title">
+                            Versão do checklist
+                        </h4>
+                    </Modal.Header>
+                    <Modal.Body style={{minHeight: '300px'}}>
+                        <FormInput
+                            label="Versão do checklist"
+                            type="select"
+                            name="checklist_version_id"
+                            containerClass={'mb-3'}
+                            options={checklistVersions}
+                            {...otherProps}
+                        />
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="light" onClick={onHideModal}>
+                            Cerrar
+                        </Button>{' '}
+                        <Button variant="primary" type="submit">
+                            Cadastro
+                        </Button>
+                    </Modal.Footer>
+                    </form>
+                </Modal>
             
         </>
     );

@@ -53,6 +53,7 @@ const IndicatorsContainer = (props) => {
 
 /* custom menu list */
 const MenuList = (props) => {
+    console.log('teste')
     return (
         <components.MenuList {...props}>
             {/* menu header */}

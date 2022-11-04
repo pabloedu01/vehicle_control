@@ -19,7 +19,7 @@ const api = new APICore();
 
 const List = (props: {company?: any}): React$Element<React$FragmentType> => {
     const history = useNavigate();
-    const {id, type} = useParams();
+    const { id, type } = useParams();
     const [showModal, setShowModal] = useState(false);
     const [showModalGenerateToken, setShowModalGenerateToken] = useState(false);
     const [selectedVehicleServiceId, setSelectedVehicleServiceId] = useState(null);
@@ -190,7 +190,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     const onCreate = () => {
         setShowModal(false);
-
+        
         history(`/panel/company/${props.company?.id}/${type}/${id}/checklist/create/${methods.getValues('checklist_version_id')}`);
     };
 
