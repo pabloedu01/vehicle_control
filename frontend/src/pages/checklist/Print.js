@@ -369,14 +369,14 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                                 <td>Dianteiro Esquerdo</td>
                                                                 <td>{checklistData['91']?.value ?? ''}</td>
                                                                 <td className="text-end">
-                                                                    ______(mm) <TripleSquareCheck />
+                                                                    <span style={{textDecoration: 'underline'}}>&nbsp;&nbsp;{checklistData['98']?.value ?? ''}&nbsp;&nbsp;</span>(mm) <TripleSquareCheck />
                                                                 </td>
                                                             </tr>
                                                             <tr>
                                                                 <td>Traseiro Esquerdo</td>
                                                                 <td>{checklistData['93']?.value ?? ''}</td>
                                                                 <td className="text-end">
-                                                                    ______(mm) <TripleSquareCheck />
+                                                                    <span style={{textDecoration: 'underline'}}>&nbsp;&nbsp;{checklistData['96']?.value ?? ''}&nbsp;&nbsp;</span>(mm) <TripleSquareCheck />
                                                                 </td>
                                                             </tr>
                                                             <tr>
@@ -539,12 +539,11 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                         <div className="col-6">
                                             <div className="form-slot me-1">
                                                 <p className="mb-1">
-                                                    Veículo oriundo de guincho/plataforma: ( &nbsp; ) Sim &nbsp; (
-                                                    &nbsp; ) Nao
+                                                    Veículo oriundo de guincho/plataforma: (&nbsp;{checklistData['11']?.value.toString() === '1' ? 'X' : ' '}&nbsp;) Sim &nbsp; (&nbsp;{checklistData['11']?.value.toString() === '0' ? 'X' : ' '}&nbsp;) Nao
                                                 </p>
                                                 Pertences pessoais:
-                                                <br /> ( &nbsp; ) Cliente retira &nbsp; ( &nbsp; ) Recolher e
-                                                guardar &nbsp; ( &nbsp; ) No veículo
+                                                <br /> (&nbsp;{checklistData['11']?.value.toString() === 'Cliente retira' ? 'X' : ' '}&nbsp;) Cliente retira &nbsp; (&nbsp;{checklistData['11']?.value.toString() === 'Recolher e guardar' ? 'X' : ' '}&nbsp;) Recolher e
+                                                guardar &nbsp; (&nbsp;{checklistData['11']?.value.toString() === 'No veículo' ? 'X' : ' '}&nbsp;) No veículo
                                             </div>
                                         </div>
                                         <div className="col-6">
@@ -560,10 +559,25 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                     Declaro ter deixado o veículo nas condições informadas nesta
                                                     folha de inspeção.
                                                 </div>
+
                                                 <p className="my-5">
-                                                    Data: ____ / ____ /________ &nbsp; Hora: ____ : ____
+                                                    {checklistData['150']?.value && checklistData['150']?.value.length > 0
+                                                        ?
+                                                        (<>Data: <span style={{textDecoration: 'underline'}}>&nbsp;&nbsp;{ ('00' + (new Date(JSON.parse(checklistData['150']?.value)?.signatureDate)).getDate()).substr(-2,2) }&nbsp;&nbsp;</span> / <span style={{textDecoration: 'underline'}}>&nbsp;&nbsp;{ ('00' + (new Date(JSON.parse(checklistData['150']?.value)?.signatureDate)).getMonth()).substr(-2,2) }&nbsp;&nbsp;</span> /<span style={{textDecoration: 'underline'}}>&nbsp;&nbsp;&nbsp;{ (new Date(JSON.parse(checklistData['150']?.value)?.signatureDate)).getFullYear() }&nbsp;&nbsp;&nbsp;</span> &nbsp; Hora: <span style={{textDecoration: 'underline'}}>&nbsp;&nbsp;{ ('00' + (new Date(JSON.parse(checklistData['150']?.value)?.signatureDate)).getHours()).substr(-2,2) }&nbsp;&nbsp;</span> : <span style={{textDecoration: 'underline'}}>&nbsp;&nbsp;{ ('00' + (new Date(JSON.parse(checklistData['150']?.value)?.signatureDate)).getMinutes()).substr(-2,2) }&nbsp;&nbsp;</span></>)
+                                                        :
+                                                        (<>Data: ____ / ____ /________ &nbsp; Hora: ____ : ____</>)
+                                                    }
                                                 </p>
-                                                <span className="signature px-4 small">
+
+
+
+
+
+<div style={{height: '25px'}}>
+                                                {checklistData['150']?.value && checklistData['150']?.value.length > 0 ? <img style={{height: '100%', width: 'auto !important'}} src={JSON.parse(checklistData['150']?.value)?.signatureImage} /> : ''}
+</div>
+
+                                                <span className="signature small">
                 <hr />
                 Assinatura do Cliente ou por ele autorizada
               </span>
@@ -576,9 +590,22 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                     folha de inspeção.
                                                 </div>
                                                 <p className="my-5">
-                                                    Data: ____ / ____ /________ &nbsp; Hora: ____ : ____
+                                                    {checklistData['153']?.value && checklistData['153']?.value.length > 0
+                                                        ?
+                                                        (<>Data: <span style={{textDecoration: 'underline'}}>&nbsp;&nbsp;{ ('00' + (new Date(JSON.parse(checklistData['153']?.value)?.signatureDate)).getDate()).substr(-2,2) }&nbsp;&nbsp;</span> / <span style={{textDecoration: 'underline'}}>&nbsp;&nbsp;{ ('00' + (new Date(JSON.parse(checklistData['153']?.value)?.signatureDate)).getMonth()).substr(-2,2) }&nbsp;&nbsp;</span> /<span style={{textDecoration: 'underline'}}>&nbsp;&nbsp;&nbsp;{ (new Date(JSON.parse(checklistData['153']?.value)?.signatureDate)).getFullYear() }&nbsp;&nbsp;&nbsp;</span> &nbsp; Hora: <span style={{textDecoration: 'underline'}}>&nbsp;&nbsp;{ ('00' + (new Date(JSON.parse(checklistData['153']?.value)?.signatureDate)).getHours()).substr(-2,2) }&nbsp;&nbsp;</span> : <span style={{textDecoration: 'underline'}}>&nbsp;&nbsp;{ ('00' + (new Date(JSON.parse(checklistData['153']?.value)?.signatureDate)).getMinutes()).substr(-2,2) }&nbsp;&nbsp;</span></>)
+                                                        :
+                                                        (<>Data: ____ / ____ /________ &nbsp; Hora: ____ : ____</>)
+                                                    }
                                                 </p>
-                                                <span className="signature px-4 small">
+
+
+
+
+
+<div style={{height: '25px'}}>
+                                                {checklistData['153']?.value && checklistData['153']?.value.length > 0 ? <img style={{height: '100%', width: 'auto !important'}} src={JSON.parse(checklistData['153']?.value)?.signatureImage} /> : ''}
+</div>
+                                                <span className="signature small">
                 <hr />
                 Assinatura do Cliente ou por ele autorizada
               </span>
