@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateValueToChecklistItemVehicleServiceTable extends Migration
+class UpdateValue2ToChecklistItemVehicleServiceTable extends Migration
 {
     /**
      * Run the migrations.
