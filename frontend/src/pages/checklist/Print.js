@@ -542,8 +542,8 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
                                                     Veículo oriundo de guincho/plataforma: (&nbsp;{checklistData['11']?.value.toString() === '1' ? 'X' : ' '}&nbsp;) Sim &nbsp; (&nbsp;{checklistData['11']?.value.toString() === '0' ? 'X' : ' '}&nbsp;) Nao
                                                 </p>
                                                 Pertences pessoais:
-                                                <br /> (&nbsp;{checklistData['11']?.value.toString() === 'Cliente retira' ? 'X' : ' '}&nbsp;) Cliente retira &nbsp; (&nbsp;{checklistData['11']?.value.toString() === 'Recolher e guardar' ? 'X' : ' '}&nbsp;) Recolher e
-                                                guardar &nbsp; (&nbsp;{checklistData['11']?.value.toString() === 'No veículo' ? 'X' : ' '}&nbsp;) No veículo
+                                                <br /> (&nbsp;{checklistData['12']?.value.toString() === 'Cliente retira' ? 'X' : ' '}&nbsp;) Cliente retira &nbsp; (&nbsp;{checklistData['12']?.value.toString() === 'Recolher e guardar' ? 'X' : ' '}&nbsp;) Recolher e
+                                                guardar &nbsp; (&nbsp;{checklistData['12']?.value.toString() === 'No veículo' ? 'X' : ' '}&nbsp;) No veículo
                                             </div>
                                         </div>
                                         <div className="col-6">
