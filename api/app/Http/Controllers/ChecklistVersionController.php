@@ -75,6 +75,7 @@ class ChecklistVersionController extends Controller
              'list' => $stage->items->map(function($item){
                 return [
                   'id' => $item->id,
+                  'code' => $item->code,
                   'name' => $item->name,
                   'validation' => $item->validation,
                 ];
