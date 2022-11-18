@@ -30,9 +30,9 @@ const TripleSquareCheck = ({
     </div>
 );
 
-const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
+const Print = (props: { company?: any, id: number, type: string, checklistId: number }): React$Element<React$FragmentType> => {
     const history = useNavigate();
-    const { id, type, checklistId, token } = useParams();
+    /*const { id, type, checklistId } = useParams();*/
     const [data, setData] = useState(null);
     const [vehicleService, setVehicleService] = useState(null);
     const [stages, setStages] = useState([]);
@@ -48,18 +48,18 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
     };
 
     const getData = () => {
-        if (id) {
+        if (props?.id) {
             let ajaxCall;
 
-            switch (type) {
+            switch (props?.type) {
                 case 'service-schedules':
-                    ajaxCall = api.get('/vehicle-service/' + checklistId);
+                    ajaxCall = api.get('/vehicle-service/' + props?.checklistId);
                     break;
             }
 
             ajaxCall.then(
                 (response) => {
-                    switch (type) {
+                    switch (props?.type) {
                         case 'service-schedules':
                             let data;
                             const checklistData = {};
@@ -130,21 +130,14 @@ const Print = (props: { company?: any }): React$Element<React$FragmentType> => {
 
     /*si se cambia alguno de los parametros de id tipo o el vehicle service, se reinicializa todo*/
     useEffect(() => {
-        getData();
-    }, [id, type, checklistId]);
+        if(props?.checklistId){
+            getData();
+        }
+    }, [props?.checklistId]);
 
     return (
         <>
-            <PageTitle
-                breadCrumbItems={[
-                    { label: 'Checklist', path: `/${type}/${id}/checklist` },
-                    { label: 'Imprimir', path: `/${type}/${id}/checklist/${checklistId}/print`, active: true },
-                ]}
-                title={'Checklist'}
-                company={props?.company}
-            />
-
-            <Row className="print-checklist">
+            <Row className="print-checklist" id="print-checklist">
                 <Col xs={12}>
                     <Card>
                         <Card.Body>
