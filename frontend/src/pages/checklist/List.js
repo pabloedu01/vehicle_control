@@ -209,9 +209,8 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     const print = () => {
         const originalHtml = document.body.innerHTML;
-        const htmlToPrint = document.getElementById('print-checklist').outerHTML;
 
-        document.body.innerHTML = htmlToPrint;
+        document.body.innerHTML = document.getElementById('print-checklist').outerHTML;
 
         window.print();
         document.body.innerHTML = originalHtml;
