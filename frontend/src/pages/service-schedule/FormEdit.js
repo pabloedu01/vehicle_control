@@ -573,8 +573,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                             ) 
                                         }
                                 </Col>
-                            </Row>
-                           
+                            </Row> 
                             <Row className="mt-3">
                                 <Col sm={2} md={2} className="d-flex align-items-center fw-bold">
                                     <span>Endereço:</span>
@@ -614,7 +613,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                         key="vehicleBrand"
                                         {...otherProps}
                                         placeholder="Dígite a marca"
-                                     />
+                                    />
                                 </Col>
                             </Row>
                             <Row className="mt-3">
@@ -628,7 +627,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                         key="vehicleModel"
                                         {...otherProps}
                                         placeholder="Dígite o modelo"
-                                     />
+                                    />
                                 </Col>
                             </Row>
                             <Row className="mt-3">
@@ -642,7 +641,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                         key="vehicleVehicle"
                                         {...otherProps}
                                         placeholder="Dígite o veículo"
-                                     />
+                                    />
                                 </Col>
                             </Row>
                             <Row className="mt-3">
@@ -656,7 +655,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                         key="vehicleColor"
                                         {...otherProps}
                                         placeholder="Dígite o veículo"
-                                     />
+                                    />
                                 </Col>
                             </Row>
                             <Row className="mt-3 fw-bold">
@@ -670,7 +669,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                         key="vehicleChassi"
                                         {...otherProps}
                                         placeholder="Dígite o chassi"
-                                     />
+                                    />
                                 </Col>
                             </Row>
                             <Row className="mt-3" >

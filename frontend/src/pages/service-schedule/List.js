@@ -83,8 +83,6 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
 
         api.get('/service-schedule', Object.assign({company_id: props.company?.id}, filter ? filter : {})).then((response) => {
             setSearchType(null);setSearch(null);
-
-            console.log(response.data.data);
             setList(response.data.data.map((item) => {
                 return {
                     id: item.id,
@@ -282,7 +280,6 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
       const detectClick = (e) => {
         if (e.target?.nodeName === "TD") {
             const code =   (e.target?.parentNode?.innerText).split('	')[0]
-            console.log(code)
             onEdit(code);
         } else {
             return
