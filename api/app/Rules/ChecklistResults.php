@@ -58,7 +58,13 @@ class ChecklistResults implements Rule
                                               'observationsxxxxx' => @$checklist['observations']
                                           ],
                                           [
-                                              'valuexxxxx'    => $item->validation['rule'],
+                                              'valuexxxxx'    => array_map(function($rule){
+                                                  if($rule == 'TemporalFile'){
+                                                      return new TemporalFile;
+                                                  } else {
+                                                      return $rule;
+                                                  }
+                                              }, explode('|', $item->validation['rule'])),
                                               'evidencexxxxx' => [
                                                   'nullable',
                                                   'array',

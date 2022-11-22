@@ -14,6 +14,7 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import {useForm} from "react-hook-form";
 import moment from "moment";
+import Print from "./Print";
 
 const api = new APICore();
 
@@ -22,6 +23,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
     const { id, type } = useParams();
     const [showModal, setShowModal] = useState(false);
     const [showModalGenerateToken, setShowModalGenerateToken] = useState(false);
+    const [showModalPrint, setShowModalPrint] = useState(false);
     const [selectedVehicleServiceId, setSelectedVehicleServiceId] = useState(null);
     const [list, setList] = useState([]);
     const [checklistVersions, setChecklistVersions] = useState([]);
@@ -112,7 +114,9 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
     };
 
     const onPrint = (vehicleServiceId, rowData) => {
-        history(`/panel/company/${props.company?.id}/${type}/${id}/checklist/${vehicleServiceId}/print`);
+        setSelectedVehicleServiceId(vehicleServiceId);
+        onShowModalPrint();
+        /*history(`/panel/company/${props.company?.id}/${type}/${id}/checklist/${vehicleServiceId}/print`);*/
     };
 
     const onDuplicate = (vehicleServiceId, rowData) => {
@@ -180,6 +184,10 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
         setShowModal(false);
     };
 
+    const onShowModalPrint = () => {
+        setShowModalPrint(true);
+    };
+
     const onShowModalGenerateToken = () => {
         setShowModalGenerateToken(true);
     };
@@ -188,10 +196,34 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
         setShowModalGenerateToken(false);
     };
 
+    const onHideModalPrint = () => {
+        setSelectedVehicleServiceId(null);
+        setShowModalPrint(false);
+    };
+
     const onCreate = () => {
         setShowModal(false);
         
         history(`/panel/company/${props.company?.id}/${type}/${id}/checklist/create/${methods.getValues('checklist_version_id')}`);
+    };
+
+    const print = () => {
+        const originalHtml = document.body.innerHTML;
+
+        document.body.innerHTML = document.getElementById('print-checklist').outerHTML;
+
+        window.print();
+        document.body.innerHTML = originalHtml;
+
+        /*const printableWindow = window.open();
+
+        const html = '<html><head>' + document.head.innerHTML +  '</head><body>' + document.getElementById('print-checklist').outerHTML + '</body></html>';
+
+        console.log(html);
+
+        printableWindow.document.write(html);
+        printableWindow.print();
+        printableWindow.close();*/
     };
 
     useEffect(() => {
@@ -300,7 +332,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                         />
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="light" onClick={onHideModal}>
+                        <Button variant="light" type="button" onClick={onHideModal}>
                             Cerrar
                         </Button>{' '}
                         <Button variant="primary" type="submit">
@@ -312,7 +344,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
 
             <Modal show={showModalGenerateToken} onHide={onHideModalGenerateToken} size="lg" scrollable={true} centered={true}>
                 <form onSubmit={handleSubmit2(onGenerateToken, (e) => {console.log(e);})} noValidate>
-                    <Modal.Header onHide={onHideModal} closeButton>
+                    <Modal.Header onHide={onHideModalGenerateToken} closeButton>
                         <h4 className="modal-title">
                             Enviar checklist
                         </h4>
@@ -327,7 +359,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                         />
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="light" onClick={onHideModalGenerateToken}>
+                        <Button variant="light" type="button" onClick={onHideModalGenerateToken}>
                             Cerrar
                         </Button>{' '}
                         <Button variant="primary" type="submit">
@@ -335,6 +367,25 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                         </Button>
                     </Modal.Footer>
                 </form>
+            </Modal>
+
+            <Modal show={showModalPrint} onHide={onHideModalPrint} size="lg" scrollable={true} centered={true}>
+                <Modal.Header onHide={onHideModalPrint} closeButton>
+                    <h4 className="modal-title">
+                        Imprimir
+                    </h4>
+                </Modal.Header>
+                <Modal.Body style={{minHeight: '300px'}}>
+                    {showModalPrint ? <Print company={props?.company} id={id} type={type} checklistId={selectedVehicleServiceId}/> : null}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="light" type="button" onClick={onHideModalPrint}>
+                        Cerrar
+                    </Button>{' '}
+                    <Button variant="primary" type="button" onClick={print}>
+                        Imprimir
+                    </Button>
+                </Modal.Footer>
             </Modal>
 
 

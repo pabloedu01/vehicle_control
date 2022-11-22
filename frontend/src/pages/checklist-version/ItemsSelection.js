@@ -59,7 +59,7 @@ const ItemsTable = (props: { list: any[], name: string, provided: any, index?: a
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}>
                             <Col xs={5}>
-                                {checklistItem.name}
+                                {checklistItem.name} {checklistItem.code ? '(' + checklistItem.code + ')' : ''}
                             </Col>
                             <Col xs={5}>
                                 {checklistItem.type}
@@ -90,6 +90,7 @@ const ItemsSelection = (props: {company?: any, id?: any, onChange?: any}): React
                 const localList = {'available': {...list.available, list: response.data.data.available.map((checklistItem) => {
                             return {
                                 id: checklistItem.id,
+                                code: checklistItem.code,
                                 name: checklistItem.name,
                                 type: checklistItem?.validation?.type ?? ''
                             };
@@ -99,6 +100,7 @@ const ItemsSelection = (props: {company?: any, id?: any, onChange?: any}): React
                     localList['stage-' + stage.id] = {...stage, list: stage.list.map((checklistItem) => {
                             return {
                                 id: checklistItem.id,
+                                code: checklistItem.code,
                                 name: checklistItem.name,
                                 type: checklistItem?.validation?.type ?? ''
                             };
@@ -114,6 +116,7 @@ const ItemsSelection = (props: {company?: any, id?: any, onChange?: any}): React
                setList({'available': {...list.available, list: response.data.data.map((checklistItem) => {
                            return {
                                id: checklistItem.id,
+                               code: checklistItem.code,
                                name: checklistItem.name,
                                type: checklistItem?.validation?.type ?? ''
                            };
