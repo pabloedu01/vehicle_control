@@ -208,16 +208,28 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
     };
 
     const print = () => {
-        const originalHtml = document.body.innerHTML;
+        onHideModalPrint();
+        
+        const printHtml = document.getElementById('print-checklist').outerHTML;
+        document.getElementById('root').style.display = 'none';
 
-        document.body.innerHTML = document.getElementById('print-checklist').outerHTML;
+        const div = document.createElement('div');
+        div.setAttribute('id', 'printable');
+        div.innerHTML = printHtml;
 
-        window.print();
-        document.body.innerHTML = originalHtml;
+        document.body.appendChild(div);
+
+        setTimeout(() => {
+            window.print();
+            document.getElementById('root').style.display = '';
+            document.getElementById('printable').remove();
+        },500);
+
+        /**/
 
         /*const printableWindow = window.open();
 
-        const html = '<html><head>' + document.head.innerHTML +  '</head><body>' + document.getElementById('print-checklist').outerHTML + '</body></html>';
+        const html = '<!DOCTYPE html><html>' + document.head.outerHTML +  '<body><div id="root">' + document.getElementById('print-checklist').outerHTML + '</div></body></html>';
 
         console.log(html);
 
