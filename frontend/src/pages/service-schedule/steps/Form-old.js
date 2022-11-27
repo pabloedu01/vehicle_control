@@ -27,7 +27,7 @@ const Form = (props: { company?: any, clientVehicle?: any, client?: any, handleR
      */
     const schemaResolver = yupResolver(
         yup.object().shape({
-            client_vehicle_id: yup.number().nullable().required('Por favor, digite Vehiculo'),
+            client_vehicle_id: yup.number().nullable().required('Por favor, digite veículo'),
             code: yup.string().nullable(),
             promised_date: yup.date().nullable().required('Por favor, digite Data Prometida'),
             client_id: yup.number().nullable().required('Por favor, digite Cliente'),

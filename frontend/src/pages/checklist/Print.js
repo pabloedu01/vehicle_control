@@ -48,6 +48,7 @@ const Print = (props: { company?: any, id: number, type: string, checklistId: nu
     };
 
     const getData = () => {
+        console.log('/vehicle-service/' + props?.checklistId)
         if (props?.id) {
             let ajaxCall;
 
@@ -59,6 +60,7 @@ const Print = (props: { company?: any, id: number, type: string, checklistId: nu
 
             ajaxCall.then(
                 (response) => {
+                    console.log(response);
                     switch (props?.type) {
                         case 'service-schedules':
                             let data;
@@ -220,7 +222,11 @@ const Print = (props: { company?: any, id: number, type: string, checklistId: nu
                                                     <div>
                                                         <div className="icon-header">
                                                             <span className="text-center">Recepção</span>
-                                                            <div className="icon">icon</div>
+                                                            <div className="icon"><i className="mdi mdi-car-side" style={{
+                                                                style: {
+                                                                    transform: "scaleX(-1)"
+                                                                }
+                                                            }}></i></div>
                                                         </div>
                                                         <div className="row text-center pt-1 fw-700 small">
                                                             <div className="col round-2 b-1 mx-5">Sim</div>
@@ -620,7 +626,7 @@ const Print = (props: { company?: any, id: number, type: string, checklistId: nu
                                         <div className="col-4 pe-1">
                                             <div className="icon-header my-1">
                                                 <span>PARTE INTERNA</span>
-                                                <div className="icon">icon</div>
+                                                <div className="icon"><i className="mdi mdi-car-side"></i></div>
                                             </div>
                                             <table className="table checks">
                                                 <tbody>

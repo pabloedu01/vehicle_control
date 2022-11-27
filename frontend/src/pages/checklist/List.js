@@ -333,7 +333,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="light" type="button" onClick={onHideModal}>
-                            Cerrar
+                            Encerrar
                         </Button>{' '}
                         <Button variant="primary" type="submit">
                             Cadastro
@@ -360,7 +360,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="light" type="button" onClick={onHideModalGenerateToken}>
-                            Cerrar
+                            Encerrar
                         </Button>{' '}
                         <Button variant="primary" type="submit">
                             Enviar
@@ -380,7 +380,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="light" type="button" onClick={onHideModalPrint}>
-                        Cerrar
+                        Encerrar
                     </Button>{' '}
                     <Button variant="primary" type="button" onClick={print}>
                         Imprimir

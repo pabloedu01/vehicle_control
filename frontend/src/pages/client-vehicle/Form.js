@@ -28,7 +28,7 @@ const Form = (props: {company?: any, clientVehicle?: any, isTag?: boolean, previ
         yup.object().shape({
             brand_id: yup.number().nullable().required('Por favor, digite Marca'),
             model_id: yup.number().nullable().required('Por favor, digite Modelo'),
-            vehicle_id: yup.number().nullable().required('Por favor, digite Vehiculo'),
+            vehicle_id: yup.number().nullable().required('Por favor, digite Veículo'),
             chasis: yup.string().nullable(),
             color: yup.string().nullable(),
             number_motor: yup.string().nullable(),
@@ -222,7 +222,7 @@ const Form = (props: {company?: any, clientVehicle?: any, isTag?: boolean, previ
                                         />
 
                                         <FormInput
-                                            label="Vehiculo"
+                                            label="Veículo"
                                             type="select"
                                             name="vehicle_id"
                                             containerClass={'mb-3'}

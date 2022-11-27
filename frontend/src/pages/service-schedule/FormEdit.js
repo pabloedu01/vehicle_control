@@ -815,7 +815,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="light" onClick={onHideModal}>
-                            Cerrar
+                            Encerrar
                         </Button>{' '}
                         <Button variant="primary" type="submit">
                             Cadastro

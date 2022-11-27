@@ -45,7 +45,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
             sort: true,
         },
         {
-            Header: 'Vehiculo',
+            Header: 'Veículos',
             accessor: 'vehicle',
             sort: false,
         },
@@ -196,7 +196,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                 },
             },
             {
-                label: 'Vehiculo',
+                label: 'Veículo',
                 name: 'vehicle',
                 options: {
                     filter: true,

@@ -250,7 +250,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                                                 },
                                                 {
                                                     value: 'signature',
-                                                    label: 'Firma'
+                                                    label: 'Assinatura'
                                                 }
                                             ]}
                                             placeholder="Digite O Tipo"

@@ -111,7 +111,7 @@ const List = (props: {company?: any, handleSelect?: any, handleCreate?: any, han
                 },
             },
             {
-                label: 'Vehiculo',
+                label: 'Veículo',
                 name: 'vehicle',
                 options: {
                     filter: true,

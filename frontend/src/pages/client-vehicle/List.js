@@ -127,7 +127,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                 },
             },
             {
-                label: 'Vehiculo',
+                label: 'Veículo',
                 name: 'vehicle',
                 options: {
                     filter: true,

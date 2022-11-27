@@ -233,7 +233,7 @@ const ItemsSelection = (props: {company?: any, id?: any, onChange?: any}): React
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="light" onClick={toggleModal}>
-                        Cerrar
+                        Encerrar
                     </Button>{' '}
                     <Button variant="primary" onClick={saveStage}>
                         Cadastro

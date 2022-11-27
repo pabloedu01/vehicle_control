@@ -142,7 +142,7 @@ const Signature = (props: { item: any, onChange: any, value: any, onManageAjaxEr
         <>
             <Modal show={showModal} onHide={ () => { setShowModal(false); } } size="md" scrollable={true} centered={true}>
                 <Modal.Header >
-                    Firma
+                    Assinatura
                 </Modal.Header>
                 <Modal.Body style={{ minHeight: '300px' }} id="signature">
                     <SignatureCanvas penColor='green'
@@ -165,7 +165,7 @@ const Signature = (props: { item: any, onChange: any, value: any, onManageAjaxEr
                         setSignatureChanged(data?.signatureImage ? true : false);
                         signature.on();
                         signature.clear();
-                    }}>Clear</Button>
+                    }}>Limpar</Button>
                     <Button variant="primary" onClick={() => {
                         setShowModal(false);
                     }}>

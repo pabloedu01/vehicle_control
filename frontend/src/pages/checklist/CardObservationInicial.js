@@ -47,10 +47,10 @@ export function CardObservationInicial({
                             setShowModalObservations(false);
                             setMarkupActual(null)
                         }}>
-                            <span ><i className="mdi mdi-exit-to-app"/></span>
+                            <span >Remover</span>
                         </Button>
                         <Button variant="primary" onClick={onSaveObservations}>
-                            <span ><i className="mdi mdi-content-save"/></span>
+                            <span >Salvar</span>
                         </Button>
                     </div>
                     </Col>
