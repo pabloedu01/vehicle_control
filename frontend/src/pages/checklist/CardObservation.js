@@ -90,10 +90,10 @@ export function CardObservation({
                         <Button variant="primary" onClick={() => {
                           onDeleteObservations(index)
                         }}>
-                             <span ><i className="mdi mdi-delete"/></span>
+                             <span >Remover</span>
                         </Button>
                         <Button variant="primary" onClick={onSaveObservations}>
-                            <span ><i className="mdi mdi-content-save"/></span>
+                            <span >Salvar</span>
                         </Button>
                     </div>
                     </Col>
