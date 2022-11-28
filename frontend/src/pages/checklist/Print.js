@@ -139,13 +139,13 @@ const Print = (props: { company?: any, id: number, type: string, checklistId: nu
 
     return (
         <>
-            <Row className="print-checklist" id="print-checklist">
-                <Col xs={12}>
+            <Row className="print-checklist" id="print-checklist" >
+                <Col xs={12} >
                     <Card>
                         <Card.Body>
-                            <div className="page">
+                            <div className="page" >
                                 <header>
-                                    <div className="row">
+                                    <div className="row" >
                                         <div className="col-40 d-flex align-items-center">
                                             <img src={toyota} alt="Toyota Logotype" />
                                         </div>
@@ -181,8 +181,8 @@ const Print = (props: { company?: any, id: number, type: string, checklistId: nu
                                         </div>
                                     </div>
 
-                                    <div className="row mb-1">
-                                        <div className="col-5">
+                                    <div className="row mb-1" >
+                                        <div className="col-5 h-100" style={{ alignSelf: 'start'}}>
                                             <div className="form-slot me-2 d-flex">
                                                 <label>Cliente:</label>
                                                 <span className="align-self-center">{data?.client?.name}</span>
@@ -544,10 +544,12 @@ const Print = (props: { company?: any, id: number, type: string, checklistId: nu
                                                 guardar &nbsp; (&nbsp;{checklistData['e-pertences-pessoais']?.value.toString() === 'No veículo' ? 'X' : ' '}&nbsp;) No veículo
                                             </div>
                                         </div>
-                                        <div className="col-6">
+                                        <div className="col-6 max-h-100" style={{ alignSelf:'flex-start' }}>
                                             <div className="form-slot">
                                                 <label>Observações:</label>&nbsp;
-
+                                                <br/>
+                                                <br/>
+                                                <br/>
                                             </div>
                                         </div>
                                     </div>
@@ -559,7 +561,7 @@ const Print = (props: { company?: any, id: number, type: string, checklistId: nu
                                                     folha de inspeção.
                                                 </div>
 
-                                                <p className="my-5">
+                                                <p className="my-3">
                                                     {checklistData['r-ass-client']?.value && checklistData['r-ass-client']?.value.length > 0
                                                         ?
                                                         (<>Data: <span style={{textDecoration: 'underline'}}>&nbsp;&nbsp;{ ('00' + (new Date(JSON.parse(checklistData['r-ass-client']?.value)?.signatureDate)).getDate()).substr(-2,2) }&nbsp;&nbsp;</span> / <span style={{textDecoration: 'underline'}}>&nbsp;&nbsp;{ ('00' + (new Date(JSON.parse(checklistData['r-ass-client']?.value)?.signatureDate)).getMonth()).substr(-2,2) }&nbsp;&nbsp;</span> /<span style={{textDecoration: 'underline'}}>&nbsp;&nbsp;&nbsp;{ (new Date(JSON.parse(checklistData['r-ass-client']?.value)?.signatureDate)).getFullYear() }&nbsp;&nbsp;&nbsp;</span> &nbsp; Hora: <span style={{textDecoration: 'underline'}}>&nbsp;&nbsp;{ ('00' + (new Date(JSON.parse(checklistData['r-ass-client']?.value)?.signatureDate)).getHours()).substr(-2,2) }&nbsp;&nbsp;</span> : <span style={{textDecoration: 'underline'}}>&nbsp;&nbsp;{ ('00' + (new Date(JSON.parse(checklistData['r-ass-client']?.value)?.signatureDate)).getMinutes()).substr(-2,2) }&nbsp;&nbsp;</span></>)
@@ -572,9 +574,9 @@ const Print = (props: { company?: any, id: number, type: string, checklistId: nu
 
 
 
-<div style={{height: '25px'}}>
+                        <div style={{height: '18px'}}>
                                                 {checklistData['r-ass-client']?.value && checklistData['r-ass-client']?.value.length > 0 ? <img style={{height: '100%', width: 'auto !important'}} src={JSON.parse(checklistData['r-ass-client']?.value)?.signatureImage} /> : ''}
-</div>
+                        </div>
 
                                                 <span className="signature small">
                 <hr />
@@ -588,7 +590,7 @@ const Print = (props: { company?: any, id: number, type: string, checklistId: nu
                                                     Declaro ter retirado o veículo nas condições informadas nesta
                                                     folha de inspeção.
                                                 </div>
-                                                <p className="my-5">
+                                                <p className="my-3">
                                                     {checklistData['e-ass-client']?.value && checklistData['e-ass-client']?.value.length > 0
                                                         ?
                                                         (<>Data: <span style={{textDecoration: 'underline'}}>&nbsp;&nbsp;{ ('00' + (new Date(JSON.parse(checklistData['e-ass-client']?.value)?.signatureDate)).getDate()).substr(-2,2) }&nbsp;&nbsp;</span> / <span style={{textDecoration: 'underline'}}>&nbsp;&nbsp;{ ('00' + (new Date(JSON.parse(checklistData['e-ass-client']?.value)?.signatureDate)).getMonth()).substr(-2,2) }&nbsp;&nbsp;</span> /<span style={{textDecoration: 'underline'}}>&nbsp;&nbsp;&nbsp;{ (new Date(JSON.parse(checklistData['e-ass-client']?.value)?.signatureDate)).getFullYear() }&nbsp;&nbsp;&nbsp;</span> &nbsp; Hora: <span style={{textDecoration: 'underline'}}>&nbsp;&nbsp;{ ('00' + (new Date(JSON.parse(checklistData['e-ass-client']?.value)?.signatureDate)).getHours()).substr(-2,2) }&nbsp;&nbsp;</span> : <span style={{textDecoration: 'underline'}}>&nbsp;&nbsp;{ ('00' + (new Date(JSON.parse(checklistData['e-ass-client']?.value)?.signatureDate)).getMinutes()).substr(-2,2) }&nbsp;&nbsp;</span></>)
@@ -601,7 +603,7 @@ const Print = (props: { company?: any, id: number, type: string, checklistId: nu
 
 
 
-<div style={{height: '25px'}}>
+<div style={{height: '18px'}}>
                                                 {checklistData['e-ass-client']?.value && checklistData['e-ass-client']?.value.length > 0 ? <img style={{height: '100%', width: 'auto !important'}} src={JSON.parse(checklistData['e-ass-client']?.value)?.signatureImage} /> : ''}
 </div>
                                                 <span className="signature small">
@@ -613,7 +615,7 @@ const Print = (props: { company?: any, id: number, type: string, checklistId: nu
                                     </div>
 
                                     {/* seção */}
-                                    <div className="icon-header p-1 text-white mt-1">
+                                    <div className="icon-header text-white mt-1 px-1">
                                         <div className="row" style={{width: '100%', justifyContent: 'space-between'}}>
                                             <div className="col-auto">TIPO DE SERVIÇO</div>
                                             <div className="col-auto square-check"><div/>&nbsp;&nbsp;Revisão</div>
