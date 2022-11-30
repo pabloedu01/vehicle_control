@@ -7,7 +7,6 @@ import {useNavigate, useParams} from "react-router-dom";
 import MUIDataTable from "mui-datatables";
 import TABLE_OPTIONS from "../../constants/tableOptions";
 import Actions from "../../components/table/actions";
-import Table from '../../components/Table';
 import swal from 'sweetalert';
 import {getAllOptions} from "../../utils/selectOptionsForm";
 import {FormInput} from "../../components";
@@ -25,8 +24,6 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
     const [showModal, setShowModal] = useState(false);
     const [showModalGenerateToken, setShowModalGenerateToken] = useState(false);
     const [showModalPrint, setShowModalPrint] = useState(false);
-    const [showModalActions, setShowModalActions] = useState(false);
-    const [idForActions, setIdForActions] = useState(null);
     const [selectedVehicleServiceId, setSelectedVehicleServiceId] = useState(null);
     const [list, setList] = useState([]);
     const [checklistVersions, setChecklistVersions] = useState([]);
@@ -41,72 +38,6 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
             checklist_version_id: yup.number().required('Por favor, digite Versão do checklist'),
         })
     );
-
-     const columns = [
-        {
-            Header: 'Código',
-            accessor: 'id',
-            sort: true,
-            display: false,
-        },
-        {
-            Header: 'Data',
-            accessor: 'date',
-            sort: false,
-        },
-        {
-            Header: 'Versão',
-            accessor: 'version',
-            sort: false,
-        },
-        // {
-        //     Header: 'Ações',
-        //     accessor: 'name',
-        //     sort: true,
-        //     options: {
-        //             filter: false,
-        //             sort: false,
-        //             customBodyRender: (value, tableMeta, updateValue) => (
-        //                 <Actions tableMeta={tableMeta} actions={[]} extraButtons={[
-        //                     {
-        //                         key: 'edit',
-        //                         icon: 'mdi mdi-square-edit-outline',
-        //                         label: 'Editar',
-        //                         action: onEdit,
-        //                         condition: (data) => {
-        //                             return !data.isCompleted && data.nextStage !== null;
-        //                         }
-        //                     },
-        //                     {
-        //                         key: 'show',
-        //                         icon: 'mdi mdi-eye-outline',
-        //                         label: 'Visualizar',
-        //                         action: onShow
-        //                     },
-        //                     {
-        //                         key: 'send',
-        //                         icon: 'mdi mdi-email-send-outline',
-        //                         label: 'Enviar',
-        //                         action: onSendEmail
-        //                     },
-        //                     {
-        //                         key: 'duplicate',
-        //                         icon: 'mdi mdi-clipboard',
-        //                         label: 'Duplicar',
-        //                         action: onDuplicate
-        //                     },
-
-        //                     {
-        //                         key: 'print',
-        //                         icon: 'mdi mdi-printer-outline',
-        //                         label: 'Imprimir',
-        //                         action: onPrint
-        //                     },
-        //                 ]}/>
-        //             )
-        //         },
-        // },
-    ];
 
     const schemaResolver2 = yupResolver(
         yup.object().shape({
@@ -175,7 +106,6 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
     };
 
     const onEdit = (vehicleServiceId, rowData) => {
-        console.log(vehicleServiceId)
         history(`/panel/company/${props.company?.id}/${type}/${id}/checklist/${vehicleServiceId}/edit/${rowData.nextStage}`);
     };
 
@@ -191,7 +121,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     const onDuplicate = (vehicleServiceId, rowData) => {
         swal({
-            title: 'Tem certeza!',
+            title: '¿tem certeza?',
             text: 'Irá duplicar este checklist',
             icon: 'warning',
             buttons: {
@@ -277,20 +207,6 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
         history(`/panel/company/${props.company?.id}/${type}/${id}/checklist/create/${methods.getValues('checklist_version_id')}`);
     };
 
-    const detectClick = (e) => {
-        if (e.target?.nodeName === "TD") {
-            const code = (e.target?.parentNode?.innerText).split('	')[0]
-            const data = list.find(item => item.id === Number(code))
-            setShowModalActions(true);
-            setIdForActions({
-                vehicleServiceId:code,
-                nextStage: data?.nextStage,
-                isCompleted: data?.isCompleted
-            })
-        } else {
-            return
-        }
-    }
     const print = () => {
         onHideModalPrint();
         
@@ -325,6 +241,79 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
     useEffect(() => {
         getChecklistVersions();
         getList();
+
+        setTableFields([
+            {
+                label: 'Código',
+                name: 'id',
+                options: {
+                    filter: true,
+                    sort: true,
+                },
+            },
+            {
+                label: 'Data',
+                name: 'date',
+                options: {
+                    filter: true,
+                    sort: true,
+                },
+            },
+            {
+                label: 'Versão',
+                name: 'version',
+                options: {
+                    filter: true,
+                    sort: true,
+                },
+            },
+            {
+                label: 'Ações',
+                name: 'actions',
+                options: {
+                    filter: false,
+                    sort: false,
+                    customBodyRender: (value, tableMeta, updateValue) => (
+                        <Actions tableMeta={tableMeta} actions={[]} extraButtons={[
+                            {
+                                key: 'edit',
+                                icon: 'mdi mdi-square-edit-outline',
+                                label: 'Editar',
+                                action: onEdit,
+                                condition: (data) => {
+                                    return !data.isCompleted && data.nextStage !== null;
+                                }
+                            },
+                            {
+                                key: 'show',
+                                icon: 'mdi mdi-eye-outline',
+                                label: 'Visualizar',
+                                action: onShow
+                            },
+                            {
+                                key: 'send',
+                                icon: 'mdi mdi-email-send-outline',
+                                label: 'Enviar',
+                                action: onSendEmail
+                            },
+                            {
+                                key: 'duplicate',
+                                icon: 'mdi mdi-clipboard',
+                                label: 'Duplicar',
+                                action: onDuplicate
+                            },
+
+                            {
+                                key: 'print',
+                                icon: 'mdi mdi-printer-outline',
+                                label: 'Imprimir',
+                                action: onPrint
+                            },
+                        ]}/>
+                    )
+                },
+            },
+        ]);
 
         setTableOptions(Object.assign(TABLE_OPTIONS, {
 
@@ -413,36 +402,6 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
 
 
 
-            <Modal show={showModalActions} onHide={() => setShowModalActions(false)}>
-                    <Modal.Header onHide={() => setShowModalActions(false)} closeButton>
-                        <h4 className="modal-title">Ações</h4>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Button variant="primary" className='w-100 py-2' onClick={()=> onEdit(idForActions?.vehicleServiceId, idForActions)}>
-                            Editar
-                        </Button>
-                        <Button variant="primary" className='w-100 py-2 mt-6' onClick={()=> onShow(idForActions?.vehicleServiceId, idForActions)}>
-                            Visualizar
-                        </Button>
-                        <Button variant="primary" className='w-100 py-2 mt-6' onClick={()=> onSendEmail(idForActions?.vehicleServiceId, idForActions)}>
-                            Enviar
-                        </Button>
-                        <Button variant="primary" className='w-100 py-2 mt-6' onClick={()=> onDuplicate(idForActions?.vehicleServiceId, idForActions)}>
-                            Duplicar
-                        </Button>
-                        <Button variant="primary" className='w-100 py-2 mt-6' onClick={()=> onPrint(idForActions?.vehicleServiceId, idForActions)}>
-                            Imprimir
-                        </Button>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="light" onClick={() => setShowModalActions(false)}>
-                            Close
-                        </Button>{' '}
-                    </Modal.Footer>
-                </Modal>
-
-
-
             <PageTitle
                 breadCrumbItems={[
                     { label: 'Checklist', path: `/panel/company/${props.company?.id}/${type}/${id}/checklist` },
@@ -469,25 +428,8 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                                 </Col>
                             </Row>
                             <Row>
-                               {/* <Col>
-                                    <MUIDataTable data={list} columns={tableFields} options={tableOptions}/>
-                                </Col>*/} 
                                 <Col>
-                                        <div 
-                                        onClick={(e) => detectClick(e)}
-                                        >
-                                    <Table
-                                        columns={columns}
-                                        data={list}
-                                        pageSize={5}
-                                        sizePerPageList={TABLE_OPTIONS.sizePerPageList}
-                                        isSortable={true}
-                                        pagination={true}
-                                        isSearchable={false}
-                                        isSelectable={false}
-                                        // isSearchable={true}
-                                        />
-                                        </div>
+                                    <MUIDataTable data={list} columns={tableFields} options={tableOptions}/>
                                 </Col>
                             </Row>
                         </Card.Body>

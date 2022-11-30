@@ -315,17 +315,17 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                                     <InputGroup className="mb-3">
                                         <Form.Control onChange={(e) => {setSearch(e.target.value);} } aria-label="Text input with dropdown button" />
 
-                                                <DropdownButton
-                                              variant="outline-secondary"
-                                              title={searchType ?? 'Seleccione'}
-                                              id="input-group-dropdown-2"
-                                              align="end"
+                                            <DropdownButton
+                                                variant="outline-secondary"
+                                                title={searchType ?? 'Seleccione'}
+                                                id="input-group-dropdown-2"
+                                                align="end"
                                             >
-                                              <Dropdown.Item onClick={() => {setSearchType('chassi')}} href="#">Chassi</Dropdown.Item>
-                                              <Dropdown.Item onClick={() => {setSearchType('plate')}} href="#">Placa</Dropdown.Item>
-                                              <Dropdown.Item onClick={() => {setSearchType('client_name')}} href="#">Cliente</Dropdown.Item>
+                                                <Dropdown.Item onClick={() => {setSearchType('chassi')}} href="#">Chassi</Dropdown.Item>
+                                                <Dropdown.Item onClick={() => {setSearchType('plate')}} href="#">Placa</Dropdown.Item>
+                                                <Dropdown.Item onClick={() => {setSearchType('client_name')}} href="#">Cliente</Dropdown.Item>
                                             </DropdownButton>
-                                          </InputGroup>
+                                        </InputGroup>
                                 </Col>
                                 <Col xl={2}>
                                     <div className="text-xl-start text-xs-end mt-xl-0 mt-2">
