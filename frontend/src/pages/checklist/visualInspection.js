@@ -1,7 +1,9 @@
 // @flow
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import {Button, Col, Modal, Row, Card, Nav} from "react-bootstrap";
 import FileUpload from "../../components/FileUpload";
+import html2canvas from "html2canvas";
+import { toPng } from 'html-to-image';
 import classnames from 'classnames';
 import { AnimatePresence, motion } from "framer-motion/dist/framer-motion";
 import { CardObservation } from './CardObservation'
@@ -11,7 +13,7 @@ import { CardObservationInicial } from './CardObservationInicial'
 const VisualInspection = (props: { item: any, onChange: any, value: any }): React$Element<React$FragmentType> => {
     const [showModal, setShowModal] = useState(false);
     const [showModalObservations, setShowModalObservations] = useState(false);
-    const [currentStep, setCurrentStep]  = useState(1);
+    const [currentStep, setCurrentStep] = useState(1);
     const [data, setData] = useState({});
     const [observationsIndex, setObservationsIndex] = useState(null);
     const [observationsList, setObservationsList] = useState([]);
@@ -23,7 +25,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
     const [selectedCardMakup, setSelectedCardMakup] = useState(null)
     const [isEditingIndex, setIsEditingIndex] = useState(null)
 
-    const constraintsRef = useRef(null); 
+    const constraintsRef = useRef(null);
 
     const steps = {
         '1': 'Frente',
@@ -57,20 +59,20 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
             active: false
         }
        
-        if(observationsIndex === null || !currentObservationsList.hasOwnProperty(observationsIndex)){
+        if (observationsIndex === null || !currentObservationsList.hasOwnProperty(observationsIndex)) {
             newObservationsList = currentObservationsList.concat([{
                 observations,
-                markup: {...markupActualSave},
+                markup: { ...markupActualSave },
                 images: fileUploadDataTemp
             }]);
         } else {
-            currentObservationsList[observationsIndex] = {...currentObservationsList[observationsIndex], observations, markup: {...markupActualSave}};
+            currentObservationsList[observationsIndex] = { ...currentObservationsList[observationsIndex], observations, markup: { ...markupActualSave } };
             newObservationsList = currentObservationsList;
         }
         setIsEditingIndex(null)
         setMarkupActual(null)
         setObservationsList(newObservationsList);
-        setData({...data, [currentStep]: {...(data[currentStep] ?? {}), observations: [...newObservationsList]}});
+        setData({ ...data, [currentStep]: { ...(data[currentStep] ?? {}), observations: [...newObservationsList] } });
         setShowModalObservations(false);
         setFileUploadDataTemp([]);
 
@@ -89,7 +91,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
         setObservationsIndex(index);
         setObservations(observationsList[index].observations);
         setIsEditingIndex(index)
-        setMarkupActual({...observationsList[index].markup, active: true})
+        setMarkupActual({ ...observationsList[index].markup, active: true })
     };
 
     const onDeleteObservations = (index) => {
@@ -102,7 +104,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
     const validateFileImage = (file) => {
         const isValid = file.type.indexOf('image') === 0;
 
-        if(!isValid){
+        if (!isValid) {
             return 'El archivo ' + file.name + ' no es una imagen.';
         } else {
             return true;
@@ -112,7 +114,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
     const handleUploadImages = (files) => {
         setFileUploadData(files);
 
-        if(observationsIndex !== null){
+        if (observationsIndex !== null) {
             const currentObservationsList = [...observationsList];
             currentObservationsList[observationsIndex].images = files;
 
@@ -121,6 +123,35 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
             setFileUploadDataTemp(files);
         }
     };
+
+    // async function screenShotToPng() {
+    //     if (constraintsRef.current === null) {
+    //         return
+    //     }
+    //     console.log(constraintsRef.current)
+    //     const canvas = await html2canvas(constraintsRef.current)
+    //     const base64image = canvas.toDataURL("image/png");
+    //     console.log(base64image)
+    // }
+    
+  const screenShotToPng = useCallback(() => {
+    if (constraintsRef.current === null) {
+      return
+    }
+    console.log(constraintsRef.current)
+    toPng(constraintsRef.current, { cacheBust: true, })
+      .then((dataUrl) => {
+        // let img = new Image();
+        // img.src = dataUrl;
+        const link = document.createElement('a')
+        link.download = 'my-image-name.png'
+        link.href = dataUrl
+        link.click()
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [constraintsRef])
 
     useEffect(() => {
         setCurrentStep(1);
@@ -235,7 +266,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                         
                         </Col>
                         <Col md={4} className="d-flex justify-content-center align-items-center" style={{ flexFlow: 'column', width: '450px', height: '270px', position: 'relative'}}>
-                            <motion.div ref={constraintsRef} className="d-flex justify-content-center align-items-center " style={{ flexFlow: 'column', width: '450px', height: '270px'}}>
+                            <motion.div ref={constraintsRef} id='carInspectionDetails' className="d-flex justify-content-center align-items-center " style={{ flexFlow: 'column', width: '450px', height: '270px'}}>
                                 {(props?.item?.validation?.images || []).hasOwnProperty(currentStep) ? <img src={props?.item?.validation?.images[currentStep]} className="overflow-hidden" style={{maxWidth: '100%'}}/> : 'No image available'}
                                 {steps[currentStep]}
                             {observationsList.length > 0 && observationsList.map((m, index)=> (
@@ -369,6 +400,9 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                     </Button>
                     <Button variant="primary" onClick={onSave}>
                         Salvar
+                    </Button>
+                    <Button variant="primary" onClick={screenShotToPng}>
+                        print
                     </Button>
                 </Modal.Footer>
             </Modal>
