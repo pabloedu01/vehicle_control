@@ -2,7 +2,6 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import {Button, Col, Modal, Row, Card, Nav} from "react-bootstrap";
 import FileUpload from "../../components/FileUpload";
-// import html2canvas from "html2canvas";
 import { toPng } from 'html-to-image';
 import classnames from 'classnames';
 import { AnimatePresence, motion } from "framer-motion/dist/framer-motion";
@@ -123,17 +122,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
             setFileUploadDataTemp(files);
         }
     };
-
-    // async function screenShotToPng() {
-    //     if (constraintsRef.current === null) {
-    //         return
-    //     }
-    //     console.log(constraintsRef.current)
-    //     const canvas = await html2canvas(constraintsRef.current)
-    //     const base64image = canvas.toDataURL("image/png");
-    //     console.log(base64image)
-    // }
-    
+   
   const screenShotToPng = useCallback(() => {
     if (constraintsRef.current === null) {
       return
