@@ -133,7 +133,7 @@ const ChecklistForm = (props: {company?: any}): React$Element<React$FragmentType
                         if(!data?.technicalConsultant){
                             swal({
                                 title: 'Error',
-                                text: 'No existe el consultor.',
+                                text: 'Selecione um consultor.',
                                 icon: 'error',
                                 buttons: {
                                     confirm: {

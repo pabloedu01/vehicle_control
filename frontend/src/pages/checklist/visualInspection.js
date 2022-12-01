@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import {Button, Col, Modal, Row, Card, Nav} from "react-bootstrap";
 import FileUpload from "../../components/FileUpload";
-import html2canvas from "html2canvas";
+// import html2canvas from "html2canvas";
 import { toPng } from 'html-to-image';
 import classnames from 'classnames';
 import { AnimatePresence, motion } from "framer-motion/dist/framer-motion";
