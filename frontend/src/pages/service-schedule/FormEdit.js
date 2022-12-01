@@ -262,11 +262,11 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         methods.setValue('scheludesVisited', moment(data?.promised_date).format("yyyy-MM-DDThh:mm") ?? moment().format("yyyy-MM-DDThh:mm"));
 
         setTechnicalConsultantSelectedSearch({
-            label: data?.technicalConsultant.name ?? '',
-            value: data?.technicalConsultant.id ?? '',
+            label: data?.technicalConsultant?.name ?? '',
+            value: data?.technicalConsultant?.id ?? '',
             userDetails: {
-                name: data?.technicalConsultant.name ?? '',
-                cod: data?.technicalConsultant.id ?? ''
+                name: data?.technicalConsultant?.name ?? '',
+                cod: data?.technicalConsultant?.id ?? ''
             }
         })
         // methods.setValue('clientCpf', moment(data?.promised_date).format('YYYY-MM-DDTHH:mm') ?? moment().format('YYYY-MM-DDTHH:mm'));
