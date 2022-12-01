@@ -28,10 +28,10 @@ class Base extends Model
         parent::boot();
 
         //self::observe(ModelObserver::class, 0);
-        if(self::getHasLogs())
+        /*if(self::getHasLogs())
         {
             self::observe(LogObserver::class, 1);
-        }
+        }*/
 
         if(self::getHasTimestamps())
         {

@@ -13,10 +13,10 @@ class AddColumnBrandIdToVehiclesTable extends Migration
      */
     public function up()
     {
-        \DB::table('vehicles')->truncate();
+        \DB::table('vehicles')->delete();
 
         Schema::table('vehicles', function (Blueprint $table) {
-            $table->integer('brand_id')->unsigned();
+            $table->bigInteger('brand_id')->unsigned();
             $table->foreign('brand_id')->references('id')->on('vehicle_brands')->onDelete('cascade');
         });
     }

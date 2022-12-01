@@ -13,10 +13,10 @@ class AddColumnClientIdToClientVehiclesTable extends Migration
      */
     public function up()
     {
-        \DB::table('client_vehicles')->truncate();
+        \DB::table('client_vehicles')->delete();
 
         Schema::table('client_vehicles', function (Blueprint $table) {
-            $table->integer('client_id')->unsigned();
+            $table->bigInteger('client_id')->unsigned();
             $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');
         });
     }

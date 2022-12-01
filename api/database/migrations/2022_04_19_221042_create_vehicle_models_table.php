@@ -15,10 +15,12 @@ class CreateVehicleModelsTable extends Migration
     {
         Schema::create('vehicle_models', function (Blueprint $table) {
             $table->id();
-            $table->integer('company_id')->unsigned();
-            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
-            $table->integer('brand_id')->unsigned();
-            $table->foreign('brand_id')->references('id')->on('vehicle_brands')->onDelete('cascade');
+            /*$table->integer('company_id')->unsigned();
+            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');*/
+            $table->foreignId('company_id')->constrained('companies')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreignId('brand_id')->constrained('vehicle_brands')->onDelete('restrict')->onUpdate('restrict');
+            /*$table->integer('brand_id')->unsigned();
+            $table->foreign('brand_id')->references('id')->on('vehicle_brands')->onDelete('cascade');*/
             $table->string('name');
             $table->boolean('active')->default(true);
             $table->softDeletes();

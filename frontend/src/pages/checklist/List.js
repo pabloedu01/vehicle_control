@@ -209,7 +209,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     const print = () => {
         onHideModalPrint();
-        
+
         const printHtml = document.getElementById('print-checklist').outerHTML;
         document.getElementById('root').style.display = 'none';
 

@@ -15,7 +15,7 @@ class CreateChecklistReportsTable extends Migration
     {
         Schema::create('checklist_reports', function (Blueprint $table) {
             $table->id();
-            $table->integer('vehicle_service_id')->unsigned();
+            $table->bigInteger('vehicle_service_id')->unsigned();
             $table->foreign('vehicle_service_id')->references('id')->on('vehicle_services')->onDelete('cascade');
             $table->string('filename');
             $table->softDeletes();

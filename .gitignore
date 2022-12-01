@@ -103,3 +103,4 @@ yarn.lock
 
 # TernJS port file
 .tern-port
+laravel_docker2/

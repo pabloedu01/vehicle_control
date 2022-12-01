@@ -15,9 +15,10 @@ class CreateClientVehiclesTable extends Migration
     {
         Schema::create('client_vehicles', function (Blueprint $table) {
             $table->id();
-            $table->integer('company_id')->unsigned();
-            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
-            $table->integer('vehicle_id')->unsigned();
+            /*$table->integer('company_id')->unsigned();
+            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');*/
+            $table->foreignId('company_id')->constrained('companies')->onDelete('restrict')->onUpdate('restrict');
+            $table->bigInteger('vehicle_id')->unsigned();
             $table->foreign('vehicle_id')->references('id')->on('vehicles')->onDelete('cascade');
             $table->string('chasis')->nullable();
             $table->string('color')->nullable();
