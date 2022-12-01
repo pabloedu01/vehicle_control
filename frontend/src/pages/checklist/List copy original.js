@@ -121,7 +121,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     const onDuplicate = (vehicleServiceId, rowData) => {
         swal({
-            title: '¿tem certeza?',
+            title: 'Você tem certeza!',
             text: 'Irá duplicar este checklist',
             icon: 'warning',
             buttons: {

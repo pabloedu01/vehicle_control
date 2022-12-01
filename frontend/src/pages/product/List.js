@@ -42,7 +42,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     const onDelete = (registerId, newList) => {
         swal({
-            title: '¿tem certeza?',
+            title: 'Você tem certeza!',
             text: 'Irá excluir este registro',
             icon: 'warning',
             buttons: {
