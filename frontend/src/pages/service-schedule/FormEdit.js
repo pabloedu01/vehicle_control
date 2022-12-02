@@ -72,7 +72,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
             if(id){
                 api.get('/service-schedule/' + id).then((response) => {
                     const {client_vehicle: clientVehicle, client_vehicle_id, code, promised_date, client_id, technical_consultant_id, client, technical_consultant: technicalConsultant, vehicle_service: vehicleService} = response.data.data;
-                    //console.log(response.data.data)
+                    console.log(response.data.data)
                     resolve({
                         client_vehicle_id,
                         code,
@@ -163,8 +163,9 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
 
     const generateDefaultValuesEmail = () => {
         const newObject = {}
+        console.log(data)
         if (data?.client.email.length > 0) {
-            data.client.phone.forEach((item, index) => {
+            data.client.email.forEach((item, index) => {
                 newObject[`clientEmail${index + 1}`] = ''  
             }) 
         }
