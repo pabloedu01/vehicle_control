@@ -34,6 +34,14 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
         '5': 'Teto',
     };
 
+    const imagesModelCarInspection = {
+        '1': '/inspection/toyota/corolla/Frente.png',
+        '2': '/inspection/toyota/corolla/Lateral esquerda.png',
+        '3': '/inspection/toyota/corolla/Lateral direita.png',
+        '4': '/inspection/toyota/corolla/Traseira.png',
+        '5': '/inspection/toyota/corolla/Teto.png'
+    } 
+
     const typeMarkups = {
         A: 'Amassado',
         R: 'Riscado',
@@ -130,13 +138,14 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
     console.log(constraintsRef.current)
     toPng(constraintsRef.current, { cacheBust: true, })
       .then((dataUrl) => {
-        // let img = new Image();
-        // img.src = dataUrl;
-        const link = document.createElement('a')
-        link.download = 'my-image-name.png'
-        link.href = dataUrl
-        console.log(link)
-        link.click()
+        let img = new Image();
+        img.src = dataUrl;
+        console.log(img)  
+        // const link = document.createElement('a')
+        // link.download = 'my-image-name.png'
+        // link.href = dataUrl
+        // console.log(link)
+        // link.click()
       })
       .catch((err) => {
         console.log(err)
@@ -258,7 +267,10 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                         <Col md={4} className="d-flex justify-content-center align-items-center" style={{ flexFlow: 'column', width: '450px', height: '270px', position: 'relative'}}>
                             <motion.div ref={constraintsRef} id='carInspectionDetails' className="d-flex justify-content-center align-items-center " style={{ flexFlow: 'column', width: '450px', height: '270px'}}>
                                {/* {(props?.item?.validation?.images || []).hasOwnProperty(currentStep) ? <img src={props?.item?.validation?.images[currentStep]} className="overflow-hidden" style={{maxWidth: '100%'}}/> : 'No image available'} */}
-                               <img src='/frentecarro.png' className="overflow-hidden" style={{maxWidth: '100%'}}/>
+                              {(props?.item?.validation?.images || []).hasOwnProperty(currentStep) ? <img src={imagesModelCarInspection[currentStep]} className="overflow-hidden" style={{maxWidth: '100%'}}/> : 'No image available'}
+                                {console.log(currentStep)}
+                                {/* <img src='/frentecarro.png' className="overflow-hidden" style={{maxWidth: '100%'}}/> */}
+                                {/* <img src='/frentecarro.png' className="overflow-hidden" style={{maxWidth: '100%'}}/> */}
                                 {steps[currentStep]}
                             {observationsList.length > 0 && observationsList.map((m, index)=> (
                                 <motion.div 
