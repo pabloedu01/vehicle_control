@@ -15,7 +15,7 @@ class CreateChecklistVersionStagesTable extends Migration
     {
         Schema::create('checklist_version_stages', function (Blueprint $table) {
             $table->id();
-            $table->integer('checklist_version_id')->unsigned();
+            $table->bigInteger('checklist_version_id')->unsigned();
             $table->foreign('checklist_version_id')->references('id')->on('checklist_versions')->onDelete('cascade');
             $table->string('name', 100);
             $table->softDeletes();
@@ -24,10 +24,10 @@ class CreateChecklistVersionStagesTable extends Migration
 
         Schema::create('checklist_item_checklist_version_stage', function (Blueprint $table) {
             $table->id();
-            $table->integer('checklist_version_stage_id')->unsigned();
-            $table->foreign('checklist_version_stage_id')->references('id')->on('checklist_version_stages')->onDelete('cascade');
+            $table->bigInteger('checklist_version_stage_id')->unsigned();
+            $table->foreign('checklist_version_stage_id', 'c_i_c_version_s_checklist_v_stage_id_foreign')->references('id')->on('checklist_version_stages')->onDelete('cascade');
 
-            $table->integer('checklist_item_id')->unsigned();
+            $table->bigInteger('checklist_item_id')->unsigned();
             $table->foreign('checklist_item_id')->references('id')->on('checklist_items')->onDelete('cascade');
             $table->timestamps();
         });

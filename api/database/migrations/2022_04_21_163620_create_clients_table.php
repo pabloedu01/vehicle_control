@@ -15,8 +15,9 @@ class CreateClientsTable extends Migration
     {
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
-            $table->integer('company_id')->unsigned();
-            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
+            /*$table->integer('company_id')->unsigned();
+            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');*/
+            $table->foreignId('company_id')->constrained('companies')->onDelete('restrict')->onUpdate('restrict');
             $table->string('name');
             $table->string('document');
             $table->string('address',245);

@@ -37,11 +37,15 @@ RUN apt-get update \
             xml \
             ldap \
             pdo \
+            mysqli \
+            pdo_mysql \
             pdo_pgsql \
             pgsql \
             sockets
 
-WORKDIR /var/www/tunap/api
+RUN docker-php-ext-enable pdo_mysql
+
+WORKDIR /var/www/api
 
 RUN apt-get update
 RUN apt-get install -y libcurl4-openssl-dev pkg-config libssl-dev

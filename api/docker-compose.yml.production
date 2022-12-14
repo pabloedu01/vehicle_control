@@ -14,18 +14,6 @@ services:
       - '54322:5432'
     networks:
       - default
-  tunap_mongodb:
-    image: mongo:4.4
-    container_name: 'tunap_mongodb'
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=${DB_MONGO_USERNAME}
-      - MONGO_INITDB_ROOT_PASSWORD=${DB_MONGO_PASSWORD}
-    volumes:
-      - ./laravel_docker/mongo-data:/data/db
-    ports:
-      - "57017:27017"
-    networks:
-      - default
   tunap_php_apache:
     build:
       context: ./

@@ -15,9 +15,10 @@ class CreateVehicleBrandChecklistVersionsTable extends Migration
     {
         Schema::create('vehicle_brand_checklist_versions', function (Blueprint $table) {
             $table->id();
-            $table->integer('company_id')->unsigned();
-            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
-            $table->integer('brand_id')->unsigned();
+            /*$table->integer('company_id')->unsigned();
+            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');*/
+            $table->foreignId('company_id')->constrained('companies')->onDelete('restrict')->onUpdate('restrict');
+            $table->bigInteger('brand_id')->unsigned();
             $table->foreign('brand_id')->references('id')->on('vehicle_brands')->onDelete('cascade');
             $table->string('code');
             $table->string('name');

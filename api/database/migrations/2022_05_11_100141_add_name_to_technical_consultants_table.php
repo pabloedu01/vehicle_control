@@ -15,6 +15,10 @@ class AddNameToTechnicalConsultantsTable extends Migration
     {
         Schema::table('technical_consultants', function (Blueprint $table) {
             $table->dropForeign('technical_consultants_user_id_foreign');
+            $table->dropIndex('technical_consultants_user_id_foreign');
+        });
+
+        Schema::table('technical_consultants', function (Blueprint $table) {
             $table->integer('user_id')->nullable()->change();
             $table->string('name')->nullable();
         });

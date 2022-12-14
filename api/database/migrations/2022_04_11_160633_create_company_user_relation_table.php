@@ -15,14 +15,15 @@ class CreateCompanyUserRelationTable extends Migration
     {
         Schema::create('company_user', function (Blueprint $table) {
             $table->id();
-    
-            $table->integer('company_id')->unsigned();
-            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
+
+            $table->foreignId('company_id')->constrained('companies')->onDelete('restrict')->onUpdate('restrict');
+            /*$table->integer('company_id')->unsigned();
+            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');*/
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-    
+
             $table->string('role', 20);//owner,admin
-            
+
             $table->timestamps();
         });
     }

@@ -14,7 +14,7 @@ class ChecklistItemSeeder extends Seeder
      */
     public function run()
     {
-        ChecklistItem::truncate();
+        ChecklistItem::where('id', '!=', 0)->delete();
 
         $now = date('Y-m-d H:i:s');
         /*

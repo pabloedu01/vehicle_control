@@ -13,12 +13,12 @@ class UpdateColumnVersionIdToVehicleServicesTable extends Migration
      */
     public function up()
     {
-        \DB::table('vehicle_services')->truncate();
+        \DB::table('vehicle_services')->delete();
 
         Schema::table('vehicle_services', function (Blueprint $table) {
             $table->dropForeign('vehicle_services_version_id_foreign');
             $table->dropColumn('version_id');
-            $table->integer('checklist_version_id')->unsigned();
+            $table->bigInteger('checklist_version_id')->unsigned();
             $table->foreign('checklist_version_id')->references('id')->on('checklist_versions')->onDelete('cascade');
         });
     }
