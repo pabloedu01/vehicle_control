@@ -104,6 +104,13 @@ const MENU_ITEMS = [
     },
 
     {
+        key: 'recomentation.index',
+        label: 'Recomendações',
+        url: '/recomentation',
+        icon: 'mdi mdi-package-variant-closed',
+    },
+
+    {
         key: 'serviceSchedules.index',
         label: 'Agenda de Serviços',
         url: '/service-schedules/list',
