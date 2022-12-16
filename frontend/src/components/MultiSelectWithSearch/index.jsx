@@ -1,23 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Col, Row, Button } from "react-bootstrap";
 import { FormInput } from '../../components'
-import { useForm } from 'react-hook-form';
-
-
-const createOption = (label) => ({
-    label,
-    value: label.toLowerCase().replace(/\W/g, ''),
-    added: false,
-});
-
-const defaultOptions = [
-    createOption('One'),
-    createOption('Two'),
-    createOption('Three'),
-    createOption('four'),
-    createOption('Five'),
-    createOption('Six'),
-];
+import './styles.css';
 
 export function MultiSelectWithSearch({ dataPackage }) {
     const [data, setData] = useState(dataPackage)
@@ -60,8 +44,8 @@ export function MultiSelectWithSearch({ dataPackage }) {
     }
 
     function handleRemove(value) {
-        if (!packageLeftValue) return
-        if (packageLeftValue.added) return
+        if (!packageRightValue) return
+        if (packageRightValue.added) return
         const packages = [...data]
         const findOne = packages.find(p => p.value === value)
         if (!findOne) return
@@ -92,17 +76,14 @@ export function MultiSelectWithSearch({ dataPackage }) {
                         key="text"
                         onChange={handleFilterOptionLeft}
                     />
-                    <div className="overflow-auto w-100 border border-1 rounded mt-2 p-1 d-flex flex-column align-items-start" style={{
-                        width: '100%',
+                    <div className="overflow-auto w-100 border border-1 rounded mt-2 p-1 d-flex flex-column align-items-start w-100" style={{
                         height: '150px',
-                        listStyle: 'none',
                     }}>
                         {searchLeftResults.map(item => {
                             return (
-                                <label className='w-100 rounded p-1' key={item.value} style={{
+                                <label className='w-100 rounded p-1 label-selection-packages' key={item.value} style={{
                                     background: packageLeftValue === item.value ? '#727cf5' : '',
                                     color: packageLeftValue === item.value ? 'white' : '',
-
                                 }}>
                                     <input
                                         type="radio"
@@ -142,14 +123,12 @@ export function MultiSelectWithSearch({ dataPackage }) {
                         key="text"
                         onChange={handleFilterOptionRight}
                     />
-                    <div className="overflow-auto w-100 border border-1 rounded mt-2 p-1 d-flex flex-column align-items-start" style={{
-                        width: '100%',
+                    <div className="overflow-auto w-100 border border-1 rounded mt-2 p-1 d-flex flex-column align-items-start w-100" style={{
                         height: '150px',
-                        listStyle: 'none',
                     }}>
                         {searchRightResults.map(item => {
                             return (
-                                <label className='w-100 rounded p-1' key={item.value} style={{
+                                <label className='w-100 rounded p-1 label-selection-packages' key={item.value} style={{
                                     background: packageRightValue === item.value ? '#727cf5' : '',
                                     color: packageRightValue === item.value ? 'white' : '',
 
