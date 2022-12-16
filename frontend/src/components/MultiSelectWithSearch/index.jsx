@@ -19,8 +19,8 @@ const defaultOptions = [
     createOption('Six'),
 ];
 
-export function MultiSelectWithSearch() {
-    const [data, setData] = useState(defaultOptions)
+export function MultiSelectWithSearch({ dataPackage }) {
+    const [data, setData] = useState(dataPackage)
     const [searchLeftResults, setSearchLeftResults] = useState([]);
     const [searchRightResults, setSearchRightResults] = useState([]);
     const [packageLeftValue, setPackageLeftValue] = useState(null);
@@ -54,6 +54,7 @@ export function MultiSelectWithSearch() {
         if (packageLeftValue.added) return
         const packages = [...data]
         const findOne = packages.find(p => p.value === value)
+        if (!findOne) return
         findOne.added = true
         setData(packages)
     }
@@ -63,18 +64,22 @@ export function MultiSelectWithSearch() {
         if (packageLeftValue.added) return
         const packages = [...data]
         const findOne = packages.find(p => p.value === value)
+        if (!findOne) return
         findOne.added = false
         setData(packages)
     }
 
     useEffect(() => {
-        console.log(data)
-        const dataOpened = data.filter(data => data.added === false)
-        const dataAdded = data.filter(data => data.added === true)
+        const dataOpened = data.filter(d => d.added === false)
+        const dataAdded = data.filter(d => d.added === true)
         setSearchLeftResults(dataOpened)
         setSearchRightResults(dataAdded)
         console.log('render')
     }, [data])
+
+
+
+
 
     return (
         <>
