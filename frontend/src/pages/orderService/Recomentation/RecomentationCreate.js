@@ -55,7 +55,7 @@ export default function RecomentationCreate() {
           { label: 'Recomendações', path: '/order-service/recomentation' },
           { label: 'Criar', path: '/service-schedules/list', active: true }
         ]}
-        title={'Recomendações'}
+        title={'Cadastro de recomendações'}
       />
       <Row>
         <Col>

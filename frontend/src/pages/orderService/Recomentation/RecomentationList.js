@@ -245,7 +245,7 @@ export default function RecomentationList() {
                     { label: 'Recomendações', path: '/order-service/recomentation/list' },
                     { label: 'Lista', path: '/service-schedules/list', active: true },
                 ]}
-                title={'Agenda de Serviços'}
+                title={'Recomendações'}
                 company={'props?.company'}
             />
 

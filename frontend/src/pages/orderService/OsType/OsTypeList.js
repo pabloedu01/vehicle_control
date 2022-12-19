@@ -245,7 +245,7 @@ export default function OsTypeList() {
                     { label: 'Tipos de OS', path: '/order-service/os-type/list' },
                     { label: 'Lista', path: '/service-schedules/os-type/list', active: true },
                 ]}
-                title={'Agenda de Serviços'}
+                title={'Tipo de OS'}
                 company={'props?.company'}
             />
 
