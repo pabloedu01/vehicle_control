@@ -1,7 +1,7 @@
-import { MultiSelectWithSearch } from '../../components/MultiSelectWithSearch'
-import { Row, Col, Card } from 'react-bootstrap';
-import PageTitle from "../../components/PageTitle";
-import { FormInput } from '../../components';
+import { MultiSelectWithSearch } from '../../../components/MultiSelectWithSearch'
+import { Row, Col, Card, Button } from 'react-bootstrap';
+import PageTitle from "../../../components/PageTitle";
+import { FormInput } from '../../../components';
 import { useForm } from 'react-hook-form';
 
 
@@ -28,7 +28,7 @@ const dataMantenanceReview = [
     createOption('Six'),
 ];
 
-export default function Recomentation() {
+export default function RecomentationCreate() {
     const methods = useForm({
       defaultValues: {
         name: '',
@@ -50,8 +50,10 @@ export default function Recomentation() {
     <>
       <PageTitle
         breadCrumbItems={[
-          { label: 'Recomendações', path: '/recomentation' },
-          // { label: 'Form Elements', path: '/forms/basic', active: true },
+          { label: 'Cadastros', path: '/cadastros', active: true },
+          { label: 'Ordem de serviço', path: '/order-service', active: true },
+          { label: 'Recomendações', path: '/order-service/recomentation' },
+          { label: 'Criar', path: '/service-schedules/list', active: true }
         ]}
         title={'Recomendações'}
       />
@@ -146,16 +148,7 @@ export default function Recomentation() {
                       />
                     </Col>
                   </Row>
-                  
-                </Card.Body>
-                </Card>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-                <Card>
-                <Card.Body className='pb-4'>
-                  <h4 className="header-title mb-3 d-flex icon-align-center justify-content-center">Tipos de OS</h4>
+                   <h4 className="header-title my-2  d-flex icon-align-center justify-content-center">Tipos de OS</h4>
                   <Row>
                     <Col>
                       <FormInput
@@ -208,10 +201,11 @@ export default function Recomentation() {
                 </Card>
             </Col>
           </Row>
+
           <Row>
             <Col>
                 <Card>
-                <Card.Body className='pb-4'>
+                <Card.Body className='pb-4 pt-4'>
                   <h4 className="header-title mb-3 d-flex icon-align-center justify-content-center">Selecione os serviços</h4>
                   <MultiSelectWithSearch dataPackage={dataServices} />
                 </Card.Body>
@@ -221,9 +215,24 @@ export default function Recomentation() {
           <Row>
             <Col>
                 <Card>
-                <Card.Body className='pb-4'>
-                  <h4 className="header-title mb-3 d-flex icon-align-center justify-content-center">Selecione as Partes</h4>
-                  <MultiSelectWithSearch dataPackage={dataMantenanceReview}/>
+                <Card.Body className='pb-4 pt-4'>
+                  <Row>
+                    <Col>
+                     <h4 className="header-title mb-3 d-flex icon-align-center justify-content-center">Selecione as Partes</h4>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <MultiSelectWithSearch dataPackage={dataMantenanceReview} />
+                    </Col>
+                  </Row>
+                  <Row className='mt-4'>
+                    <Col xs={12} className='d-flex align-items-center justify-content-end' style={{
+                      paddingRight: 'calc(100vw * 0.05)',
+                    }}>
+                      <Button className='px-4' variant='primary'>Salvar</Button>
+                    </Col>
+                  </Row>
                 </Card.Body>
                 </Card>
             </Col>

@@ -67,7 +67,13 @@ const ChecklistVersionReport = React.lazy(() => import('../pages/checklist-versi
 
 // Recomentation
 
-const Recomentation = React.lazy(() => import('../pages/Recomentation'));
+const RecomentationCreate = React.lazy(() => import('../pages/orderService/Recomentation/RecomentationCreate'));
+const RecomentationList = React.lazy(() => import('../pages/orderService/Recomentation/RecomentationList'));
+const OsTypeList = React.lazy(() => import('../pages/orderService/OsType/OsTypeList'));
+const OsTypeCreate = React.lazy(() => import('../pages/orderService/OsType/OsTypeCreate'));
+const MantenanceReviewList = React.lazy(() => import('../pages/orderService/MantenanceReview/MantenanceReviewList'));
+const MantenanceReviewCreate = React.lazy(() => import('../pages/orderService/MantenanceReview/MantenanceReviewCreate'));
+
 
 const TireBrandList = React.lazy(() => import('../pages/tire-brand/List'));
 const TireBrandForm = React.lazy(() => import('../pages/tire-brand/Form'));
@@ -494,12 +500,52 @@ const AllRoutes = () => {
                         },
                     ]
                 },
-
-
                 {
-                    path: 'recomentation',
-                    element: <LoadComponent component={Recomentation} />,
+                    path: 'order-service',
+                    children: [
+                        {
+                            path: 'os-type',
+                            children: [
+                                {
+                                    path: 'list',
+                                    element: <LoadComponent component={OsTypeList} />,
+                                },
+                                {
+                                    path: 'create',
+                                    element: <LoadComponent component={OsTypeCreate} />,
+                                },
+                            ]
+                        },
+                        {
+                            path: 'mantenance-review',
+                            children: [
+                                {
+                                    path: 'list',
+                                    element: <LoadComponent component={MantenanceReviewList} />,
+                                },
+                                {
+                                    path: 'create',
+                                    element: <LoadComponent component={MantenanceReviewCreate} />,
+                                },
+                            ]
+                        },
+                        {
+                            path: 'recomentation',
+                            children: [
+                                {
+                                    path: 'list',
+                                    element: <LoadComponent component={RecomentationList} />,
+                                },
+                                {
+                                    path: 'create',
+                                    element: <LoadComponent component={RecomentationCreate} />,
+                                }
+                            ]
+                        },
+                    ]
                 },
+
+            
                 {
                     path: ':type/:id/checklist',
                     element: <LoadComponent component={Checklist} />,

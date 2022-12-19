@@ -100,15 +100,44 @@ const MENU_ITEMS = [
                 icon: 'mdi mdi-face-agent',
                 parentKey: 'crud'
             },
+            {
+                key: 'OrderService',
+                label: 'Ordem de Serviços',
+                icon: 'mdi mdi-file-document', 
+                parentKey: 'crud',
+                children: [
+                    {
+                        key: 'OsType.index',
+                        label: 'Tipo de OS',
+                        url: '/order-service/os-type/list',
+                        icon: 'mdi mdi-order-bool-ascending-variant',
+                        parentKey: 'OrderService'
+                    },
+                    {
+                        key: 'MantenanceReview.index',
+                        label: 'Revisões',
+                        url: '/order-service/mantenance-review/list',
+                        icon: 'mdi mdi-car-wrench',
+                        parentKey: 'OrderService'
+                    },
+                    {
+                        key: 'recomentation.index',
+                        label: 'Recomendações',
+                        url: '/order-service/recomentation/list',
+                        icon: 'mdi mdi-package',
+                        parentKey: 'OrderService'
+                    }
+                ]
+            },
         ],
     },
 
-    {
-        key: 'recomentation.index',
-        label: 'Recomendações',
-        url: '/recomentation',
-        icon: 'mdi mdi-package-variant-closed',
-    },
+    // {
+    //     key: 'recomentation.index',
+    //     label: 'Recomendações',
+    //     url: '/recomentation',
+    //     icon: 'mdi mdi-package-variant-closed',
+    // },
 
     {
         key: 'serviceSchedules.index',
