@@ -24,7 +24,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
 
     const columns = [
         {
-            Header: 'id',
+            Header: 'ID',
             accessor: 'id',
             sort: true,
             display: false,
@@ -40,15 +40,15 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
             sort: false,
         },
         {
-            Header: 'Nome',
+            Header: 'Veículos',
             accessor: 'name',
             sort: true,
         },
-        {
-            Header: 'Veículos',
-            accessor: 'vehicle',
-            sort: false,
-        },
+        // {
+        //     Header: 'Veículos',
+        //     accessor: 'vehicle',
+        //     sort: false,
+        // },
         {
             Header: 'Data prometida',
             accessor: 'promised_date',
@@ -196,7 +196,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                 },
             },
             {
-                label: 'Veículo',
+                label: 'Veículos',
                 name: 'vehicle',
                 options: {
                     filter: true,
@@ -220,7 +220,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                 },
             },
             {
-                label: 'Data prometida',
+                label: 'Data agendamento',
                 name: 'promised_date',
                 options: {
                     filter: true,

@@ -65,6 +65,10 @@ const ChecklistVersionList = React.lazy(() => import('../pages/checklist-version
 const ChecklistVersionForm = React.lazy(() => import('../pages/checklist-version/Form'));
 const ChecklistVersionReport = React.lazy(() => import('../pages/checklist-version/Report'));
 
+// Recomentation
+
+const Recomentation = React.lazy(() => import('../pages/Recomentation'));
+
 const TireBrandList = React.lazy(() => import('../pages/tire-brand/List'));
 const TireBrandForm = React.lazy(() => import('../pages/tire-brand/Form'));
 
@@ -241,6 +245,7 @@ const AllRoutes = () => {
                         },
                     ]
                 },
+               
                 {
                     path: 'checklist-versions',
                     children: [
@@ -554,6 +559,10 @@ const AllRoutes = () => {
                 },
 
 
+                {
+                    path: 'recomentation',
+                    element: <LoadComponent component={Recomentation} />,
+                },
                 {
                     path: ':type/:id/checklist',
                     element: <LoadComponent component={Checklist} />,
