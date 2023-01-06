@@ -28,8 +28,16 @@ Route::group([
             'uses' => 'CompanyController@vehicles',
         ]);
 
+        Route::get('maintenance-reviews', [
+            'uses' => 'CompanyController@maintenanceReviews',
+        ]);
+
         Route::get('vehicle-models', [
             'uses' => 'CompanyController@vehicleModels',
+        ]);
+
+        Route::get('services', [
+            'uses' => 'CompanyController@services',
         ]);
 
         Route::get('client-vehicles', [

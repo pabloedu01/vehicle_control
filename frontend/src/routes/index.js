@@ -71,6 +71,15 @@ const TireBrandForm = React.lazy(() => import('../pages/tire-brand/Form'));
 const ClaimServiceList = React.lazy(() => import('../pages/claim-service/List'));
 const ClaimServiceForm = React.lazy(() => import('../pages/claim-service/Form'));
 
+const ServiceTypeList = React.lazy(() => import('../pages/service-type/List'));
+const ServiceTypeForm = React.lazy(() => import('../pages/service-type/Form'));
+
+const MaintenanceReviewList = React.lazy(() => import('../pages/maintenance-review/List'));
+const MaintenanceReviewForm = React.lazy(() => import('../pages/maintenance-review/Form'));
+
+const RecommendationList = React.lazy(() => import('../pages/recommendation/List'));
+const RecommendationForm = React.lazy(() => import('../pages/recommendation/Form'));
+
 const ProductList = React.lazy(() => import('../pages/product/List'));
 const ProductForm = React.lazy(() => import('../pages/product/Form'));
 
@@ -440,6 +449,60 @@ const AllRoutes = () => {
                         {
                             path: ':id/edit',
                             element: <LoadComponent component={ClaimServiceForm} />,
+                        },
+                    ]
+                },
+
+                {
+                    path: 'service-types',
+                    children: [
+                        {
+                            path: 'list',
+                            element: <LoadComponent component={ServiceTypeList} />,
+                        },
+                        {
+                            path: 'create',
+                            element: <LoadComponent component={ServiceTypeForm} />,
+                        },
+                        {
+                            path: ':id/edit',
+                            element: <LoadComponent component={ServiceTypeForm} />,
+                        },
+                    ]
+                },
+
+                {
+                    path: 'maintenance-reviews',
+                    children: [
+                        {
+                            path: 'list',
+                            element: <LoadComponent component={MaintenanceReviewList} />,
+                        },
+                        {
+                            path: 'create',
+                            element: <LoadComponent component={MaintenanceReviewForm} />,
+                        },
+                        {
+                            path: ':id/edit',
+                            element: <LoadComponent component={MaintenanceReviewForm} />,
+                        },
+                    ]
+                },
+
+                {
+                    path: 'recommendations',
+                    children: [
+                        {
+                            path: 'list',
+                            element: <LoadComponent component={RecommendationList} />,
+                        },
+                        {
+                            path: 'create',
+                            element: <LoadComponent component={RecommendationForm} />,
+                        },
+                        {
+                            path: ':id/edit',
+                            element: <LoadComponent component={RecommendationForm} />,
                         },
                     ]
                 },

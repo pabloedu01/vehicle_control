@@ -63,5 +63,9 @@ class Vehicle extends Base
     {
         return $this->hasMany('App\Models\VehicleServiceVehicleData', 'vehicle_id', 'id');
     }
+
+    public function getFullNameAttribute(){
+        return $this->name. ' '.$this->model_year.' (' . $this->model->brand->name . ' - ' . $this->model->name . ')';
+    }
 }
 

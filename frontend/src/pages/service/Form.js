@@ -8,12 +8,14 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import {useForm} from "react-hook-form";
 import {FormInput} from "../../components";
+import {getAllOptions} from "../../utils/selectOptionsForm";
 
 const api = new APICore();
 
 const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     const history = useNavigate();
     const {id} = useParams();
+    const [serviceTypes, setServiceTypes] = useState([]);
     const [data, setData] = useState();
 
     /*
@@ -21,6 +23,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
      */
     const schemaResolver = yupResolver(
         yup.object().shape({
+            service_type_id: yup.number().required('Por favor, digite Tipo de Serviço'),
             service_code: yup.string().nullable().required('Por favor, digite Código de Serviço'),
             integration_code: yup.string().nullable(),
             description: yup.string().nullable().required('Por favor, digite Código de Descrição'),
@@ -71,6 +74,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     const getData = () => {
         const defaultData = {
             service_code: null,
+            service_type_id: null,
             integration_code: null,
             description: null,
             standard_quantity: null,
@@ -80,10 +84,10 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
 
         if(id){
             api.get('/service/' + id).then((response) => {
-                const {service_code,integration_code,description,standard_quantity,standard_value,active} = response.data.data;
+                const {service_type_id,service_code,integration_code,description,standard_quantity,standard_value,active} = response.data.data;
 
                 setData({
-                    service_code,integration_code,description,standard_quantity,standard_value,active
+                    service_type_id,service_code,integration_code,description,standard_quantity,standard_value,active
                 });
             },(error) => {
                 setData(defaultData);
@@ -93,11 +97,26 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         }
     };
 
+    const getServiceTypes = () => {
+        api.get('/service-type', {company_id: props?.company.id}).then((response) => {
+            setServiceTypes(getAllOptions(response.data.data, data?.service_type));
+        },(error) => {
+            setServiceTypes([])
+        });
+    };
+
+    useEffect(() => {
+        if(data){
+            getServiceTypes();
+        }
+    }, [data]);
+
     useEffect(() => {
         getData();
     }, [id]);
 
     useEffect(() => {
+        methods.setValue('service_type_id', data?.service_type_id ?? null);
         methods.setValue('service_code', data?.service_code ?? null);
         methods.setValue('integration_code', data?.integration_code ?? null);
         methods.setValue('description', data?.description ?? null);
@@ -123,6 +142,15 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                             <form onSubmit={handleSubmit(onSubmit, (e) => {console.log(e);})} noValidate>
                                 <Row>
                                     <Col md={6}>
+
+                                        <FormInput
+                                            label="Tipo de Serviço"
+                                            type="select"
+                                            name="service_type_id"
+                                            containerClass={'mb-3'}
+                                            options={serviceTypes}
+                                            {...otherProps}
+                                        />
 
                                         <FormInput
                                             label="Código de Serviço"

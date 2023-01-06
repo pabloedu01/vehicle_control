@@ -10,25 +10,41 @@ class ServiceController extends Controller
 {
     public function index(Request $request)
     {
-        $services = Service::where('company_id', '=', $request->company_id)
+        $services = Service::where('service_type_id', '=', $request->service_type_id)
                            ->get();
 
-        return response()->json(                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             [
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              'msg' => trans('general.msg.success'),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              'data' => $services,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ], Response::HTTP_OK
+        return response()->json([
+                                    'msg'  => trans('general.msg.success'),
+                                    'data' => $services,
+                                ],
+                                Response::HTTP_OK
+        );
+    }
+
+    public function activeServices(Request $request)
+    {
+        $services = Service::where('service_type_id', '=', $request->service_type_id)
+                           ->where('active', '=', true)
+                           ->get();
+
+        return response()->json([
+                                    'msg'  => trans('general.msg.success'),
+                                    'data' => $services,
+                                ],
+                                Response::HTTP_OK
         );
     }
 
     public function show(Request $request, $id)
     {
-        $service = Service::where('id', '=', $id)
+        $service = Service::with('serviceType')
+                        ->where('id', '=', $id)
                           ->first();
 
-        return response()->json(   [
-                                    'msg' => trans('general.msg.success'),
-                                    'data' => $service,
-                                ], Response::HTTP_OK
+        return response()->json(                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         [
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          'msg'  => trans('general.msg.success'),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          'data' => $service,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ], Response::HTTP_OK
         );
     }
 
@@ -39,7 +55,7 @@ class ServiceController extends Controller
         if($validator->fails())
         {
             return response()->json(   [
-                                        'msg' => trans('general.msg.invalidData'),
+                                        'msg'    => trans('general.msg.invalidData'),
                                         'errors' => $validator->errors(),
                                     ], Response::HTTP_BAD_REQUEST
             );
@@ -50,7 +66,7 @@ class ServiceController extends Controller
         if(secureSave($service))
         {
             return response()->json(   [
-                                        'msg' => trans('general.msg.success'),
+                                        'msg'  => trans('general.msg.success'),
                                         'data' => $service,
                                     ], Response::HTTP_CREATED
             );
@@ -73,7 +89,7 @@ class ServiceController extends Controller
         if($validator->fails())
         {
             return response()->json(   [
-                                        'msg' => trans('general.msg.invalidData'),
+                                        'msg'    => trans('general.msg.invalidData'),
                                         'errors' => $validator->errors(),
                                     ], Response::HTTP_BAD_REQUEST
             );
@@ -84,7 +100,7 @@ class ServiceController extends Controller
         if(!$service->hasAppliedChanges() || secureSave($service))
         {
             return response()->json(   [
-                                        'msg' => trans('general.msg.success'),
+                                        'msg'  => trans('general.msg.success'),
                                         'data' => $service,
                                     ], Response::HTTP_CREATED
             );

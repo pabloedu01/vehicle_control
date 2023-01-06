@@ -38,6 +38,6 @@ class CreateClientVehiclesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('client_vehicles');
+        \DB::select('drop table if exists client_vehicles cascade');
     }
 }

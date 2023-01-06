@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateChecklistVersionsTable extends Migration
+class CreateServiceTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,12 @@ class CreateChecklistVersionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('checklist_versions', function (Blueprint $table) {
+        Schema::create('service_types', function (Blueprint $table) {
             $table->id();
-            $table->string('code');
+            $table->foreignId('company_id')->constrained('companies')->onDelete('restrict')->onUpdate('restrict');
+            $table->string('code')->nullable();
             $table->string('name');
-            $table->text('description')->nullable();
-            $table->boolean('active')->default(true);
-            $table->jsonb('report')->nullable();
+            $table->string('description')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -32,6 +31,6 @@ class CreateChecklistVersionsTable extends Migration
      */
     public function down()
     {
-        \DB::select('drop table if exists checklist_versions cascade');
+        Schema::dropIfExists('service_types');
     }
 }

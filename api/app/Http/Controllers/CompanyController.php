@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\ClientVehicle;
 use App\Models\Company;
+use App\Models\MaintenanceReview;
+use App\Models\Service;
 use App\Models\Vehicle;
 use App\Models\VehicleBrandChecklistVersion;
 use App\Models\VehicleModel;
@@ -57,6 +59,33 @@ class CompanyController extends Controller
         return response()->json([
                                     'msg'  => trans('general.msg.success'),
                                     'data' => $vehicles,
+                                ],
+                                Response::HTTP_OK
+        );
+    }
+
+    public function maintenanceReviews(Request $request)
+    {
+        $maintenanceReviews = MaintenanceReview::with('model', 'model.brand')
+                           ->where('company_id', '=', $request->company_id)
+                           ->get();
+
+        return response()->json([
+                                    'msg'  => trans('general.msg.success'),
+                                    'data' => $maintenanceReviews,
+                                ],
+                                Response::HTTP_OK
+        );
+    }
+
+    public function services(Request $request)
+    {
+        $services = Service::where('company_id', '=', $request->company_id)
+                           ->get();
+
+        return response()->json([
+                                    'msg'  => trans('general.msg.success'),
+                                    'data' => $services,
                                 ],
                                 Response::HTTP_OK
         );

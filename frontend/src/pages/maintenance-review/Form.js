@@ -26,9 +26,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         yup.object().shape({
             brand_id: yup.number().nullable().required('Por favor, digite Marca'),
             model_id: yup.number().nullable().required('Por favor, digite Modelo'),
-            model_year: yup.string().nullable().required('Por favor, digite Ano'),
-            name: yup.string().nullable().required('Por favor, digite Nome Completo'),
-            active: yup.boolean(),
+            name: yup.string(),
         })
     );
 
@@ -52,13 +50,13 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         let ajaxCall;
 
         if(id){
-            ajaxCall = api.update('/vehicle/' + id,formData);
+            ajaxCall = api.update('/maintenance-review/' + id,formData);
         } else {
-            ajaxCall = api.post('/vehicle',Object.assign(formData,{company_id: props.company?.id}));
+            ajaxCall = api.post('/maintenance-review',Object.assign(formData,{company_id: props.company?.id}));
         }
 
         ajaxCall.then(() => {
-            history(`/panel/company/${props.company?.id}/vehicles/list`);
+            history(`/panel/company/${props.company?.id}/maintenance-reviews/list`);
         }, (error) => {
             if(error.response.status === 400 && error.response.data.hasOwnProperty('errors')){
                 for(let fieldName in error.response.data.errors){
@@ -74,17 +72,15 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         const defaultData = {
             brand_id: null,
             model_id: null,
-            model_year: null,
-            name: null,
-            active: true
+            name: null
         };
 
         if(id){
-            api.get('/vehicle/' + id).then((response) => {
-                const {name,active,model_id, model_year, model: {brand_id}, model, brand} = response.data.data;
+            api.get('/maintenance-review/' + id).then((response) => {
+                const {name,model_id, model: {brand_id}} = response.data.data;
 
                 setData({
-                    name,active,model_id, model_year, brand_id, model, brand
+                    name, model_id, brand_id
                 });
             },(error) => {
                 setData(defaultData);
@@ -117,6 +113,10 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     };
 
     useEffect(() => {
+        getData();
+    }, [id]);
+
+    useEffect(() => {
         if(data){
             getBrands();
 
@@ -127,25 +127,19 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     }, [data]);
 
     useEffect(() => {
-        getData();
-    }, [id]);
-
-    useEffect(() => {
-        methods.setValue('name', data?.name ?? null);
-        methods.setValue('active', data?.active ?? true);
         methods.setValue('model_id', data?.model_id ?? null);
         methods.setValue('brand_id', data?.brand_id ?? null);
-        methods.setValue('model_year', data?.model_year ?? null);
+        methods.setValue('name', data?.name ?? null);
     }, [data]);
 
     return (
         <>
             <PageTitle
                 breadCrumbItems={[
-                    { label: 'Veículos', path: '/vehicles/list' },
-                    { label: 'Cadastro', path: `/vehicles/${id ? id + '/edit' : 'create'}`, active: true },
+                    { label: 'Revisión de Mantenimiento', path: '/maintenance-reviews/list' },
+                    { label: 'Cadastro', path: `/maintenance-reviews/${id ? id + '/edit' : 'create'}`, active: true },
                 ]}
-                title={'Formulário de Veículos'}
+                title={'Revisión de Mantenimiento'}
                 company={props.company}
             />
             <Row>
@@ -155,6 +149,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                             <form onSubmit={handleSubmit(onSubmit, (e) => {})} noValidate>
                                 <Row>
                                     <Col md={6}>
+
                                         <FormInput
                                             label="Marcas"
                                             type="select"
@@ -166,25 +161,6 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                                         />
 
                                         <FormInput
-                                            label="Nome"
-                                            type="text"
-                                            name="name"
-                                            placeholder="Digite Nome"
-                                            containerClass={'mb-3'}
-                                            {...otherProps}
-                                        />
-
-                                        <FormInput
-                                            label="Ative"
-                                            type="checkbox"
-                                            name="active"
-                                            containerClass={'mb-3'}
-                                            {...otherProps}
-                                        />
-                                    </Col>
-
-                                    <Col md={6}>
-                                        <FormInput
                                             label="Modelo"
                                             type="select"
                                             name="model_id"
@@ -192,16 +168,17 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                                             options={models}
                                             {...otherProps}
                                         />
+
                                         <FormInput
-                                            label="Ano"
+                                            label="Nome"
                                             type="text"
-                                            name="model_year"
-                                            placeholder="Digite Ano"
+                                            name="name"
+                                            placeholder="Digite Nome"
                                             containerClass={'mb-3'}
                                             {...otherProps}
                                         />
-
                                     </Col>
+
                                 </Row>
 
                                 <div className="mb-3 mb-0">

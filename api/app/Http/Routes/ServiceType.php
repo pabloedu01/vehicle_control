@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 Route::group([
-    'prefix' => 'claim-service',
+    'prefix' => 'service-type',
                  'middleware' => [ 'jwt.verify', 'user' ],
              ], function(){
 
@@ -11,31 +11,34 @@ Route::group([
                      'middleware' => [ 'company'],
                  ], function(){
 
+
+
+
         Route::get('/', [
-            'uses' => 'ClaimServiceController@index',
+            'uses' => 'ServiceTypeController@index',
         ]);
 
         Route::post('/', [
-            'uses' => 'ClaimServiceController@store',
+            'uses' => 'ServiceTypeController@store',
         ]);
 
 
     });
 
     Route::group([
-                     'middleware' => [ 'claimService'],
+                     'middleware' => [ 'serviceType'],
                  ], function(){
 
         Route::get('{id}', [
-            'uses' => 'ClaimServiceController@show',
+            'uses' => 'ServiceTypeController@show',
         ]);
 
         Route::put('{id}', [
-            'uses' => 'ClaimServiceController@update',
+            'uses' => 'ServiceTypeController@update',
         ]);
 
         Route::delete('{id}', [
-            'uses' => 'ClaimServiceController@destroy',
+            'uses' => 'ServiceTypeController@destroy',
         ]);
     });
 

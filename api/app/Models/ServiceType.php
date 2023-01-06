@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-class ClaimService extends Base
+class ServiceType extends Base
 {
-    protected $table = 'claims_service';
+    protected $table = 'service_types';
 
     protected $fillable = [
         'company_id',
-        'integration_code',
+        'code',
+        'name',
         'description',
     ];
 
@@ -17,14 +18,16 @@ class ClaimService extends Base
         $uniqueRule = self::getUniqueRule($id, ['company_id' => $company_id]);
 
         return [
-            'integration_code'    =>  [
-                'nullable', 'integer' ,
+            'code'    =>  [
+                'nullable', 'string',
                 $uniqueRule,
             ],
             'description'      =>  [
+                'nullable', 'string'
+            ],
+            'name'    =>  [
                 'required', 'string'
             ],
-
         ];
     }
 
@@ -35,9 +38,9 @@ class ClaimService extends Base
     }
 
     #has many
-    public function claimServicesServiceSchedule()
+    public function services()
     {
-        return $this->hasMany('App\Models\ClaimServiceServiceSchedule', 'claim_service_id', 'id');
+        return $this->hasMany('App\Models\Services', 'service_type_id', 'id');
     }
 }
 

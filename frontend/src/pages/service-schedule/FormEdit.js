@@ -30,8 +30,10 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
     const [phoneList, setPhoneList] = useState(['clientEmail1']);
     const [emailList, setEmailList] = useState(['clientEmail1']);
     const [showModal, setShowModal] = useState(false);
+    const [showNewOrderModal, setShowNewOrderModal] = useState(false);
     const [technicalConsultantSearchList, setTechnicalConsultantSearchList] = useState([])
     const [checklistVersions, setChecklistVersions] = useState([]);
+    const [serviceTypes, setServiceTypes] = useState([]);
     const [technicalConsultantSelectedSearch, setTechnicalConsultantSelectedSearch] = useState({
         label: '',
         value: '',
@@ -164,7 +166,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
     const generateDefaultValuesEmail = () => {
         const newObject = {}
         if (data?.client.email.length > 0) {
-            data.client.phone.forEach((item, index) => {
+            (data.client?.phone || []).forEach((item, index) => {
                 newObject[`clientEmail${index + 1}`] = ''  
             }) 
         }
@@ -235,7 +237,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
     useEffect(() => {
         methods.setValue('clientName', data?.client.name ?? null);
         methods.setValue('clientCpf', data?.client.document ?? null);
-        if (data?.client.phone.length > 0) {
+        if ((data?.client?.phone || []).length > 0) {
             setPhoneList([...data?.client.phone])
             data.client.phone.forEach((item, index) => {
                 const phoneFormatted = item.split('+55')[1]
@@ -243,11 +245,15 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
             }) 
         }
   
-        if (data?.client.email.length > 0) {
-            setEmailList([...data?.client.email])
-            data.client.email.forEach((item, index) => {
-                methods.setValue(`clientEmail${index + 1}`,  item ?? null);  
-            }) 
+        if ((data?.client?.email || []).length > 0) {
+            setEmailList([...data?.client.email]);
+            try{
+                data.client.email.forEach((item, index) => {
+                    methods.setValue(`clientEmail${index + 1}`,  item ?? null);
+                })
+            } catch(e){
+
+            }
         }
         methods.setValue('clientAddress', data?.client.address ?? null);
         
@@ -287,7 +293,15 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         },(error) => {
             setChecklistVersions([])
         });
-    };
+    }
+
+    function getServiceTypes () {
+        api.get('/service-type', {company_id: props?.company.id}).then((response) => {
+            setServiceTypes(response.data.data);
+        },(error) => {
+            setServiceTypes([])
+        });
+    }
 
     function getRandomNumber(min = 1, max = 100000) {
         return Math.random() * (max - min) + min;
@@ -311,7 +325,12 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
     function onShowModal() {
         getChecklistVersions()
         setShowModal(true);
-    };
+    }
+
+    function onShowNewOrderModal() {
+        getServiceTypes();
+        setShowNewOrderModal(true);
+    }
 
     function onClickChecklist(e){
         e.preventDefault();
@@ -319,9 +338,17 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         history(`/panel/company/${props.company?.id}/service-schedules/${id}/checklist`);
     }
 
+    function onClickServiceType(id){
+        //history(`/panel/company/${props.company?.id}/service-schedules/${id}/checklist`);
+    }
+
  
     function onHideModal () {
         setShowModal(false)
+    }
+
+    function onHideNewOrderModal () {
+        setShowNewOrderModal(false)
     }
 
     function onCreate() {
@@ -788,7 +815,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                             </Button>
                         </Col>
                         <Col sm={4} md={4} xs={5}>
-                            <Button  variant="primary" type="button" style={{width: '100%', minWidth: '62px', fontSize: '20px'}} >
+                            <Button  variant="primary" onClick={onShowNewOrderModal} type="button" style={{width: '100%', minWidth: '62px', fontSize: '20px'}} >
                             <i className='mdi mdi-clipboard-list-outline p-0' ></i> Novo
                             </Button>
                         </Col>
@@ -796,8 +823,8 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                 </Col>
             </Row>
 
-                            <Modal show={showModal} onHide={onHideModal} size="lg" scrollable={true} centered={true}>
-                    <form onSubmit={handleSubmit(onCreate)} noValidate>
+            <Modal show={showModal} onHide={onHideModal} size="lg" scrollable={true} centered={true}>
+                <form onSubmit={handleSubmit(onCreate)} noValidate>
                     <Modal.Header onHide={onHideModal} closeButton>
                         <h4 className="modal-title">
                             Versão do checklist
@@ -821,8 +848,28 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                             Cadastro
                         </Button>
                     </Modal.Footer>
-                    </form>
-                </Modal>
+                </form>
+            </Modal>
+
+
+            <Modal show={showNewOrderModal} onHide={onHideNewOrderModal} size="lg" scrollable={true} centered={true}>
+                <Modal.Header onHide={onHideNewOrderModal} closeButton>
+                    <h4 className="modal-title">
+                        Tipo de Servicio
+                    </h4>
+                </Modal.Header>
+                <Modal.Body style={{minHeight: '300px'}}>
+                    {serviceTypes.map((serviceType) => (
+                        <Button variant="outline-secondary" onClick={() => {onClickServiceType(serviceType.id);}} key={serviceType.id} className="btn-block w-100 d-block mb-1">{serviceType.name}</Button>
+                    ))
+                    }
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="light" onClick={onHideNewOrderModal}>
+                        Encerrar
+                    </Button>{' '}
+                </Modal.Footer>
+            </Modal>
             
         </>
     );

@@ -8,20 +8,20 @@ Route::group([
              ], function(){
 
     Route::group([
-                     'middleware' => [ 'company'],
+                     'middleware' => [ 'serviceType'],
                  ], function(){
-
-
-
 
         Route::get('/', [
             'uses' => 'ServiceController@index',
         ]);
 
+        Route::get('active-services', [
+            'uses' => 'ServiceController@activeServices',
+        ]);
+
         Route::post('/', [
             'uses' => 'ServiceController@store',
         ]);
-
 
     });
 

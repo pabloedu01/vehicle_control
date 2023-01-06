@@ -3,46 +3,40 @@
 use Illuminate\Support\Facades\Route;
 
 Route::group([
-    'prefix' => 'claim-service',
+                 'prefix'     => 'maintenance-review',
                  'middleware' => [ 'jwt.verify', 'user' ],
              ], function(){
 
     Route::group([
-                     'middleware' => [ 'company'],
+                     'middleware' => [ 'vehicleModel' ],
                  ], function(){
 
+
         Route::get('/', [
-            'uses' => 'ClaimServiceController@index',
+            'uses' => 'MaintenanceReviewController@index',
         ]);
 
         Route::post('/', [
-            'uses' => 'ClaimServiceController@store',
+            'uses' => 'MaintenanceReviewController@store',
         ]);
-
-
     });
 
     Route::group([
-                     'middleware' => [ 'claimService'],
+                     'middleware' => [ 'maintenanceReview' ],
                  ], function(){
 
         Route::get('{id}', [
-            'uses' => 'ClaimServiceController@show',
+            'uses' => 'MaintenanceReviewController@show',
         ]);
 
         Route::put('{id}', [
-            'uses' => 'ClaimServiceController@update',
+            'uses' => 'MaintenanceReviewController@update',
         ]);
 
         Route::delete('{id}', [
-            'uses' => 'ClaimServiceController@destroy',
+            'uses' => 'MaintenanceReviewController@destroy',
         ]);
     });
-
-
-
-
-
 
 
 });

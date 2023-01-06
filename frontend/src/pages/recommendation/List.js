@@ -20,18 +20,15 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
     const [tableOptions, setTableOptions] = useState({});
 
     const getList = () => {
-        api.get('/company/services', {company_id: props.company?.id}).then((response) => {
+        api.get('/recommendation', {company_id: props.company?.id}).then((response) => {
             setList(response.data.data.map((item) => {
                 return {
                     id: item.id,
-                    service_code: item.service_code,
-                    integration_code: item.integration_code,
-                    description: item.description,
-                    standard_quantity: item.standard_quantity,
-                    standard_value: item.standard_value,
-                    active: item.active,
-
-
+                    vehicle: item.vehicle.full_name,
+                    name: item.name,
+                    maintenanceReview: item.maintenance_review.name,
+                    model: item.vehicle.model.name,
+                    serviceType: item.service_type.name,
                 }
             }));
         }, (error) => {
@@ -40,7 +37,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
     };
 
     const onEdit = (id) => {
-        history(`/panel/company/${props.company?.id}/services/${id}/edit`);
+        history(`/panel/company/${props.company?.id}/recommendations/${id}/edit`);
     };
 
     const onDelete = (registerId, newList) => {
@@ -53,12 +50,12 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                 confirm: {
                     text: 'Excluir',
                     value: 'confirm'
-                }
+                },
             },
             dangerMode: true,
         }).then((confirm) => {
             if(confirm){
-                api.delete('/service/' + registerId).then((response) => {
+                api.delete('/recommendation/' + registerId).then((response) => {
                     setList(newList);
                 }, () => {
 
@@ -79,25 +76,11 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                     sort: true,
                 },
             },
+
+
             {
-                label: 'Código de Serviço',
-                name: 'service_code',
-                options: {
-                    filter: true,
-                    sort: true,
-                },
-            },
-            {
-                label: 'Código de Integração',
-                name: 'integration_code',
-                options: {
-                    filter: true,
-                    sort: true,
-                },
-            },
-            {
-                label: 'Descrição',
-                name: 'description',
+                label: 'Nome',
+                name: 'name',
                 options: {
                     filter: true,
                     sort: true,
@@ -105,8 +88,8 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
             },
 
             {
-                label: 'Quantidade Padrão',
-                name: 'standard_quantity',
+                label: 'Vehículo',
+                name: 'vehicle',
                 options: {
                     filter: true,
                     sort: true,
@@ -114,8 +97,8 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
             },
 
             {
-                label: 'Valor Padrão',
-                name: 'standard_value',
+                label: 'Revisión',
+                name: 'maintenanceReview',
                 options: {
                     filter: true,
                     sort: true,
@@ -123,16 +106,23 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
             },
 
             {
-                label: 'Ative',
-                name: 'active',
+                label: 'Modelo',
+                name: 'model',
                 options: {
-                    filter: false,
+                    filter: true,
                     sort: true,
-                    customBodyRender: (value, tableMeta) => {
-                        return <Active value={value} tableMeta={tableMeta}/>;
-                    }
                 },
             },
+
+            {
+                label: 'Os Type',
+                name: 'serviceType',
+                options: {
+                    filter: true,
+                    sort: true,
+                },
+            },
+
             {
                 label: 'Ações',
                 name: 'actions',
@@ -159,10 +149,10 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
         <>
             <PageTitle
                 breadCrumbItems={[
-                    { label: 'Serviços', path: '/services/list' },
-                    { label: 'Lista', path: '/services/list', active: true },
+                    { label: 'Revisión de Mantenimiento', path: '/recommendations/list' },
+                    { label: 'Lista', path: '/recommendations/list', active: true },
                 ]}
-                title={'Serviços'}
+                title={'Revisión de Mantenimiento'}
                 company={props.company}
             />
 
@@ -176,8 +166,8 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                                 </Col>
                                 <Col xl={4}>
                                     <div className="text-xl-end mt-xl-0 mt-2">
-                                        <Button variant="danger" className="mb-2 me-2" onClick={() => { history(`/panel/company/${props.company?.id}/services/create`) }}>
-                                            <i className="mdi mdi-basket me-1" /> Novo Serviço
+                                        <Button variant="danger" className="mb-2 me-2" onClick={() => { history(`/panel/company/${props.company?.id}/recommendations/create`) }}>
+                                            <i className="mdi mdi-basket me-1" /> Novo Tipo de Serviço
                                         </Button>
                                     </div>
                                 </Col>

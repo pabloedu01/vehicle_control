@@ -3,46 +3,40 @@
 use Illuminate\Support\Facades\Route;
 
 Route::group([
-    'prefix' => 'claim-service',
+                 'prefix'     => 'recommendation',
                  'middleware' => [ 'jwt.verify', 'user' ],
              ], function(){
 
     Route::group([
-                     'middleware' => [ 'company'],
+                     'middleware' => [ 'company' ],
                  ], function(){
 
+
         Route::get('/', [
-            'uses' => 'ClaimServiceController@index',
+            'uses' => 'RecommendationController@index',
         ]);
 
         Route::post('/', [
-            'uses' => 'ClaimServiceController@store',
+            'uses' => 'RecommendationController@store',
         ]);
-
-
     });
 
     Route::group([
-                     'middleware' => [ 'claimService'],
+                     'middleware' => [ 'recommendation' ],
                  ], function(){
 
         Route::get('{id}', [
-            'uses' => 'ClaimServiceController@show',
+            'uses' => 'RecommendationController@show',
         ]);
 
         Route::put('{id}', [
-            'uses' => 'ClaimServiceController@update',
+            'uses' => 'RecommendationController@update',
         ]);
 
         Route::delete('{id}', [
-            'uses' => 'ClaimServiceController@destroy',
+            'uses' => 'RecommendationController@destroy',
         ]);
     });
-
-
-
-
-
 
 
 });

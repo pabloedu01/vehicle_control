@@ -12,6 +12,7 @@ class Service extends Base
 
     protected $fillable = [
         'company_id',
+        'service_type_id',
         'service_code',
         'integration_code',
         'description',
@@ -47,6 +48,12 @@ class Service extends Base
     public function company()
     {
         return $this->belongsTo('App\Models\Company', 'company_id', 'id');
+    }
+
+    #belongs to
+    public function serviceType()
+    {
+        return $this->belongsTo('App\Models\ServiceType', 'service_type_id', 'id');
     }
 
     #has many
