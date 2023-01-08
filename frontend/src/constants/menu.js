@@ -132,18 +132,26 @@ const MENU_ITEMS = [
         ],
     },
 
-    // {
-    //     key: 'recomentation.index',
-    //     label: 'Recomendações',
-    //     url: '/recomentation',
-    //     icon: 'mdi mdi-package-variant-closed',
-    // },
-
     {
         key: 'serviceSchedules.index',
         label: 'Agenda de Serviços',
         url: '/service-schedules/list',
         icon: 'mdi mdi-clipboard-clock',
+    },
+    {
+        key: 'workshop.index',
+        label: 'Oficina',
+        url: '/workshop/estimate/list',
+        icon: 'mdi mdi-garage-open-variant',
+        children: [
+            {
+                key: 'estimate.index',
+                label: 'Orçamentos',
+                url: '/workshop/estimate/list',
+                icon: 'mdi mdi-clipboard-text',
+                parentKey: 'workshop.index'
+            },
+        ]
     },
 ];
 

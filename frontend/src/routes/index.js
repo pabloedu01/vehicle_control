@@ -104,6 +104,10 @@ const ServiceSchedule = React.lazy(() => import('../pages/ServiceSchedule'));
 const ScheduleDetail = React.lazy(() => import('../pages/ScheduleDetail'));
 
 
+// WorkShop 
+
+const EstimateList = React.lazy(() => import('../pages/workshop/EstimateList'));
+
 // Users Manager
 const Users = React.lazy(() => import('../pages/Users'));
 const UsersManager = React.lazy(() => import('../pages/UsersManager')); //UsersManager
@@ -540,6 +544,24 @@ const AllRoutes = () => {
                                     path: 'create',
                                     element: <LoadComponent component={RecomentationCreate} />,
                                 }
+                            ]
+                        },
+                    ]
+                },
+                {
+                    path: 'workshop',
+                    children: [
+                        {
+                            path: 'estimate',
+                            children: [
+                                {
+                                    path: 'list',
+                                    element: <LoadComponent component={EstimateList} />,
+                                },
+                                {
+                                    path: 'create',
+                                    element: <LoadComponent component={OsTypeCreate} />,
+                                },
                             ]
                         },
                     ]

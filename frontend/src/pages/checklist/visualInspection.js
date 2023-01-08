@@ -135,7 +135,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
     if (constraintsRef.current === null) {
       return
     }
-    console.log(constraintsRef.current)
+    // console.log(constraintsRef.current)
     toPng(constraintsRef.current, { cacheBust: true, })
       .then((dataUrl) => {
         let img = new Image();
@@ -144,7 +144,6 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
         const link = document.createElement('a')
         link.download = 'my-image-name.png'
         link.href = dataUrl
-        console.log(link)
         link.click()
       })
       .catch((err) => {
@@ -172,22 +171,22 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
         }
     }, [observationsList]);
 
-    useEffect(() => {
-        const data = props?.item?.validation?.images['1']
-        console.log(data)
-        // const imageUrl = 'https://images.pexels.com/lib/api/pexels-white.png'
-        const imageUrl = 'https://storage.googleapis.com/vehicle-control/checklist_items/hwAC5zGD2KVneBtxV961q2DQRLMaznuqjJIo8g5d.png'
-        // fetch('https://source.unsplash.com/C6oPXOatFD8')
-        fetch(imageUrl, {
-            mode: 'no-cors'
-        })
-        .then(response => response.blob())
-        .then(imageBlob => {
-            console.log('response', imageBlob)
-            const imageObjectURL = URL.createObjectURL(imageBlob);
-            console.log(imageObjectURL);
-        }).catch(err => console.error(err));
-    },[])
+    // useEffect(() => {
+    //     const data = props?.item?.validation?.images['1']
+    //     console.log(data)
+    //     const imageUrl = 'https://images.pexels.com/lib/api/pexels-white.png'
+    //     // const imageUrl = 'https://storage.googleapis.com/vehicle-control/checklist_items/hwAC5zGD2KVneBtxV961q2DQRLMaznuqjJIo8g5d.png'
+    //     // fetch('https://source.unsplash.com/C6oPXOatFD8')
+    //     fetch(imageUrl, {
+    //         mode: 'no-cors'
+    //     })
+    //     .then(response => response.blob())
+    //     .then(imageBlob => {
+    //         console.log('response', imageBlob)
+    //         // const imageObjectURL = URL.createObjectURL(imageBlob);
+    //         // console.log(imageObjectURL);
+    //     }).catch(err => console.error(err));
+    // },[])
 
     function updatePositionMarkup(positionTop, positionLeft) {
         setMarkupActual(prevState => {
@@ -285,7 +284,7 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                             <motion.div ref={constraintsRef} id='carInspectionDetails' className="d-flex justify-content-center align-items-center " style={{ flexFlow: 'column', width: '450px', height: '270px'}}>
                                {/* {(props?.item?.validation?.images || []).hasOwnProperty(currentStep) ? <img src={props?.item?.validation?.images[currentStep]} className="overflow-hidden" style={{maxWidth: '100%'}}/> : 'No image available'} */}
                               {(props?.item?.validation?.images || []).hasOwnProperty(currentStep) ? <img src={props?.item?.validation?.images[currentStep]} className="overflow-hidden" style={{maxWidth: '100%'}}/> : 'No image available'}
-                                {console.log(currentStep)}
+                                
                                 {/* <img src='/frentecarro.png' className="overflow-hidden" style={{maxWidth: '100%'}}/> */}
                                 {/* <img src='/frentecarro.png' className="overflow-hidden" style={{maxWidth: '100%'}}/> */}
                                 {steps[currentStep]}
