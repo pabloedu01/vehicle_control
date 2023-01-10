@@ -1,11 +1,13 @@
-import { Row, Col, Card, Table, Pagination, Button, Badge } from 'react-bootstrap';
+import { useEffect, useState } from 'react';
+import {useNavigate} from "react-router-dom";
+import { Row, Col, Card, Table, Pagination, Button, Badge, Modal } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import PageTitle from '../../../components/PageTitle';
 import FormInput from '../../../components/FormInput';
-import { useEffect, useState } from 'react';
 // import { APICore } from 'helpers/api/apiCore';
 import { FilterDropdown } from './FilterDropdown'
 import { OrganizeDropdown } from './organizeDropdown'
+import useToggle from '../../../hooks/useToggle'
 
 // const api = new APICore();
 
@@ -88,7 +90,10 @@ export default function EstimateList() {
     const [openTagsSelected, setOpenTagsSelected] = useState(false) 
     const [filterTagsSelected, setFilterTagsSelected] = useState(filterValues) 
     const [organizeSelected, setOrganizeSelected] = useState(organizeValues) 
+    const [isStandardOpen, toggleStandard] = useToggle()
     
+    const history = useNavigate();
+
     const methods = useForm({
         defaultValues: {
             password: '12345',
@@ -125,7 +130,7 @@ export default function EstimateList() {
                     <Card>
                         <Card.Body>
                             <Row>
-                                <Col sm={12} className="d-flex gap-1 pr-0">
+                                <Col sm={8} className="d-flex gap-1 pr-0">
                                     <FormInput
                                         type="text"
                                         name="search"
@@ -137,13 +142,22 @@ export default function EstimateList() {
                                         style={{ minWidth: "150px"}}
                                     />
                                     <Button 
-                                        variant="Primary"
-                                        
-                                        className="btn btn-primary d-flex d-flex align-content-center justify-content-center">
+                                        variant="Primary"                             
+                                        className="btn btn-primary">
                                         <i className='mdi mdi-magnify search-icon'></i>
                                     </Button>
                                     <FilterDropdown filterValues={filterTagsSelected} handleFilterSelected={setFilterTagsSelected} />
                                     <OrganizeDropdown organizeValues={organizeSelected} setOrganizeSelected={setOrganizeSelected} />
+                                </Col>
+                                <Col sm={4}>
+                                    <div className="text-end mt-xl-0 mt-2">
+                                      {/*  <Button variant="danger" onClick={() => { history(`/panel/company/2/workshop/estimate/create`) }}>
+                                            <i className="mdi mdi-basket me-1" /> Nova Agenda de Serviço
+                                        </Button>*/}
+                                        <Button variant="danger" onClick={toggleStandard}>
+                                            <i className="mdi mdi-basket me-1" /> Nova Agenda de Serviço
+                                        </Button>
+                                    </div>
                                 </Col>
                             </Row>
                             <Row >
@@ -210,6 +224,48 @@ export default function EstimateList() {
                     </Card>
                 </Col>
             </Row>
+            <Modal show={isStandardOpen} onHide={toggleStandard}>
+            <Modal.Header onHide={toggleStandard} closeButton>
+                <h4 className="modal-title">Tipo de orçamento</h4>
+            </Modal.Header>
+            <Modal.Body>
+                <Button 
+                    variant="Primary"                             
+                    className="btn btn-primary w-100 mb-2"
+                    onClick={() => { history(`/panel/company/2/workshop/estimate/create`) }}>
+                    1ª Revisão
+                </Button>
+                <Button 
+                    variant="Primary"                             
+                    className="btn btn-primary w-100 mb-2"
+                    onClick={() => { history(`/panel/company/2/workshop/estimate/create`) }}>
+                    2ª Revisão
+                </Button>
+                <Button 
+                    variant="Primary"                             
+                    className="btn btn-primary w-100 mb-2"
+                    onClick={() => { history(`/panel/company/2/workshop/estimate/create`) }}>
+                    3ª Revisão
+                </Button>
+                <Button 
+                    variant="Primary"                             
+                    className="btn btn-primary w-100 mb-2"
+                    onClick={() => { history(`/panel/company/2/workshop/estimate/create`) }}>
+                    4ª Revisão
+                </Button>
+                <Button 
+                    variant="Primary"                             
+                    className="btn btn-primary w-100 mb-2"
+                    onClick={() => { history(`/panel/company/2/workshop/estimate/create`) }}>
+                    Outros Serviços
+                </Button>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="light" onClick={toggleStandard}>
+                    Close
+                </Button>
+            </Modal.Footer>
+        </Modal>
         </>
     );
 };

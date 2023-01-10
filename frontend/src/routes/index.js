@@ -107,6 +107,8 @@ const ScheduleDetail = React.lazy(() => import('../pages/ScheduleDetail'));
 // WorkShop 
 
 const EstimateList = React.lazy(() => import('../pages/workshop/EstimateList'));
+const SelectionPackage = React.lazy(() => import('../pages/workshop/SelectionPackage'));
+const EstimateConfirmation = React.lazy(() => import('../pages/workshop/EstimateConfirmation'));
 
 // Users Manager
 const Users = React.lazy(() => import('../pages/Users'));
@@ -560,7 +562,11 @@ const AllRoutes = () => {
                                 },
                                 {
                                     path: 'create',
-                                    element: <LoadComponent component={OsTypeCreate} />,
+                                    element: <LoadComponent component={SelectionPackage} />,
+                                },
+                                {
+                                    path: 'confirmation',
+                                    element: <LoadComponent component={EstimateConfirmation} />,
                                 },
                             ]
                         },
