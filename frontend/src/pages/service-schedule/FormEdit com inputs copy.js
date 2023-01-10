@@ -123,6 +123,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
 
     const getTechnicalConsultants = () => {
         api.get('/technical-consultant/active-technical-consultants?company_id='+props.company?.id).then((response) => {
+            console.log(response);
             setTechnicalConsultants(getAllOptions(response.data.data, data?.technicalConsultant));
         }, (error) => {
             setTechnicalConsultants([]);
@@ -233,32 +234,32 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
     }, [id]);
 
     useEffect(() => {
-        // methods.setValue('clientName', data?.client.name ?? null);
-        // methods.setValue('clientCpf', data?.client.document ?? null);
-        // if (data?.client.phone.length > 0) {
-        //     setPhoneList([...data?.client.phone])
-        //     data.client.phone.forEach((item, index) => {
-        //         const phoneFormatted = item.split('+55')[1]
-        //         methods.setValue(`clientPhone${index + 1}`,  phoneFormatted ?? null);  
-        //     }) 
-        // }
+        methods.setValue('clientName', data?.client.name ?? null);
+        methods.setValue('clientCpf', data?.client.document ?? null);
+        if (data?.client.phone.length > 0) {
+            setPhoneList([...data?.client.phone])
+            data.client.phone.forEach((item, index) => {
+                const phoneFormatted = item.split('+55')[1]
+                methods.setValue(`clientPhone${index + 1}`,  phoneFormatted ?? null);  
+            }) 
+        }
   
-        // if (data?.client.email.length > 0) {
-        //     setEmailList([...data?.client.email])
-        //     data.client.email.forEach((item, index) => {
-        //         methods.setValue(`clientEmail${index + 1}`,  item ?? null);  
-        //     }) 
-        // }
-        // methods.setValue('clientAddress', data?.client.address ?? null);
+        if (data?.client.email.length > 0) {
+            setEmailList([...data?.client.email])
+            data.client.email.forEach((item, index) => {
+                methods.setValue(`clientEmail${index + 1}`,  item ?? null);  
+            }) 
+        }
+        methods.setValue('clientAddress', data?.client.address ?? null);
         
         
-        // methods.setValue('vehicleBrand', data?.clientVehicle.vehicle.model.brand.name ?? null);
-        // methods.setValue('vehicleModel', data?.clientVehicle.vehicle.model.name ?? null);
-        // methods.setValue('vehicleVehicle', data?.clientVehicle.vehicle.name ?? null);
-        // methods.setValue('vehicleChassi', data?.clientVehicle.chasis ?? null);
-        // methods.setValue('vehicleColor', data?.clientVehicle.color ?? null);
-        // methods.setValue('vehiclePlate', data?.clientVehicle.plate ?? null);
-        // methods.setValue('client_id', data?.client_id ?? null);
+        methods.setValue('vehicleBrand', data?.clientVehicle.vehicle.model.brand.name ?? null);
+        methods.setValue('vehicleModel', data?.clientVehicle.vehicle.model.name ?? null);
+        methods.setValue('vehicleVehicle', data?.clientVehicle.vehicle.name ?? null);
+        methods.setValue('vehicleChassi', data?.clientVehicle.chasis ?? null);
+        methods.setValue('vehicleColor', data?.clientVehicle.color ?? null);
+        methods.setValue('vehiclePlate', data?.clientVehicle.plate ?? null);
+        methods.setValue('client_id', data?.client_id ?? null);
         methods.setValue('scheludesVisited', moment(data?.promised_date).format("yyyy-MM-DDThh:mm") ?? moment().format("yyyy-MM-DDThh:mm"));
 
         setTechnicalConsultantSelectedSearch({
@@ -354,25 +355,162 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                 <Col sm={2} md={2}  className="d-flex align-items-center fw-bold">
                                     <span>Nome:</span>
                                 </Col>
-                                <Col sm={10} md={10} className="d-flex align-items-center ">
-                                    <span>{data?.client && data.client.name}</span>
+                                <Col sm={10} md={10}>
+                                    <FormInput
+                                        type="text"
+                                        name="clientName"
+                                        key="clientName"
+                                        {...otherProps}
+                                        placeholder="Dígite seu nome"
+                                     />
                                 </Col>
                             </Row>
                             <Row className="mt-3 ">
                                 <Col sm={2} md={2} className="d-flex align-items-center fw-bold">
                                     <span>CPF:</span>
                                 </Col>
-                                <Col sm={10} md={10} className="d-flex align-items-center ">
-                                    <span>{data?.client && data.client.document}</span>
+                                    <Col sm={10} md={10}>
+                                        <Controller
+                                            name="clientCpf"
+                                            control={control}
+                                            {...otherProps}
+                                            render={({ field }) => 
+                                            <MaskedInput
+                                            mask={[
+                                                /[1-9]/,
+                                                /\d/,
+                                                /\d/,
+                                                '\.',
+                                                /\d/,
+                                                /\d/,
+                                                /\d/,
+                                                '\.',
+                                                /\d/,
+                                                /\d/,
+                                                /\d/,
+                                                '-',
+                                                /\d/,
+                                                /\d/,
+                                            
+                                            ]}
+                                            placeholder="999.999.999-99"
+                                            className="form-control"
+                                            key="clientCpf"
+                                            { ...field }
+                                                />
+                                            }
+                                        />
+                                      
                                 </Col>
-                             
                             </Row>
                             <Row className="mt-3">
                                 <Col sm={2} md={2} className="d-flex align-items-center fw-bold">
                                     <span>Telefone:</span>
                                 </Col>
-                                <Col sm={10} md={10} className="d-flex align-items-center ">
-                                    {data?.client && data.client.phone.map(item => <span>{item}{' '}</span> )}
+                                <Col sm={10} md={10} >
+                                    {phoneList.length > 0 ? phoneList.map((item, index) => {
+                                        return (
+                                            <Row key={item + index + getRandomNumber()}>
+                                                <Col lg={10} md={10} sm={10} xs={9} className={`${index > 0 ? 'mt-2': ''}`} key={item + index + getRandomNumber()}>
+                                                    <Controller
+                                                        name={`clientPhone${index + 1}`}
+                                                        control={control}
+                                                        {...otherProps}
+                                                        render={({ field }) => 
+                                                        <MaskedInput
+                                                        mask={[
+                                                                '(',
+                                                                /[1-9]/,
+                                                                /\d/,
+                                                                ')',
+                                                                ' ',
+                                                                /\d/,
+                                                                /\d/,
+                                                                /\d/,
+                                                                /\d/,
+                                                                /\d/,
+                                                                '-',
+                                                                /\d/,
+                                                                /\d/,
+                                                                /\d/,
+                                                                /\d/,
+                                                                ]}
+                                                                {...field}
+                                                                placeholder="(__) _____-____"
+                                                                className="form-control"
+                                                                key={`clientPhone${index + 1}`}
+                                                            />
+                                                        }
+                                                    />
+                                                </Col>
+                                                {index === 0 ?
+                                                    (<Col lg={2} md={2} sm={2} xs={3}>
+                                                    <Button className="btn-icon btn btn-light w-100"
+                                                        onClick={() => {
+                                                            setPhoneList(prevState => [...prevState, ''])
+                                                        }}
+                                                    key={index + getRandomNumber()}
+                                                    >
+                                                            <i className="mdi mdi-phone-plus-outline"></i>
+                                                        </Button>
+                                                    </Col>) : 
+                                                   (<Col lg={2} md={2} sm={2} xs={3} className={`mt-2`}>
+                                                        <Button className="btn-icon btn btn-light w-100"
+                                                            onClick={() => handlePhoneListRemove(index) }
+                                                            key={index + getRandomNumber()}
+                                                        >
+                                                            <i className="mdi mdi-trash-can-outline"></i>
+                                                        </Button>
+                                                    </Col>)
+                                                }
+                                                </Row>
+                                            )
+                                                    
+                                    }) : (
+                                               <Row >
+                                                <Col lg={10} md={10} sm={10} xs={9}>
+                                                    <Controller
+                                                        name={`clientPhone1}`}
+                                                        control={control}
+                                                        {...otherProps}
+                                                        render={({ field }) => 
+                                                        <MaskedInput
+                                                        mask={[
+                                                                '(',
+                                                                /[1-9]/,
+                                                                /\d/,
+                                                                ')',
+                                                                ' ',
+                                                                /\d/,
+                                                                /\d/,
+                                                                /\d/,
+                                                                /\d/,
+                                                                /\d/,
+                                                                '-',
+                                                                /\d/,
+                                                                /\d/,
+                                                                /\d/,
+                                                                /\d/,
+                                                                ]}
+                                                                {...field}
+                                                                placeholder="(__) _____-____"
+                                                                className="form-control"
+                                                                key={`clientPhone1`}
+                                                            />
+                                                        }
+                                                    />
+                                                </Col>
+                                                <Col lg={2} md={2} sm={2} xs={3}>
+                                                    <Button className="btn-icon btn btn-light w-100"
+                                                        onClick={() => {
+                                                            setPhoneList(prevState => [...prevState, ''])
+                                                        }}
+                                                    >
+                                                            <i className="mdi mdi-phone-plus-outline"></i>
+                                                        </Button>
+                                                    </Col>
+                                                </Row>   
+                                            )}
                                 </Col>
                                 </Row>
                                 <Row className="mt-3">
@@ -380,17 +518,87 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                     <span>Email:</span>
                                 </Col>
                                 <Col sm={10} md={10} >
-                                <Col sm={10} md={10} className="d-flex align-items-center ">
-                                    {data?.client && data.client.email.map(item => <span>{item}{' '}</span> )}
-                                </Col>
+                                    {emailList.length > 0 ? emailList.map((item, index) => {
+                                        return (
+                                            <Row key={item + index + getRandomNumber()}>
+                                                <Col lg={10} md={10} sm={10} xs={9} className={`${index > 0 ? 'mt-2': ''}`} key={item + index + getRandomNumber()}>
+                                                    <FormInput
+                                                        type="text"
+                                                        name={`clientEmail${index + 1}`}
+                                                        key={`clientEmail${index + 1}`}
+                                                        {...otherProps}
+                                                            placeholder="Dígite seu email"
+                                                    />
+                                                </Col>
+                                                {index === 0 ?
+                                                    (<Col lg={2} md={2} sm={2} xs={3}>
+                                                    <Button className="btn-icon btn btn-light w-100"
+                                                        onClick={() => {
+                                                            setEmailList(prevState => [...prevState, ''])
+                                                        }}
+                                                    key={index + getRandomNumber()}
+                                                    >
+                                                            <i className="mdi mdi-email-plus-outline"></i>
+                                                        </Button>
+                                                    </Col>) : 
+                                                   (<Col lg={2} md={2} sm={2} xs={3} className={`mt-2`}>
+                                                        <Button className="btn-icon btn btn-light w-100"
+                                                            onClick={() => handleEmailListRemove(index) }
+                                                            key={index + getRandomNumber()}
+                                                        >
+                                                            <i className="mdi mdi-trash-can-outline"></i>
+                                                        </Button>
+                                                    </Col>)
+                                                }
+                                                </Row>
+                                            )
+                                                    
+                                    }) : (
+                                            <Row>
+                                                <Col lg={10} md={10} sm={10} xs={9}>
+                                                    <FormInput
+                                                        type="text"
+                                                        name={`clientEmail1}`}
+                                                        key={`clientEmail1`}
+                                                        {...otherProps}
+                                                            placeholder="Dígite seu email"
+                                                    />
+                                                    </Col>
+                                                <Col lg={2} md={2} sm={2} xs={3}>
+                                                    <Button className="btn-icon btn btn-light w-100"
+                                                        onClick={() => {
+                                                            setEmailList(prevState => [...prevState, ''])
+                                                        }}
+                                                    >
+                                                            <i className="mdi mdi-email-plus-outline"></i>
+                                                        </Button>
+                                                    </Col>    
+                                            </Row>
+                                            ) 
+                                        }
                                 </Col>
                             </Row> 
                             <Row className="mt-3">
                                 <Col sm={2} md={2} className="d-flex align-items-center fw-bold">
                                     <span>Endereço:</span>
                                 </Col>
-                                <Col sm={10} md={10} className="d-flex align-items-center ">
-                                    <span>{data?.client && data.client.address}</span>
+                                <Col sm={10} md={10} >
+                                    <Row >
+                                        <Col lg={10} md={10} sm={10} xs={9}>
+                                            <FormInput
+                                                type="text"
+                                                name="clientAddress"
+                                                key="clientAddress"
+                                                {...otherProps}
+                                                placeholder="Dígite seu endereço"
+                                            />
+                                        </Col>
+                                        <Col lg={2} md={2} sm={2} xs={3}>
+                                            <Button  className="btn-icon btn btn-light w-100" >
+                                                <i className="mdi mdi-home-plus-outline"></i>
+                                            </Button>
+                                        </Col>
+                                    </Row>
                                 </Col>
                             </Row>                       
                         </Card.Body>
@@ -402,50 +610,84 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                 <Col lg={2} className="d-flex align-items-center fw-bold">
                                     <span >Marca:</span>
                                 </Col>
-                                <Col sm={10} md={10} className="d-flex align-items-center ">
-                                    {console.log(data)}
-                                    <span>{data?.clientVehicle && data?.clientVehicle.vehicle.model.brand.name}</span>
+                                <Col lg={10}>
+                                    <FormInput
+                                        type="text"
+                                        name="vehicleBrand"
+                                        key="vehicleBrand"
+                                        {...otherProps}
+                                        placeholder="Dígite a marca"
+                                    />
                                 </Col>
                             </Row>
                             <Row className="mt-3">
                                 <Col lg={2} className="d-flex align-items-center fw-bold">
                                     <span>Modelo:</span>
                                 </Col>
-                                <Col sm={10} md={10} className="d-flex align-items-center ">
-                                
-                                    <span>{data?.clientVehicle && data?.clientVehicle.vehicle.model.name}</span>
+                                <Col lg={10}>
+                                    <FormInput
+                                        type="text"
+                                        name="vehicleModel"
+                                        key="vehicleModel"
+                                        {...otherProps}
+                                        placeholder="Dígite o modelo"
+                                    />
                                 </Col>
                             </Row>
                             <Row className="mt-3">
                                 <Col lg={2} className="d-flex align-items-center fw-bold">
                                     <span>Veículo :</span>
                                 </Col>
-                                <Col sm={10} md={10} className="d-flex align-items-center">
-                                    <span>{data?.clientVehicle && data?.clientVehicle.vehicle.name}</span>
+                                <Col lg={10}>
+                                    <FormInput
+                                        type="text"
+                                        name="vehicleVehicle"
+                                        key="vehicleVehicle"
+                                        {...otherProps}
+                                        placeholder="Dígite o veículo"
+                                    />
                                 </Col>
                             </Row>
                             <Row className="mt-3">
                                 <Col lg={2} className="d-flex align-items-center font-weight-bold fw-bold">
                                     <span>Cor :</span>
                                 </Col>
-                                <Col sm={10} md={10} className="d-flex align-items-center">
-                                    <span>{data?.clientVehicle && data?.clientVehicle.color}</span>
+                                <Col lg={10}>
+                                    <FormInput
+                                        type="text"
+                                        name="vehicleColor"
+                                        key="vehicleColor"
+                                        {...otherProps}
+                                        placeholder="Dígite o veículo"
+                                    />
                                 </Col>
                             </Row>
-                            <Row className="mt-3">
-                                <Col lg={2} className="d-flex align-items-center fw-bold">
+                            <Row className="mt-3 fw-bold">
+                                <Col lg={2} className="d-flex align-items-center">
                                     <span>Chassi:</span>
                                 </Col>
-                                <Col sm={10} md={10} className="d-flex align-items-center">
-                                    <span>{data?.clientVehicle && data?.clientVehicle.chasis}</span>
+                                <Col lg={10}>
+                                    <FormInput
+                                        type="text"
+                                        name="vehicleChassi"
+                                        key="vehicleChassi"
+                                        {...otherProps}
+                                        placeholder="Dígite o chassi"
+                                    />
                                 </Col>
                             </Row>
                             <Row className="mt-3" >
                                 <Col lg={2} className="d-flex align-items-center fw-bold">
                                     <span>Placa:</span>
                                 </Col>
-                                <Col sm={10} md={10} className="d-flex align-items-center">
-                                    <span>{data?.clientVehicle && data?.clientVehicle.plate}</span>
+                                <Col lg={10}>
+                                    <FormInput
+                                        type="text"
+                                        name="vehiclePlate"
+                                        key="vehiclePlate"
+                                        {...otherProps}
+                                        placeholder="Dígite a placa"
+                                    />
                                 </Col>
                             </Row>
                         </Card.Body>

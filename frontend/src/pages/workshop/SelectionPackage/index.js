@@ -125,7 +125,7 @@ export default function SelectionPackage () {
                           data.length > 0 && data.map((item, index) => (
                             <tr key={item.product + index} className="">
                               <td>{item.product}</td>
-                              <td>
+                              <td >
                                 {item.quantidade}
                               </td>
                               <td>

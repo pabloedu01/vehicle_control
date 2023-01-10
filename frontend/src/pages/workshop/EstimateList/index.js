@@ -155,7 +155,7 @@ export default function EstimateList() {
                                             <i className="mdi mdi-basket me-1" /> Nova Agenda de Serviço
                                         </Button>*/}
                                         <Button variant="danger" onClick={toggleStandard}>
-                                            <i className="mdi mdi-basket me-1" /> Nova Agenda de Serviço
+                                            <i className="mdi mdi-basket me-1" /> Nova orçamento
                                         </Button>
                                     </div>
                                 </Col>
