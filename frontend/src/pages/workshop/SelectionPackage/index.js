@@ -140,8 +140,8 @@ export default function SelectionPackage () {
                           ))
                         }
                         <tr>
-                          <td></td>
-                          <td></td>
+                        <td ></td>
+                        <td className='fw-bold'>TOTAL</td>
                           <td>
                             <div className={(packageSelected === 'gold' || packageSelected === null) ? 'visible' : 'invisible' }>
                               {formatMoneyPt_BR(1160.90)}
