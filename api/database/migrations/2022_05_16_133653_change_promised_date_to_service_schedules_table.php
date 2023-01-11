@@ -18,7 +18,7 @@ class ChangePromisedDateToServiceSchedulesTable extends Migration
         });
 
         Schema::table('service_schedules', function (Blueprint $table) {
-            $table->timestampTz('promised_date');
+            $table->timestampTz('promised_date')->default(gmdate('Y-m-d H:i:s'));
         });
     }
 

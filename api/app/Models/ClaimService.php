@@ -22,8 +22,7 @@ class ClaimService extends Base
                 $uniqueRule,
             ],
             'description'      =>  [
-                'required', 'string',
-                $uniqueRule,
+                'required', 'string'
             ],
 
         ];

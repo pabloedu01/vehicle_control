@@ -17,7 +17,7 @@ class ChecklistVersionSeeder extends Seeder
      */
     public function run()
     {
-        VehicleBrandChecklistVersion::truncate();
+        VehicleBrandChecklistVersion::where('id', '!=', 0)->delete();
 
         $company = Company::whereHas('users', function($query){
             return $query->where('username', '=', 'mcontreras');

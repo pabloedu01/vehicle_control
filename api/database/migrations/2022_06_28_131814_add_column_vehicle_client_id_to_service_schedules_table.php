@@ -13,11 +13,11 @@ class AddColumnVehicleClientIdToServiceSchedulesTable extends Migration
      */
     public function up()
     {
-        \DB::table('service_schedules')->truncate();
-        \DB::table('vehicle_services')->truncate();
+        \DB::table('service_schedules')->delete();
+        \DB::table('vehicle_services')->delete();
 
         Schema::table('service_schedules', function (Blueprint $table) {
-            $table->integer('client_vehicle_id')->unsigned();
+            $table->bigInteger('client_vehicle_id')->unsigned();
             $table->foreign('client_vehicle_id')->references('id')->on('client_vehicles')->onDelete('cascade');
         });
     }

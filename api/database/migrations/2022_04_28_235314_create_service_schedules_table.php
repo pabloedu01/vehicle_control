@@ -15,10 +15,12 @@ class CreateServiceSchedulesTable extends Migration
     {
         Schema::create('service_schedules', function (Blueprint $table) {
             $table->id();
-            $table->integer('company_id')->unsigned();
-            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
-            $table->integer('vehicle_id')->unsigned();
-            $table->foreign('vehicle_id')->references('id')->on('vehicles')->onDelete('cascade');
+            /*$table->integer('company_id')->unsigned();
+            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');*/
+            $table->foreignId('company_id')->constrained('companies')->onDelete('restrict')->onUpdate('restrict');
+            /*$table->integer('vehicle_id')->unsigned();
+            $table->foreign('vehicle_id')->references('id')->on('vehicles')->onDelete('cascade');*/
+            $table->foreignId('vehicle_id')->constrained('vehicles')->onDelete('restrict')->onUpdate('restrict');
             $table->integer('technical_consultant_id')->nullable();
             $table->integer('client_id')->nullable();
             $table->string('code')->nullable();
@@ -29,18 +31,20 @@ class CreateServiceSchedulesTable extends Migration
 
         Schema::create('claim_service_service_schedule', function (Blueprint $table) {
             $table->id();
-            $table->integer('service_schedule_id')->unsigned();
-            $table->foreign('service_schedule_id')->references('id')->on('service_schedules')->onDelete('cascade');
-            $table->integer('claim_service_id')->unsigned();
-            $table->foreign('claim_service_id')->references('id')->on('claims_service')->onDelete('cascade');
+            /*$table->integer('service_schedule_id')->unsigned();
+            $table->foreign('service_schedule_id')->references('id')->on('service_schedules')->onDelete('cascade');*/
+            $table->foreignId('service_schedule_id')->constrained('service_schedules')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreignId('claim_service_id')->constrained('claims_service')->onDelete('restrict')->onUpdate('restrict');
+            /*$table->integer('claim_service_id')->unsigned();
+            $table->foreign('claim_service_id')->references('id')->on('claims_service')->onDelete('cascade');*/
             $table->timestamps();
         });
 
         Schema::create('service_claim_service_service_schedule', function (Blueprint $table) {
             $table->id();
-            $table->integer('claim_service_service_schedule_id')->unsigned();
-            $table->foreign('claim_service_service_schedule_id')->references('id')->on('claim_service_service_schedule')->onDelete('cascade');
-            $table->integer('service_id')->unsigned();
+            $table->bigInteger('claim_service_service_schedule_id')->unsigned();
+            $table->foreign('claim_service_service_schedule_id', 'c_s_s_s_id')->references('id')->on('claim_service_service_schedule')->onDelete('cascade');
+            $table->bigInteger('service_id')->unsigned();
             $table->foreign('service_id')->references('id')->on('services')->onDelete('cascade');
             $table->double('price',15, 2);
             $table->timestamps();
@@ -48,10 +52,10 @@ class CreateServiceSchedulesTable extends Migration
 
         Schema::create('product_service_claim_service_service_schedule', function (Blueprint $table) {
             $table->id();
-            $table->integer('service_claim_service_service_schedule_id')->unsigned();
-            $table->foreign('service_claim_service_service_schedule_id')->references('id')->on('service_claim_service_service_schedule')->onDelete('cascade');
-            $table->integer('product_id')->unsigned();
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->bigInteger('service_claim_service_service_schedule_id')->unsigned();
+            $table->foreign('service_claim_service_service_schedule_id', 's_c_s_s_s_c_s_s_s_id_foreign')->references('id')->on('service_claim_service_service_schedule')->onDelete('cascade');
+            $table->bigInteger('product_id')->unsigned();
+            $table->foreign('product_id', 'p_s_c_s_s_s_product_id_foreign')->references('id')->on('products')->onDelete('cascade');
             $table->double('price',15, 2);
             $table->timestamps();
         });

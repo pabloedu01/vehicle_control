@@ -11,9 +11,6 @@ Route::group([
                      'middleware' => [ 'company'],
                  ], function(){
 
-
-
-
         Route::get('/', [
             'uses' => 'ClaimServiceController@index',
         ]);

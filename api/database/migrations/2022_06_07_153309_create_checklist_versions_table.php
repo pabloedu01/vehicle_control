@@ -32,6 +32,6 @@ class CreateChecklistVersionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('checklist_versions');
+        \DB::select('drop table if exists checklist_versions cascade');
     }
 }

@@ -152,7 +152,7 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                 <Col xs={12}>
                     <Card>
                         <Card.Body>
-                            <form onSubmit={handleSubmit(onSubmit, (e) => {console.log(e);})} noValidate>
+                            <form onSubmit={handleSubmit(onSubmit, (e) => {})} noValidate>
                                 <Row>
                                     <Col md={6}>
                                         <FormInput

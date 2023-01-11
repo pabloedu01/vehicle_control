@@ -37,16 +37,18 @@ RUN apt-get update \
             xml \
             ldap \
             pdo \
+            mysqli \
+            pdo_mysql \
             pdo_pgsql \
             pgsql \
             sockets
 
-WORKDIR /var/www/tunap/api
+RUN docker-php-ext-enable pdo_mysql
+
+WORKDIR /var/www/api
 
 RUN apt-get update
 RUN apt-get install -y libcurl4-openssl-dev pkg-config libssl-dev
-
-RUN pecl install mongodb && docker-php-ext-enable mongodb
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf

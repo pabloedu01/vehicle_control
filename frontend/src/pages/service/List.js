@@ -20,7 +20,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
     const [tableOptions, setTableOptions] = useState({});
 
     const getList = () => {
-        api.get('/service', {company_id: props.company?.id}).then((response) => {
+        api.get('/company/services', {company_id: props.company?.id}).then((response) => {
             setList(response.data.data.map((item) => {
                 return {
                     id: item.id,

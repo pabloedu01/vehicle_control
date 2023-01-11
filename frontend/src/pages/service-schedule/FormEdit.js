@@ -32,8 +32,10 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
     const [phoneList, setPhoneList] = useState(['clientEmail1']);
     const [emailList, setEmailList] = useState(['clientEmail1']);
     const [showModal, setShowModal] = useState(false);
+    const [showNewOrderModal, setShowNewOrderModal] = useState(false);
     const [technicalConsultantSearchList, setTechnicalConsultantSearchList] = useState([])
     const [checklistVersions, setChecklistVersions] = useState([]);
+    const [serviceTypes, setServiceTypes] = useState([]);
     const [technicalConsultantSelectedSearch, setTechnicalConsultantSelectedSearch] = useState({
         label: '',
         value: '',
@@ -240,7 +242,12 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
     function onShowModal() {
         getChecklistVersions()
         setShowModal(true);
-    };
+    }
+
+    function onShowNewOrderModal() {
+        // getServiceTypes();
+        setShowNewOrderModal(true);
+    }
 
     function onClickChecklist(e){
         e.preventDefault();
@@ -248,9 +255,17 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         history(`/panel/company/${props.company?.id}/service-schedules/${id}/checklist`);
     }
 
+    function onClickServiceType(id){
+        //history(`/panel/company/${props.company?.id}/service-schedules/${id}/checklist`);
+    }
+
  
     function onHideModal () {
         setShowModal(false)
+    }
+
+    function onHideNewOrderModal () {
+        setShowNewOrderModal(false)
     }
 
     function onCreate() {
@@ -469,7 +484,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                             </Button>
                         </Col>
                         <Col sm={4} md={4} xs={5}>
-                            <Button  variant="primary" type="button" style={{width: '100%', minWidth: '62px', fontSize: '20px'}} >
+                            <Button  variant="primary" onClick={onShowNewOrderModal} type="button" style={{width: '100%', minWidth: '62px', fontSize: '20px'}} >
                             <i className='mdi mdi-clipboard-list-outline p-0' ></i> Novo
                             </Button>
                         </Col>
@@ -477,8 +492,8 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                 </Col>
             </Row>
 
-                            <Modal show={showModal} onHide={onHideModal} size="lg" scrollable={true} centered={true}>
-                    <form onSubmit={handleSubmit(onCreate)} noValidate>
+            <Modal show={showModal} onHide={onHideModal} size="lg" scrollable={true} centered={true}>
+                <form onSubmit={handleSubmit(onCreate)} noValidate>
                     <Modal.Header onHide={onHideModal} closeButton>
                         <h4 className="modal-title">
                             Versão do checklist
@@ -502,8 +517,28 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                             Cadastro
                         </Button>
                     </Modal.Footer>
-                    </form>
-                </Modal>
+                </form>
+            </Modal>
+
+
+            <Modal show={showNewOrderModal} onHide={onHideNewOrderModal} size="lg" scrollable={true} centered={true}>
+                <Modal.Header onHide={onHideNewOrderModal} closeButton>
+                    <h4 className="modal-title">
+                        Tipo de Servicio
+                    </h4>
+                </Modal.Header>
+                <Modal.Body style={{minHeight: '300px'}}>
+                    {serviceTypes.map((serviceType) => (
+                        <Button variant="outline-secondary" onClick={() => {onClickServiceType(serviceType.id);}} key={serviceType.id} className="btn-block w-100 d-block mb-1">{serviceType.name}</Button>
+                    ))
+                    }
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="light" onClick={onHideNewOrderModal}>
+                        Encerrar
+                    </Button>{' '}
+                </Modal.Footer>
+            </Modal>
             
         </>
     );

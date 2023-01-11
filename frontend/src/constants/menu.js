@@ -64,6 +64,31 @@ const MENU_ITEMS = [
                 icon: 'mdi mdi-animation',
                 parentKey: 'crud'
             },
+
+            {
+                key: 'serviceType.index',
+                label: 'Tipos de Serviços',
+                url: '/service-types/list',
+                icon: 'mdi mdi-toolbox-outline',
+                parentKey: 'crud'
+            },
+
+            {
+                key: 'maintenanceReview.index',
+                label: 'Revisión de Mantenimiento',
+                url: '/maintenance-reviews/list',
+                icon: 'mdi mdi-toolbox-outline',
+                parentKey: 'crud'
+            },
+
+            {
+                key: 'recommendation.index',
+                label: 'Recomendaciones',
+                url: '/recommendations/list',
+                icon: 'mdi mdi-toolbox-outline',
+                parentKey: 'crud'
+            },
+
             {
                 key: 'services.index',
                 label: 'Serviços',

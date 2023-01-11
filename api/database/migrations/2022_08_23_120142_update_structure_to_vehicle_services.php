@@ -25,11 +25,11 @@ class UpdateStructureToVehicleServices extends Migration
 
         Schema::create('checklist_version_stage_vehicle_service', function (Blueprint $table) {
             $table->id();
-            $table->integer('checklist_version_stage_id')->unsigned();
-            $table->foreign('checklist_version_stage_id')->references('id')->on('checklist_version_stages')->onDelete('cascade');
+            $table->bigInteger('checklist_version_stage_id')->unsigned();
+            $table->foreign('checklist_version_stage_id', 'c_v_s_vehicle_service_c_version_s_id_foreign')->references('id')->on('checklist_version_stages')->onDelete('cascade');
 
-            $table->integer('vehicle_service_id')->unsigned();
-            $table->foreign('vehicle_service_id')->references('id')->on('vehicle_services')->onDelete('cascade');
+            $table->bigInteger('vehicle_service_id')->unsigned();
+            $table->foreign('vehicle_service_id', 'c_v_stage_v_s_vehicle_s_id_foreign')->references('id')->on('vehicle_services')->onDelete('cascade');
 
             $table->text('client_signature')->nullable();
             $table->timestampTz('client_signature_date')->nullable();

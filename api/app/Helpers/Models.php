@@ -1,6 +1,13 @@
 <?php
 
 function compareArrayWithDatabase($ids, $modelClass){
+
+    if($ids->count() > 0){
+        if(!is_numeric($ids->first())){
+            $ids = $ids->pluck('id');
+        }
+    }
+
     if($ids->count() > 0 && $ids->count() != $modelClass::whereIn('id', $ids->toArray())
                                                         ->count()){
         return false;

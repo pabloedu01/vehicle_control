@@ -4,36 +4,37 @@ services:
   tunap_postgres:
     image: postgres:12.10
     environment:
-      POSTGRES_USERNAME: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_DATABASE}
+        POSTGRES_USERNAME: ${DB_USERNAME}
+        POSTGRES_PASSWORD: ${DB_PASSWORD}
+        POSTGRES_DB: ${DB_DATABASE}
     volumes:
-      - ./laravel_docker/postgres-data:/var/lib/postgresql/data
-      - ./../create_database/postgres.sql:/docker-entrypoint-initdb.d/init.sql
+        - ./laravel_docker/postgres-data:/var/lib/postgresql/data
+        - ./../create_database/postgres.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      - '54322:5432'
+        - '54322:5432'
     networks:
-      - default
-  tunap_mongodb:
-    image: mongo:4.4
-    container_name: 'tunap_mongodb'
+        - default
+  tunap_mysql:
+    image: mysql:8.0.3
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=${DB_MONGO_USERNAME}
-      - MONGO_INITDB_ROOT_PASSWORD=${DB_MONGO_PASSWORD}
+        MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+        MYSQL_USER: ${DB_USERNAME}
+        MYSQL_PASSWORD: ${DB_PASSWORD}
+        MYSQL_DATABASE: ${DB_DATABASE}
     volumes:
-      - ./laravel_docker/mongo-data:/data/db
+        - ./laravel_docker/mysql-data/db:/var/lib/mysql
     ports:
-      - "47017:27017"
+        - '33063:3306'
     networks:
-      - default
+        - default
   tunap_php_apache:
     build:
       context: ./
       dockerfile: Dockerfile
     command: 'php artisan serve --host=0.0.0.0'
     volumes:
-      - ./:/var/www/tunap/api
-      - /var/www/tunap/api/vendor
+      - ./:/var/www/api
+      - /var/www/tunap/vendor
       - ./laravel_docker/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
     ports:
       - ${LARAVEL_PORT}:8000
@@ -41,22 +42,22 @@ services:
       - default
     depends_on:
       - tunap_postgres
-      - tunap_mongodb
+      - tunap_mysql
   tunap_php_websockets:
     build:
       context: ./
       dockerfile: Dockerfile
     command: 'php artisan websockets:serve'
     volumes:
-      - ./:/var/www/tunap/api
-      - /var/www/tunap/api/vendor
+      - ./:/var/www/api
+      - /var/www/api/vendor
     ports:
       - ${LARAVEL_WEBSOCKETS_PORT}:6001
     networks:
       - default
     depends_on:
       - tunap_postgres
-      - tunap_mongodb
+      - tunap_mysql
       - tunap_php_apache
   tunap_php_queue:
     build:
@@ -64,11 +65,11 @@ services:
       dockerfile: Dockerfile
     command: 'php artisan queue:listen'
     volumes:
-      - ./:/var/www/tunap/api
-      - /var/www/tunap/api/vendor
+      - ./:/var/www/api
+      - /var/www/api/vendor
     networks:
       - default
     depends_on:
       - tunap_postgres
-      - tunap_mongodb
+      - tunap_mysql
       - tunap_php_apache

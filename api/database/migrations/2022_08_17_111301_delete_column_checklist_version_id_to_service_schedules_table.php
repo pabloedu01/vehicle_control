@@ -14,7 +14,8 @@ class DeleteColumnChecklistVersionIdToServiceSchedulesTable extends Migration
     public function up()
     {
         Schema::table('service_schedules', function (Blueprint $table) {
-            $table->dropForeign('service_schedules_checklist_version_id_foreign');
+            /*$table->dropForeign('service_schedules_checklist_version_id_foreign');
+            $table->dropIndex('service_schedules_checklist_version_id_foreign');*/
             $table->dropColumn('checklist_version_id');
         });
     }

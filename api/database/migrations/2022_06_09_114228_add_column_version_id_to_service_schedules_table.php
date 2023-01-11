@@ -13,10 +13,10 @@ class AddColumnVersionIdToServiceSchedulesTable extends Migration
      */
     public function up()
     {
-        \DB::table('service_schedules')->truncate();
+        \DB::table('service_schedules')->delete();
 
         Schema::table('service_schedules', function (Blueprint $table) {
-            $table->integer('checklist_version_id')->unsigned();
+            $table->bigInteger('checklist_version_id')->unsigned();
             $table->foreign('checklist_version_id')->references('id')->on('checklist_versions')->onDelete('cascade');
         });
     }

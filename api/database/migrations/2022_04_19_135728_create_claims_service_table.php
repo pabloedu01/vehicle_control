@@ -15,8 +15,9 @@ class CreateClaimsServiceTable extends Migration
     {
         Schema::create('claims_service', function (Blueprint $table) {
             $table->id();
-            $table->integer('company_id')->unsigned();
-            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
+            /*$table->integer('company_id')->unsigned();
+            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');*/
+            $table->foreignId('company_id')->constrained('companies')->onDelete('restrict')->onUpdate('restrict');
             $table->integer('integration_code')->nullable();
             $table->text('description');
             $table->softDeletes();
