@@ -15,6 +15,8 @@ import SearchModified from "../../components/SearchModify";
 import { getAllOptions } from "../../utils/selectOptionsForm";
 import HyperDatepicker from "../../components/Datepicker"
 
+import {formatDateTimezone} from "../../utils/formatDateTimezone"
+
 import { useMediaQuery } from '../../hooks/useMediaQuery'
 
  
@@ -186,12 +188,9 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
 
     const onSubmit = (formData) => {      
         console.log("enviou")
-        // console.log(technicalConsultantSelectedSearch)
-        const scheludesVisitedFormatted = moment(formData.scheludesVisited).utc().format('YYYY-MM-DDTHH:mm:00+00:00')
-        console.log(scheludesVisitedFormatted)
-        console.log(formData.scheludesVisited)
+        console.log(formatDateTimezone(formData.scheludesVisited))
         const dataFormatted = {
-            promised_date: formData.scheludesVisited,
+            promised_date: formatDateTimezone(formData.scheludesVisited),
             technical_consultant_id: technicalConsultantSelectedSearch.value,
             client_id: data?.client.id,
             client_vehicle_id: data?.client_vehicle_id,
@@ -202,10 +201,11 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         let ajaxCall;
 
         if(id){
-            // ajaxCall = api.update('/service-schedule/' + id, dataFormatted);
-            // console.log(ajaxCall)
+            ajaxCall = api.update('/service-schedule/' + id, dataFormatted);
+            console.log(ajaxCall)
         }
         else{
+            return
             // ajaxCall = api.post('/service-schedule', Object.assign(dataFormatted, {
             //     company_id: props.company?.id,
             //     claims_service: []
