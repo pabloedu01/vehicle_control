@@ -137,7 +137,6 @@ const SearchModified = (props) => {
                 className="app-search dropdown"
                 classNamePrefix="react-select"
                 onChange={(item) => {
-                    console.log(item)
                     props.handleTechnicalConsultantSelected(item)
                 }}
             />
