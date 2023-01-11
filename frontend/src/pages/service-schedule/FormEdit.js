@@ -291,47 +291,33 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                         <Card.Body className="pt-4 px-4 pb-4">
                             <h4 className="header-title mb-4" style={{color: '#727CF5'}}>Cliente</h4>
                             <Row className="mt-3">
-                                <Col sm={2} md={2}  className="d-flex align-items-center fw-bold">
-                                    <span>Nome:</span>
-                                </Col>
-                                <Col sm={10} md={10} className="d-flex align-items-center ">
-                                    <span>{data?.client && data.client.name}</span>
+                                <Col sm={12} md={12}  className="d-flex align-items-center fw-bold">
+                                    <span className="me-2">Nome:{' '} </span><span className="fw-normal">{data?.client && data.client.name}</span>
                                 </Col>
                             </Row>
                             <Row className="mt-3 ">
-                                <Col sm={2} md={2} className="d-flex align-items-center fw-bold">
-                                    <span>CPF:</span>
+                                <Col sm={12} md={12} className="d-flex align-items-center fw-bold">
+                                    <span className="me-2">CPF:</span>
+                                    <span className="fw-normal">{data?.client && data.client.document}</span>
                                 </Col>
-                                <Col sm={10} md={10} className="d-flex align-items-center ">
-                                    <span>{data?.client && data.client.document}</span>
-                                </Col>
-                             
                             </Row>
                             <Row className="mt-3">
-                                <Col sm={2} md={2} className="d-flex align-items-center fw-bold">
-                                    <span>Telefone:</span>
-                                </Col>
-                                <Col sm={10} md={10} className="d-flex align-items-center ">
-                                    {data?.client && data.client.phone.map(item => <span>{item}{' '}</span> )}
+                                <Col sm={12} md={12} className="d-flex align-items-center fw-bold">
+                                    <span className="me-2">Telefone:</span>
+                                    {data?.client && data.client.phone.map((item, index )=> <span key={item + index} className="fw-normal">{item}{' '}</span> )}
                                 </Col>
                                 </Row>
                                 <Row className="mt-3">
-                                <Col sm={2} md={2} className="d-flex align-items-center fw-bold">
-                                    <span>Email:</span>
-                                </Col>
-                                <Col sm={10} md={10} >
-                                <Col sm={10} md={10} className="d-flex align-items-center ">
-                                    {data?.client && data.client.email.map(item => <span>{item}{' '}</span> )}
-                                </Col>
+                                <Col sm={12} md={12} className="d-flex align-items-center fw-bold">
+                                    <span className="me-2">Email:</span>
+                                    {data?.client && data.client.email.map((item, index )=> <span key={item + index} className="fw-normal">{item}{' '}</span> )}
                                 </Col>
                             </Row> 
                             <Row className="mt-3">
-                                <Col sm={2} md={2} className="d-flex align-items-center fw-bold">
-                                    <span>Endereço:</span>
-                                </Col>
-                                <Col sm={10} md={10} className="d-flex align-items-center ">
-                                    <span>{data?.client && data.client.address}</span>
-                                </Col>
+                            <Col sm={12} md={12} className="d-flex align-items-center fw-bold">
+                                <span className="me-2">Endereço:</span>
+                                <span className="fw-normal">{data?.client && data.client.address}</span>
+                            </Col>
                             </Row>                       
                         </Card.Body>
                     </Card>
@@ -339,53 +325,40 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                         <Card.Body className="pt-4 px-4 pb-4">
                             <h4 className="header-title mb-4" style={{color: '#727CF5'}}>Veículo</h4>
                             <Row className="mt-3">
-                                <Col lg={2} className="d-flex align-items-center fw-bold">
-                                    <span >Marca:</span>
-                                </Col>
-                                <Col sm={10} md={10} className="d-flex align-items-center ">
-                                    <span>{data?.clientVehicle && data?.clientVehicle.vehicle.model.brand.name}</span>
+                                <Col sm={12} md={12} className="d-flex align-items-center fw-bold">
+                                    <span className="me-2">Marca:</span>
+                                    <span className="fw-normal">{data?.clientVehicle && data?.clientVehicle.vehicle.model.brand.name}</span>
                                 </Col>
                             </Row>
                             <Row className="mt-3">
-                                <Col lg={2} className="d-flex align-items-center fw-bold">
-                                    <span>Modelo:</span>
-                                </Col>
-                                <Col sm={10} md={10} className="d-flex align-items-center ">
-                                
-                                    <span>{data?.clientVehicle && data?.clientVehicle.vehicle.model.name}</span>
+                            <Col sm={12} md={12} className="d-flex align-items-center fw-bold">
+                                <span className="me-2">Modelo:</span>
+                                <span className="fw-normal">{data?.clientVehicle && data?.clientVehicle.vehicle.model.name}</span>
+                            </Col>
+                            </Row>
+                            <Row className="mt-3">
+                                <Col sm={12} md={12} className="d-flex align-items-center fw-bold">
+                                    <span className="me-2">Veículo:</span>
+                                    <span className="fw-normal">{data?.clientVehicle && data?.clientVehicle.vehicle.name}</span>
                                 </Col>
                             </Row>
                             <Row className="mt-3">
-                                <Col lg={2} className="d-flex align-items-center fw-bold">
-                                    <span>Veículo :</span>
-                                </Col>
-                                <Col sm={10} md={10} className="d-flex align-items-center">
-                                    <span>{data?.clientVehicle && data?.clientVehicle.vehicle.name}</span>
+                                <Col sm={12} md={12} className="d-flex align-items-center fw-bold">
+                                    <span className="me-2">Cor:</span>
+                                    <span className="fw-normal">{data?.clientVehicle && data?.clientVehicle.color}</span>
                                 </Col>
                             </Row>
                             <Row className="mt-3">
-                                <Col lg={2} className="d-flex align-items-center font-weight-bold fw-bold">
-                                    <span>Cor :</span>
-                                </Col>
-                                <Col sm={10} md={10} className="d-flex align-items-center">
-                                    <span>{data?.clientVehicle && data?.clientVehicle.color}</span>
-                                </Col>
-                            </Row>
-                            <Row className="mt-3">
-                                <Col lg={2} className="d-flex align-items-center fw-bold">
-                                    <span>Chassi:</span>
-                                </Col>
-                                <Col sm={10} md={10} className="d-flex align-items-center">
-                                    <span>{data?.clientVehicle && data?.clientVehicle.chasis}</span>
+                                <Col sm={12} md={12} className="d-flex align-items-center fw-bold">
+                                    <span className="me-2">Chassi:</span>
+                                    <span className="fw-normal">{data?.clientVehicle && data?.clientVehicle.chasis}</span>
                                 </Col>
                             </Row>
                             <Row className="mt-3" >
-                                <Col lg={2} className="d-flex align-items-center fw-bold">
-                                    <span>Placa:</span>
-                                </Col>
-                                <Col sm={10} md={10} className="d-flex align-items-center">
-                                    <span>{data?.clientVehicle && data?.clientVehicle.plate}</span>
-                                </Col>
+                            <Col sm={12} md={12} className="d-flex align-items-center fw-bold">
+                                <span className="me-2">Placa:</span>
+                                <span className="fw-normal">{data?.clientVehicle && data?.clientVehicle.plate}</span>
+                            </Col>
                             </Row>
                         </Card.Body>
                     </Card>
