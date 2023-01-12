@@ -29,13 +29,15 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
     const history = useNavigate();
     const {id} = useParams();
     const [data, setData] = useState();
-    const [phoneList, setPhoneList] = useState(['clientEmail1']);
-    const [emailList, setEmailList] = useState(['clientEmail1']);
+    const [clientList, setClientList] = useState([]);
+    const [vehicleList, setVehicleList] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [showNewOrderModal, setShowNewOrderModal] = useState(false);
+    const [showModalSearch, setShowModalSearch] = useState(false);
     const [technicalConsultantSearchList, setTechnicalConsultantSearchList] = useState([])
     const [checklistVersions, setChecklistVersions] = useState([]);
     const [serviceTypes, setServiceTypes] = useState([]);
+    const [querySearchModal,setQuerySearchModal ] = useState('')
     const [technicalConsultantSelectedSearch, setTechnicalConsultantSelectedSearch] = useState({
         label: '',
         value: '',
@@ -112,7 +114,13 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         });
     };
 
-
+    function getClients() {
+        api.get('/client?company_id='+props.company?.id).then((response) => {
+            // setClientList(response.data.data)
+            console.log(response.data.data)
+        })
+        
+    }
     
       /*
      * Hook Media Query
@@ -188,6 +196,14 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         getTechnicalConsultants()
     },[])
 
+    useEffect(() => {
+        if(showModalSearch) {
+            getClients()
+            console.log('render if')
+        }
+        console.log('render')
+    },[showModalSearch])
+ 
     const onSubmit = (formData) => {      
         console.log("enviou")
         console.log(formatDateTimezone(formData.scheludesVisited))
@@ -224,20 +240,6 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         });
     };
 
-    function handlePhoneListRemove(index) {
-        setPhoneList(prevState => {
-            const prevStateRemoveItem = [...prevState]
-            prevStateRemoveItem.splice(index,1)
-            return prevStateRemoveItem
-        })
-    }
-    function handleEmailListRemove(index) {
-        setEmailList(prevState => {
-            const prevStateRemoveItem = [...prevState]
-            prevStateRemoveItem.splice(index,1)
-            return prevStateRemoveItem
-        })
-    }
 
     function onShowModal() {
         getChecklistVersions()
@@ -268,11 +270,17 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         setShowNewOrderModal(false)
     }
 
+    function onHideModalSearch () {
+        setShowModalSearch(false)
+    }
+
     function onCreate() {
         const type = 'service-schedules'
         setShowModal(false);
         history(`/panel/company/${props.company?.id}/${type}/${id}/checklist/create/${methods.getValues('checklist_version_id')}`);
     }
+
+    
 
     return (
         <>
@@ -289,7 +297,16 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                 <Col xxl={7}>
                     <Card>
                         <Card.Body className="pt-4 px-4 pb-4">
-                            <h4 className="header-title mb-4" style={{color: '#727CF5'}}>Cliente</h4>
+                            <Row>
+                                <Col className='d-flex align-items-center justify-content-between'>
+                                    <h4 className="header-title" style={{color: '#727CF5'}}>Cliente</h4>
+                                    <Button 
+                                        className='btn-sm' 
+                                        variant="primary" 
+                                        onClick={() => setShowModalSearch(true)}
+                                    >Editar</Button>
+                                </Col>
+                            </Row>
                             <Row className="mt-3">
                                 <Col sm={12} md={12}  className="d-flex align-items-center fw-bold">
                                     <span className="me-2">Nome:{' '} </span><span className="fw-normal">{data?.client && data.client.name}</span>
@@ -323,7 +340,10 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                     </Card>
                     <Card>
                         <Card.Body className="pt-4 px-4 pb-4">
-                            <h4 className="header-title mb-4" style={{color: '#727CF5'}}>Veículo</h4>
+                            <Col className='d-flex align-items-center justify-content-between'>
+                                <h4 className="header-title" style={{color: '#727CF5'}}>VEÍCULO</h4>
+                                <Button className='btn-sm' variant="primary">Editar</Button>
+                            </Col>
                             <Row className="mt-3">
                                 <Col sm={12} md={12} className="d-flex align-items-center fw-bold">
                                     <span className="me-2">Marca:</span>
@@ -511,8 +531,35 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                         Encerrar
                     </Button>{' '}
                 </Modal.Footer>
+
+
+            {/* modal search */}
             </Modal>
-            
+                <Modal show={showModalSearch} onHide={onHideModalSearch} size="sm" scrollable={true} centered={true}>
+                <Modal.Header onHide={onHideModalSearch} closeButton>
+                    <h4 className="modal-title">
+                        Cliente
+                    </h4>
+                </Modal.Header>
+                <Modal.Body style={{minHeight: '350px'}}>
+                    <Row>
+                        <Col>
+                            <FormInput 
+                                onChange={(e) => {
+                                    setQuerySearchModal(e.target.value)
+                                    console.log(e.target.value)
+                                }}
+                                value={querySearchModal}
+                            />
+                        </Col>
+                    </Row>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="light" onClick={onHideModalSearch}>
+                        Encerrar
+                    </Button>{' '}
+                </Modal.Footer>
+            </Modal>
         </>
     );
 };
