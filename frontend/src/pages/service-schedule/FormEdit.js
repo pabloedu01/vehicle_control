@@ -12,6 +12,7 @@ import MaskedInput from 'react-text-mask';
 // import classNames from "classnames";
 import PageTitle from "../../components/PageTitle";
 import SearchModified from "../../components/SearchModify";
+import {ContainerForModalWithSearchClients} from "../../components/ContainerForModalWithSearchClients";
 import { getAllOptions } from "../../utils/selectOptionsForm";
 import HyperDatepicker from "../../components/Datepicker"
 
@@ -30,6 +31,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
     const {id} = useParams();
     const [data, setData] = useState();
     const [clientList, setClientList] = useState([]);
+    const [selectedChangeClientData, setSelectedChangeClientData] = useState(null);
     const [vehicleList, setVehicleList] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [showNewOrderModal, setShowNewOrderModal] = useState(false);
@@ -116,7 +118,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
 
     function getClients() {
         api.get('/client?company_id='+props.company?.id).then((response) => {
-            // setClientList(response.data.data)
+            setClientList(response.data.data)
             console.log(response.data.data)
         })
         
@@ -231,7 +233,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
 
     }
 
-     function getChecklistVersions () {
+    function getChecklistVersions () {
         api.get('/checklist-version/active-checklist-versions').then((response) => {
             setChecklistVersions(getAllOptions(response.data.data));
         },(error) => {
@@ -279,7 +281,17 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         history(`/panel/company/${props.company?.id}/${type}/${id}/checklist/create/${methods.getValues('checklist_version_id')}`);
     }
 
-    
+    function handleChangeClientData() {
+      if(!selectedChangeClientData) {
+        return
+      }
+      setData(prevState => ({
+        ...prevState,
+        client: selectedChangeClientData
+      }))
+    }
+    console.log(selectedChangeClientData)
+    // console.log(data)
 
     return (
         <>
@@ -526,7 +538,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                     }
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="light" onClick={onHideNewOrderModal}>
+                    <Button variant="light" onClick={onHideNewOrderModal} >
                         Encerrar
                     </Button>{' '}
                 </Modal.Footer>
@@ -534,7 +546,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
 
             {/* modal search */}
             </Modal>
-                <Modal show={showModalSearch} onHide={onHideModalSearch} size="sm" scrollable={true} centered={true}>
+                <Modal show={showModalSearch} onHide={onHideModalSearch} size="md" centered={true}>
                 <Modal.Header onHide={onHideModalSearch} closeButton>
                     <h4 className="modal-title">
                         Cliente
@@ -543,20 +555,34 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                 <Modal.Body style={{minHeight: '350px'}}>
                     <Row>
                         <Col>
-                            <FormInput 
-                                onChange={(e) => {
-                                    setQuerySearchModal(e.target.value)
-                                    console.log(e.target.value)
-                                }}
-                                value={querySearchModal}
+                            <ContainerForModalWithSearchClients 
+                                clients={clientList} 
+                                setSelectedChangeClientData={setSelectedChangeClientData}
                             />
                         </Col>
                     </Row>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="light" onClick={onHideModalSearch}>
-                        Encerrar
+                    <Button 
+                        variant="light" 
+                        onClick={ () => {
+                            onHideModalSearch()
+                            setSelectedChangeClientData(null)
+                        }}
+                        
+                    >
+                        Sair
                     </Button>{' '}
+                    <Button 
+                        variant="primary" 
+                        onClick={() => {
+                            handleChangeClientData()
+                            onHideModalSearch()
+                        }}
+                        disabled={!selectedChangeClientData}
+                    >
+                        Alterar
+                    </Button>
                 </Modal.Footer>
             </Modal>
         </>
