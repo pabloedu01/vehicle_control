@@ -1,6 +1,6 @@
 // @flow
 import React, {useEffect, useState} from 'react';
-import {Button, Card, Col, Row, Form, Modal} from "react-bootstrap";
+import {Button, Card, Col, Row, Form, Modal, Badge} from "react-bootstrap";
 import {APICore} from "../../helpers/api/apiCore";
 import {useNavigate, useParams} from "react-router-dom";
 import {yupResolver} from "@hookform/resolvers/yup";
@@ -16,11 +16,11 @@ import {ContainerForModalWithSearchClients} from "../../components/ContainerForM
 import { getAllOptions } from "../../utils/selectOptionsForm";
 import HyperDatepicker from "../../components/Datepicker"
 
+import {ModalVehicleToggle} from "./ModalVehicleToggle"
+
 import {formatDateTimezone} from "../../utils/formatDateTimezone"
 
-import { useMediaQuery } from '../../hooks/useMediaQuery'
 
- 
 const api = new APICore();
 
 
@@ -35,7 +35,8 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
     const [vehicleList, setVehicleList] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [showNewOrderModal, setShowNewOrderModal] = useState(false);
-    const [showModalSearch, setShowModalSearch] = useState(false);
+    const [showModalSearchClient, setShowModalSearchClient] = useState(false);
+    const [showModalSearchVehicle, setShowModalSearchVehicle] = useState(false);
     const [technicalConsultantSearchList, setTechnicalConsultantSearchList] = useState([])
     const [checklistVersions, setChecklistVersions] = useState([]);
     const [serviceTypes, setServiceTypes] = useState([]);
@@ -130,19 +131,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
 
     // const isPageFull = useMediaQuery('(min-width: 768px)')
     // console.log('isPageMobile', isPageFull)
-    /*
-     * form validation schema
-     */
-    // const schemaResolver = yupResolver(
-    //     yup.object().shape({
-    //         clientName: yup.string().nullable().required('Por favor, digite seu nome'),
-    //         clientCpf: yup.string().nullable().required('Por favor, digite seu cpf')
-    //     })
-    // );
 
-    /*
-     * form methods
-     */  
 
     const defaultValues = {
             scheludesVisited: moment().format("yyyy-MM-DDThh:mm"),
@@ -199,11 +188,11 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
     },[])
 
     useEffect(() => {
-        if(showModalSearch) {
+        if(showModalSearchClient) {
             getClients()
         }
         
-    },[showModalSearch])
+    },[showModalSearchClient])
  
     const onSubmit = (formData) => {      
         console.log("enviou")
@@ -271,8 +260,8 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         setShowNewOrderModal(false)
     }
 
-    function onHideModalSearch () {
-        setShowModalSearch(false)
+    function onHideModalSearchClient () {
+        setShowModalSearchClient(false)
     }
 
     function onCreate() {
@@ -290,8 +279,10 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         client: selectedChangeClientData
       }))
     }
-    console.log(selectedChangeClientData)
-    // console.log(data)
+
+    // function openModalVehicleSearch(showModalVehicleSearch) {
+    //     showModalVehicleSearch()
+    // }
 
     return (
         <>
@@ -310,11 +301,16 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                         <Card.Body className="pt-4 px-4 pb-4">
                             <Row>
                                 <Col className='d-flex align-items-center justify-content-between'>
-                                    <h4 className="header-title" style={{color: '#727CF5'}}>Cliente</h4>
+                                    <h4 className="header-title d-flex align-items-center justify-content-center gap-2" style={{color: '#727CF5'}}>
+                                    Cliente 
+                                    <Badge pill className="badge bg-warning">
+                                        alterado
+                                    </Badge>
+                                </h4>
                                     <Button 
                                         className='btn-sm' 
                                         variant="primary" 
-                                        onClick={() => setShowModalSearch(true)}
+                                        onClick={() => setShowModalSearchClient(true)}
                                     >Editar</Button>
                                 </Col>
                             </Row>
@@ -353,7 +349,9 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                         <Card.Body className="pt-4 px-4 pb-4">
                             <Col className='d-flex align-items-center justify-content-between'>
                                 <h4 className="header-title" style={{color: '#727CF5'}}>VEÍCULO</h4>
-                                <Button className='btn-sm' variant="primary">Editar</Button>
+                                <Button className='btn-sm' variant="primary" onClick={() => {
+                                    setShowModalSearchVehicle(true)
+                                }}>Editar</Button>
                             </Col>
                             <Row className="mt-3">
                                 <Col sm={12} md={12} className="d-flex align-items-center fw-bold">
@@ -546,10 +544,13 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
 
             {/* modal search */}
             </Modal>
-                <Modal show={showModalSearch} onHide={onHideModalSearch} size="md" centered={true}>
-                <Modal.Header onHide={onHideModalSearch} closeButton>
+                <Modal show={showModalSearchClient} onHide={onHideModalSearchClient} size="md" centered={true}>
+                <Modal.Header onHide={onHideModalSearchClient} closeButton>
                     <h4 className="modal-title">
                         Cliente
+                        <Badge pill className="badge bg-warning">
+                            alterado
+                        </Badge>
                     </h4>
                 </Modal.Header>
                 <Modal.Body style={{minHeight: '350px'}}>
@@ -566,7 +567,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                     <Button 
                         variant="light" 
                         onClick={ () => {
-                            onHideModalSearch()
+                            onHideModalSearchClient()
                             setSelectedChangeClientData(null)
                         }}
                         
@@ -577,7 +578,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                         variant="primary" 
                         onClick={() => {
                             handleChangeClientData()
-                            onHideModalSearch()
+                            onHideModalSearchClient()
                         }}
                         disabled={!selectedChangeClientData}
                     >
@@ -585,6 +586,12 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                     </Button>
                 </Modal.Footer>
             </Modal>
+            
+            <ModalVehicleToggle 
+                showModalSearchVehicle={showModalSearchVehicle} 
+                setShowModalSearchVehicle={setShowModalSearchVehicle}
+                company_id={props.company?.id}
+            />
         </>
     );
 };
