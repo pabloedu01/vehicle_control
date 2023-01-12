@@ -199,9 +199,8 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
     useEffect(() => {
         if(showModalSearch) {
             getClients()
-            console.log('render if')
         }
-        console.log('render')
+        
     },[showModalSearch])
  
     const onSubmit = (formData) => {      
