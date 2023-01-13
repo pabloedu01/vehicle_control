@@ -37,6 +37,25 @@ class EstimateController extends Controller
             'estimate' => $estimateItens
         ], 201);
     }
+    public function showEstimate($id){
+        $estimate = Estimate::find($id);
+        return response()->json([
+            'msg'  => trans('general.msg.success'),
+            'data' => $estimate,
+        ],
+        Response::HTTP_OK);
+
+    }
+    public function showEstimateItens($id){
+        $estimateItens = EstimateItens::where('estimate_id', $id)->get();
+
+
+        return response()->json([
+            'msg'  => trans('general.msg.success'),
+            'data' => $estimateItens,
+        ],
+        Response::HTTP_OK);
+    }
     /**
      * Display a listing of the resource.
      *
