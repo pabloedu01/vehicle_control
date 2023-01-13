@@ -56,6 +56,47 @@ class EstimateController extends Controller
         ],
         Response::HTTP_OK);
     }
+    public function deleteItens($id){
+        $estimateItens = EstimateItens::where('estimate_id', $id)->get();
+        $estimateItens->delete();
+        return response()->json([
+            'msg'  => trans('general.msg.success'),
+
+        ],    Response::HTTP_OK);
+
+    }
+    public function updateItens(Request $request){
+
+        $request->validate([
+            'estimate_id' => 'required',
+            'quantity' => 'required',
+            'price' => 'required',
+        ]);
+        EstimateItens::where('estimate_id', $request->estimate_id)->delete();
+
+        $estimateItens = EstimateItens::create($request->all());
+        return response()->json([
+            'message' => 'Estimate created successfully',
+            'data' => $estimateItens
+        ], 201);
+    }
+    public function updateEstimate(Request $request) {
+
+        $request->validate([
+            'client_id' => 'required',
+            'vehicle_id' => 'required',
+            'review_id' => 'required',
+            'consultant_id' => 'required',
+            'observation' => 'required',
+        ]);
+        $estimate = Estimate::find($request->estimate_id);
+        $estimate->update($request->all());
+        return response()->json([
+            'message' => 'Estimate updated successfully',
+            'data' => $estimate
+        ], 201);
+
+    }
     /**
      * Display a listing of the resource.
      *
@@ -106,6 +147,7 @@ class EstimateController extends Controller
      */
     public function edit(Estimate $estimate)
     {
+
         //
     }
 
@@ -127,8 +169,13 @@ class EstimateController extends Controller
      * @param  \App\Models\Estimate  $estimate
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Estimate $estimate)
+    public function destroy(Request $request)
     {
-        //
+        $estimate = Estimate::find($request->estimate_id);
+        $estimate->delete();
+        return response()->json([
+            'message' => 'Estimate deleted successfully',
+            'data' => ''
+        ], 201);
     }
 }
