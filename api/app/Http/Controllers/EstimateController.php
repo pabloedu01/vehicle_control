@@ -3,10 +3,40 @@
 namespace App\Http\Controllers;
 
 use App\Models\Estimate;
+use App\Models\EstimateItens;
 use Illuminate\Http\Request;
 
 class EstimateController extends Controller
 {
+    public function storeEstimate(Request $request){
+        //validade request and store
+        $request->validate([
+            'client_id' => 'required',
+            'vehicle_id' => 'required',
+            'review_id' => 'required',
+            'consultant_id' => 'required',
+            'observation' => 'required',
+        ]);
+        $estimate = Estimate::create($request->all());
+        return response()->json([
+            'message' => 'Estimate created successfully',
+            'estimate' => $estimate
+        ], 201);
+
+    }
+    public function storeEstimateItens(Request $request){
+        //validade request and store
+        $request->validate([
+            'estimate_id' => 'required',
+            'quantity' => 'required',
+            'price' => 'required',
+        ]);
+        $estimateItens = EstimateItens::create($request->all());
+        return response()->json([
+            'message' => 'Estimate created successfully',
+            'estimate' => $estimateItens
+        ], 201);
+    }
     /**
      * Display a listing of the resource.
      *
