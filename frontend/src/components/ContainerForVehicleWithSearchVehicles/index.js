@@ -14,7 +14,7 @@ export function ContainerForVehicleWithSearchVehicles({ vehiclesData, setSelecte
 
     function activateUser(vehicle) {
         setSelected(vehicle);
-      setSelectedVehicle(vehicle)
+        setSelectedVehicle(vehicle)
     };
 
     useEffect(() => {
@@ -59,7 +59,7 @@ export function ContainerForVehicleWithSearchVehicles({ vehiclesData, setSelecte
                                       {vehicle.name}
                                   </h5>
                                   <p className="mt-1 mb-0 text-muted font-14">
-                                      <span className="w-75">modelo: </span>
+                                      <span className="w-75">Placa: {vehicle.plate} - Chassi: {vehicle.chasis}</span>
                                   </p>
                               </div>
                           </div>

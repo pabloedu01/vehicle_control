@@ -280,9 +280,16 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
       }))
     }
 
-    // function openModalVehicleSearch(showModalVehicleSearch) {
-    //     showModalVehicleSearch()
-    // }
+    function handleChangeClientVehicleData(clientVehicle) {
+        console.log(data)
+        console.log(clientVehicle)
+        setData(prevState => ({
+            ...prevState,
+            clientVehicle
+        }))
+    }
+
+
 
     return (
         <>
@@ -591,6 +598,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                 showModalSearchVehicle={showModalSearchVehicle} 
                 setShowModalSearchVehicle={setShowModalSearchVehicle}
                 company_id={props.company?.id}
+                handleChangeClientVehicleData={handleChangeClientVehicleData}
             />
         </>
     );

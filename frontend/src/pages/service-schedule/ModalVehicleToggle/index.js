@@ -8,7 +8,7 @@ import {ContainerForVehicleWithSearchVehicles} from "../../../components/Contain
 
 const api = new APICore();
 
-export function ModalVehicleToggle({showModalSearchVehicle, setShowModalSearchVehicle, company_id}) {
+export function ModalVehicleToggle({showModalSearchVehicle, setShowModalSearchVehicle, company_id, handleChangeClientVehicleData}) {
   const [data, setData] = useState();
   const [brands, setBrands] = useState([]);
   const [brandSelected, setBrandSelected] = useState();
@@ -18,7 +18,9 @@ export function ModalVehicleToggle({showModalSearchVehicle, setShowModalSearchVe
   const [isOpenVehicle, setIsOpenVehicle] = useToggle();
   const [vehicles, setVehicles] = useState([]);
   const [vehicleSelected, setVehicleSelected] = useState([]);
-
+  const [isOpenClientVehicle, setIsOpenClientVehicle] = useToggle();
+  const [clientVehicles, setClientVehicles] = useState([]);
+  const [clientVehicleSelected, setClientVehicleSelected] = useState(null);
 
   function getBrands () {
     api.get('/vehicle-brand?company_id='+company_id).then((response) => {
@@ -35,6 +37,12 @@ export function ModalVehicleToggle({showModalSearchVehicle, setShowModalSearchVe
     api.get('/vehicle/active-vehicles?model_id='+data.model).then((response) => {
         console.log(response.data.data)
         setVehicles(response.data.data)
+    })
+  }
+  function getClientVehicle () {
+    api.get('/client-vehicle?vehicle_id='+data.vehicle).then((response) => {
+        console.log(response.data.data)
+        setClientVehicles(response.data.data)
     })
   }
 
@@ -55,6 +63,12 @@ export function ModalVehicleToggle({showModalSearchVehicle, setShowModalSearchVe
       getVehicles()
     }
   },[isOpenVehicle])
+
+  useEffect(() => {
+    if (isOpenClientVehicle) { 
+      getClientVehicle()
+    }
+  },[isOpenClientVehicle])
   
   function  onHideShowModalBrand() {
     setShowModalSearchVehicle(false)
@@ -72,8 +86,7 @@ export function ModalVehicleToggle({showModalSearchVehicle, setShowModalSearchVe
       })
   }
 
-  function handleGoToVehicle() {
-    
+  function handleGoToVehicle() { 
       onHideShowModalModel();
       setIsOpenVehicle(true); 
       setData(prevState => ({
@@ -81,9 +94,27 @@ export function ModalVehicleToggle({showModalSearchVehicle, setShowModalSearchVe
         model: modelSelected
       }))
   }
-
+  
   function  onHideShowModalVehicle() {
     setIsOpenVehicle(false)
+  }
+  function handleGoToClientVehicle() {
+      onHideShowModalVehicle();
+      setIsOpenClientVehicle(true); 
+      setData(prevState => ({
+        ...prevState,
+        vehicle: vehicleSelected
+      }))
+  }
+
+  function  onHideShowModalClientVehicle() {
+    setIsOpenClientVehicle(false)
+  }
+
+  function addSelectedClientVehicle () {
+    handleChangeClientVehicleData(clientVehicleSelected)
+    onHideShowModalClientVehicle()
+    setClientVehicleSelected(null)
   }
 
   return (
@@ -146,19 +177,49 @@ export function ModalVehicleToggle({showModalSearchVehicle, setShowModalSearchVe
 
         <Modal show={isOpenVehicle} onHide={onHideShowModalVehicle}>
             <Modal.Header closeButton>
-                <h4 className="modal-title">Veículos</h4>
+                <h4 className="modal-title">Modelo Veículo</h4>
             </Modal.Header>
             <Modal.Body className='py-3'>
-                <h5>Selecione um veículo abaixo</h5>
-                <ContainerForVehicleWithSearchVehicles vehiclesData={vehicles} setSelectedVehicle={setData}/>
+                <h5>Selecione um modelo abaixo</h5>
+                <Select
+                    className="react-select"
+                    classNamePrefix="react-select"
+                    options={vehicles.map(modelItem => (
+                      { value: modelItem.id, label: modelItem.name }
+                    ))     
+                    }
+                    placeholder="Selecione..."
+                    onChange={(e) => setVehicleSelected(e.value)}
+                ></Select>
             </Modal.Body>
             <Modal.Footer>
               <Button
                 variant="primary"
-                onClick={handleGoToVehicle}
-                disabled={!modelSelected}
+                onClick={handleGoToClientVehicle}
+                disabled={!vehicleSelected}
               >
                   Próximo
+              </Button>
+            </Modal.Footer>
+        </Modal>
+
+        <Modal show={isOpenClientVehicle} onHide={onHideShowModalClientVehicle}>
+            <Modal.Header closeButton>
+                <h4 className="modal-title">Veículos</h4>
+            </Modal.Header>
+            <Modal.Body className='py-3'>
+                <h5>Selecione um veículo abaixo</h5>
+                <ContainerForVehicleWithSearchVehicles 
+                  vehiclesData={clientVehicles} 
+                  setSelectedVehicle={setClientVehicleSelected}/>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="primary"
+                onClick={addSelectedClientVehicle}
+                disabled={!clientVehicleSelected}
+              >
+                  salvar
               </Button>
             </Modal.Footer>
         </Modal>
