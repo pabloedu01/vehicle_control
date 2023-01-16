@@ -4,22 +4,23 @@ import classnames from 'classnames';
 import SimpleBar from 'simplebar-react';
 
 
-export function ContainerForModalWithSearchClients({ onUserSelect, clients, setSelectedChangeClientData }) {
-    const [user, setUser] = useState([]);
-    const [selectedUser, setSelectedUser] = useState(null);
+export function ContainerForModalWithSearchClients({ onUserSelect, clientsData, setSelectedChangeClientData }) {
+    const [clients, setClients] = useState([]);
+    const [selectedClient, setSelectedClient] = useState(null);
 
     function search (text) {
-        setUser(text ? [...clients].filter((u) => u.name.toLowerCase().indexOf(text.toLowerCase()) >= 0) : [...clients]);
+        setClients(text ? [...clientsData].filter((u) => u.name.toLowerCase().indexOf(text.toLowerCase()) >= 0) : [...clientsData]);
     };
 
     function activateUser(user) {
-      setSelectedUser(user);
-      setSelectedChangeClientData(user)
+        setSelectedClient(user);
+        setSelectedChangeClientData(user)
     };
 
     useEffect(() => {
-        setUser([...clients])
-    },[clients])
+        setClients([...clientsData])
+    },[clientsData])
+    console.log(clients)
 
     return (
         <>
@@ -36,30 +37,30 @@ export function ContainerForModalWithSearchClients({ onUserSelect, clients, setS
           </div>
 
           <SimpleBar className="px-3" style={{ maxHeight: '350px', width: '100%' }}>
-              {user.map((user, index) => {
+              {clients.length > 0 && clients.map((client, index) => {
                   return (
                       <Link
                           to="#"
                           key={index}
                           className="text-body"
                           onClick={(e) => {
-                              activateUser(user);
-                              console.log(user)
+                              activateUser(client);
+                              console.log(client)
                           }}
                       >
                           <div
                               className={classnames('d-flex', 'align-items-start', 'mt-1', 'p-2', {
-                                  'bg-light': user.id === selectedUser.id,
+                                  'bg-light': client.id === selectedClient?.id,
                               })}
                           >
                         
 
                               <div className="w-100 overflow-hidden p-1">
                                   <h5 className="mt-0 mb-0 font-14">
-                                      {user.name}
+                                      {client.name}
                                   </h5>
                                   <p className="mt-1 mb-0 text-muted font-14">
-                                      <span className="w-75">Cpf: {user.document}</span>
+                                      <span className="w-75">Cpf: {client.document}</span>
                                   </p>
                               </div>
                           </div>

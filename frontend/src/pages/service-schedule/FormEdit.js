@@ -41,6 +41,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
     const [checklistVersions, setChecklistVersions] = useState([]);
     const [serviceTypes, setServiceTypes] = useState([]);
     const [querySearchModal,setQuerySearchModal ] = useState('')
+    const [isActiveSaveButton,setIsActiveSaveButton ] = useState(false)
     const [technicalConsultantSelectedSearch, setTechnicalConsultantSelectedSearch] = useState({
         label: '',
         value: '',
@@ -50,7 +51,15 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         }
     })
     const [technicalConsultants, setTechnicalConsultants] = useState([]);
-       const getData = () => {
+    const [statusChanged, setStatusChanged] = useState({
+        client: false,
+        vehicle: false,
+        schedules: false,
+        technicalConsultant: false
+    });
+    
+    
+    const getData = () => {
 
         const defaultData = {
             scheludesVisited: moment().format("yyyy-MM-DDThh:mm"),
@@ -150,7 +159,8 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         handleSubmit,
         register,
         control,
-        watch,
+        getFieldState,
+        formState,
         formState: {errors},
     } = methods;
 
@@ -160,6 +170,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         control
     };
     
+    getFieldState('scheludesVisited', formState)
     
       /*
      * useEffect 
@@ -193,6 +204,17 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         }
         
     },[showModalSearchClient])
+
+    useEffect(() => {
+        if(getFieldState('scheludesVisited').isDirty) {
+            setStatusChanged((prevState) => ({
+                ...prevState,
+                schedules: true
+            }))
+            setIsActiveSaveButton(true)
+            console.log('scheludesVisited changed')
+        } 
+    },[getFieldState('scheludesVisited').isDirty])
  
     const onSubmit = (formData) => {      
         console.log("enviou")
@@ -278,6 +300,11 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         ...prevState,
         client: selectedChangeClientData
       }))
+      setStatusChanged((prevState) => ({
+        ...prevState,
+        client: true
+      }))
+      setIsActiveSaveButton(true)
     }
 
     function handleChangeClientVehicleData(clientVehicle) {
@@ -287,9 +314,23 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
             ...prevState,
             clientVehicle
         }))
+        setStatusChanged((prevState) => ({
+            ...prevState,
+            vehicle: true
+        }))
+        setIsActiveSaveButton(true)
     }
 
+    function handleTechnicalConsultantSelected(technicalConsultant) {
+        setTechnicalConsultantSelectedSearch(technicalConsultant)
+        setStatusChanged((prevState) => ({
+            ...prevState,
+            technicalConsultant: true
+        }))
+        setIsActiveSaveButton(true)
+    }
 
+  
 
     return (
         <>
@@ -308,11 +349,11 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                         <Card.Body className="pt-4 px-4 pb-4">
                             <Row>
                                 <Col className='d-flex align-items-center justify-content-between'>
-                                    <h4 className="header-title d-flex align-items-center justify-content-center gap-2" style={{color: '#727CF5'}}>
+                                <h4 className="header-title d-flex align-items-center justify-content-center gap-2" style={{color: '#727CF5'}}>
                                     Cliente 
-                                    <Badge pill className="badge bg-warning">
+                                 {statusChanged.client && (<Badge pill className="badge bg-warning">
                                         alterado
-                                    </Badge>
+                                    </Badge>)}
                                 </h4>
                                     <Button 
                                         className='btn-sm' 
@@ -355,7 +396,12 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                     <Card>
                         <Card.Body className="pt-4 px-4 pb-4">
                             <Col className='d-flex align-items-center justify-content-between'>
-                                <h4 className="header-title" style={{color: '#727CF5'}}>VEÍCULO</h4>
+                            <h4 className="header-title d-flex align-items-center justify-content-center gap-2" style={{color: '#727CF5'}}>
+                                Veículo 
+                            {statusChanged.vehicle && (<Badge pill className="badge bg-warning">
+                                    alterado
+                                </Badge>)}
+                            </h4>
                                 <Button className='btn-sm' variant="primary" onClick={() => {
                                     setShowModalSearchVehicle(true)
                                 }}>Editar</Button>
@@ -404,14 +450,19 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                     <form onSubmit={handleSubmit(onSubmit)} >
                         <Row className='mb-3'>
                             <Col xs={12}>
-                                <Button variant="primary" type="submit" style={{width: '100%', minWidth: '62px', fontSize: '20px'}} >
+                                <Button variant="primary" type="submit" disabled={!isActiveSaveButton} style={{width: '100%', minWidth: '62px', fontSize: '20px'}} >
                                     Salvar
                                 </Button>
                             </Col>
                         </Row>
                         <Card>
                         <Card.Body>
-                                <h4 className="header-title mb-4" style={{color: '#727CF5'}}>agendamento</h4>
+                            <h4 className="header-title d-flex align-items-center gap-2" style={{color: '#727CF5'}}>
+                                AGENDAMENTO 
+                            {getFieldState('scheludesVisited').isDirty && (<Badge pill className="badge bg-warning">
+                                    alterado
+                                </Badge>)}
+                            </h4>
                                     <Row className="mt-3">
                                         <Row>
                                             <Col sm={12} md={12}>
@@ -427,15 +478,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                                     type="datetime-local"
                                                     id="scheludesVisited"
                                                     name="scheludesVisited"
-                                                    // value={moment().format("yyyy-MM-DDThh:mm")}
-                                                    // "2018-06-12T19:30"
-                                                // value={selectedDate}
                                                     {...otherProps}
-                                                    // onChange={e => {
-                                                    //     // onDateChange(e.target.value)
-                                                    //     console.log('moment -', moment().format("yyyy-MM-DDThh:mm"))
-                                                    //     console.log('input -',e.target.value)
-                                                    // }}
                                                 />
                                             </Col> 
                                         </Row>
@@ -445,11 +488,16 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                             </Card>
                         <Card>
                             <Card.Body>
-                            <h4 className="header-title mb-4" style={{color: '#727CF5'}}>Consultor Técnico</h4>
+                            <h4 className="header-title d-flex align-items-center gap-2" style={{color: '#727CF5'}}>
+                            CONSULTOR TÉCNICO 
+                            {statusChanged.technicalConsultant && (<Badge pill className="badge bg-warning">
+                                    alterado
+                                </Badge>)}
+                            </h4>
                                 <Row className="mt-3">
                                     <Col sm={12} md={12} xs={12}>
                                         <SearchModified
-                                            handleTechnicalConsultantSelected={setTechnicalConsultantSelectedSearch}
+                                            handleTechnicalConsultantSelected={handleTechnicalConsultantSelected}
                                             TechnicalConsultant={technicalConsultants}
                                         />
                                     </Col>
@@ -555,16 +603,13 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                 <Modal.Header onHide={onHideModalSearchClient} closeButton>
                     <h4 className="modal-title">
                         Cliente
-                        <Badge pill className="badge bg-warning">
-                            alterado
-                        </Badge>
                     </h4>
                 </Modal.Header>
                 <Modal.Body style={{minHeight: '350px'}}>
                     <Row>
                         <Col>
                             <ContainerForModalWithSearchClients 
-                                clients={clientList} 
+                                clientsData={clientList} 
                                 setSelectedChangeClientData={setSelectedChangeClientData}
                             />
                         </Col>
