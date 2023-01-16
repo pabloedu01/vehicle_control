@@ -17,6 +17,7 @@ import { getAllOptions } from "../../utils/selectOptionsForm";
 import HyperDatepicker from "../../components/Datepicker"
 
 import {ModalVehicleToggle} from "./ModalVehicleToggle"
+import {ModalTechnicalConsultantToggle} from "./ModalTechnicalConsultantToggle"
 
 import {formatDateTimezone} from "../../utils/formatDateTimezone"
 
@@ -32,15 +33,16 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
     const [data, setData] = useState();
     const [clientList, setClientList] = useState([]);
     const [selectedChangeClientData, setSelectedChangeClientData] = useState(null);
-    const [vehicleList, setVehicleList] = useState([]);
+
     const [showModal, setShowModal] = useState(false);
     const [showNewOrderModal, setShowNewOrderModal] = useState(false);
     const [showModalSearchClient, setShowModalSearchClient] = useState(false);
     const [showModalSearchVehicle, setShowModalSearchVehicle] = useState(false);
-    const [technicalConsultantSearchList, setTechnicalConsultantSearchList] = useState([])
+    
     const [checklistVersions, setChecklistVersions] = useState([]);
     const [serviceTypes, setServiceTypes] = useState([]);
-    const [querySearchModal,setQuerySearchModal ] = useState('')
+    const [showModalSearchTechnicalConsultant, setShowModalSearchTechnicalConsultant] = useState(false);
+
     const [isActiveSaveButton,setIsActiveSaveButton ] = useState(false)
     const [technicalConsultantSelectedSearch, setTechnicalConsultantSelectedSearch] = useState({
         label: '',
@@ -113,6 +115,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
             }
 
             setData(data);
+            console.log(data)
         });
     };
 
@@ -182,15 +185,9 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
 
     useEffect(() => {
         methods.setValue('scheludesVisited', moment(data?.promised_date).format("yyyy-MM-DDThh:mm") ?? moment().format("yyyy-MM-DDThh:mm"));
-
-        setTechnicalConsultantSelectedSearch({
-            label: data?.technicalConsultant?.name ?? '',
-            value: data?.technicalConsultant?.id ?? '',
-            userDetails: {
-                name: data?.technicalConsultant?.name ?? '',
-                cod: data?.technicalConsultant?.id ?? ''
-            }
-        })
+        console.log(data?.technicalConsultant)
+        setTechnicalConsultantSelectedSearch(data?.technicalConsultant)
+        setSelectedChangeClientData(data?.client)
         // methods.setValue('clientCpf', moment(data?.promised_date).format('YYYY-MM-DDTHH:mm') ?? moment().format('YYYY-MM-DDTHH:mm'));
     }, [data]);
    
@@ -218,30 +215,31 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
  
     const onSubmit = (formData) => {      
         console.log("enviou")
-        console.log(formatDateTimezone(formData.scheludesVisited))
+        console.log(data?.clientVehicle.id)
         const dataFormatted = {
             promised_date: formatDateTimezone(formData.scheludesVisited),
-            technical_consultant_id: technicalConsultantSelectedSearch.value,
-            client_id: data?.client.id,
-            client_vehicle_id: data?.client_vehicle_id,
+            technical_consultant_id: technicalConsultantSelectedSearch.id,
+            client_id: selectedChangeClientData.id,
+            client_vehicle_id: data?.clientVehicle.id,
         }
 
-        // console.log(dataFormatted)
+        console.log(dataFormatted)
 
         let ajaxCall;
 
         if(id){
-            ajaxCall = api.update('/service-schedule/' + id, dataFormatted);
-            console.log(ajaxCall)
+            ajaxCall = api.update('/service-schedule/' + id, dataFormatted).then(reponse => {
+                history(0)
+            });
         }
-        else{
-            return
+        // else{
+        //     return
             // ajaxCall = api.post('/service-schedule', Object.assign(dataFormatted, {
             //     company_id: props.company?.id,
             //     claims_service: []
             // }));
-        }
-
+        // }
+        // window.location.reload(false)
     }
 
     function getChecklistVersions () {
@@ -308,8 +306,6 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
     }
 
     function handleChangeClientVehicleData(clientVehicle) {
-        console.log(data)
-        console.log(clientVehicle)
         setData(prevState => ({
             ...prevState,
             clientVehicle
@@ -321,16 +317,16 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         setIsActiveSaveButton(true)
     }
 
-    function handleTechnicalConsultantSelected(technicalConsultant) {
+    function handleChangeTechnicalConsultantData(technicalConsultant) {
+        console.log("Adding selected",technicalConsultant);
         setTechnicalConsultantSelectedSearch(technicalConsultant)
         setStatusChanged((prevState) => ({
             ...prevState,
             technicalConsultant: true
         }))
         setIsActiveSaveButton(true)
+        setShowModalSearchTechnicalConsultant(false)
     }
-
-  
 
     return (
         <>
@@ -448,13 +444,15 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                 </Col>
                 <Col xxl={5}>
                     <form onSubmit={handleSubmit(onSubmit)} >
-                        <Row className='mb-3'>
-                            <Col xs={12}>
-                                <Button variant="primary" type="submit" disabled={!isActiveSaveButton} style={{width: '100%', minWidth: '62px', fontSize: '20px'}} >
-                                    Salvar
-                                </Button>
-                            </Col>
-                        </Row>
+                        {isActiveSaveButton && 
+                            (<Row className='mb-3'>
+                                <Col xs={12}>
+                                    <Button variant="primary" type="submit" disabled={!isActiveSaveButton} style={{width: '100%', minWidth: '62px', fontSize: '20px'}} >
+                                        Salvar
+                                    </Button>
+                                </Col>
+                            </Row>)
+                        }
                         <Card>
                         <Card.Body>
                             <h4 className="header-title d-flex align-items-center gap-2" style={{color: '#727CF5'}}>
@@ -488,24 +486,25 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                             </Card>
                         <Card>
                             <Card.Body>
-                            <h4 className="header-title d-flex align-items-center gap-2" style={{color: '#727CF5'}}>
+                            <Row>
+                            <Col className='d-flex align-items-center justify-content-between'>
+                            <h4 className="header-title d-flex align-items-center justify-content-center gap-2" style={{color: '#727CF5'}}>
                             CONSULTOR TÉCNICO 
-                            {statusChanged.technicalConsultant && (<Badge pill className="badge bg-warning">
+                             {statusChanged.technicalConsultant && (<Badge pill className="badge bg-warning">
                                     alterado
                                 </Badge>)}
                             </h4>
-                                <Row className="mt-3">
-                                    <Col sm={12} md={12} xs={12}>
-                                        <SearchModified
-                                            handleTechnicalConsultantSelected={handleTechnicalConsultantSelected}
-                                            TechnicalConsultant={technicalConsultants}
-                                        />
-                                    </Col>
-                                </Row>
+                                <Button 
+                                    className='btn-sm' 
+                                    variant="primary" 
+                                    onClick={() => setShowModalSearchTechnicalConsultant(true)}
+                                >Editar</Button>
+                            </Col>
+                        </Row>
                                 <Row className="mt-3">
                                     <Col sm={12} md={12}>
-                                        <p className="fw-bold">Nome: <span className="fw-normal">{ technicalConsultantSelectedSearch?.label && technicalConsultantSelectedSearch?.label}</span></p>
-                                        <p className="fw-bold">Código consultor: <span className="fw-normal">{ technicalConsultantSelectedSearch?.value && technicalConsultantSelectedSearch?.value}</span></p>
+                                        <p className="fw-bold">Nome: <span className="fw-normal">{ technicalConsultantSelectedSearch?.name && technicalConsultantSelectedSearch?.name}</span></p>
+                                        <p className="fw-bold">Código consultor: <span className="fw-normal">{ technicalConsultantSelectedSearch?.id && technicalConsultantSelectedSearch?.id}</span></p>
                                     </Col>
                                 </Row>
                             </Card.Body>
@@ -644,6 +643,12 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                 setShowModalSearchVehicle={setShowModalSearchVehicle}
                 company_id={props.company?.id}
                 handleChangeClientVehicleData={handleChangeClientVehicleData}
+            />
+            <ModalTechnicalConsultantToggle 
+                company_id={props.company?.id} 
+                setShowModalSearchTechnicalConsultant={setShowModalSearchTechnicalConsultant}
+                showModalSearchTechnicalConsultant={showModalSearchTechnicalConsultant}
+                handleChangeTechnicalConsultantData={handleChangeTechnicalConsultantData}
             />
         </>
     );
