@@ -71,7 +71,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
             if(id){
                 api.get('/service-schedule/' + id).then((response) => {
                     const {client_vehicle: clientVehicle, client_vehicle_id, code, promised_date, client_id, technical_consultant_id, client, technical_consultant: technicalConsultant, vehicle_service: vehicleService} = response.data.data;
-                  //  console.log(response.data.data)
+            
                     resolve({
                         client_vehicle_id,
                         code,
@@ -115,7 +115,6 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
             }
 
             setData(data);
-            console.log(data)
         });
     };
 
@@ -132,7 +131,6 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
     function getClients() {
         api.get('/client?company_id='+props.company?.id).then((response) => {
             setClientList(response.data.data)
-            console.log(response.data.data)
         })
         
     }
@@ -188,7 +186,6 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         console.log(data?.technicalConsultant)
         setTechnicalConsultantSelectedSearch(data?.technicalConsultant)
         setSelectedChangeClientData(data?.client)
-        // methods.setValue('clientCpf', moment(data?.promised_date).format('YYYY-MM-DDTHH:mm') ?? moment().format('YYYY-MM-DDTHH:mm'));
     }, [data]);
    
     useEffect(() => {
@@ -209,13 +206,11 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                 schedules: true
             }))
             setIsActiveSaveButton(true)
-            console.log('scheludesVisited changed')
         } 
     },[getFieldState('scheludesVisited').isDirty])
  
     const onSubmit = (formData) => {      
-        console.log("enviou")
-        console.log(data?.clientVehicle.id)
+ 
         const dataFormatted = {
             promised_date: formatDateTimezone(formData.scheludesVisited),
             technical_consultant_id: technicalConsultantSelectedSearch.id,
@@ -223,7 +218,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
             client_vehicle_id: data?.clientVehicle.id,
         }
 
-        console.log(dataFormatted)
+
 
         let ajaxCall;
 
@@ -239,7 +234,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
             //     claims_service: []
             // }));
         // }
-        // window.location.reload(false)
+       
     }
 
     function getChecklistVersions () {
@@ -318,7 +313,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
     }
 
     function handleChangeTechnicalConsultantData(technicalConsultant) {
-        console.log("Adding selected",technicalConsultant);
+   
         setTechnicalConsultantSelectedSearch(technicalConsultant)
         setStatusChanged((prevState) => ({
             ...prevState,
