@@ -2,69 +2,65 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Estimate;
-use App\Models\EstimateItens;
+use App\Models\Quotation;
+use App\Models\QuotationItens;
 use Illuminate\Http\Request;
 
-class EstimateController extends Controller
+class QuotationController extends Controller
 {
     private static $with = [
-        'clientVehicle',
-        'clientVehicle.vehicle',
-        'clientVehicle.vehicle.model',
-        'clientVehicle.vehicle.model.brand',
+        'vehicle',
         'client',
         'technicalConsultant',
         'technicalConsultant.user',
-        'claimsService',
-        'claimsService.services',
-        'claimsService.services.products',
+        'maintenance_reviews'
+
     ];
-    public function storeEstimate(Request $request){
+    public function storeQuotation(Request $request){
         //validade request and store
 
-        $estimate = Estimate::create($request->all());
+        $quotation = Quotation::create($request->all());
         return response()->json([
-            'message' => 'Estimate created successfully',
-            'estimate' => $estimate
+            'message' => 'Quotation created successfully',
+            'Quotation' => $quotation
         ], 201);
 
     }
-    public function storeEstimateItens(Request $request){
+    public function storeQuotationItens(Request $request){
         //validade request and store
         $request->validate([
-            'estimate_id' => 'required',
+            'Quotation_id' => 'required',
             'quantity' => 'required',
             'price' => 'required',
         ]);
-        $estimateItens = EstimateItens::create($request->all());
+        $quotationItens = QuotationItens::create($request->all());
         return response()->json([
-            'message' => 'Estimate created successfully',
-            'estimate' => $estimateItens
+            'message' => 'Quotation created successfully',
+            'Quotation' => $quotationItens
         ], 201);
     }
-    public function showEstimate($id){
-        $estimate = Estimate::find($id);
+    public function showQuotation($id){
+        $quotation = Quotation::find($id);
         return response()->json([
             'msg'  => trans('general.msg.success'),
-            'data' => $estimate,
+            'data' => $quotation,
         ],
         Response::HTTP_OK);
 
     }
-    public function showEstimateItens($id){
-        $estimateItens = EstimateItens::where('estimate_id', $id)->get();
+    public function showQuotationItens($id){
+        $quotationItens = QuotationItens::where('Quotation_id', $id)->get();
 
 
         return response()->json([
             'msg'  => trans('general.msg.success'),
-            'data' => $estimateItens,
+            'data' => $quotationItens,
         ],
         Response::HTTP_OK);
     }
     public function deleteItens($id){
-        $estimateItens = EstimateItens::where('estimate_id', $id)->get();
-        $estimateItens->delete();
+        $quotationItens = QuotationItens::where('Quotation_id', $id)->get();
+        $quotationItens->delete();
         return response()->json([
             'msg'  => trans('general.msg.success'),
 
@@ -74,19 +70,19 @@ class EstimateController extends Controller
     public function updateItens(Request $request){
 
         $request->validate([
-            'estimate_id' => 'required',
+            'Quotation_id' => 'required',
             'quantity' => 'required',
             'price' => 'required',
         ]);
-        EstimateItens::where('estimate_id', $request->estimate_id)->delete();
+        QuotationItens::where('Quotation_id', $request->Quotation_id)->delete();
 
-        $estimateItens = EstimateItens::create($request->all());
+        $quotationItens = QuotationItens::create($request->all());
         return response()->json([
-            'message' => 'Estimate created successfully',
-            'data' => $estimateItens
+            'message' => 'Quotation created successfully',
+            'data' => $quotationItens
         ], 201);
     }
-    public function updateEstimate(Request $request) {
+    public function updateQuotation(Request $request) {
 
         $request->validate([
             'client_id' => 'required',
@@ -95,16 +91,16 @@ class EstimateController extends Controller
             'consultant_id' => 'required',
             'observation' => 'required',
         ]);
-        $estimate = Estimate::find($request->estimate_id);
-        $estimate->update($request->all());
+        $quotation = Quotation::find($request->Quotation_id);
+        $quotation->update($request->all());
         return response()->json([
-            'message' => 'Estimate updated successfully',
-            'data' => $estimate
+            'message' => 'Quotation updated successfully',
+            'data' => $quotation
         ], 201);
 
     }
     public function listAll(Request $request, $id) {
-        $serviceSchedules = ServiceSchedule::with(collect(self::$with)->take(7)->toArray())
+        $serviceSchedules = Quotation::with(collect(self::$with)->take(7)->toArray())
                                            ->list()
                                            ->get();
 
@@ -152,10 +148,10 @@ class EstimateController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Estimate  $estimate
+     * @param  \App\Models\Quotation  $quotation
      * @return \Illuminate\Http\Response
      */
-    public function show(Estimate $estimate)
+    public function show(Quotation $quotation)
     {
         //
     }
@@ -163,10 +159,10 @@ class EstimateController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Estimate  $estimate
+     * @param  \App\Models\Quotation  $quotation
      * @return \Illuminate\Http\Response
      */
-    public function edit(Estimate $estimate)
+    public function edit(Quotation $quotation)
     {
 
         //
@@ -176,10 +172,10 @@ class EstimateController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Estimate  $estimate
+     * @param  \App\Models\Quotation  $quotation
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Estimate $estimate)
+    public function update(Request $request, Quotation $quotation)
     {
         //
     }
@@ -187,15 +183,15 @@ class EstimateController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Estimate  $estimate
+     * @param  \App\Models\Quotation  $quotation
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request)
     {
-        $estimate = Estimate::find($request->estimate_id);
-        $estimate->delete();
+        $quotation = Quotation::find($request->Quotation_id);
+        $quotation->delete();
         return response()->json([
-            'message' => 'Estimate deleted successfully',
+            'message' => 'Quotation deleted successfully',
             'data' => ''
         ], 201);
     }
