@@ -3,39 +3,39 @@
 use Illuminate\Support\Facades\Route;
 
 Route::group([
-                 'prefix'     => 'estimates',
+                 'prefix'     => 'quotations',
                  'middleware' => [ 'jwt.verify', 'user' ],
              ], function(){
 
 
 
         Route::get('/', [
-            'uses' => 'EstimatesController@showEstimateItens',
+            'uses' => 'QuotationController@listAll',
         ]);
 
         Route::post('/', [
-            'uses' => 'EstimatesController@store',
+            'uses' => 'QuotationController@store',
         ]);
 
 
         Route::get('/show/{id}', [
-            'uses' => 'EstimatesController@showEstimate',
+            'uses' => 'QuotationController@showQuotation',
         ]);
         Route::delete('/{id}', [
-            'uses' => 'EstimatesController@destroy',
+            'uses' => 'QuotationController@destroy',
         ]);
         Route::post('/itens', [
-            'uses' => 'EstimatesController@storeEstimate',
+            'uses' => 'QuotationController@storeQuotation',
         ]);
         Route::post('/itens/{id}', [
-            'uses' => 'EstimatesController@updateEstimateItens',
+            'uses' => 'QuotationController@updateQuotationItens',
         ]);
         Route::get('/itens/{id}', [
-            'uses' => 'EstimatesController@showEstimateItens',
+            'uses' => 'QuotationController@showQuotationItens',
         ]);
 
         Route::delete('/itens/{id}', [
-            'uses' => 'EstimatesController@deleteItens',
+            'uses' => 'QuotationController@deleteItens',
         ]);
 
 });
