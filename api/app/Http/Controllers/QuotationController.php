@@ -101,8 +101,9 @@ class QuotationController extends Controller
         ], 201);
 
     }
-    public function listAll(Request $request, $id) {
-        $quotations = Quotation::with(collect(self::$with)->take(7)->toArray())
+    public function listAll(Request $request) {
+
+        $quotations = Quotation::with(collect(self::$with)->take(5)->toArray())
                                            ->list()
                                            ->get();
 

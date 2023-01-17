@@ -5,10 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\DynamicFiltersTrait;
 
 class Quotation extends Model
 {
-    protected $table = 'quotations';
+    use DynamicFiltersTrait;
+
+    protected $table = 'quotation';
 
     use HasFactory;
 
@@ -28,6 +31,11 @@ class Quotation extends Model
     INNER JOIN vehicle_brands ON vehicle_brands.id = vehicles.brand_id
 ';
 
+protected $filters = [
+    'review' => ['model' => MaintenanceReview::class],
+    'client_name' => ['column' => 'name', 'model' => Client::class],
+    'vehicle' => ['column' => 'name', 'model' => VehicleBrand::class],
+];
 
 
     public function scopeList(Builder $query)
@@ -37,7 +45,7 @@ class Quotation extends Model
         return $query->withoutGlobalScope('orderByCreatedAt')
             ->where('company_id', '=', $request->company_id)
             ->dynamicFilter()
-            ->orderBy('promised_date', 'desc');
+            ->orderBy('created_at', 'desc');
     }
     #belongs to
     public function company()
