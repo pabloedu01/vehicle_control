@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateEstimatesTable extends Migration
+class CreateQuotationTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateEstimatesTable extends Migration
      */
     public function up()
     {
-        Schema::create('estimates', function (Blueprint $table) {
+        Schema::create('quotation', function (Blueprint $table) {
             $table->id();
             $table->foreignId('company_id')->nullable()->constrained('companies');
             $table->foreignId('vehicle_id')->nullable()->constrained('vehicles');
@@ -22,15 +22,14 @@ class CreateEstimatesTable extends Migration
             $table->string('observation')->nullable();
             $table->timestamps();
         });
-        Schema::create('estimates_itens', function (Blueprint $table) {
+        Schema::create('quotation_itens', function (Blueprint $table) {
             $table->id();
-            $table->foreign('estimates_id')->references('id')->on('estimates')->onDelete('cascade');
+            $table->foreignId('quotation_id')->references('id')->on('quotation')->onDelete('cascade');
             $table->foreignId('service_id')->references('id')->on('services')->nullable();
             $table->foreignId('products_id')->references('id')->on('products')->nullable();
-            $table->enum('type', ['service', 'product']);
             $table->double('price', 15,2);
             $table->double('quantity', 15,2);
-            $table->double('total',15,2)->virtualAs('price * quantity')->nullable();
+           // $table->string('total')->virtualAs('price * quantity')->nullable();
             $table->timestamps();
         });
     }

@@ -12,7 +12,7 @@ class Estimate extends Model
     use HasFactory;
 
     protected $fillable = [
-        'estimate_id',
+   
         'client_id',
         'vehicle_id',
         'review_id',

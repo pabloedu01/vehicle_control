@@ -8,15 +8,21 @@ use Illuminate\Http\Request;
 
 class EstimateController extends Controller
 {
+    private static $with = [
+        'clientVehicle',
+        'clientVehicle.vehicle',
+        'clientVehicle.vehicle.model',
+        'clientVehicle.vehicle.model.brand',
+        'client',
+        'technicalConsultant',
+        'technicalConsultant.user',
+        'claimsService',
+        'claimsService.services',
+        'claimsService.services.products',
+    ];
     public function storeEstimate(Request $request){
         //validade request and store
-        $request->validate([
-            'client_id' => 'required',
-            'vehicle_id' => 'required',
-            'review_id' => 'required',
-            'consultant_id' => 'required',
-            'observation' => 'required',
-        ]);
+
         $estimate = Estimate::create($request->all());
         return response()->json([
             'message' => 'Estimate created successfully',
@@ -96,6 +102,21 @@ class EstimateController extends Controller
             'data' => $estimate
         ], 201);
 
+    }
+    public function listAll(Request $request, $id) {
+        $serviceSchedules = ServiceSchedule::with(collect(self::$with)->take(7)->toArray())
+                                           ->list()
+                                           ->get();
+
+        return response()->json([
+                                    'msg' => trans('general.msg.success'),
+                                    'total_results' => $serviceSchedules->count(),
+                                    'current_page'  => intval(@$request->current_page && is_numeric($request->current_page) ? $request->current_page : 1),
+                                    'total_pages'   => ceil(ServiceSchedule::list()->limit(null)->offset(0)->count()/( @$request->limit ?? 50 )),
+                                    'data'          => $serviceSchedules,
+                                ],
+                                Response::HTTP_OK
+        );
     }
     /**
      * Display a listing of the resource.
