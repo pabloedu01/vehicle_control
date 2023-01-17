@@ -21,7 +21,7 @@ class Quotation extends Model
         'vehicle_id',
         'review_id',
         'consultant_id',
-        'observation',
+        'company_id',
 
     ];
 
