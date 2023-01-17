@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Quotation;
 use App\Models\QuotationItens;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+
 
 class QuotationController extends Controller
 {
@@ -100,16 +102,16 @@ class QuotationController extends Controller
 
     }
     public function listAll(Request $request, $id) {
-        $serviceSchedules = Quotation::with(collect(self::$with)->take(7)->toArray())
+        $quotations = Quotation::with(collect(self::$with)->take(7)->toArray())
                                            ->list()
                                            ->get();
 
         return response()->json([
                                     'msg' => trans('general.msg.success'),
-                                    'total_results' => $serviceSchedules->count(),
+                                    'total_results' => $quotations->count(),
                                     'current_page'  => intval(@$request->current_page && is_numeric($request->current_page) ? $request->current_page : 1),
-                                    'total_pages'   => ceil(ServiceSchedule::list()->limit(null)->offset(0)->count()/( @$request->limit ?? 50 )),
-                                    'data'          => $serviceSchedules,
+                                    'total_pages'   => ceil(Quotation::list()->limit(null)->offset(0)->count()/( @$request->limit ?? 50 )),
+                                    'data'          => $quotations,
                                 ],
                                 Response::HTTP_OK
         );
