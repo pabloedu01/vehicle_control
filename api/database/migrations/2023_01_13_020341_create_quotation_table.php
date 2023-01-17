@@ -17,6 +17,8 @@ class CreateQuotationTable extends Migration
             $table->id();
             $table->foreignId('company_id')->nullable()->constrained('companies');
             $table->foreignId('vehicle_id')->nullable()->constrained('vehicles');
+            $table->foreignId('client_id')->nullable()->constrained('clients');
+
             $table->foreignId('maintenance_review_id')->nullable()->constrained('maintenance_reviews');
             $table->foreignId('consultant_id')->nullable()->constrained('users');
             $table->string('observation')->nullable();

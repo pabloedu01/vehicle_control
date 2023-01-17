@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class EstimateItens extends Model
 {
-    protected $table = 'estimates_itens';
+    protected $table = 'quotations_itens';
 
     use HasFactory;
 
@@ -17,7 +17,6 @@ class EstimateItens extends Model
         'products_id',
         'type',
         'price',
-        'quantity',
-        'total',
+        'quantity'
     ];
 }
