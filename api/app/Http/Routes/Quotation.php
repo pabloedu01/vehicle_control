@@ -14,7 +14,7 @@ Route::group([
         ]);
 
         Route::post('/', [
-            'uses' => 'QuotationController@store',
+            'uses' => 'QuotationController@storeQuotation',
         ]);
 
 
