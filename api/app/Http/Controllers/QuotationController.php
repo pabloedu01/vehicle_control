@@ -11,11 +11,11 @@ use Illuminate\Http\Response;
 class QuotationController extends Controller
 {
     private static $with = [
-        'vehicle',
         'client',
-        'technicalConsultant',
+        'vehicle',
+        'review',
         'technicalConsultant.user',
-        'maintenance_reviews'
+
 
     ];
     public function storeQuotation(Request $request){
@@ -103,6 +103,9 @@ class QuotationController extends Controller
     }
     public function listAll(Request $request) {
 
+        // $quotations = Quotation::with(collect(self::$with)->take(5)->toArray())
+        //                                    ->list()
+        //                                    ->get();
         $quotations = Quotation::with(collect(self::$with)->take(5)->toArray())
                                            ->list()
                                            ->get();

@@ -19,15 +19,15 @@ class Quotation extends Model
 
         'client_id',
         'vehicle_id',
-        'review_id',
+        'maintenance_review_id',
         'consultant_id',
         'company_id',
 
     ];
 
     protected $filterJoins = '
-    INNER JOIN client_vehicles ON client_vehicles.id = service_schedules.client_vehicle_id
-    INNER JOIN vehicles ON vehicles.id = client_vehicles.vehicle_id
+    INNER JOIN client ON client.id = quotation.client_id
+    INNER JOIN vehicles ON vehicles.id = quotation.vehicle_id
     INNER JOIN vehicle_brands ON vehicle_brands.id = vehicles.brand_id
 ';
 
@@ -65,22 +65,19 @@ protected $filters = [
         return $this->belongsTo('App\Models\Client', 'client_id', 'id')->withTrashed();
     }
 
-    #belongs to
-    public function clientVehicle()
-    {
-        return $this->belongsTo('App\Models\ClientVehicle', 'client_vehicle_id', 'id')->withTrashed();
-    }
-
     #has many
     public function vehicle()
     {
-        return $this->hasMany('App\Models\Vehicles', 'vehicle_id', 'id');
+        return $this->belongsTo('App\Models\Vehicle', 'vehicle_id', 'id')->withTrashed();
+
     }
 
     #has many
-    public function Review()
+    public function review()
     {
-        return $this->hasMany('App\Models\MaintenanceReviews', 'maintenance_review_id', 'id');
+        return $this->belongsTo('App\Models\MaintenanceReview', 'maintenance_review_id', 'id')->withTrashed();
+
+        // return $this->hasMany('App\Models\MaintenanceReview', 'maintenance_review_id', 'id');
     }
 
 }
