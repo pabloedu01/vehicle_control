@@ -79,6 +79,16 @@ protected $filters = [
 
         // return $this->hasMany('App\Models\MaintenanceReview', 'maintenance_review_id', 'id');
     }
+    // has many quotation itens
+    public function quotationItens()
+    {
+        return $this->hasMany('App\Models\QuotationItens', 'quotation_id', 'id');
+    }
+    // has many quotation claimservice
+    public function quotationClaimService()
+    {
+        return $this->hasMany('App\Models\QuotationClaimService', 'quotation_id', 'id');
+    }
 
 
 

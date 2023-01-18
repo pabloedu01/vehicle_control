@@ -70,6 +70,9 @@ class QuotationController extends Controller
 
     public function showQuotation($id){
         $quotation = Quotation::find($id);
+        $quotation['quotation_itens'] = $quotation->quotationItens;
+        $quotation['quotation_claim_services'] = $quotation->quotationClaimService;
+
         return response()->json([
             'msg'  => trans('general.msg.success'),
             'data' => $quotation,

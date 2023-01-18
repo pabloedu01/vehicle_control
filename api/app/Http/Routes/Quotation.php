@@ -27,18 +27,8 @@ Route::group([
         Route::delete('/{id}', [
             'uses' => 'QuotationController@destroy',
         ]);
-        Route::post('/itens', [
-            'uses' => 'QuotationController@storeQuotation',
-        ]);
-        Route::post('/itens/{id}', [
-            'uses' => 'QuotationController@updateQuotationItens',
-        ]);
-        Route::get('/itens/{id}', [
-            'uses' => 'QuotationController@showQuotationItens',
-        ]);
 
-        Route::delete('/itens/{id}', [
-            'uses' => 'QuotationController@deleteItens',
-        ]);
+
+         
 
 });
