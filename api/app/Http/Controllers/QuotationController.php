@@ -89,9 +89,10 @@ class QuotationController extends Controller
         $request->validate([
             'client_id' => 'required',
             'vehicle_id' => 'required',
-            'review_id' => 'required',
+            'maintenance_review_id' => 'required',
             'consultant_id' => 'required',
-            'observation' => 'required',
+            'company_id' => 'required',
+
         ]);
         $quotation = Quotation::find($request->Quotation_id);
         $quotation->update($request->all());

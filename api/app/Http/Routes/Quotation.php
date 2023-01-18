@@ -12,6 +12,9 @@ Route::group([
         Route::get('/', [
             'uses' => 'QuotationController@listAll',
         ]);
+        Route::put('/', [
+            'uses' => 'QuotationController@updateQuotation',
+        ]);
 
         Route::post('/', [
             'uses' => 'QuotationController@storeQuotation',
