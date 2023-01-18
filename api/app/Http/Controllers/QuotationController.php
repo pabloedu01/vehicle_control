@@ -67,7 +67,7 @@ class QuotationController extends Controller
         ], 201);
 
     }
- 
+
     public function showQuotation($id){
         $quotation = Quotation::find($id);
         return response()->json([
@@ -113,20 +113,53 @@ class QuotationController extends Controller
     }
     public function updateQuotation(Request $request) {
 
+        $consultant =  $request->consultant_id ;
+        if($request->consultant_id == null){
+            $consultant = $request->user()->technicalConsultant->id;
+        }
         $request->validate([
-            'client_id' => 'required',
-            'vehicle_id' => 'required',
-            'maintenance_review_id' => 'required',
-            'consultant_id' => 'required',
             'company_id' => 'required',
-
         ]);
-        $quotation = Quotation::find($request->Quotation_id);
-        $quotation->update($request->all());
+        $quotation =  Quotation::find($request->quotation_id);
+        $quotation->client_id = $request->client_id;
+        $quotation->vehicle_id = $request->vehicle_id;
+        $quotation->maintenance_review_id = $request->maintenance_review_id;
+        $quotation->consultant_id =  $consultant;
+        $quotation->company_id = $request->company_id;
+        $quotation->save();
+
+
+
+        QuotationClaimService::where('quotation_id', $request->quotation_id)->delete();
+            foreach($request->claim_services as $claim ){
+                $quotationClaim = new QuotationClaimService();
+                $quotationClaim->quotation_id = $quotation->id;
+                $quotationClaim->claim_service_id = $claim['claim_service_id'];
+                $quotationClaim->save();
+            }
+
+
+        QuotationItens::where('quotation_id', $request->quotation_id)->delete();
+            foreach($request->quotation_itens as $item){
+                $quotationItem = new QuotationItens();
+                $quotationItem->quotation_id = $quotation->id;
+                $quotationItem->service_id = $item['service_id'];
+                $quotationItem->products_id = $item['products_id'];
+                $quotationItem->quantity = $item['quantity'];
+                $quotationItem->price = $item['price'];
+                $quotationItem->price_discount = $item['price_discount'];
+
+                // return $quotationItem;
+                $quotationItem->save();
+            }
+
+        $quotation['quotation_itens'] = $quotationItem;
+        $quotation['claim_services'] = $quotationClaim;
         return response()->json([
-            'message' => 'Quotation updated successfully',
-            'data' => $quotation
+            'message' => 'Quotation created successfully',
+            'Quotation' => $quotation,
         ], 201);
+
 
     }
     public function listAll(Request $request) {
