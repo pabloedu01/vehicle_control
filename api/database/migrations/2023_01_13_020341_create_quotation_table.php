@@ -15,22 +15,28 @@ class CreateQuotationTable extends Migration
     {
         Schema::create('quotation', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('company_id')->nullable()->constrained('companies');
+            $table->foreignId('company_id')->constrained('companies');
             $table->foreignId('vehicle_id')->nullable()->constrained('vehicles');
             $table->foreignId('client_id')->nullable()->constrained('clients');
             $table->foreignId('maintenance_review_id')->nullable()->constrained('maintenance_reviews');
             $table->foreignId('consultant_id')->nullable()->constrained('users');
-            $table->string('observation')->nullable();
             $table->timestamps();
         });
         Schema::create('quotation_itens', function (Blueprint $table) {
             $table->id();
             $table->foreignId('quotation_id')->references('id')->on('quotation')->onDelete('cascade');
-            $table->foreignId('service_id')->references('id')->on('services')->nullable();
-            $table->foreignId('products_id')->references('id')->on('products')->nullable();
-            $table->double('price', 15,2);
-            $table->double('quantity', 15,2);
+            $table->foreignId('service_id')->nullable()->constrained('services');
+            $table->foreignId('products_id')->nullable()->constrained('products');
+            $table->double('price', 15,5);
+            $table->double('price_discount', 15,5);
+            $table->double('quantity', 15,5);
            // $table->string('total')->virtualAs('price * quantity')->nullable();
+            $table->timestamps();
+        });
+        Schema::create('quotations_claim_service', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('quotation_id')->references('id')->on('quotation')->onDelete('cascade');
+            $table->foreignId('claim_service_id')->references('id')->on('claims_service')->onDelete('cascade');
             $table->timestamps();
         });
     }

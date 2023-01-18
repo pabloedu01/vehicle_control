@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Quotation;
+use App\Models\QuotationClaimService;
 use App\Models\QuotationItens;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -20,27 +21,53 @@ class QuotationController extends Controller
     ];
     public function storeQuotation(Request $request){
         //validade request and store
-
-        $quotation = Quotation::create($request->all());
-        return response()->json([
-            'message' => 'Quotation created successfully',
-            'Quotation' => $quotation
-        ], 201);
-
-    }
-    public function storeQuotationItens(Request $request){
-        //validade request and store
+        $consultant =  $request->consultant_id ;
+        if($request->consultant_id == null){
+            $consultant = $request->user()->technicalConsultant->id;
+        }
         $request->validate([
-            'Quotation_id' => 'required',
-            'quantity' => 'required',
-            'price' => 'required',
+            'company_id' => 'required',
         ]);
-        $quotationItens = QuotationItens::create($request->all());
+        $quotation = new Quotation();
+        $quotation->client_id = $request->client_id;
+        $quotation->vehicle_id = $request->vehicle_id;
+        $quotation->maintenance_review_id = $request->maintenance_review_id;
+        $quotation->consultant_id =  $consultant;
+        $quotation->company_id = $request->company_id;
+        $quotation->save();
+
+
+        if($request->claim_services != null){
+            foreach($request->claim_services as $claim ){
+                $quotationClaim = new QuotationClaimService();
+                $quotationClaim->quotation_id = $quotation->id;
+                $quotationClaim->claim_service_id = $claim['claim_service_id'];
+                $quotationClaim->save();
+            }
+        }
+       if($request->quotation_itens != null){
+            foreach($request->quotation_itens as $item){
+                $quotationItem = new QuotationItens();
+                $quotationItem->quotation_id = $quotation->id;
+                $quotationItem->service_id = $item['service_id'];
+                $quotationItem->products_id = $item['products_id'];
+                $quotationItem->quantity = $item['quantity'];
+                $quotationItem->price = $item['price'];
+                $quotationItem->price_discount = $item['price_discount'];
+
+                // return $quotationItem;
+                $quotationItem->save();
+            }
+        }
+        $quotation['quotation_itens'] = $quotationItem;
+        $quotation['claim_services'] = $quotationClaim;
         return response()->json([
             'message' => 'Quotation created successfully',
-            'Quotation' => $quotationItens
+            'Quotation' => $quotation,
         ], 201);
+
     }
+ 
     public function showQuotation($id){
         $quotation = Quotation::find($id);
         return response()->json([
