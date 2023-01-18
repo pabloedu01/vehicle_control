@@ -253,9 +253,9 @@ class QuotationController extends Controller
      * @param  \App\Models\Quotation  $quotation
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request,$id)
     {
-        $quotation = Quotation::find($request->Quotation_id);
+        $quotation = Quotation::find($id);
         $quotation->delete();
         return response()->json([
             'message' => 'Quotation deleted successfully',
