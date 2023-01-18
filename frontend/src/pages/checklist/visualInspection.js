@@ -420,9 +420,11 @@ const VisualInspection = (props: { item: any, onChange: any, value: any }): Reac
                     <Button variant="primary" onClick={onSave}>
                         Salvar
                     </Button>
+                  {/* 
                     <Button variant="primary" onClick={screenShotToPng}>
                         print
                     </Button>
+                    */}
                 </Modal.Footer>
             </Modal>
 

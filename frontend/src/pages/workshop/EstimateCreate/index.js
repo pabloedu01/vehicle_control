@@ -1,4 +1,5 @@
-import { Row, Col, Card, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Row, Col, Card} from 'react-bootstrap';
+import Select from 'react-select';
 
 // components
 import PageTitle from '../../../components/PageTitle';
@@ -12,10 +13,9 @@ const Items = (props) => {
                 <table className="table mb-0">
                     <thead className="table-light">
                         <tr>
-                            <th>Item</th>
-                            <th>Quantity</th>
-                            <th>Price</th>
-                            <th>Total</th>
+                            <th>Itens</th>
+                            <th>Quantidade</th>
+                            <th>Preço</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -25,7 +25,6 @@ const Items = (props) => {
                                     <td>{item.name}</td>
                                     <td>{item.quantity}</td>
                                     <td>{item.price}</td>
-                                    <td>{item.total}</td>
                                 </tr>
                             );
                         })}
@@ -140,7 +139,7 @@ const DeliveryInfo = (props) => {
 // order details
 const OrderDetails = (): React$Element<React$FragmentType> => {
     const order = {
-        id: '#BM31',
+        id: 'BM31',
         order_status: 'Packed',
         items: [
             {
@@ -232,42 +231,30 @@ const OrderDetails = (): React$Element<React$FragmentType> => {
 
             <Row>
                 <Col>
-                    <Row className="justify-content-center">
-                        <Col lg={7} md={10} sm={11}>
-                            <div className="horizontal-steps mt-4 mb-4 pb-5">
-                                <div className="horizontal-steps-content">
-                                    <div className="step-item">
-                                        <OverlayTrigger
-                                            placement="bottom"
-                                            overlay={<Tooltip>20/08/2018 07:24 PM</Tooltip>}>
-                                            <span> Order Placed</span>
-                                        </OverlayTrigger>
-                                    </div>
-                                    <div className="step-item current">
-                                        <OverlayTrigger
-                                            placement="bottom"
-                                            overlay={<Tooltip>21/08/2018 11:32 AM</Tooltip>}>
-                                            <span> Packed</span>
-                                        </OverlayTrigger>
-                                    </div>
-                                    <div className="step-item">
-                                        <span>Shipped</span>
-                                    </div>
-                                    <div className="step-item">
-                                        <span>Delivered</span>
-                                    </div>
-                                </div>
-
-                                <div className="process-line" style={{ width: '33%' }}></div>
-                            </div>
-                        </Col>
-                    </Row>
+                   
 
                     <Row>
                         <Col lg={8}>
                             <Card>
                                 <Card.Body>
-                                    <h4 className="header-title mb-3">Items from Order {order.id}</h4>
+                                    <Row>
+                                        <Col xs={7} >
+                                            <h4 className="header-title mt-2">Orçamento #{order.id}</h4>
+                                        </Col>
+                                        <Col xs={5} className="pb-2" >
+                                            <Select
+                                                className="react-select"
+                                                classNamePrefix="react-select"
+                                                options={[
+                                                    { value: '1', label: "name 1" }
+                                                ]}
+                                                placeholder="Selecione o tipo de orcamento..."
+                                                onChange={(e) => console.log(e.value)}
+                                            ></Select>
+                                        </Col>
+                                    </Row>
+                        
+                     
                                     <Items items={order.items} />
                                 </Card.Body>
                             </Card>
@@ -279,35 +266,18 @@ const OrderDetails = (): React$Element<React$FragmentType> => {
                                     <OrderSummary summary={order} />
                                 </Card.Body>
                             </Card>
-                        </Col>
-                    </Row>
-
-                    <Row>
-                        <Col lg={4}>
                             <Card>
                                 <Card.Body>
                                     <h4 className="header-title mb-3">Shipping Information</h4>
                                     <ShippingInfo details={order.shipping} />
                                 </Card.Body>
                             </Card>
-                        </Col>
-
-                        <Col lg={4}>
                             <Card>
-                                <Card.Body>
-                                    <h4 className="header-title mb-3">Billing Information</h4>
-                                    <BillingInfo details={order.billing} />
-                                </Card.Body>
-                            </Card>
-                        </Col>
-
-                        <Col lg={4}>
-                            <Card>
-                                <Card.Body>
-                                    <h4 className="header-title mb-3">Delivery Info</h4>
-                                    <DeliveryInfo details={order.delivery} />
-                                </Card.Body>
-                            </Card>
+                            <Card.Body>
+                                <h4 className="header-title mb-3">Billing Information</h4>
+                                <BillingInfo details={order.billing} />
+                            </Card.Body>
+                        </Card>
                         </Col>
                     </Row>
                 </Col>
