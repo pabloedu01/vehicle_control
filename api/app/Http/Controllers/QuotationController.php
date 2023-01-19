@@ -64,6 +64,9 @@ class QuotationController extends Controller
         }
         $quotation['quotation_itens'] = $quotationItem;
         $quotation['claim_services'] = $quotationClaim;
+
+        // use showQuotation($id)
+        $quotation = $this->showQuotation($quotation->id);
         return response()->json([
             'message' => 'Quotation created successfully',
             'Quotation' => $quotation,
