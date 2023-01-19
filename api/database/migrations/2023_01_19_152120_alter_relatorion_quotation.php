@@ -13,9 +13,7 @@ class AlterRelatorionQuotation extends Migration
      */
     public function up()
     {
-        Schema::table('client_vehicle', function (Blueprint $table) {
-            $table->dropForeign('vehicle_id');
-            $table->dropColumn('vehicle_id');
+        Schema::table('quotation', function (Blueprint $table) {
             $table->foreignId('client_vehicle_id')->nullable()->constrained('client_vehicles');
         });
     }
@@ -27,7 +25,7 @@ class AlterRelatorionQuotation extends Migration
      */
     public function down()
     {
-        Schema::table('recommendation_service', function (Blueprint $table) {
+        Schema::table('quotation', function (Blueprint $table) {
 
             $table->dropForeign('client_vehicle_id');
             $table->dropColumn('client_vehicle_id');

@@ -66,7 +66,7 @@ protected $filters = [
     }
 
     #has many
-    public function vehicle()
+    public function client_vehicle()
     {
         return $this->belongsTo('App\Models\ClientVehicle', 'client_vehicle_id', 'id')->withTrashed();
 
