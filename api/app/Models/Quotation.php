@@ -73,7 +73,7 @@ protected $filters = [
     }
 
     #has many
-    public function review()
+    public function MaintenanceReview()
     {
         return $this->belongsTo('App\Models\MaintenanceReview', 'maintenance_review_id', 'id')->withTrashed();
 
@@ -89,7 +89,6 @@ protected $filters = [
     {
         return $this->hasMany('App\Models\QuotationClaimService', 'quotation_id', 'id');
     }
-
 
 
 }

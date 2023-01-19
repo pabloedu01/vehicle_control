@@ -18,4 +18,14 @@ class QuotationClaimService extends Model
         'claim_service_id'
 
     ];
+    public function quotation()
+    {
+        return $this->belongsTo('App\Models\Quotation', 'quotation_id', 'id')->withTrashed();
+    }
+    public function claimService()
+    {
+        return $this->belongsTo('App\Models\ClaimService', 'claim_service_id', 'id')->withTrashed();
+    }
 }
+//>withPivot('active', 'created_by');v'integration_code',
+     //   'description'

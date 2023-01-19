@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ClaimService;
+use App\Models\Product;
 use App\Models\Quotation;
 use App\Models\QuotationClaimService;
 use App\Models\QuotationItens;
+use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -70,8 +73,40 @@ class QuotationController extends Controller
 
     public function showQuotation($id){
         $quotation = Quotation::find($id);
-        $quotation['quotation_itens'] = $quotation->quotationItens;
-        $quotation['quotation_claim_services'] = $quotation->quotationClaimService;
+        $quotation->vehicle;
+        $quotation->vehicle->brand;
+        $quotation->vehicle->model;
+        $quotation->technicalConsultant;
+        $quotation->client;
+        $quotation->MaintenanceReview;
+        $quotation->MaintenanceReview->brand;
+        $quotation->MaintenanceReview->model;
+        $quotation->quotationItens;
+        $quotation->quotationClaimService;
+
+        foreach($quotation->quotationClaimService as  $ClaimKey => $claimRow){
+            $claimService = ClaimService::find($claimRow->claim_service_id);
+            $quotation->quotationClaimService[$ClaimKey]['description'] = $claimService->description;
+            $quotation->quotationClaimService[$ClaimKey]['integration_code'] = $claimService->integration_code;
+        }
+        foreach($quotation->quotationItens as $itemKey => $itemRow){
+            if($itemRow->service_id != null) {
+                $service = Service::find($itemRow->service_id);
+                $quotation->quotationItens[$itemKey]['service'] = $service;
+            }else {
+                $quotation->quotationItens[$itemKey]['service'] = null;
+            }
+            if($itemRow->products_id != null) {
+                $product = Product::find($itemRow->products_id);
+                $quotation->quotationItens[$itemKey]['product'] = $product;
+            }else {
+                $quotation->quotationItens[$itemKey]['product'] = null;
+            }
+            $quotation->quotationItens[$itemKey]['total'] = $itemRow['quantity'] * ( $itemRow['price'] - $itemRow['price_discount']);
+        }
+        // $quotation['maintenance_review'] = $quotation->review;  MaintenanceReview
+        // $quotation['quotation_itens'] = $quotation->quotationItens;
+        // $quotation['quotation_claims'] = $quotation->quotationClaimService;
 
         return response()->json([
             'msg'  => trans('general.msg.success'),
@@ -266,3 +301,4 @@ class QuotationController extends Controller
         ], 201);
     }
 }
+
