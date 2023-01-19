@@ -125,14 +125,36 @@ const MENU_ITEMS = [
                 icon: 'mdi mdi-face-agent',
                 parentKey: 'crud'
             },
+            {
+                key: 'OrderService',
+                label: 'Ordem de Serviços',
+                icon: 'mdi mdi-file-document', 
+                parentKey: 'crud',
+                children: [
+                    {
+                        key: 'OsType.index',
+                        label: 'Tipo de OS',
+                        url: '/order-service/os-type/list',
+                        icon: 'mdi mdi-order-bool-ascending-variant',
+                        parentKey: 'OrderService'
+                    },
+                    {
+                        key: 'MantenanceReview.index',
+                        label: 'Revisões',
+                        url: '/order-service/mantenance-review/list',
+                        icon: 'mdi mdi-car-wrench',
+                        parentKey: 'OrderService'
+                    },
+                    {
+                        key: 'recomentation.index',
+                        label: 'Recomendações',
+                        url: '/order-service/recomentation/list',
+                        icon: 'mdi mdi-package',
+                        parentKey: 'OrderService'
+                    }
+                ]
+            },
         ],
-    },
-
-    {
-        key: 'recomentation.index',
-        label: 'Recomendações',
-        url: '/recomentation',
-        icon: 'mdi mdi-package-variant-closed',
     },
 
     {
@@ -140,6 +162,21 @@ const MENU_ITEMS = [
         label: 'Agenda de Serviços',
         url: '/service-schedules/list',
         icon: 'mdi mdi-clipboard-clock',
+    },
+    {
+        key: 'workshop.index',
+        label: 'Oficina',
+        url: '/workshop/estimate/list',
+        icon: 'mdi mdi-garage-open-variant',
+        children: [
+            {
+                key: 'estimate.index',
+                label: 'Orçamentos',
+                url: '/workshop/estimate/list',
+                icon: 'mdi mdi-clipboard-text',
+                parentKey: 'workshop.index'
+            },
+        ]
     },
 ];
 

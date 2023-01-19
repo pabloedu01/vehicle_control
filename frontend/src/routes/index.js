@@ -67,7 +67,13 @@ const ChecklistVersionReport = React.lazy(() => import('../pages/checklist-versi
 
 // Recomentation
 
-const Recomentation = React.lazy(() => import('../pages/Recomentation'));
+const RecomentationCreate = React.lazy(() => import('../pages/orderService/Recomentation/RecomentationCreate'));
+const RecomentationList = React.lazy(() => import('../pages/orderService/Recomentation/RecomentationList'));
+const OsTypeList = React.lazy(() => import('../pages/orderService/OsType/OsTypeList'));
+const OsTypeCreate = React.lazy(() => import('../pages/orderService/OsType/OsTypeCreate'));
+const MantenanceReviewList = React.lazy(() => import('../pages/orderService/MantenanceReview/MantenanceReviewList'));
+const MantenanceReviewCreate = React.lazy(() => import('../pages/orderService/MantenanceReview/MantenanceReviewCreate'));
+
 
 const TireBrandList = React.lazy(() => import('../pages/tire-brand/List'));
 const TireBrandForm = React.lazy(() => import('../pages/tire-brand/Form'));
@@ -106,6 +112,13 @@ const ServiceSchedule = React.lazy(() => import('../pages/ServiceSchedule'));
 
 const ScheduleDetail = React.lazy(() => import('../pages/ScheduleDetail'));
 
+
+// WorkShop 
+
+const EstimateList = React.lazy(() => import('../pages/workshop/EstimateList'));
+const EstimateCreate = React.lazy(() => import('../pages/workshop/EstimateCreate'));
+const SelectionPackage = React.lazy(() => import('../pages/workshop/SelectionPackage'));
+const EstimateConfirmation = React.lazy(() => import('../pages/workshop/EstimateConfirmation'));
 
 // Users Manager
 const Users = React.lazy(() => import('../pages/Users'));
@@ -557,12 +570,78 @@ const AllRoutes = () => {
                         },
                     ]
                 },
-
-
                 {
-                    path: 'recomentation',
-                    element: <LoadComponent component={Recomentation} />,
+                    path: 'order-service',
+                    children: [
+                        {
+                            path: 'os-type',
+                            children: [
+                                {
+                                    path: 'list',
+                                    element: <LoadComponent component={OsTypeList} />,
+                                },
+                                {
+                                    path: 'create',
+                                    element: <LoadComponent component={OsTypeCreate} />,
+                                },
+                            ]
+                        },
+                        {
+                            path: 'mantenance-review',
+                            children: [
+                                {
+                                    path: 'list',
+                                    element: <LoadComponent component={MantenanceReviewList} />,
+                                },
+                                {
+                                    path: 'create',
+                                    element: <LoadComponent component={MantenanceReviewCreate} />,
+                                },
+                            ]
+                        },
+                        {
+                            path: 'recomentation',
+                            children: [
+                                {
+                                    path: 'list',
+                                    element: <LoadComponent component={RecomentationList} />,
+                                },
+                                {
+                                    path: 'create',
+                                    element: <LoadComponent component={RecomentationCreate} />,
+                                }
+                            ]
+                        },
+                    ]
                 },
+                {
+                    path: 'workshop',
+                    children: [
+                        {
+                            path: 'estimate',
+                            children: [
+                                {
+                                    path: 'list',
+                                    element: <LoadComponent component={EstimateList} />,
+                                },
+                                {
+                                    path: 'create',
+                                    element: <LoadComponent component={EstimateCreate} />,
+                                },
+                                {
+                                    path: 'selection-package',
+                                    element: <LoadComponent component={SelectionPackage} />,
+                                },
+                                {
+                                    path: 'confirmation',
+                                    element: <LoadComponent component={EstimateConfirmation} />,
+                                },
+                            ]
+                        },
+                    ]
+                },
+
+            
                 {
                     path: ':type/:id/checklist',
                     element: <LoadComponent component={Checklist} />,

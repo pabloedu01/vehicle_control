@@ -3242,6 +3242,7 @@
 									"value": "1"
 								}
 							]
+
 						},
 						"description": "This route list all quotations of company"
 					},
@@ -3373,7 +3374,9 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
+
 							"raw": "{\n    \"company_id\": 1,\n    \"client_vehicle_id\": 1,\n    \"client_id\": null,\n    \"maintenance_review_id\": 1,\n    \"consultant_id\": 1,\n    \"quotation_itens\": [\n            {\n                \"service_id\": 1,\n                \"products_id\": null,\n                \"price\": \"2\",\n                \"price_discount\": \"1\",\n                \"quantity\": \"2\"\n            }\n        ],\n    \"claim_services\": [\n            {\n                \"claim_service_id\": 1\n            },\n            {\n                \"claim_service_id\": 2\n            }\n        ]\n}\n",
+
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3400,7 +3403,9 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
+
 							"raw": "{\n    \"quotation_id\": 24,\n    \"company_id\": 1,\n    \"client_vehicle_id\": 1,\n    \"client_id\": \"\",\n    \"maintenance_review_id\": 1,\n    \"consultant_id\": 1,\n    \"quotation_itens\": [\n            {\n                \"service_id\": 1,\n                \"products_id\": null,\n                \"price\": \"2\",\n                \"price_discount\": \"1\",\n                \"quantity\": \"2\"\n            }\n        ],\n    \"claim_services\": [\n            {\n                \"claim_service_id\": 1\n            },\n            {\n                \"claim_service_id\": 2\n            }\n        ]\n}\n",
+
 							"options": {
 								"raw": {
 									"language": "json"

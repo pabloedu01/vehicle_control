@@ -14,7 +14,7 @@ const optionGetter = (option) => {
                         <div className="d-flex">
                             <div className="w-100">
                                 <h5 className="drop-username m-0 font-14">
-                                    {option.userDetails.firstname} {option.userDetails.lastname}
+                                    {option.label} 
                                 </h5>
                             </div>
                         </div>
@@ -53,7 +53,6 @@ const IndicatorsContainer = (props) => {
 
 /* custom menu list */
 const MenuList = (props) => {
-    console.log('teste')
     return (
         <components.MenuList {...props}>
             {/* menu header */}
@@ -71,43 +70,50 @@ const handleFormatOptionLabel = (option) => {
 
 // type TopbarSearchProps = {};
 
-const SearchModified = (props: TopbarSearchProps): React$Element<any> => {
-    const [technicalConsultantSelected, setTechnicalConsultantSelected] = useState()
-    const options = [
-        {
-            label: 'Erwin Brown',
-            value: 'users1',
-            userDetails: {
-                firstname: 'Erwin',
-                lastname: 'Brown',
-                cod: '0001'
-            },
-        },
-        {
-            label: 'Jacob Deo',
-            value: 'users2',
-            userDetails: {
-                firstname: 'Jacob',
-                lastname: 'Deo',
-                cod: '0002'
-            },
-        },
-        {
-            label: 'Pablo Eduardo Lima Celestino',
-            value: 'users3',
-            userDetails: {
-                firstname: 'Pablo',
-                lastname: 'Celestino',
-                cod: 'PELC'
-            },
-        },
-    ];
+const SearchModified = (props) => {
+   
+    const options = props.TechnicalConsultant.map(item => {
+        return {
+            label: item.label,
+            value: item.value,
+         
+        }
+    }) 
+
+    // const options = [
+    //     {
+    //         label: 'Erwin Brown',
+    //         value: 'users1',
+    //         userDetails: {
+    //             firstname: 'Erwin',
+    //             lastname: 'Brown',
+    //             cod: '0001'
+    //         },
+    //     },
+    //     {
+    //         label: 'Jacob Deo',
+    //         value: 'users2',
+    //         userDetails: {
+    //             firstname: 'Jacob',
+    //             lastname: 'Deo',
+    //             cod: '0002'
+    //         },
+    //     },
+    //     {
+    //         label: 'Pablo Eduardo Lima Celestino',
+    //         value: 'users3',
+    //         userDetails: {
+    //             firstname: 'Pablo',
+    //             lastname: 'Celestino',
+    //             cod: 'PELC'
+    //         },
+    //     },
+    // ];
 
     const onClick = (e) => {
         e.preventDefault();
         e.stopPropagation();
         // props.handleTechnicalConsultantSelected(technicalConsultantSelected)
-        console.log(onClick)
     };
 
     return (
@@ -131,7 +137,6 @@ const SearchModified = (props: TopbarSearchProps): React$Element<any> => {
                 className="app-search dropdown"
                 classNamePrefix="react-select"
                 onChange={(item) => {
-                    console.log(item)
                     props.handleTechnicalConsultantSelected(item)
                 }}
             />
