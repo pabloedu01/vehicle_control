@@ -10,14 +10,14 @@ use App\Models\QuotationItens;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-
+use Illuminate\Support\Facades\DB;
 
 class QuotationController extends Controller
 {
     private static $with = [
         'client',
         'vehicle',
-        'review',
+        'MaintenanceReview',
         'technicalConsultant.user',
 
 
@@ -192,6 +192,21 @@ class QuotationController extends Controller
         $quotations = Quotation::with(collect(self::$with)->take(5)->toArray())
                                            ->list()
                                            ->get();
+        foreach($quotations as $key => $quotation){
+
+            $quotations[$key]['QtdPecas'] = QuotationItens::where('quotation_id', $quotation->id)->where('products_id', '!=', null)->count();
+            $quotations[$key]['QtdServicos'] = QuotationItens::where('quotation_id', $quotation->id)->where('service_id', '!=', null)->count();
+            $quotations[$key]['TotalPecas'] = QuotationItens::where('quotation_id', $quotation->id)->where('products_id', '!=', null)->sum(DB::raw('price * quantity'));
+            $quotations[$key]['TotalPecasDesconto'] = QuotationItens::where('quotation_id', $quotation->id)->where('products_id', '!=', null)->sum(DB::raw('price_discount * quantity'));
+            $quotations[$key]['TotalServicos'] =  QuotationItens::where('quotation_id', $quotation->id)->where('service_id', '!=', null)->sum(DB::raw('price * quantity'));
+            $quotations[$key]['TotalServicosDesconto'] =  QuotationItens::where('quotation_id', $quotation->id)->where('service_id', '!=', null)->sum(DB::raw('price_discount * quantity'));
+            $quotations[$key]['TotalGeral'] =  $quotations[$key]['TotalServicos']  + $quotations[$key]['TotalPecas'];
+            $quotations[$key]['TotalGeralDesconto'] =  $quotations[$key]['TotalPecasDesconto'] + $quotations[$key]['TotalServicosDesconto'] ;
+
+
+
+
+        }
 
         return response()->json([
                                     'msg' => trans('general.msg.success'),
