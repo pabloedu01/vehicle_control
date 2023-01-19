@@ -1,8 +1,12 @@
-import { Row, Col, Card} from 'react-bootstrap';
+import { Row, Col, Card, Button} from 'react-bootstrap';
 import Select from 'react-select';
+import {useNavigate, useParams} from "react-router-dom";
 
 // components
 import PageTitle from '../../../components/PageTitle';
+import {ModalVehicleSearch} from "../../../components/Vehicle/ModalVehicleSearch"
+import {ModalClientSearch} from "../../../components/Client/ModalClientSearch"
+import { useState } from 'react';
 
 // Item Table
 const Items = (props) => {
@@ -35,79 +39,27 @@ const Items = (props) => {
     );
 };
 
-// summary
-const OrderSummary = (props) => {
-    const summary = props.summary || {};
-
-    return (
-        <div className="table-responsive">
-            <table className="table mb-0">
-                <thead className="table-light">
-                    <tr>
-                        <th>Description</th>
-                        <th>Price</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Grand Total :</td>
-                        <td>{summary.gross_total}</td>
-                    </tr>
-                    <tr>
-                        <td>Shipping Charge :</td>
-                        <td>{summary.shipping_charge}</td>
-                    </tr>
-                    <tr>
-                        <td>Estimated Tax : </td>
-                        <td>{summary.tax}</td>
-                    </tr>
-                    <tr>
-                        <th>Total :</th>
-                        <td>{summary.net_total}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    );
-};
-
-// shipping info
-const ShippingInfo = (props) => {
+const ClientInfo = (props) => {
     const details = props.details || {};
+    console.log(details)
     return (
         <>
-            <h5>{details.provider}</h5>
-
-            <address className="mb-0 font-14 address-lg">
-                {details.address_1}
-                <br />
-                {details.address_2}
-                <br />
-                <abbr title="Phone">P:</abbr> {details.phone} <br />
-                <abbr title="Mobile">M:</abbr> {details.mobile}
-            </address>
-        </>
-    );
-};
-
-// billing info
-const BillingInfo = (props) => {
-    const details = props.details || {};
-    return (
-        <>
-            <ul className="list-unstyled mb-0">
+            <ul className="list-unstyled mb-0 mt-2">
                 <li>
                     <p className="mb-2">
-                        <span className="fw-bold me-2">Payment Type:</span> {details.type}
+                        <span className="fw-bold me-2">Nome:</span> {details.name}
                     </p>
                     <p className="mb-2">
-                        <span className="fw-bold me-2">Provider:</span> {details.provider}
+                        <span className="fw-bold me-2">Telefone:</span> {details.phone.map((item, index) => <span>{`${item}${index < details.phone.length? ' - ' : ''}`}</span>)}
                     </p>
                     <p className="mb-2">
-                        <span className="fw-bold me-2">Valid Date:</span> {details.valid}
+                        <span className="fw-bold me-2">Email:</span> {details.email.map((item, index) => <span>{`${item}${index < details.phone.length? ' - ' : ''}`}</span>)}
+                    </p>
+                    <p className="mb-2">
+                        <span className="fw-bold me-2">Endereço:</span> {details.address}
                     </p>
                     <p className="mb-0">
-                        <span className="fw-bold me-2">CVV:</span> xxx
+                        <span className="fw-bold me-2">Cep:</span> xxx
                     </p>
                 </li>
             </ul>
@@ -115,29 +67,54 @@ const BillingInfo = (props) => {
     );
 };
 
-// delivery info
-const DeliveryInfo = (props) => {
+const VehicleInfo = (props) => {
     const details = props.details || {};
     return (
         <>
-            <div className="text-center">
-                <i className="mdi mdi-truck-fast h2 text-muted"></i>
-                <h5>
-                    <b>{details.provider}</b>
-                </h5>
-                <p className="mb-1">
-                    <b>Order ID :</b> {details.order_id}
-                </p>
-                <p className="mb-0">
-                    <b>Payment Mode :</b> {details.payment_mode}
-                </p>
-            </div>
+            <ul className="list-unstyled mb-0 mt-2">
+                <li>
+                    <p className="mb-2">
+                        <span className="fw-bold me-2">Marca:</span> {details.vehicle?.model.brand.name}
+                    </p>
+                    <p className="mb-2">
+                        <span className="fw-bold me-2">Modelo:</span> {details.vehicle?.model.name}
+                    </p>
+                    <p className="mb-2">
+                        <span className="fw-bold me-2">Veículo:</span> {details.vehicle?.name}
+                    </p>
+                    <p className="mb-2">
+                        <span className="fw-bold me-2">Chassi:</span> {details.chasis}
+                    </p>
+                    <p className="mb-2">
+                        <span className="fw-bold me-2">Placa:</span> {details.plate}
+                    </p>
+                    <p className="mb-2">
+                        <span className="fw-bold me-2">Quilometragem:</span> {details.mileage}
+                    </p>
+                    <p className="mb-2">
+                        <span className="fw-bold me-2">ano:</span> {details.vehicle?.model_year}
+                    </p>
+                    <p className="mb-0">
+                        <span className="fw-bold me-2">Cor:</span> {details.color}
+                    </p>
+                </li>
+            </ul>
         </>
     );
 };
 
+
+
 // order details
-const OrderDetails = (): React$Element<React$FragmentType> => {
+export default function EstimateCreate() {
+    const [showModalSearchVehicle, setShowModalSearchVehicle] = useState(false)
+    const [clientVehicleData, setClientVehicleData] = useState(null)
+    
+    const [showModalSearchClient, setShowModalSearchClient] = useState(false)
+    const [clientData, setClienData] = useState(null)
+    
+    const {companyId} = useParams();
+
     const order = {
         id: 'BM31',
         order_status: 'Packed',
@@ -215,18 +192,25 @@ const OrderDetails = (): React$Element<React$FragmentType> => {
         },
     };
 
+    function handleChangeClientVehicleData (data) {
+        setClientVehicleData(data)
+    }
+    function handleChangeClientData (data) {
+        setClienData(data)
+    }
+   
     return (
         <>
             <PageTitle
                 breadCrumbItems={[
                     { label: 'eCommerce', path: '/apps/ecommerce/order/details' },
                     {
-                        label: 'Order Details',
+                        label: 'Orçamento',
                         path: '/apps/ecommerce/order/details',
                         active: true,
                     },
                 ]}
-                title={'Order Details'}
+                title={'Orçamento'}
             />
 
             <Row>
@@ -241,19 +225,60 @@ const OrderDetails = (): React$Element<React$FragmentType> => {
                                         <Col xs={7} >
                                             <h4 className="header-title mt-2">Orçamento #{order.id}</h4>
                                         </Col>
-                                        <Col xs={5} className="pb-2" >
+                                        <Col xs={5} className="d-flex align-items-center" >
+
+
+                                            <label className='fw-bold me-1' >Tipo:</label> 
                                             <Select
-                                                className="react-select"
+                                                className="react-select w-100"
                                                 classNamePrefix="react-select"
                                                 options={[
-                                                    { value: '1', label: "name 1" }
+                                                    { value: '1', label: "Tipo 1" },
+                                                    { value: '2', label: "Tipo 2" },
+                                                    { value: '3', label: "Tipo 3" },
+                                                    { value: '3', label: "3" },
                                                 ]}
-                                                placeholder="Selecione o tipo de orcamento..."
+                                                placeholder="Selecione..."
                                                 onChange={(e) => console.log(e.value)}
                                             ></Select>
                                         </Col>
                                     </Row>
-                        
+                                    <Row>
+                                        <Col className='d-flex align-items-center mt-2 gap-2 '>
+                                            <div className="app-search w-100">
+                                                <div className="form-group position-relative">
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        placeholder="Digite uma sugestão..."
+                                                        onChange={(e) => console.log(e.target.value)}
+                                                    />
+                                                    <span className="mdi mdi-magnify search-icon"></span>
+                                                </div>
+                                            </div>
+                                            <Button type="button" className='text-nowrap' variant="outline-secondary">
+                                                Pesquisar sugestões
+                                            </Button>
+                                        </Col>
+                                    </Row>
+
+                                    <Row className='mt-2'>
+                                        <Col sm={4}>
+                                            
+                                        </Col>
+                                        <Col sm={4} className="d-flex align-items-center justify-content-center">
+                                            <h4 className="header-title">Items selecionado</h4>
+                                        </Col>
+                                        <Col sm={4} className="d-flex align-content-center justify-content-end mb-2 mt-1 gap-1">
+                                            <Button type="button" className='btn-sm text-nowrap px-2' variant="primary">
+                                                <i className="mdi mdi-plus"></i><span className=''>Serviços</span>
+                                            </Button>
+                                            <Button type="button" className='btn-sm text-nowrap px-2' variant="primary">
+                                                <i className="mdi mdi-plus"></i><span>Peças</span>
+                                            </Button>
+                                        </Col>
+                                    </Row>
+
                      
                                     <Items items={order.items} />
                                 </Card.Body>
@@ -262,28 +287,55 @@ const OrderDetails = (): React$Element<React$FragmentType> => {
                         <Col lg={4}>
                             <Card>
                                 <Card.Body>
-                                    <h4 className="header-title mb-3">Order Summary</h4>
-                                    <OrderSummary summary={order} />
+                                    <div className='d-flex align-items-start justify-content-between'>
+                                    
+                                        <h4 className="header-title">Cliente</h4>
+                                        <Button 
+                                            type="button" 
+                                            className='btn-sm px-2' 
+                                            variant="primary"
+                                            onClick={ () => setShowModalSearchClient(true)}
+                                        >
+                                            Adicionar                                       
+                                        </Button>
+                                    </div>
+                                    <ClientInfo details={clientData} />
                                 </Card.Body>
                             </Card>
                             <Card>
                                 <Card.Body>
-                                    <h4 className="header-title mb-3">Shipping Information</h4>
-                                    <ShippingInfo details={order.shipping} />
+                                <div className='d-flex align-items-start justify-content-between'>
+                                    <h4 className="header-title">Veículo</h4>
+                                    <Button 
+                                        type="button" 
+                                        className='btn-sm px-2' 
+                                        variant="primary"
+                                        onClick={() => setShowModalSearchVehicle(true)}
+                                    >
+                                        Adicionar                                       
+                                    </Button>
+                                </div>
+                                    <VehicleInfo details={clientVehicleData} />
                                 </Card.Body>
                             </Card>
-                            <Card>
-                            <Card.Body>
-                                <h4 className="header-title mb-3">Billing Information</h4>
-                                <BillingInfo details={order.billing} />
-                            </Card.Body>
-                        </Card>
                         </Col>
                     </Row>
                 </Col>
             </Row>
+            
+            <ModalVehicleSearch 
+                company_id={companyId} 
+                showModalSearchVehicle={showModalSearchVehicle} 
+                setShowModalSearchVehicle={setShowModalSearchVehicle} 
+                handleChangeClientVehicleData={handleChangeClientVehicleData}
+            />
+            <ModalClientSearch 
+                company_id={companyId} 
+                showModalSearchClient={showModalSearchClient} 
+                setShowModalSearchClient={setShowModalSearchClient} 
+                handleChangeClientData={handleChangeClientData}
+            />
         </>
     );
 };
 
-export default OrderDetails;
