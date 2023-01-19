@@ -128,30 +128,8 @@ class QuotationController extends Controller
         ],
         Response::HTTP_OK);
     }
-    public function deleteItens($id){
-        $quotationItens = QuotationItens::where('Quotation_id', $id)->get();
-        $quotationItens->delete();
-        return response()->json([
-            'msg'  => trans('general.msg.success'),
 
-        ],    Response::HTTP_OK);
 
-    }
-    public function updateItens(Request $request){
-
-        $request->validate([
-            'Quotation_id' => 'required',
-            'quantity' => 'required',
-            'price' => 'required',
-        ]);
-        QuotationItens::where('Quotation_id', $request->Quotation_id)->delete();
-
-        $quotationItens = QuotationItens::create($request->all());
-        return response()->json([
-            'message' => 'Quotation created successfully',
-            'data' => $quotationItens
-        ], 201);
-    }
     public function updateQuotation(Request $request) {
 
         $consultant =  $request->consultant_id ;
@@ -196,8 +174,11 @@ class QuotationController extends Controller
 
         $quotation['quotation_itens'] = $quotationItem;
         $quotation['claim_services'] = $quotationClaim;
+
+        $quotation = $this->showQuotation($quotation->id);
+
         return response()->json([
-            'message' => 'Quotation created successfully',
+            'message' => 'Quotation updated successfully',
             'Quotation' => $quotation,
         ], 201);
 
@@ -221,71 +202,6 @@ class QuotationController extends Controller
                                 ],
                                 Response::HTTP_OK
         );
-    }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Quotation  $quotation
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Quotation $quotation)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Quotation  $quotation
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Quotation $quotation)
-    {
-
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Quotation  $quotation
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Quotation $quotation)
-    {
-        //
     }
 
     /**
