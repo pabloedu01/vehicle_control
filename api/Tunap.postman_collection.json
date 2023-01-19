@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "1eab3792-a71b-4aa8-841c-73a13d90bd5b",
+		"_postman_id": "ccab83ca-bcd0-49dd-8469-f5202db432fc",
 		"name": "Tunap",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "14505537"
+		"_exporter_id": "17259826"
 	},
 	"item": [
 		{
@@ -3212,6 +3212,132 @@
 								"api",
 								"file-upload",
 								"image"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Quotation",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/quotations?company_id=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"quotations"
+							],
+							"query": [
+								{
+									"key": "company_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/api/quotations/show/24",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"quotations",
+								"show",
+								"24"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/quotations/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"quotations",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"company_id\": 1,\n    \"vehicle_id\": 1,\n    \"client_id\": null,\n    \"maintenance_review_id\": 1,\n    \"consultant_id\": 1,\n    \"quotation_itens\": [\n            {\n                \"service_id\": 1,\n                \"products_id\": null,\n                \"price\": \"2\",\n                \"price_discount\": \"1\",\n                \"quantity\": \"2\"\n            }\n        ],\n    \"claim_services\": [\n            {\n                \"claim_service_id\": 1\n            },\n            {\n                \"claim_service_id\": 2\n            }\n        ]\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/quotations",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"quotations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quotation_id\": 24,\n    \"company_id\": 1,\n    \"vehicle_id\": 1,\n    \"client_id\": \"\",\n    \"maintenance_review_id\": 1,\n    \"consultant_id\": 1,\n    \"quotation_itens\": [\n            {\n                \"service_id\": 1,\n                \"products_id\": null,\n                \"price\": \"2\",\n                \"price_discount\": \"1\",\n                \"quantity\": \"2\"\n            }\n        ],\n    \"claim_services\": [\n            {\n                \"claim_service_id\": 1\n            },\n            {\n                \"claim_service_id\": 2\n            }\n        ]\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/quotations",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"quotations"
 							]
 						}
 					},
