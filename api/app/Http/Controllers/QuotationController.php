@@ -22,13 +22,12 @@ class QuotationController extends Controller
     ];
     public function storeQuotation(Request $request){
         //validade request and store
-        $consultant =  $request->consultant_id ;
-        if($request->consultant_id == null){
-            $consultant = $request->user()->technicalConsultant->id;
-        }
+
         $request->validate([
             'company_id' => 'required',
         ]);
+        $consultant =  $request->consultant_id ;
+
         $quotation = new Quotation();
         $quotation->client_id = $request->client_id;
         $quotation->client_vehicle_id = $request->client_vehicle_id;
@@ -45,6 +44,8 @@ class QuotationController extends Controller
                 $quotationClaim->claim_service_id = $claim['claim_service_id'];
                 $quotationClaim->save();
             }
+        $quotation['claim_services'] = $quotationClaim;
+
         }
        if($request->quotation_itens != null){
             foreach($request->quotation_itens as $item){
@@ -59,9 +60,9 @@ class QuotationController extends Controller
                 // return $quotationItem;
                 $quotationItem->save();
             }
-        }
         $quotation['quotation_itens'] = $quotationItem;
-        $quotation['claim_services'] = $quotationClaim;
+
+        }
 
         // use showQuotation($id)
         $quotation = $this->showQuotation($quotation->id);
@@ -74,15 +75,19 @@ class QuotationController extends Controller
 
     public function showQuotation($id){
         $quotation = Quotation::find($id);
-        $quotation->client_vehicle;
-        $quotation->client_vehicle->vehicle;
-        $quotation->client_vehicle->vehicle->brand;
-        $quotation->client_vehicle->vehicle->model;
+
+        if( $quotation->client_vehicle) {
+            $quotation->client_vehicle->vehicle;
+            $quotation->client_vehicle->vehicle->brand;
+            $quotation->client_vehicle->vehicle->model;
+        }
         $quotation->technicalConsultant;
         $quotation->client;
         $quotation->MaintenanceReview;
-        $quotation->MaintenanceReview->brand;
-        $quotation->MaintenanceReview->model;
+        if($quotation->MaintenanceReview){
+            $quotation->MaintenanceReview->brand;
+            $quotation->MaintenanceReview->model;
+        }
         $quotation->quotationItens;
         $quotation->quotationClaimService;
 
