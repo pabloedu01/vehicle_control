@@ -16,11 +16,9 @@ class QuotationController extends Controller
 {
     private static $with = [
         'client',
-        'vehicle',
+        'client_vehicle',
         'MaintenanceReview',
         'technicalConsultant.user',
-
-
     ];
     public function storeQuotation(Request $request){
         //validade request and store
@@ -33,7 +31,7 @@ class QuotationController extends Controller
         ]);
         $quotation = new Quotation();
         $quotation->client_id = $request->client_id;
-        $quotation->vehicle_id = $request->vehicle_id;
+        $quotation->client_vehicle_id = $request->client_vehicle_id;
         $quotation->maintenance_review_id = $request->maintenance_review_id;
         $quotation->consultant_id =  $consultant;
         $quotation->company_id = $request->company_id;
@@ -76,9 +74,10 @@ class QuotationController extends Controller
 
     public function showQuotation($id){
         $quotation = Quotation::find($id);
-        $quotation->vehicle;
-        $quotation->vehicle->brand;
-        $quotation->vehicle->model;
+        $quotation->client_vehicle;
+        $quotation->client_vehicle->vehicle;
+        $quotation->client_vehicle->vehicle->brand;
+        $quotation->client_vehicle->vehicle->model;
         $quotation->technicalConsultant;
         $quotation->client;
         $quotation->MaintenanceReview;
@@ -141,7 +140,7 @@ class QuotationController extends Controller
         ]);
         $quotation =  Quotation::find($request->quotation_id);
         $quotation->client_id = $request->client_id;
-        $quotation->vehicle_id = $request->vehicle_id;
+        $quotation->client_vehicle_id = $request->client_vehicle_id;
         $quotation->maintenance_review_id = $request->maintenance_review_id;
         $quotation->consultant_id =  $consultant;
         $quotation->company_id = $request->company_id;
@@ -152,7 +151,7 @@ class QuotationController extends Controller
         QuotationClaimService::where('quotation_id', $request->quotation_id)->delete();
             foreach($request->claim_services as $claim ){
                 $quotationClaim = new QuotationClaimService();
-                $quotationClaim->quotation_id = $quotation->id;
+                $quotationClaim->quotation_id = $request->quotation_id;
                 $quotationClaim->claim_service_id = $claim['claim_service_id'];
                 $quotationClaim->save();
             }
@@ -161,7 +160,7 @@ class QuotationController extends Controller
         QuotationItens::where('quotation_id', $request->quotation_id)->delete();
             foreach($request->quotation_itens as $item){
                 $quotationItem = new QuotationItens();
-                $quotationItem->quotation_id = $quotation->id;
+                $quotationItem->quotation_id = $request->quotation_id;
                 $quotationItem->service_id = $item['service_id'];
                 $quotationItem->products_id = $item['products_id'];
                 $quotationItem->quantity = $item['quantity'];
