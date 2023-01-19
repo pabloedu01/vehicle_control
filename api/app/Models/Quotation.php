@@ -18,7 +18,7 @@ class Quotation extends Model
     protected $fillable = [
 
         'client_id',
-        'vehicle_id',
+        'client_vehicle_id',
         'maintenance_review_id',
         'consultant_id',
         'company_id',
@@ -27,7 +27,7 @@ class Quotation extends Model
 
     protected $filterJoins = '
     INNER JOIN client ON client.id = quotation.client_id
-    INNER JOIN vehicles ON vehicles.id = quotation.vehicle_id
+    INNER JOIN vehicles ON vehicles.id = quotation.client_vehicle_id
     INNER JOIN vehicle_brands ON vehicle_brands.id = vehicles.brand_id
 ';
 
@@ -68,7 +68,7 @@ protected $filters = [
     #has many
     public function vehicle()
     {
-        return $this->belongsTo('App\Models\Vehicle', 'vehicle_id', 'id')->withTrashed();
+        return $this->belongsTo('App\Models\ClientVehicle', 'client_vehicle_id', 'id')->withTrashed();
 
     }
 
