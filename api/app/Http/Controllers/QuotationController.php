@@ -11,6 +11,7 @@ use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\Quotation as QuotationRequest;
 
 class QuotationController extends Controller
 {
@@ -20,7 +21,7 @@ class QuotationController extends Controller
         'MaintenanceReview',
         'technicalConsultant.user',
     ];
-    public function storeQuotation(Request $request){
+    public function storeQuotation(QuotationRequest $request){
         //validade request and store
 
         $request->validate([
@@ -239,4 +240,3 @@ class QuotationController extends Controller
         ], 201);
     }
 }
-

@@ -47,6 +47,22 @@ protected $filters = [
             ->dynamicFilter()
             ->orderBy('created_at', 'desc');
     }
+    public static function rules($request) {
+        $validar = ['error' => ''];
+
+        // get $fillable
+        $fillable = (new Quotation())->fillable;
+
+
+        // if($request['client_vehicle_id'] != null){
+        //     $client =  ClientVehicle::where('id', $request['client_vehicle_id'])
+        //                      ->where('company_id',$request['company_id'])->count();
+        //      if($client == 0){
+        //          $validar['error'] = 'Veículo não pertence a empresa';
+        //          return $validar;
+        //      }
+        //  }
+    }
     #belongs to
     public function company()
     {
