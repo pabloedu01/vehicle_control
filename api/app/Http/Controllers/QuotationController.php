@@ -75,8 +75,9 @@ class QuotationController extends Controller
     public function showQuotation($id){
         $quotation = Quotation::find($id);
         $quotation->client_vehicle;
-        $quotation->client_vehicle->brand;
-        $quotation->client_vehicle->model;
+        $quotation->client_vehicle->vehicle;
+        $quotation->client_vehicle->vehicle->brand;
+        $quotation->client_vehicle->vehicle->model;
         $quotation->technicalConsultant;
         $quotation->client;
         $quotation->MaintenanceReview;
