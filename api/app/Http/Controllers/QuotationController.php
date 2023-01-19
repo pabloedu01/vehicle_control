@@ -152,7 +152,7 @@ class QuotationController extends Controller
         QuotationClaimService::where('quotation_id', $request->quotation_id)->delete();
             foreach($request->claim_services as $claim ){
                 $quotationClaim = new QuotationClaimService();
-                $quotationClaim->quotation_id = $quotation->id;
+                $quotationClaim->quotation_id = $request->quotation_id;
                 $quotationClaim->claim_service_id = $claim['claim_service_id'];
                 $quotationClaim->save();
             }
@@ -161,7 +161,7 @@ class QuotationController extends Controller
         QuotationItens::where('quotation_id', $request->quotation_id)->delete();
             foreach($request->quotation_itens as $item){
                 $quotationItem = new QuotationItens();
-                $quotationItem->quotation_id = $quotation->id;
+                $quotationItem->quotation_id = $request->quotation_id;
                 $quotationItem->service_id = $item['service_id'];
                 $quotationItem->products_id = $item['products_id'];
                 $quotationItem->quantity = $item['quantity'];
