@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react';
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams, Link} from "react-router-dom";
 import { Row, Col, Card, Table, Pagination, Button, Badge, Modal } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import PageTitle from '../../../components/PageTitle';
 import FormInput from '../../../components/FormInput';
-// import { APICore } from 'helpers/api/apiCore';
+import { APICore } from '../../../helpers/api/apiCore';
 import { FilterDropdown } from './FilterDropdown'
 import { OrganizeDropdown } from './organizeDropdown'
 import useToggle from '../../../hooks/useToggle'
 
-// const api = new APICore();
 
 const filterValues = [
     {
@@ -85,15 +84,24 @@ const fakeData = [{
     nome: 'Pablo'
 }]
 
-export default function EstimateList() {
-    const [data, setData] = useState(fakeData) 
-    const [openTagsSelected, setOpenTagsSelected] = useState(false) 
+export default function QuotationsList() {
+    const [data, setData] = useState([]) 
+    // const [openTagsSelected, setOpenTagsSelected] = useState(false) 
     const [filterTagsSelected, setFilterTagsSelected] = useState(filterValues) 
     const [organizeSelected, setOrganizeSelected] = useState(organizeValues) 
     const [isStandardOpen, toggleStandard] = useToggle()
+    const [paginateData, setPaginateData] = useState({
+        fistPage: 1,
+        previousPage: null,
+        nextPage: null,
+        currentPage: 1,
+        lastPage: null,
+    })
     
     const history = useNavigate();
-
+    const api = new APICore()
+    const {companyId} = useParams();
+    
     const methods = useForm({
         defaultValues: {
             password: '12345',
@@ -107,9 +115,33 @@ export default function EstimateList() {
         control,
         formState: { errors },
     } = methods;
+
+    function handlePaginateNext(page) {
+        
+
+    }
     
     useEffect(() => {
-        // api.get('/grupo',null).then(res => setData(res.data))
+        api.get('/quotations?company_id='+companyId, null).then(res => {
+            setData(res.data.data)
+            setPaginateData({
+                fistPage: 1,
+                previousPage: null,
+                currentPage: res.data.current_page,
+                nextPage: res.data.total_pages <= 1 ? null : res.data.total_pages,
+                lastPage: res.data.total_pages,
+            })
+            // setPaginateData({
+            //     fistPage: 1,
+            //     previousPage: 1,
+            //     currentPage: 2,
+            //     nextPage: 3,
+            //     lastPage: 10,
+            // })
+            console.log(res.data)
+            console.log(paginateData)
+            console.log((!!paginateData.previousPage && !!paginateData.nextPage))
+        })
     }, [])
     
     return (
@@ -119,7 +151,7 @@ export default function EstimateList() {
                     { label: 'Oficina', path: '/workshop/' },
                     {
                         label: 'Lista de orçamentos',
-                        path: '/workshop/estimate/list',
+                        path: '/workshop/quotation/list',
                         active: true,
                     },
                 ]}
@@ -155,7 +187,7 @@ export default function EstimateList() {
                                             <i className="mdi mdi-basket me-1" /> Nova Agenda de Serviço
                                         </Button>*/}
                                         <Button variant="danger" onClick={toggleStandard}>
-                                            <i className="mdi mdi-basket me-1" /> Nova orçamento
+                                            <i className="mdi mdi-basket me-1" /> Novo orçamento
                                         </Button>
                                     </div>
                                 </Col>
@@ -181,42 +213,70 @@ export default function EstimateList() {
                                     <tr>
                                         <th>Numero</th>
                                         <th>Cliente</th>
-                                        <th>Veículo</th>
+                                        <th>Placa</th>
                                         <th>Chassi</th>
                                         <th>Responsável</th>
                                         <th>Tipo Orçamento</th>
-                                        <th>Data</th>
+                                        <th>Total Desconto</th>
+                                        <th>Total Geral</th>
                                         <th>Ação</th>
                                     </tr>
                                 </thead>
                                 <tbody >
-                                    {data?.map((record, index) => {
+                                    {data && data?.map((record, index) => {
                                         return (
-                                            <tr key={index.toString()} onClick={() => console.log('click')}>
-                                                <th >{record.id}</th>
-                                                <td>{record.nome}</td>
+                                            <tr key={index.toString()} onClick={(e) => {
+                                                e.stopPropagation();
+                                                console.log('click')
+                                            }}>
+                                                
+                                                <td>{record.id ?? ' - '}</td>
+                                                <td>{record.client?.name ?? ' - '}</td>
+                                                <td>{record.client_vehicle?.plate ?? '-'}</td>
+                                                <td>{record.client_vehicle?.chasis ?? '-'}</td>
+                                                <td>{record.technical_consultant?.name ?? '-'}</td>
+                                                <td>{}</td>
+                                                <td>{record.TotalGeralDesconto ?? '-'}</td>
+                                                <td>{record.TotalGeral ?? '-'}</td>
+                                            
+                                                <td onClick={e => e.stopPropagation()}>  
+                                                    <Link to="#" className="action-icon" onClick={() => console.log('click delete')}>
+                                                        <i className="mdi mdi-delete"></i>
+                                                    </Link>
+                                                </td>
                                             </tr>
                                         );
                                     })}
                                 </tbody>
                             </Table>
                             <Row>
-                                <Col className='d-flex align-content-center justify-content-center'>
+                                <Col className='d-flex align-content-center justify-content-center mt-3'>
                                     <Pagination>
             
-                                        <Pagination.Prev>
-                                            anterior
-                                        </Pagination.Prev>
-                                        <Pagination.Item onClick={() => console.log('click')}>{1}</Pagination.Item>
-                                        <Pagination.Ellipsis />
+                                        {paginateData?.previousPage && (
+                                            <>
+                                                <Pagination.Prev>
+                                                    anterior
+                                                </Pagination.Prev>
+                                                <Pagination.Item onClick={() => console.log('click')}>{paginateData.fistPage}</Pagination.Item>
+                                                <Pagination.Ellipsis />
+                                            </>
+                                        )}
 
-                                        <Pagination.Item active onClick={() => console.log('click')}>{2}</Pagination.Item>
-                                        <Pagination.Ellipsis />
-                                        <Pagination.Item onClick={() => console.log('click')}>{3}</Pagination.Item>
-                                        
-                                        <Pagination.Next>
-                                            proxima
-                                        </Pagination.Next>
+                                       { (!paginateData.previousPage && !paginateData.nextPage) &&
+                                            (<Pagination.Item active onClick={() => console.log('click')}>{paginateData.currentPage}</Pagination.Item>
+                                       )}
+                                        {paginateData.nextPage && (
+                                            <>
+                                            <Pagination.Ellipsis />
+                                            <Pagination.Item onClick={() => console.log('click')}>{paginateData.lastPage}</Pagination.Item>
+                                            
+                                            <Pagination.Next>
+                                                proxima
+                                            </Pagination.Next>
+                                            </>
+                                        )}
+    
                                     </Pagination>
                                 </Col>
                             </Row>
@@ -232,31 +292,31 @@ export default function EstimateList() {
                 <Button 
                     variant="Primary"                             
                     className="btn btn-primary w-100 mb-2"
-                    onClick={() => { history(`/panel/company/2/workshop/estimate/create`) }}>
+                    onClick={() => { history(`/panel/company/2/workshop/quotation/create`) }}>
                     1ª Revisão
                 </Button>
                 <Button 
                     variant="Primary"                             
                     className="btn btn-primary w-100 mb-2"
-                    onClick={() => { history(`/panel/company/2/workshop/estimate/create`) }}>
+                    onClick={() => { history(`/panel/company/2/workshop/quotation/create`) }}>
                     2ª Revisão
                 </Button>
                 <Button 
                     variant="Primary"                             
                     className="btn btn-primary w-100 mb-2"
-                    onClick={() => { history(`/panel/company/2/workshop/estimate/create`) }}>
+                    onClick={() => { history(`/panel/company/2/workshop/quotation/create`) }}>
                     3ª Revisão
                 </Button>
                 <Button 
                     variant="Primary"                             
                     className="btn btn-primary w-100 mb-2"
-                    onClick={() => { history(`/panel/company/2/workshop/estimate/create`) }}>
+                    onClick={() => { history(`/panel/company/2/workshop/quotation/create`) }}>
                     4ª Revisão
                 </Button>
                 <Button 
                     variant="Primary"                             
                     className="btn btn-primary w-100 mb-2"
-                    onClick={() => { history(`/panel/company/2/workshop/estimate/create`) }}>
+                    onClick={() => { history(`/panel/company/2/workshop/quotation/create`) }}>
                     Outros Serviços
                 </Button>
             </Modal.Body>

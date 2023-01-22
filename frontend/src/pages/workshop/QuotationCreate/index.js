@@ -9,6 +9,28 @@ import {ModalClientSearch} from "../../../components/Client/ModalClientSearch"
 import { useState } from 'react';
 
 // Item Table
+const Items2 = (props) => {
+    const items = props.items || [];
+    return (
+        <>
+            <div className="table-responsive">
+                <table className="table mb-0">
+                
+                    <tbody>
+                        {items.map((item, idx) => {
+                            return (
+                                <tr key={idx}>
+                                    <td>{item.name}</td>
+                                    <td align='right'>{item.price}</td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
+            </div>
+        </>
+    );
+};
 const Items = (props) => {
     const items = props.items || [];
     return (
@@ -50,10 +72,10 @@ const ClientInfo = (props) => {
                         <span className="fw-bold me-2">Nome:</span> {details.name}
                     </p>
                     <p className="mb-2">
-                        <span className="fw-bold me-2">Telefone:</span> {details.phone.map((item, index) => <span>{`${item}${index < details.phone.length? ' - ' : ''}`}</span>)}
+                        <span className="fw-bold me-2">Telefone:</span> {details.phone && details.phone.map((item, index) => <span>{`${item}${index < details.phone.length? ' - ' : ''}`}</span>)}
                     </p>
                     <p className="mb-2">
-                        <span className="fw-bold me-2">Email:</span> {details.email.map((item, index) => <span>{`${item}${index < details.phone.length? ' - ' : ''}`}</span>)}
+                        <span className="fw-bold me-2">Email:</span> {details.email && details.email.map((item, index) => <span>{`${item}${index < details.phone.length? ' - ' : ''}`}</span>)}
                     </p>
                     <p className="mb-2">
                         <span className="fw-bold me-2">Endereço:</span> {details.address}
@@ -61,6 +83,31 @@ const ClientInfo = (props) => {
                     <p className="mb-0">
                         <span className="fw-bold me-2">Cep:</span> xxx
                     </p>
+                </li>
+            </ul>
+        </>
+    );
+};
+const QuotationInfo = (props) => {
+    const details = props.details || {};
+    console.log(details)
+    return (
+        <>
+            <ul className="list-unstyled mb-0 mt-2">
+                <li>
+                    <p className="mb-2">
+                        <span className="fw-bold me-2">Número do Orçamento:</span> {details.name}
+                    </p>
+                    <p className="mb-2">
+                        <span className="fw-bold me-2">Data de emissão:</span> {details.phone && details.phone.map((item, index) => <span>{`${item}${index < details.phone.length? ' - ' : ''}`}</span>)}
+                    </p>
+                    <p className="mb-2">
+                        <span className="fw-bold me-2">Responsavel:</span> {details.email && details.email.map((item, index) => <span>{`${item}${index < details.phone.length? ' - ' : ''}`}</span>)}
+                    </p>
+                    <p className="mb-0">
+                        <span className="fw-bold me-2">Tipo de Orçamento:</span> {details.address}
+                    </p>
+           
                 </li>
             </ul>
         </>
@@ -103,10 +150,52 @@ const VehicleInfo = (props) => {
     );
 };
 
+const OrderSummary = (props) => {
+    const summary = props.summary || {};
+
+    return (
+        <div className="table-responsive">
+            <table className="table mb-0">
+                <thead className="table-light">
+                    <tr>
+                        <th>Descrição</th>
+                        <th>Preço</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Valor dos itens :</td>
+                        <td>{summary.gross_total}</td>
+                    </tr>
+                    <tr>
+                        <td>Descontos nos itens :</td>
+                        <td style={{color: 'red'}}>{summary.shipping_charge}</td>
+                    </tr>
+                    <tr>
+                        <td>Valor dos Serviços : </td>
+                        <td>{summary.tax}</td>
+                    </tr>
+                    <tr>
+                        <td>Desconto nos Serviços : </td>
+                        <td style={{color: 'red'}}>{summary.tax}</td>
+                    </tr>
+                    <tr>
+                        <th>Total de descontos :</th>
+                        <td style={{color: 'red'}}>{summary.net_total}</td>
+                    </tr>
+                    <tr style={{fontSize: '18px'}}>
+                        <th>Total liquido:</th>
+                        <td>{summary.net_total}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    );
+};
 
 
 // order details
-export default function EstimateCreate() {
+export default function QuotationCreate() {
     const [showModalSearchVehicle, setShowModalSearchVehicle] = useState(false)
     const [clientVehicleData, setClientVehicleData] = useState(null)
     
@@ -218,31 +307,71 @@ export default function EstimateCreate() {
                    
 
                     <Row>
+                    <Col lg={4}>
+                    <Card>
+                    <Card.Body>
+                        <div className='d-flex align-items-start justify-content-between'>
+                        
+                            <h4 className="header-title">Dados do Orcamento</h4>
+                            <Button 
+                                type="button" 
+                                className='btn-sm px-2' 
+                                variant="primary"
+                                onClick={ () => setShowModalSearchClient(true)}
+                            >
+                                Adicionar                                       
+                            </Button>
+                        </div>
+                        <QuotationInfo details={clientData} />
+                    </Card.Body>
+                </Card>
+                    <Card>
+                        <Card.Body>
+                            <div className='d-flex align-items-start justify-content-between'>
+                            
+                                <h4 className="header-title">Cliente</h4>
+                                <Button 
+                                    type="button" 
+                                    className='btn-sm px-2' 
+                                    variant="primary"
+                                    onClick={ () => setShowModalSearchClient(true)}
+                                >
+                                    Adicionar                                       
+                                </Button>
+                            </div>
+                            <ClientInfo details={clientData} />
+                        </Card.Body>
+                    </Card>
+                    <Card>
+                        <Card.Body>
+                        <div className='d-flex align-items-start justify-content-between'>
+                            <h4 className="header-title">Veículo</h4>
+                            <Button 
+                                type="button" 
+                                className='btn-sm px-2' 
+                                variant="primary"
+                                onClick={() => setShowModalSearchVehicle(true)}
+                            >
+                                Adicionar                                       
+                            </Button>
+                        </div>
+                            <VehicleInfo details={clientVehicleData} />
+                        </Card.Body>
+                    </Card>
+                    
+                    <Card>
+                        <Card.Body>
+                            <h4 className="header-title mb-3">Resumo do Orçamento</h4>
+                            <OrderSummary summary={order} />
+                        </Card.Body>
+                    </Card>
+                
+                </Col>
                         <Col lg={8}>
                             <Card>
                                 <Card.Body>
-                                    <Row>
-                                        <Col xs={7} >
-                                            <h4 className="header-title mt-2">Orçamento #{order.id}</h4>
-                                        </Col>
-                                        <Col xs={5} className="d-flex align-items-center" >
-
-
-                                            <label className='fw-bold me-1' >Tipo:</label> 
-                                            <Select
-                                                className="react-select w-100"
-                                                classNamePrefix="react-select"
-                                                options={[
-                                                    { value: '1', label: "Tipo 1" },
-                                                    { value: '2', label: "Tipo 2" },
-                                                    { value: '3', label: "Tipo 3" },
-                                                    { value: '3', label: "3" },
-                                                ]}
-                                                placeholder="Selecione..."
-                                                onChange={(e) => console.log(e.value)}
-                                            ></Select>
-                                        </Col>
-                                    </Row>
+                                <h4 className="header-title mb-2">Reclamações</h4>
+                
                                     <Row>
                                         <Col className='d-flex align-items-center mt-2 gap-2 '>
                                             <div className="app-search w-100">
@@ -250,32 +379,41 @@ export default function EstimateCreate() {
                                                     <input
                                                         type="text"
                                                         className="form-control"
-                                                        placeholder="Digite uma sugestão..."
+                                                        placeholder="Digite uma reclamação..."
                                                         onChange={(e) => console.log(e.target.value)}
                                                     />
                                                     <span className="mdi mdi-magnify search-icon"></span>
                                                 </div>
                                             </div>
-                                            <Button type="button" className='text-nowrap' variant="outline-secondary">
-                                                Pesquisar sugestões
-                                            </Button>
                                         </Col>
                                     </Row>
 
                                     <Row className='mt-2'>
-                                        <Col sm={4}>
-                                            
-                                        </Col>
-                                        <Col sm={4} className="d-flex align-items-center justify-content-center">
+                                        
+                                    </Row>
+
+                     
+                                    <Items2 items={order.items} />
+                                </Card.Body>
+                            </Card>
+                            <Card>
+                                <Card.Body>
+
+                                    <Row className='mt-2'>
+                                        <Col className="d-flex align-items-center justify-content-between">
                                             <h4 className="header-title">Items selecionado</h4>
-                                        </Col>
-                                        <Col sm={4} className="d-flex align-content-center justify-content-end mb-2 mt-1 gap-1">
-                                            <Button type="button" className='btn-sm text-nowrap px-2' variant="primary">
-                                                <i className="mdi mdi-plus"></i><span className=''>Serviços</span>
-                                            </Button>
-                                            <Button type="button" className='btn-sm text-nowrap px-2' variant="primary">
-                                                <i className="mdi mdi-plus"></i><span>Peças</span>
-                                            </Button>
+                                            <div sm={4} className="d-flex align-content-center justify-content-end mb-2 mt-1 gap-1">
+                                                <Button type="button" className='btn-sm text-nowrap px-2' variant="primary">
+                                                    <i className="mdi mdi-plus"></i><span className=''>Pacotes</span>
+                                                </Button>
+                                                <Button type="button" className='btn-sm text-nowrap px-2' variant="primary">
+                                                    <i className="mdi mdi-plus"></i><span className=''>Serviços</span>
+                                                </Button>
+                                                <Button type="button" className='btn-sm text-nowrap px-2' variant="primary">
+                                                    <i className="mdi mdi-plus"></i><span>Peças</span>
+                                                </Button>
+                                            </div>
+    
                                         </Col>
                                     </Row>
 
@@ -284,41 +422,7 @@ export default function EstimateCreate() {
                                 </Card.Body>
                             </Card>
                         </Col>
-                        <Col lg={4}>
-                            <Card>
-                                <Card.Body>
-                                    <div className='d-flex align-items-start justify-content-between'>
-                                    
-                                        <h4 className="header-title">Cliente</h4>
-                                        <Button 
-                                            type="button" 
-                                            className='btn-sm px-2' 
-                                            variant="primary"
-                                            onClick={ () => setShowModalSearchClient(true)}
-                                        >
-                                            Adicionar                                       
-                                        </Button>
-                                    </div>
-                                    <ClientInfo details={clientData} />
-                                </Card.Body>
-                            </Card>
-                            <Card>
-                                <Card.Body>
-                                <div className='d-flex align-items-start justify-content-between'>
-                                    <h4 className="header-title">Veículo</h4>
-                                    <Button 
-                                        type="button" 
-                                        className='btn-sm px-2' 
-                                        variant="primary"
-                                        onClick={() => setShowModalSearchVehicle(true)}
-                                    >
-                                        Adicionar                                       
-                                    </Button>
-                                </div>
-                                    <VehicleInfo details={clientVehicleData} />
-                                </Card.Body>
-                            </Card>
-                        </Col>
+                       
                     </Row>
                 </Col>
             </Row>
