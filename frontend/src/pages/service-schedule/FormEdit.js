@@ -183,7 +183,6 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
 
     useEffect(() => {
         methods.setValue('scheludesVisited', moment(data?.promised_date).format("yyyy-MM-DDThh:mm") ?? moment().format("yyyy-MM-DDThh:mm"));
-        console.log(data?.technicalConsultant)
         setTechnicalConsultantSelectedSearch(data?.technicalConsultant)
         setSelectedChangeClientData(data?.client)
     }, [data]);

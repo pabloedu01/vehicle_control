@@ -58,7 +58,6 @@ export function MultiSelectWithSearch({ dataPackage }) {
         const dataAdded = data.filter(d => d.added === true)
         setSearchLeftResults(dataOpened)
         setSearchRightResults(dataAdded)
-        console.log('render')
     }, [data])
 
 

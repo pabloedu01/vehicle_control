@@ -1,12 +1,17 @@
+import { useEffect, useState } from 'react';
+import {useNavigate, useParams} from "react-router-dom";
 import { Row, Col, Card, Button} from 'react-bootstrap';
 import Select from 'react-select';
-import {useNavigate, useParams} from "react-router-dom";
+
+import { APICore } from '../../../helpers/api/apiCore';
+import { formatDateTimePresentation } from '../../../utils/formatDateTimezone'
+
 
 // components
 import PageTitle from '../../../components/PageTitle';
 import {ModalVehicleSearch} from "../../../components/Vehicle/ModalVehicleSearch"
 import {ModalClientSearch} from "../../../components/Client/ModalClientSearch"
-import { useState } from 'react';
+
 
 // Item Table
 const Items2 = (props) => {
@@ -63,7 +68,6 @@ const Items = (props) => {
 
 const ClientInfo = (props) => {
     const details = props.details || {};
-    console.log(details)
     return (
         <>
             <ul className="list-unstyled mb-0 mt-2">
@@ -90,22 +94,21 @@ const ClientInfo = (props) => {
 };
 const QuotationInfo = (props) => {
     const details = props.details || {};
-    console.log(details)
     return (
         <>
             <ul className="list-unstyled mb-0 mt-2">
                 <li>
                     <p className="mb-2">
-                        <span className="fw-bold me-2">Número do Orçamento:</span> {details.name}
+                        <span className="fw-bold me-2">Número do Orçamento:</span> {details.quotationNumber && details.quotationNumber}
                     </p>
                     <p className="mb-2">
-                        <span className="fw-bold me-2">Data de emissão:</span> {details.phone && details.phone.map((item, index) => <span>{`${item}${index < details.phone.length? ' - ' : ''}`}</span>)}
+                        <span className="fw-bold me-2">Data de emissão:</span> {details.created_at && details.created_at}
                     </p>
                     <p className="mb-2">
-                        <span className="fw-bold me-2">Responsavel:</span> {details.email && details.email.map((item, index) => <span>{`${item}${index < details.phone.length? ' - ' : ''}`}</span>)}
+                        <span className="fw-bold me-2">Responsavel:</span> {details.technical_consultant && details.technical_consultant}
                     </p>
                     <p className="mb-0">
-                        <span className="fw-bold me-2">Tipo de Orçamento:</span> {details.address}
+                        <span className="fw-bold me-2">Tipo de Orçamento:</span> {''}
                     </p>
            
                 </li>
@@ -121,7 +124,7 @@ const VehicleInfo = (props) => {
             <ul className="list-unstyled mb-0 mt-2">
                 <li>
                     <p className="mb-2">
-                        <span className="fw-bold me-2">Marca:</span> {details.vehicle?.model.brand.name}
+                        <span className="fw-bold me-2">Marca:</span> {details.vehicle?.brand?.name}
                     </p>
                     <p className="mb-2">
                         <span className="fw-bold me-2">Modelo:</span> {details.vehicle?.model.name}
@@ -198,11 +201,15 @@ const OrderSummary = (props) => {
 export default function QuotationCreate() {
     const [showModalSearchVehicle, setShowModalSearchVehicle] = useState(false)
     const [clientVehicleData, setClientVehicleData] = useState(null)
+    const [quotationData, setQuotationData] = useState(null)
     
     const [showModalSearchClient, setShowModalSearchClient] = useState(false)
-    const [clientData, setClienData] = useState(null)
+    const [clientData, setClientData] = useState(null)
     
-    const {companyId} = useParams();
+    const {companyId, idQuotation} = useParams();
+
+    const api = new APICore()
+
 
     const order = {
         id: 'BM31',
@@ -285,9 +292,27 @@ export default function QuotationCreate() {
         setClientVehicleData(data)
     }
     function handleChangeClientData (data) {
-        setClienData(data)
+        setClientData(data)
     }
    
+    useEffect(() => {
+        if(idQuotation) {
+            api.get('/quotations/show/'+idQuotation).then((response) => {
+                const {client, client_vehicle} = response.data.data
+                setClientData(client)
+                setClientVehicleData(client_vehicle)
+                setQuotationData({
+                    quotationNumber: response.data.data.id,
+                    created_at: formatDateTimePresentation(response.data.data.updated_at),
+                    technical_consultant: response.data.data?.technical_consultant?.name,
+                    typeQuotation: null,
+                })
+                console.log(client_vehicle)
+            })    
+        }
+    },[idQuotation])
+
+
     return (
         <>
             <PageTitle
@@ -313,16 +338,8 @@ export default function QuotationCreate() {
                         <div className='d-flex align-items-start justify-content-between'>
                         
                             <h4 className="header-title">Dados do Orcamento</h4>
-                            <Button 
-                                type="button" 
-                                className='btn-sm px-2' 
-                                variant="primary"
-                                onClick={ () => setShowModalSearchClient(true)}
-                            >
-                                Adicionar                                       
-                            </Button>
                         </div>
-                        <QuotationInfo details={clientData} />
+                        <QuotationInfo details={quotationData} />
                     </Card.Body>
                 </Card>
                     <Card>
@@ -336,7 +353,7 @@ export default function QuotationCreate() {
                                     variant="primary"
                                     onClick={ () => setShowModalSearchClient(true)}
                                 >
-                                    Adicionar                                       
+                                    {clientData ? "Editar" : "Adicionar"}                                       
                                 </Button>
                             </div>
                             <ClientInfo details={clientData} />
@@ -352,7 +369,7 @@ export default function QuotationCreate() {
                                 variant="primary"
                                 onClick={() => setShowModalSearchVehicle(true)}
                             >
-                                Adicionar                                       
+                                {clientVehicleData ? "Editar" : "Adicionar"}                                       
                             </Button>
                         </div>
                             <VehicleInfo details={clientVehicleData} />

@@ -98,9 +98,12 @@ export default function QuotationsList() {
         lastPage: null,
     })
     
+
+
     const history = useNavigate();
     const api = new APICore()
     const {companyId} = useParams();
+
     
     const methods = useForm({
         defaultValues: {
@@ -138,9 +141,9 @@ export default function QuotationsList() {
             //     nextPage: 3,
             //     lastPage: 10,
             // })
-            console.log(res.data)
-            console.log(paginateData)
-            console.log((!!paginateData.previousPage && !!paginateData.nextPage))
+            // console.log(res.data)
+            // console.log(paginateData)
+            // console.log((!!paginateData.previousPage && !!paginateData.nextPage))
         })
     }, [])
     
@@ -227,7 +230,7 @@ export default function QuotationsList() {
                                         return (
                                             <tr key={index.toString()} onClick={(e) => {
                                                 e.stopPropagation();
-                                                console.log('click')
+                                                history(`/panel/company/2/workshop/quotation/${record.id}`)
                                             }}>
                                                 
                                                 <td>{record.id ?? ' - '}</td>

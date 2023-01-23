@@ -11,7 +11,6 @@ export function ModalTechnicalConsultantToggle({showModalSearchTechnicalConsulta
 
   function getTechnicalConsultants () {
     api.get('/technical-consultant/active-technical-consultants?company_id='+company_id).then((response) => {
-      console.log(response.data.data)
       setTechnicalConsultants(response.data.data)
     },(error) => {
       setTechnicalConsultants([]);

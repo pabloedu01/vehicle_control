@@ -58,7 +58,6 @@ export function InputSearchReclamations({ onUserSelect, clientsData =[], setSele
     useEffect(() => {
         setClients([...clientsData])
     },[clientsData])
-    console.log(clients)
 
     return (
         <>

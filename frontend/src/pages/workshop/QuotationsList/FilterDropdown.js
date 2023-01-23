@@ -9,8 +9,6 @@ export function FilterDropdown ({ filterValues, handleFilterSelected }) {
     function handleSelectFilter(e) {
         const newFilterValues = filterValues.map(v => {
             if (v.value === e.target.value) {
-                // console.log(e.target.value)
-                // console.log(e.target.checked)
                 return {
                     ...v,
                     selected: e.target.checked

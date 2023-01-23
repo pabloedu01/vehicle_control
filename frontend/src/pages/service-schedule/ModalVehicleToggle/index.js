@@ -35,13 +35,12 @@ export function ModalVehicleToggle({showModalSearchVehicle, setShowModalSearchVe
   }
   function getVehicles () {
     api.get('/vehicle/active-vehicles?model_id='+data.model).then((response) => {
-        console.log(response.data.data)
         setVehicles(response.data.data)
     })
   }
   function getClientVehicle () {
     api.get('/client-vehicle?vehicle_id='+data.vehicle).then((response) => {
-        console.log(response.data.data)
+
         setClientVehicles(response.data.data)
     })
   }

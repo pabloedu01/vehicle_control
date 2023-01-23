@@ -41,6 +41,7 @@ export function ModalVehicleSearch({showModalSearchVehicle, setShowModalSearchVe
   function getClientVehicle () {
     api.get('/client-vehicle?vehicle_id='+data.vehicle).then((response) => {
         setClientVehicles(response.data.data)
+        console.log(response.data.data)
     })
   }
 

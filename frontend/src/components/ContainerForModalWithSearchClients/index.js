@@ -20,7 +20,7 @@ export function ContainerForModalWithSearchClients({ onUserSelect, clientsData, 
     useEffect(() => {
         setClients([...clientsData])
     },[clientsData])
-    console.log(clients)
+
 
     return (
         <>
@@ -45,7 +45,7 @@ export function ContainerForModalWithSearchClients({ onUserSelect, clientsData, 
                           className="text-body"
                           onClick={(e) => {
                               activateUser(client);
-                              console.log(client)
+                        
                           }}
                       >
                           <div
