@@ -7,9 +7,9 @@ Route::group([
                  'middleware' => [ 'jwt.verify', 'user' ],
              ], function(){
 
-    Route::group([
-                     'middleware' => [ 'serviceType'],
-                 ], function(){
+    // Route::group([
+    //                  'middleware' => [ 'serviceType'],
+    //              ], function(){
 
         Route::get('/', [
             'uses' => 'ServiceController@index',
@@ -23,7 +23,7 @@ Route::group([
             'uses' => 'ServiceController@store',
         ]);
 
-    });
+    // });
 
     Route::group([
                      'middleware' => [ 'service'],
