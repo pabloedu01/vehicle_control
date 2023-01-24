@@ -8,6 +8,7 @@ import { APICore } from '../../../helpers/api/apiCore';
 import { FilterDropdown } from './FilterDropdown'
 import { OrganizeDropdown } from './organizeDropdown'
 import useToggle from '../../../hooks/useToggle'
+import swal from "sweetalert";
 
 
 const filterValues = [
@@ -123,9 +124,36 @@ export default function QuotationsList() {
         
 
     }
+
+    const onDelete = (registerId, newList) => {
+        swal({
+            title: 'Você tem certeza!',
+            text: 'Irá excluir este registro',
+            icon: 'warning',
+            buttons: {
+                cancel: 'Cancelar',
+                confirm: {
+                    text: 'Excluir',
+                    value: 'confirm'
+                }
+            },
+            dangerMode: true,
+        }).then((confirm) => {
+            if(confirm){
+                api.delete('/quotations/' + registerId).then((response) => {
+                    console.log(response)
+                    if(response.status === 201) {
+                        setData(prevState => prevState.filter(item => item.id!== registerId))
+                    }
+                }, () => {
+
+                });
+            }
+        });
+    };
     
     useEffect(() => {
-        api.get('/quotations?company_id='+companyId, null).then(res => {
+        api.get('/quotations?company_id='+companyId).then(res => {
             setData(res.data.data)
             setPaginateData({
                 fistPage: 1,
@@ -243,7 +271,7 @@ export default function QuotationsList() {
                                                 <td>{record.TotalGeral ?? '-'}</td>
                                             
                                                 <td onClick={e => e.stopPropagation()}>  
-                                                    <Link to="#" className="action-icon" onClick={() => console.log('click delete')}>
+                                                    <Link to="#" className="action-icon" onClick={() => onDelete(record.id)}>
                                                         <i className="mdi mdi-delete"></i>
                                                     </Link>
                                                 </td>
