@@ -12,7 +12,7 @@ class Service extends Base
 
     protected $fillable = [
         'company_id',
-        'service_type_id',
+        // 'service_type_id',
         'service_code',
         'integration_code',
         'description',
@@ -37,6 +37,7 @@ class Service extends Base
                 'integer',
                 $uniqueRule,
             ],
+           
             'description'       => 'nullable|string',
             'standard_quantity' => 'required|numeric',
             'standard_value'    => 'required|numeric',
@@ -50,11 +51,11 @@ class Service extends Base
         return $this->belongsTo('App\Models\Company', 'company_id', 'id');
     }
 
-    #belongs to
-    public function serviceType()
-    {
-        return $this->belongsTo('App\Models\ServiceType', 'service_type_id', 'id');
-    }
+    // #belongs to
+    // public function serviceType()
+    // {
+    //     return $this->belongsTo('App\Models\ServiceType', 'service_type_id', 'id');
+    // }
 
     #has many
     public function servicesClaimServiceServiceSchedule()
