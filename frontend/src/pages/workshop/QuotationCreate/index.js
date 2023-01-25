@@ -223,6 +223,7 @@ const OrderSummary = (props) => {
 
 
 export default function QuotationCreate() {
+    const [isActiveSaveButton, setIsActiveSaveButton] = useState(false);
     const [showModalSearchVehicle, setShowModalSearchVehicle] = useState(false)
     const [clientVehicleData, setClientVehicleData] = useState(null)
     const [quotationData, setQuotationData] = useState(null)
@@ -294,18 +295,30 @@ export default function QuotationCreate() {
 
     function handleChangeClientVehicleData (data) {
         setClientVehicleData(data)
+        if(!isActiveSaveButton) {
+            isSaveActive()
+        }
     }
     function handleChangeClientData (data) {
         setClientData(data)
+        if(!isActiveSaveButton) {
+            isSaveActive()
+        }
     }
 
     function handleClaimsData(data) {
-        console.log(data)
         setClaimsData( prevState => [...prevState, {...data, id: prevState.length + 1}])
+        if(!isActiveSaveButton) {
+            isSaveActive()
+        }
     }
    
     function toggleIsEditingClaims() {
         setIsEditingClaims(!isEditingClaims)
+    }
+
+    function isSaveActive() {
+        setIsActiveSaveButton(true)
     }
 
     useEffect(() => {
@@ -398,6 +411,18 @@ export default function QuotationCreate() {
                 
                 </Col>
                         <Col lg={8}>
+                      {isActiveSaveButton && <Row className='mb-3'>
+                                <Col>
+                                    <Button 
+                                        type="button" 
+                                        className='btn-md w-100 text-uppercase fw-bold' 
+                                        variant="primary"
+                                        // style={{fontSize: "20px"}}
+                                    >
+                                        salvar
+                                    </Button>
+                                </Col>
+                            </Row>}
                             <Card>
                                 <Card.Body>
                                 <div className='d-flex align-items-start justify-content-between'>
@@ -414,7 +439,7 @@ export default function QuotationCreate() {
                             </div>
                             {isEditingClaims && <Row>
                                         <Col className='mt-2 mb-2'>
-                                             <ClaimsSearch handleClaimsData={handleClaimsData} />
+                                            <ClaimsSearch handleClaimsData={handleClaimsData} items={claimsData} />
                                         </Col>
                                     </Row>
                             }

@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import AsyncSelect from 'react-select/async-creatable';
 import { components } from "react-select";
 import {useParams} from "react-router-dom";
@@ -24,7 +25,8 @@ const LoadingMessage = (props) => {
   );
 };
 
-export function ClaimsSearch ({handleClaimsData}) {
+export function ClaimsSearch ({handleClaimsData, items}) {
+  const [claimsData, setClaimsData] = useState([]);
   const { companyId } = useParams();
 
   const api = new APICore();
@@ -37,6 +39,12 @@ export function ClaimsSearch ({handleClaimsData}) {
     );
   };
 
+  function isClaimsExist (inputValue = 'Problema na bomba') {
+    return claimsData.filter((i) =>
+      i.description.toLowerCase() === inputValue.toLowerCase()
+    ).length > 0
+  }
+
   function promiseOptions (inputValue) {
     return new Promise((resolve, reject) => {
       if (inputValue.trim().length > 3) {
@@ -45,7 +53,7 @@ export function ClaimsSearch ({handleClaimsData}) {
         delayTimerSearch = setTimeout(function() {
           api.get('/claim-service?company_id='+ companyId).then((res) => {
             const claims = res.data.data.map((i) => ({
-              value: i.id , label: i.description 
+              value: i.id , label: i.description, isDisabled: isClaimsExist(i.description)
             }))
             console.log(res.data.data)
             resolve(filterSearch(inputValue, claims))
@@ -58,22 +66,34 @@ export function ClaimsSearch ({handleClaimsData}) {
     })
   };
 
+  useEffect(() => {
+    if(items) {
+      setClaimsData(items)
+    }
+  },[items])
+
   return <AsyncSelect 
     defaultOptions
-    isClearable
     isDisabled={false}
     loadOptions={promiseOptions} 
     onCreateOption={(text) => {
-      if(text.trim().length > 3) {
+      if(text.trim().length > 3 && !isClaimsExist(text)) {
         handleClaimsData({
           description: text,
           company_id: companyId,
         })
       }
     }} 
+    onChange={(value) => {
+      console.log(value)
+      console.log(isClaimsExist())
+    }}
     components={{ NoOptionsMessage, LoadingMessage }}
     placeholder="Buscar Reclamações"
     formatCreateLabel={userInput => {
+      if(isClaimsExist(userInput)) {
+        return `Reclamação ${userInput} já existente!`
+      }
       return userInput.length > 3 ? `Adicionar: ${userInput}` : 'mínimo de 4 dígitos'
     }}
   />
