@@ -349,10 +349,10 @@ export default function QuotationCreate() {
         <>
             <PageTitle
                 breadCrumbItems={[
-                    { label: 'eCommerce', path: '/apps/ecommerce/order/details' },
+                    { label: 'Oficina', path: `/workshop/quotation/list` },
                     {
                         label: 'Orçamento',
-                        path: '/apps/ecommerce/order/details',
+                        path: '/workshop/quotation/list',
                         active: true,
                     },
                 ]}
