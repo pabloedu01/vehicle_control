@@ -13,12 +13,11 @@ export function ModalClientSearch({showModalSearchClient, setShowModalSearchClie
 
   function getClients () {
     api.get('/client?company_id='+company_id).then((response) => {
-      console.log(response.data.data)
       setData(response.data.data)
     })
   }
 
-  console.log('cliente selecionado', clientSelected)
+
 
   useEffect(() => {
     if (showModalSearchClient) { 

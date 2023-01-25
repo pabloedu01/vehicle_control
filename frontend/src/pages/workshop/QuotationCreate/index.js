@@ -11,10 +11,11 @@ import { formatDateTimePresentation } from '../../../utils/formatDateTimezone'
 import PageTitle from '../../../components/PageTitle';
 import {ModalVehicleSearch} from "../../../components/Vehicle/ModalVehicleSearch"
 import {ModalClientSearch} from "../../../components/Client/ModalClientSearch"
+import {ClaimsSearch} from "./ClaimsSearch"
 
 
 // Item Table
-const Items2 = (props) => {
+const ClaimItems = (props) => {
     const items = props.items || [];
     return (
         <>
@@ -25,8 +26,8 @@ const Items2 = (props) => {
                         {items.map((item, idx) => {
                             return (
                                 <tr key={idx}>
-                                    <td>{item.name}</td>
-                                    <td align='right'>{item.price}</td>
+                                    <td>{item.description}</td>
+                                    <td align='right'>{}</td>
                                 </tr>
                             );
                         })}
@@ -36,7 +37,7 @@ const Items2 = (props) => {
         </>
     );
 };
-const Items = (props) => {
+const ItemsSelected = (props) => {
     const items = props.items || [];
     return (
         <>
@@ -47,6 +48,9 @@ const Items = (props) => {
                             <th>Itens</th>
                             <th>Quantidade</th>
                             <th>Preço</th>
+                            <th>Desconto</th>
+                            <th>Total</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -56,12 +60,32 @@ const Items = (props) => {
                                     <td>{item.name}</td>
                                     <td>{item.quantity}</td>
                                     <td>{item.price}</td>
+                                    <td>{item.price}</td>
+                                    <td>{item.price}</td>
                                 </tr>
                             );
                         })}
                     </tbody>
                 </table>
             </div>
+        </>
+    );
+};
+
+const ClientInfo3 = (props) => {
+    const details = props.details || {};
+    return (
+        <>
+            <h5>{details.name}</h5>
+
+            <address className="mb-0 font-14 address-lg">
+                {details.address && details.address}
+                <br />
+                {details.address_2}
+                <br />
+                <abbr title="Phone">P:</abbr> {details.phone && details.phone.map((item, index) => <span>{`${item}${index < details.phone.length? ' - ' : ''}`}</span>)} <br />
+                <abbr title="Email">E:</abbr> {details.email && details.email.map((item, index) => (<><span>{`${item}${index < details.phone.length? ' - ' : ''}`}</span><br /></>))}
+            </address>
         </>
     );
 };
@@ -82,13 +106,14 @@ const ClientInfo = (props) => {
                         <span className="fw-bold me-2">Email:</span> {details.email && details.email.map((item, index) => <span>{`${item}${index < details.phone.length? ' - ' : ''}`}</span>)}
                     </p>
                     <p className="mb-2">
-                        <span className="fw-bold me-2">Endereço:</span> {details.address}
+                        <span className="fw-bold me-2">Endereço:</span> {details.address && details.address}
                     </p>
                     <p className="mb-0">
-                        <span className="fw-bold me-2">Cep:</span> xxx
+                        <span className="fw-bold me-2">CPF:</span> {details.document && details.document}
                     </p>
                 </li>
             </ul>
+            
         </>
     );
 };
@@ -124,7 +149,7 @@ const VehicleInfo = (props) => {
             <ul className="list-unstyled mb-0 mt-2">
                 <li>
                     <p className="mb-2">
-                        <span className="fw-bold me-2">Marca:</span> {details.vehicle?.brand?.name}
+                        <span className="fw-bold me-2">Marca:</span> {details.vehicle?.model?.brand?.name}
                     </p>
                     <p className="mb-2">
                         <span className="fw-bold me-2">Modelo:</span> {details.vehicle?.model.name}
@@ -197,22 +222,22 @@ const OrderSummary = (props) => {
 };
 
 
-// order details
 export default function QuotationCreate() {
     const [showModalSearchVehicle, setShowModalSearchVehicle] = useState(false)
     const [clientVehicleData, setClientVehicleData] = useState(null)
     const [quotationData, setQuotationData] = useState(null)
+    const [claimsData, setClaimsData] = useState(null)
+    const [isEditingClaims, setIsEditingClaims] = useState(false)
     
     const [showModalSearchClient, setShowModalSearchClient] = useState(false)
     const [clientData, setClientData] = useState(null)
     
-    const {companyId, idQuotation} = useParams();
+    const {companyId, idQuotation} = useParams()
 
     const api = new APICore()
 
-
     const order = {
-        id: 'BM31',
+        id: '#BM31',
         order_status: 'Packed',
         items: [
             {
@@ -238,27 +263,6 @@ export default function QuotationCreate() {
             },
             {
                 id: 4,
-                name: 'The Utility Shirt',
-                quantity: 2,
-                price: '$79',
-                total: '$158',
-            },
-            {
-                id: 5,
-                name: 'The Utility Shirt',
-                quantity: 2,
-                price: '$79',
-                total: '$158',
-            },
-            {
-                id: 6,
-                name: 'The Utility Shirt',
-                quantity: 2,
-                price: '$79',
-                total: '$158',
-            },
-            {
-                id: 7,
                 name: 'The Utility Shirt',
                 quantity: 2,
                 price: '$79',
@@ -294,20 +298,29 @@ export default function QuotationCreate() {
     function handleChangeClientData (data) {
         setClientData(data)
     }
+
+    function handleClaimsData(data) {
+        console.log(data)
+        setClaimsData( prevState => [...prevState, {...data, id: prevState.length + 1}])
+    }
    
+    function toggleIsEditingClaims() {
+        setIsEditingClaims(!isEditingClaims)
+    }
+
     useEffect(() => {
         if(idQuotation) {
             api.get('/quotations/show/'+idQuotation).then((response) => {
-                const {client, client_vehicle} = response.data.data
+                const {client, client_vehicle, quotation_claim_service} = response.data.data
                 setClientData(client)
                 setClientVehicleData(client_vehicle)
+                setClaimsData(quotation_claim_service)
                 setQuotationData({
                     quotationNumber: response.data.data.id,
                     created_at: formatDateTimePresentation(response.data.data.updated_at),
                     technical_consultant: response.data.data?.technical_consultant?.name,
                     typeQuotation: null,
                 })
-                console.log(client_vehicle)
             })    
         }
     },[idQuotation])
@@ -387,30 +400,26 @@ export default function QuotationCreate() {
                         <Col lg={8}>
                             <Card>
                                 <Card.Body>
-                                <h4 className="header-title mb-2">Reclamações</h4>
-                
-                                    <Row>
-                                        <Col className='d-flex align-items-center mt-2 gap-2 '>
-                                            <div className="app-search w-100">
-                                                <div className="form-group position-relative">
-                                                    <input
-                                                        type="text"
-                                                        className="form-control"
-                                                        placeholder="Digite uma reclamação..."
-                                                        onChange={(e) => console.log(e.target.value)}
-                                                    />
-                                                    <span className="mdi mdi-magnify search-icon"></span>
-                                                </div>
-                                            </div>
+                                <div className='d-flex align-items-start justify-content-between'>
+                                <h4 className="header-title">Reclamações</h4>
+                                <Button 
+                                    type="button" 
+                                    className='btn-sm px-2' 
+                                    variant="primary"
+                                    disabled={isEditingClaims}
+                                    onClick={toggleIsEditingClaims}
+                                >
+                                    Editar                                  
+                                </Button>
+                            </div>
+                            {isEditingClaims && <Row>
+                                        <Col className='mt-2 mb-2'>
+                                             <ClaimsSearch handleClaimsData={handleClaimsData} />
                                         </Col>
                                     </Row>
-
-                                    <Row className='mt-2'>
-                                        
-                                    </Row>
-
+                            }
                      
-                                    <Items2 items={order.items} />
+                                    <ClaimItems items={claimsData} />
                                 </Card.Body>
                             </Card>
                             <Card>
@@ -435,7 +444,7 @@ export default function QuotationCreate() {
                                     </Row>
 
                      
-                                    <Items items={order.items} />
+                                    <ItemsSelected items={order.items} />
                                 </Card.Body>
                             </Card>
                         </Col>

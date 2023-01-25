@@ -80,11 +80,6 @@ const organizeValues = [
 ]
 
 
-const fakeData = [{
-    id: 1,
-    nome: 'Pablo'
-}]
-
 export default function QuotationsList() {
     const [data, setData] = useState([]) 
     // const [openTagsSelected, setOpenTagsSelected] = useState(false) 
@@ -214,9 +209,6 @@ export default function QuotationsList() {
                                 </Col>
                                 <Col sm={4}>
                                     <div className="text-end mt-xl-0 mt-2">
-                                      {/*  <Button variant="danger" onClick={() => { history(`/panel/company/2/workshop/estimate/create`) }}>
-                                            <i className="mdi mdi-basket me-1" /> Nova Agenda de Serviço
-                                        </Button>*/}
                                         <Button variant="danger" onClick={toggleStandard}>
                                             <i className="mdi mdi-basket me-1" /> Novo orçamento
                                         </Button>
