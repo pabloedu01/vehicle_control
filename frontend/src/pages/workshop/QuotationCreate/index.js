@@ -227,7 +227,12 @@ export default function QuotationCreate() {
     const [showModalSearchVehicle, setShowModalSearchVehicle] = useState(false)
     const [clientVehicleData, setClientVehicleData] = useState(null)
     const [quotationData, setQuotationData] = useState(null)
-    const [claimsData, setClaimsData] = useState(null)
+    // const [claimsData, setClaimsData] = useState([{
+    //     id: 100,
+    //     description: "testando",
+    //     company_id: "dasdasd",
+    //   }])
+    const [claimsData, setClaimsData] = useState([])
     const [isEditingClaims, setIsEditingClaims] = useState(false)
     
     const [showModalSearchClient, setShowModalSearchClient] = useState(false)
@@ -307,6 +312,7 @@ export default function QuotationCreate() {
     }
 
     function handleClaimsData(data) {
+        console.log(data)
         setClaimsData( prevState => [...prevState, {...data, id: prevState.length + 1}])
         if(!isActiveSaveButton) {
             isSaveActive()
@@ -444,7 +450,14 @@ export default function QuotationCreate() {
                                     </Row>
                             }
                      
-                                    <ClaimItems items={claimsData} />
+                                    <ClaimItems 
+                                    items={claimsData} 
+                                    // items={[{
+                                    //     id: 100,
+                                    //     description: "testando",
+                                    //     company_id: "dasdasd",
+                                    //   }]} 
+                                    />
                                 </Card.Body>
                             </Card>
                             <Card>

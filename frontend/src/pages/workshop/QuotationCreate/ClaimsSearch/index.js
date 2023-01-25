@@ -27,6 +27,7 @@ const LoadingMessage = (props) => {
 
 export function ClaimsSearch ({handleClaimsData, items}) {
   const [claimsData, setClaimsData] = useState([]);
+  const [claimValue,setClaimValue] = useState("");
   const { companyId } = useParams();
 
   const api = new APICore();
@@ -39,9 +40,9 @@ export function ClaimsSearch ({handleClaimsData, items}) {
     );
   };
 
-  function isClaimsExist (inputValue = 'Problema na bomba') {
+  function isClaimsExist (inputValue) {
     return claimsData.filter((i) =>
-      i.description.toLowerCase() === inputValue.toLowerCase()
+      i.label.toLowerCase() === inputValue.toLowerCase()
     ).length > 0
   }
 
@@ -53,10 +54,10 @@ export function ClaimsSearch ({handleClaimsData, items}) {
         delayTimerSearch = setTimeout(function() {
           api.get('/claim-service?company_id='+ companyId).then((res) => {
             const claims = res.data.data.map((i) => ({
-              value: i.id , label: i.description, isDisabled: isClaimsExist(i.description)
+              value: i.id , label: i.description
             }))
-            console.log(res.data.data)
-            resolve(filterSearch(inputValue, claims))
+            const resultado = [...claims, ...claimsData].filter((i) => !isClaimsExist(i.label))
+            resolve(filterSearch(inputValue, resultado))
           })
         }, 3000)
       } else {
@@ -68,13 +69,15 @@ export function ClaimsSearch ({handleClaimsData, items}) {
 
   useEffect(() => {
     if(items) {
-      setClaimsData(items)
+      setClaimsData( () => items.map((i) => ({
+        value: i.id , label: i.description, isDisabled: true
+      })))
     }
   },[items])
 
   return <AsyncSelect 
     defaultOptions
-    isDisabled={false}
+    isClearable
     loadOptions={promiseOptions} 
     onCreateOption={(text) => {
       if(text.trim().length > 3 && !isClaimsExist(text)) {
@@ -86,8 +89,16 @@ export function ClaimsSearch ({handleClaimsData, items}) {
     }} 
     onChange={(value) => {
       console.log(value)
-      console.log(isClaimsExist())
+      if(value) {
+        handleClaimsData({
+          id: value.value,
+          description: value.label,
+          company_id: companyId,
+        })
+        setClaimValue("")
+      }
     }}
+    value={claimValue}
     components={{ NoOptionsMessage, LoadingMessage }}
     placeholder="Buscar Reclamações"
     formatCreateLabel={userInput => {
