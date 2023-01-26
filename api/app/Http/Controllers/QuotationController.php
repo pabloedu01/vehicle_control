@@ -79,8 +79,8 @@ class QuotationController extends Controller
 
         if( $quotation->client_vehicle) {
             $quotation->client_vehicle->vehicle;
-            $quotation->client_vehicle->vehicle->brand;
-            $quotation->client_vehicle->vehicle->model;
+            // $quotation->client_vehicle->vehicle->brand;
+            $quotation->client_vehicle->vehicle->model->brand;
         }
         $quotation->technicalConsultant;
         $quotation->client;

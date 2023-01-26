@@ -7,7 +7,9 @@ Route::group([
                  'middleware' => [ 'jwt.verify', 'user' ],
              ], function(){
 
-
+                Route::group([
+                    'middleware' => [ 'company' ],
+                ], function(){
 
         Route::get('/', [
             'uses' => 'QuotationController@listAll',
@@ -15,20 +17,17 @@ Route::group([
         Route::put('/', [
             'uses' => 'QuotationController@updateQuotation',
         ]);
-
         Route::post('/', [
             'uses' => 'QuotationController@storeQuotation',
         ]);
+    });
 
-
-        Route::get('/show/{id}', [
-            'uses' => 'QuotationController@showQuotation',
-        ]);
-        Route::delete('/{id}', [
-            'uses' => 'QuotationController@destroy',
-        ]);
-
-
-         
+    Route::get('/show/{id}', [
+        'uses' => 'QuotationController@showQuotation',
+    ]);
+    Route::delete('/{id}', [
+        'uses' => 'QuotationController@destroy',
+    ]);
+    
 
 });

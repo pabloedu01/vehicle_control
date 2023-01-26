@@ -10,8 +10,9 @@ class ServiceController extends Controller
 {
     public function index(Request $request)
     {
-        $services = Service::where('service_type_id', '=', $request->service_type_id)
-                           ->get();
+        $services = Service::all();
+        // ::where('service_type_id', '=', $request->service_type_id)
+        //                    ->get();
 
         return response()->json([
                                     'msg'  => trans('general.msg.success'),
@@ -23,8 +24,8 @@ class ServiceController extends Controller
 
     public function activeServices(Request $request)
     {
-        $services = Service::where('service_type_id', '=', $request->service_type_id)
-                           ->where('active', '=', true)
+        $services = Service:: where('active', '=', true)
+        // ->where('service_type_id', '=', $request->service_type_id)
                            ->get();
 
         return response()->json([
@@ -37,9 +38,10 @@ class ServiceController extends Controller
 
     public function show(Request $request, $id)
     {
-        $service = Service::with('serviceType')
-                        ->where('id', '=', $id)
-                          ->first();
+        $service = Service::where('id', '=', $id)->first();
+        // ->with('serviceType')
+                        
+                          
 
         return response()->json(                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         [
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           'msg'  => trans('general.msg.success'),
