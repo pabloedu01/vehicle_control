@@ -11,6 +11,8 @@ import { formatDateTimePresentation } from '../../../utils/formatDateTimezone'
 import PageTitle from '../../../components/PageTitle';
 import {ModalVehicleSearch} from "../../../components/Vehicle/ModalVehicleSearch"
 import {ModalClientSearch} from "../../../components/Client/ModalClientSearch"
+import {ModalServicesSearch} from "../../../components/quotation/ModalServicesSearch"
+import {ModalProductsSearch} from "../../../components/quotation/ModalProductsSearch"
 import {ClaimsSearch} from "./ClaimsSearch"
 
 
@@ -231,12 +233,16 @@ export default function QuotationCreate() {
     //     id: 100,
     //     description: "testando",
     //     company_id: "dasdasd",
-    //   }])
+    // }])
     const [claimsData, setClaimsData] = useState([])
     const [isEditingClaims, setIsEditingClaims] = useState(false)
     
     const [showModalSearchClient, setShowModalSearchClient] = useState(false)
     const [clientData, setClientData] = useState(null)
+
+    const [showModalServices, setShowModalServices] = useState(false)
+   
+    const [showModalProducts, setShowModalProducts] = useState(false)
     
     const {companyId, idQuotation} = useParams()
 
@@ -450,14 +456,7 @@ export default function QuotationCreate() {
                                     </Row>
                             }
                      
-                                    <ClaimItems 
-                                    items={claimsData} 
-                                    // items={[{
-                                    //     id: 100,
-                                    //     description: "testando",
-                                    //     company_id: "dasdasd",
-                                    //   }]} 
-                                    />
+                                    <ClaimItems items={claimsData} />
                                 </Card.Body>
                             </Card>
                             <Card>
@@ -470,23 +469,31 @@ export default function QuotationCreate() {
                                                 <Button type="button" className='btn-sm text-nowrap px-2' variant="primary">
                                                     <i className="mdi mdi-plus"></i><span className=''>Pacotes</span>
                                                 </Button>
-                                                <Button type="button" className='btn-sm text-nowrap px-2' variant="primary">
+                                                <Button 
+                                                    type="button" 
+                                                    className='btn-sm text-nowrap px-2' 
+                                                    variant="primary"
+                                                    onClick={() => setShowModalServices(true)}
+                                                   
+                                                    >
                                                     <i className="mdi mdi-plus"></i><span className=''>Serviços</span>
                                                 </Button>
-                                                <Button type="button" className='btn-sm text-nowrap px-2' variant="primary">
+                                                <Button 
+                                                    type="button" 
+                                                    className='btn-sm text-nowrap px-2' 
+                                                    variant="primary"
+                                                    onClick={() => setShowModalProducts(true)}
+                                                >
                                                     <i className="mdi mdi-plus"></i><span>Peças</span>
                                                 </Button>
                                             </div>
     
                                         </Col>
                                     </Row>
-
-                     
                                     <ItemsSelected items={order.items} />
                                 </Card.Body>
                             </Card>
                         </Col>
-                       
                     </Row>
                 </Col>
             </Row>
@@ -502,6 +509,19 @@ export default function QuotationCreate() {
                 showModalSearchClient={showModalSearchClient} 
                 setShowModalSearchClient={setShowModalSearchClient} 
                 handleChangeClientData={handleChangeClientData}
+            />
+
+            <ModalServicesSearch 
+                showModalServices={showModalServices}
+                setShowModalServices={setShowModalServices}
+                company_id={companyId} 
+                handleChangeServicesData={() => {}}
+            />
+            <ModalProductsSearch 
+                showModalProducts={showModalProducts}
+                setShowModalProducts={setShowModalProducts} 
+                company_id={companyId} 
+                handleChangeProductsData={() => {}}
             />
         </>
     );

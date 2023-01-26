@@ -79,6 +79,7 @@
     "sass": "^1.49.9",
     "simplebar-react": "^2.3.6",
     "sweetalert": "^2.1.2",
+    "text-mask-addons": "^3.8.0",
     "tss-react": "^3.6.0",
     "universal-cookie": "^4.0.4",
     "web-vitals": "^1.0.1",
