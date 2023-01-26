@@ -22,12 +22,16 @@ Route::group([
                         ]);
                   });
 
-    Route::get('/show/{id}', [
-        'uses' => 'QuotationController@showQuotation',
-    ]);
-    Route::delete('/{id}', [
-        'uses' => 'QuotationController@destroy',
-    ]);
+                  Route::group([
+                    'middleware' => [ 'quotation' ],
+                ], function(){
+                    Route::get('/show/{id}', [
+                        'uses' => 'QuotationController@showQuotation',
+                    ]);
+                    Route::delete('/{id}', [
+                        'uses' => 'QuotationController@destroy',
+                    ]);
+                    });
 
 
 });
