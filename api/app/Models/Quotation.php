@@ -22,6 +22,7 @@ class Quotation extends Model
         'maintenance_review_id',
         'consultant_id',
         'company_id',
+        'user_id',
 
     ];
 
@@ -105,6 +106,10 @@ protected $filters = [
     {
         return $this->hasMany('App\Models\QuotationClaimService', 'quotation_id', 'id');
     }
+    public function user() {
+        return $this->belongsTo('App\Models\User', 'user_id', 'id');
+    }
+
 
 
 }

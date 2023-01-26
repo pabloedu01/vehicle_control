@@ -35,6 +35,7 @@ class QuotationController extends Controller
         $quotation->maintenance_review_id = $request->maintenance_review_id;
         $quotation->consultant_id =  $consultant;
         $quotation->company_id = $request->company_id;
+        $quotation->user_id = auth()->user()->id;
         $quotation->save();
 
 
@@ -191,12 +192,25 @@ class QuotationController extends Controller
     }
     public function listAll(Request $request) {
 
-        // $quotations = Quotation::with(collect(self::$with)->take(5)->toArray())
-        //                                    ->list()
-        //                                    ->get();
-        $quotations = Quotation::with(collect(self::$with)->take(5)->toArray())
+        if($request->query('techinical_consultant_id') != null){
+            $quotations = Quotation::with(collect(self::$with)->take(5)->toArray())
                                            ->list()
+                                           ->where('consultant_id', $request->query('techinical_consultant_id'))
                                            ->get();
+        }else if($request->query('user_login') != null){
+            $quotations = Quotation::with(collect(self::$with)->take(5)->toArray())
+                                           ->list()
+                                           ->where('user_id', $request->query('user_login'))
+                                           ->get();
+        }else {
+            $quotations = Quotation::with(collect(self::$with)->take(5)->toArray())
+            ->list()
+            ->get();
+        }
+
+
+
+
         foreach($quotations as $key => $quotation){
 
             $quotations[$key]['QtdPecas'] = QuotationItens::where('quotation_id', $quotation->id)->where('products_id', '!=', null)->count();

@@ -11,16 +11,16 @@ Route::group([
                     'middleware' => [ 'company' ],
                 ], function(){
 
-        Route::get('/', [
-            'uses' => 'QuotationController@listAll',
-        ]);
-        Route::put('/', [
-            'uses' => 'QuotationController@updateQuotation',
-        ]);
-        Route::post('/', [
-            'uses' => 'QuotationController@storeQuotation',
-        ]);
-    });
+                        Route::get('/', [
+                            'uses' => 'QuotationController@listAll',
+                        ]);
+                        Route::put('/', [
+                            'uses' => 'QuotationController@updateQuotation',
+                        ]);
+                        Route::post('/', [
+                            'uses' => 'QuotationController@storeQuotation',
+                        ]);
+                  });
 
     Route::get('/show/{id}', [
         'uses' => 'QuotationController@showQuotation',
@@ -28,6 +28,6 @@ Route::group([
     Route::delete('/{id}', [
         'uses' => 'QuotationController@destroy',
     ]);
-    
+
 
 });
