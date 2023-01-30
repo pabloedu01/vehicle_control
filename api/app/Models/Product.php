@@ -1,9 +1,14 @@
 <?php
 
 namespace App\Models;
+use Laravel\Scout\Searchable;
+use Laravel\Scout\Attributes\SearchUsingFullText;
+use Laravel\Scout\Attributes\SearchUsingPrefix;
 
 class Product extends Base
 {
+    use Searchable;
+
     protected $table = 'products';
 
     protected $casts = [
@@ -19,7 +24,22 @@ class Product extends Base
         'unique_code',
         'active',
     ];
-
+ /**
+     * Get the indexable data array for the model.
+     *
+     * @return array
+     */
+    #[SearchUsingPrefix(['product_code', 'unique_code'])]
+    #[SearchUsingFullText(['name'])]
+    public function toSearchableArray()
+    {
+        return [
+            'id' => $this->id,
+            'product_code' => $this->product_code,
+            'unique_code' => $this->unique_code,
+            'name' => $this->name,
+        ];
+    }
     public static function rules($id = null, $company_id = null)
     {
         return [

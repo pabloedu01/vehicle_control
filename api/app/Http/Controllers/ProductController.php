@@ -10,8 +10,14 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $products = Product::where('company_id', '=', $request->company_id)
-                           ->get();
+        if($request['search']){
+            $products = Product::search($request['search'])->where('company_id', $request->company_id)->get();
+        }else {
+            $products = Product::where('company_id', '=', $request->company_id)
+            ->get();
+        }
+
+
 
         return response()->json([
                                     'msg' => trans('general.msg.success'),
