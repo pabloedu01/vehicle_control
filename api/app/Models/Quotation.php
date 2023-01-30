@@ -6,9 +6,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\DynamicFiltersTrait;
-
+use Laravel\Scout\Searchable;
+use Laravel\Scout\Attributes\SearchUsingFullText;
+use Laravel\Scout\Attributes\SearchUsingPrefix;
 class Quotation extends Model
 {
+    use Searchable;
     use DynamicFiltersTrait;
 
     protected $table = 'quotation';

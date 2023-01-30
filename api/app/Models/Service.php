@@ -1,9 +1,14 @@
 <?php
 
 namespace App\Models;
+use Laravel\Scout\Searchable;
+use Laravel\Scout\Attributes\SearchUsingFullText;
+use Laravel\Scout\Attributes\SearchUsingPrefix;
 
 class Service extends Base
 {
+    use Searchable;
+
     protected $table = 'services';
 
     protected $casts = [
@@ -20,7 +25,22 @@ class Service extends Base
         'standard_value',
         'active',
     ];
-
+    /**
+     * Get the indexable data array for the model.
+     *
+     * @return array
+     */
+    #[SearchUsingPrefix(['service_code', 'integration_code'])]
+    #[SearchUsingFullText(['description'])]
+    public function toSearchableArray()
+    {
+        return [
+            'id' => $this->id,
+            'service_code' => $this->service_code,
+            'integration_code' => $this->integration_code,
+            'description' => $this->description,
+        ];
+    }
     public static function rules($id = null, $company_id = null)
     {
         $uniqueRule = self::getUniqueRule($id, ['company_id' => $company_id]);
@@ -37,7 +57,7 @@ class Service extends Base
                 'integer',
                 $uniqueRule,
             ],
-           
+
             'description'       => 'nullable|string',
             'standard_quantity' => 'required|numeric',
             'standard_value'    => 'required|numeric',

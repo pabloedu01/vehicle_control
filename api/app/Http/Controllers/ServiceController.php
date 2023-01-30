@@ -10,7 +10,12 @@ class ServiceController extends Controller
 {
     public function index(Request $request)
     {
-        $services = Service::all();
+        if($request['search']){
+            $services = Service::search($request['search'])->get();
+        }else {
+
+            $services = Service::all();
+        }
         // ::where('service_type_id', '=', $request->service_type_id)
         //                    ->get();
 
@@ -40,8 +45,8 @@ class ServiceController extends Controller
     {
         $service = Service::where('id', '=', $id)->first();
         // ->with('serviceType')
-                        
-                          
+
+
 
         return response()->json(                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         [
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           'msg'  => trans('general.msg.success'),
