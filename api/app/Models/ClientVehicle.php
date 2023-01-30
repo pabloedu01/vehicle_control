@@ -3,9 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Validation\Rule;
+use Laravel\Scout\Searchable;
+use Laravel\Scout\Attributes\SearchUsingFullText;
+use Laravel\Scout\Attributes\SearchUsingPrefix;
 
 class ClientVehicle extends Base
 {
+    use Searchable;
+
     protected $table = 'client_vehicles';
 
     protected $fillable = [
@@ -18,7 +23,24 @@ class ClientVehicle extends Base
         'plate',
         'mileage',
     ];
-
+ /**
+     * Get the indexable data array for the model.
+     *
+     * @return array
+     */
+   // #[SearchUsingPrefix(['service_code', 'integration_code'])]
+    #[SearchUsingFullText(['chasis','plate','vehicle.model.brand.name','vehicle.name', 'vehicle.model.name'])]
+    public function toSearchableArray()
+    {
+        return [
+            'id' => $this->id,
+            'vehicle.model.name' => $this->$this->vehicle->model->name,
+            'vehicle.model.brand.name' => $this->vehicle->model->brand->name,
+            'vehicle.name' => $this->$this->vehicle->name,
+            'plate' => $this->plate,
+            'chasis' => $this->chasis,
+        ];
+    }
     public static function rules($id = null, $company_id = null)
     {
         $uniqueRule = self::getUniqueRule($id, [ 'company_id' => $company_id ]);
