@@ -11,8 +11,6 @@ export function ModalServicesSearch({showModalServices, setShowModalServices, co
   const [isOpenServices, setIsOpenServices] = useState(false);
   const [serviceSelected, setServiceSelected] = useState(null);
 
-  console.log(showModalServices);
-
   function getBrands () {
     api.get('/vehicle-brand?company_id='+company_id).then((response) => {
       setData(response.data.data)

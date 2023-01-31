@@ -2,7 +2,7 @@ import MaskedInput from 'react-text-mask'
 import createNumberMask from 'text-mask-addons/dist/createNumberMask'
 
 const defaultMaskOptions = {
-  prefix: 'R$',
+  prefix: '',
   suffix: '',
   includeThousandsSeparator: true,
   thousandsSeparatorSymbol: ',',

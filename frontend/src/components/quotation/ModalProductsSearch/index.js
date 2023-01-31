@@ -2,9 +2,7 @@ import {useEffect, useState} from 'react';
 import { Button, Modal,Col,Row } from 'react-bootstrap';
 import {APICore} from "../../../helpers/api/apiCore";
 import { ContainerForProductsSearch } from "./ContainerForProductsSearch"
-import InputMask from "react-input-mask";
-import { useForm, Controller } from "react-hook-form";
-import CurrencyInput from 'react-currency-masked-input'
+
 import InputMaskPrice from "../../../components/InputMaskPrice";
 import InputMaskPercent from "../../../components/InputMaskPercent";
 
@@ -14,19 +12,13 @@ export function ModalProductsSearch({showModalProducts, setShowModalProducts, co
   const [data, setData] = useState();
   const [isOpenProductValues, setIsOpenProductValues] = useState(false);
   const [productSelected, setProductSelected] = useState(null);
-  
-  const { handleSubmit, control, reset } = useForm({
-    defaultValues: {
-      price: "R$0.00",
-    }
-  });
-
-  
+  const [productValue, setProductValue] = useState(0);
+  const [discountValue, setDiscountValue] = useState(0);
+  const [disableInput, setDisableInput] = useState('price');
   
 
   function getProducts () {
     api.get('/product?company_id='+company_id).then((response) => {
-      console.log(response.data.data);
       setData(response.data.data)
     })
   }
@@ -45,6 +37,7 @@ export function ModalProductsSearch({showModalProducts, setShowModalProducts, co
     onHideShowModalProducts()
     setIsOpenProductValues(true)
     setProductSelected(productSelected)
+    setProductValue( parseFloat(productSelected.sale_value).toFixed(2))
   }
 
   function onHideShowModalProductValues() {
@@ -53,14 +46,75 @@ export function ModalProductsSearch({showModalProducts, setShowModalProducts, co
 
   function addSelectedProduct () {
     handleChangeProductsData(productSelected)
+    console.log(productSelected)
     onHideShowModalProductValues()
     setProductSelected(null)
     setShowModalProducts(false)
   }
 
-  function onSubmit(data) {
-    console.log(data);
+  function calculateAmountDiscountValue(discount) {
+    const price = parseFloat(productSelected?.sale_value).toFixed(2)    
+    if(discount.length < 1) {
+      return 0;
+    }
+    return parseFloat(price - (price * parseFloat(discount) / 100)).toFixed(2)     
   } 
+
+  function calculatePercentDiscountValue(amount) {
+    if(!productSelected?.sale_value){
+      return 0
+    }
+    const productValueReal = parseFloat(productSelected?.sale_value).toFixed(2)
+    if(amount < 1) {
+      return 100;
+    }
+    return (productValueReal - parseFloat(amount)) * 100 / productValueReal  
+  } 
+
+  function handlePriceChange(e) {
+    let priceParser = parseFloat(e.target.value.replace(/,/g, '')).toFixed(2);
+    if(isNaN(priceParser)){
+      priceParser = 0
+    }
+
+
+    // console.log(parseFloat(priceParser).toFixed(2) > productSelected?.sale_value)
+    // console.log(parseFloat(priceParser).toFixed(2))
+    // console.log(productSelected?.sale_value)
+
+
+    if(priceParser > productSelected?.sale_value) {
+      console.log("não pode")
+      setDiscountValue(0)
+    }
+
+    if(true) {
+      setProductValue(0)
+    }
+
+    setProductValue(priceParser)
+    
+    if(priceParser.length > 0 && parseFloat(priceParser).toFixed(2) <= productSelected?.sale_value) {
+      const valueDiscount = calculatePercentDiscountValue(priceParser)
+      setDiscountValue(valueDiscount)
+      setProductValue(parseFloat(priceParser).toFixed(2))
+    } else {
+      setDiscountValue(0)      
+    }
+    // console.log('discount', discountValue)
+    // console.log('price', discountValue)
+  }
+
+  function handleDiscountChange(e) {
+    const discountParser = parseFloat(e.target.value).toFixed(2);
+    setDiscountValue(e.target.value)
+    if(discountParser.length > 0 && discountParser <= 100) {
+      const valueDiscount = calculateAmountDiscountValue(discountParser)
+      setProductValue(valueDiscount)
+    } else {
+      setProductValue(parseFloat(productSelected.sale_value).toFixed(2))      
+    }
+  }
 
   return (
     <>
@@ -100,7 +154,8 @@ export function ModalProductsSearch({showModalProducts, setShowModalProducts, co
                         className="form-control"
                         type="text"
                         placeholder="R$0.00"
-                        onChange={(e) => console.log("change", e.target.value)}
+                        onChange={handlePriceChange}
+                        value={productValue}
                       />
                     </div>
                   </Col>
@@ -111,11 +166,11 @@ export function ModalProductsSearch({showModalProducts, setShowModalProducts, co
                         className="form-control"
                         type="text"
                         placeholder="00.00"
-                        onChange={(e) => console.log("change", e.target.value)}
+                        onChange={handleDiscountChange}
+                        value={discountValue}
                       />
                     </div>
                   </Col>
-                
                 </Row>
           </Modal.Body>
           <Modal.Footer>

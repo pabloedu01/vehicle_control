@@ -229,14 +229,11 @@ export default function QuotationCreate() {
     const [showModalSearchVehicle, setShowModalSearchVehicle] = useState(false)
     const [clientVehicleData, setClientVehicleData] = useState(null)
     const [quotationData, setQuotationData] = useState(null)
-    // const [claimsData, setClaimsData] = useState([{
-    //     id: 100,
-    //     description: "testando",
-    //     company_id: "dasdasd",
-    // }])
     const [claimsData, setClaimsData] = useState([])
     const [isEditingClaims, setIsEditingClaims] = useState(false)
-    
+    const [itemsSelectedData, setItemsSelectedData] = useState([])
+
+
     const [showModalSearchClient, setShowModalSearchClient] = useState(false)
     const [clientData, setClientData] = useState(null)
 
@@ -350,6 +347,14 @@ export default function QuotationCreate() {
         }
     },[idQuotation])
 
+    function handleItemsSelectedData(data) {
+        setItemsSelectedData(data)
+        if(!isActiveSaveButton) {
+            isSaveActive()
+        }
+        console.log('data de produto selecionado', data)
+    }
+
 
     return (
         <>
@@ -367,8 +372,6 @@ export default function QuotationCreate() {
 
             <Row>
                 <Col>
-                   
-
                     <Row>
                     <Col lg={4}>
                     <Card>
@@ -490,6 +493,7 @@ export default function QuotationCreate() {
     
                                         </Col>
                                     </Row>
+                                    {console.log('peças e serviços', itemsSelectedData)}
                                     <ItemsSelected items={order.items} />
                                 </Card.Body>
                             </Card>
@@ -521,7 +525,7 @@ export default function QuotationCreate() {
                 showModalProducts={showModalProducts}
                 setShowModalProducts={setShowModalProducts} 
                 company_id={companyId} 
-                handleChangeProductsData={() => {}}
+                handleChangeProductsData={handleItemsSelectedData}
             />
         </>
     );
