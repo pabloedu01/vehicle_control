@@ -117,7 +117,7 @@ const ScheduleDetail = React.lazy(() => import('../pages/ScheduleDetail'));
 
 const QuotationsList = React.lazy(() => import('../pages/workshop/QuotationsList'));
 const QuotationCreate = React.lazy(() => import('../pages/workshop/QuotationCreate'));
-const QuotationShow = React.lazy(() => import('../pages/workshop/QuotationCreate'));
+const QuotationShow = React.lazy(() => import('../pages/workshop/QuotationShow'));
 const SelectionPackage = React.lazy(() => import('../pages/workshop/SelectionPackage'));
 const EstimateConfirmation = React.lazy(() => import('../pages/workshop/EstimateConfirmation'));
 

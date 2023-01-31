@@ -39,7 +39,6 @@ export function ModalProductsSearch({showModalProducts, setShowModalProducts, co
     setIsOpenProductValues(true)
     setProductSelected(productSelected)
     setProductValue(productSelected.sale_value)
-    console.log(productSelected.sale_value)
   }
 
   function onHideShowModalProductValues() {
@@ -68,7 +67,6 @@ export function ModalProductsSearch({showModalProducts, setShowModalProducts, co
   } 
 
   function calculatePercentDiscountValue(amount) {
-    console.log('amount', amount)
     if(!productSelected?.sale_value){
       setDiscountValue(0)
       return
@@ -81,9 +79,7 @@ export function ModalProductsSearch({showModalProducts, setShowModalProducts, co
     setDiscountValue((productValueReal - parseFloat(amount)) * 100 / productValueReal)  
   } 
 
-  function handlePriceChange(value) {
-    console.log('price', value)
-   
+  function handlePriceChange(value) {  
     setProductValue(value)
     
   }

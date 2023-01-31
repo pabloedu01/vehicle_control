@@ -40,17 +40,27 @@ const ClaimItems = (props) => {
         </>
     );
 };
+
+
+function calculateAmountDiscountValue(amount, discount) {
+   
+    const price = parseFloat(amount).toFixed(2)    
+    
+    return parseFloat(price - (price * parseFloat(discount) / 100)).toFixed(2)     
+}
+
+function calculatePriceDiscountValue(amount, discount) {
+    const price = parseFloat(amount).toFixed(2)    
+    return parseFloat((price * parseFloat(discount) / 100)).toFixed(2)     
+}
+
+function calculateTotalNoDiscount(price, quantity) {
+    return (parseFloat(price) * parseInt(quantity)).toFixed(2)
+}
+
+
 const ItemsSelected = (props) => {
     const items = props.items || [];
-
-    function calculateAmountDiscountValue(amount, discount) {
-        const price = parseFloat(amount).toFixed(2)    
-        
-        return parseFloat(price - (price * parseFloat(discount) / 100)).toFixed(2)     
-    }
-    function calculateTotalNoDiscount(price, quantity) {
-        return (parseFloat(price) * parseInt(quantity)).toFixed(2)
-    }
 
     return (
         <>
@@ -81,24 +91,6 @@ const ItemsSelected = (props) => {
                     </tbody>
                 </table>
             </div>
-        </>
-    );
-};
-
-const ClientInfo3 = (props) => {
-    const details = props.details || {};
-    return (
-        <>
-            <h5>{details.name}</h5>
-
-            <address className="mb-0 font-14 address-lg">
-                {details.address && details.address}
-                <br />
-                {details.address_2}
-                <br />
-                <abbr title="Phone">P:</abbr> {details.phone && details.phone.map((item, index) => <span>{`${item}${index < details.phone.length? ' - ' : ''}`}</span>)} <br />
-                <abbr title="Email">E:</abbr> {details.email && details.email.map((item, index) => (<><span>{`${item}${index < details.phone.length? ' - ' : ''}`}</span><br /></>))}
-            </address>
         </>
     );
 };
@@ -192,7 +184,30 @@ const VehicleInfo = (props) => {
 };
 
 const OrderSummary = (props) => {
-    const summary = props.summary || {};
+    const summary = props.summary || [];
+    console.log(summary)
+    const summaryReducer = summary.reduce((acc, curr) =>{
+        const calcPriceDiscountCurrent = parseFloat(calculatePriceDiscountValue((parseFloat(curr.sale_value) * parseInt(curr.quantity)), curr.discount_value))
+        const calcPriceQuantityCurrent = (parseFloat(curr.sale_value) * parseInt(curr.quantity))
+ 
+        return {
+            itemsValue: acc.itemsValue + calcPriceQuantityCurrent,
+            discountItemsValue: acc.discountItemsValue + calcPriceDiscountCurrent,
+            servicesValue: 0,
+            discountServicesValue: 0,
+            discountTotalValue: acc.discountItemsValue + acc.discountServicesValue + calcPriceDiscountCurrent,
+            total: acc.total + calcPriceQuantityCurrent - calcPriceDiscountCurrent
+         }
+    }, {
+       itemsValue: 0,
+       discountItemsValue: 0,
+       servicesValue: 0,
+       discountServicesValue: 0,
+       discountTotalValue: 0,
+       total: 0
+    } )
+
+    console.log('Total ' ,summaryReducer)
 
     return (
         <div className="table-responsive">
@@ -206,27 +221,27 @@ const OrderSummary = (props) => {
                 <tbody>
                     <tr>
                         <td>Valor dos itens :</td>
-                        <td>{summary.gross_total}</td>
+                        <td>{}</td>
                     </tr>
                     <tr>
                         <td>Descontos nos itens :</td>
-                        <td style={{color: 'red'}}>{summary.shipping_charge}</td>
+                        <td style={{color: 'red'}}>{}</td>
                     </tr>
                     <tr>
                         <td>Valor dos Serviços : </td>
-                        <td>{summary.tax}</td>
+                        <td>{}</td>
                     </tr>
                     <tr>
                         <td>Desconto nos Serviços : </td>
-                        <td style={{color: 'red'}}>{summary.tax}</td>
+                        <td style={{color: 'red'}}>{}</td>
                     </tr>
                     <tr>
                         <th>Total de descontos :</th>
-                        <td style={{color: 'red'}}>{summary.net_total}</td>
+                        <td style={{color: 'red'}}>{}</td>
                     </tr>
                     <tr style={{fontSize: '18px'}}>
                         <th>Total liquido:</th>
-                        <td>{summary.net_total}</td>
+                        <td>{}</td>
                     </tr>
                 </tbody>
             </table>
@@ -235,7 +250,7 @@ const OrderSummary = (props) => {
 };
 
 
-export default function QuotationCreate() {
+export default function QuotationShow() {
     const [isActiveSaveButton, setIsActiveSaveButton] = useState(false);
     const [showModalSearchVehicle, setShowModalSearchVehicle] = useState(false)
     const [clientVehicleData, setClientVehicleData] = useState(null)
@@ -386,7 +401,6 @@ export default function QuotationCreate() {
         if(!isActiveSaveButton) {
             isSaveActive()
         }
-  
     }
 
 
@@ -454,7 +468,7 @@ export default function QuotationCreate() {
                     <Card>
                         <Card.Body>
                             <h4 className="header-title mb-3">Resumo do Orçamento</h4>
-                            <OrderSummary summary={order} />
+                            <OrderSummary summary={itemsSelectedData} />
                         </Card.Body>
                     </Card>
                 
