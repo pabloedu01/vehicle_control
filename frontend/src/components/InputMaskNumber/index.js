@@ -3,11 +3,10 @@ import { useEffect, useState } from 'react';
 import { useIMask } from 'react-imask';
 
 
-const InputMaskPercent = ({ discountValue, handleDiscountChange, calculateAmountDiscountValue }) => {
+const InputMaskNumber = ({ quantityValue, handleSetAmountProduct,  }) => {
 const [ opts, setOpts ] = useState({ 
   mask: Number, 
   min: 0,
-  max: 100,
   radix:".",
   setUnmaskedValue: true,
 });
@@ -21,23 +20,18 @@ const {
   setUnmaskedValue,
   typedValue,
   setTypedValue,
-} = useIMask(opts, { onComplete :(valueOn) =>{
-  handleDiscountChange(valueOn)
+} = useIMask(opts, { onAccept :(valueOn) =>{
+  handleSetAmountProduct(valueOn)
 } });
 
   
 
   return <input 
   ref={ref}
-  value={value}
   className="form-control"
-  placeholder='Digite o desconto'
-  onChange={(e) => {
-    setValue(e.target.value)
-    handleDiscountChange(e.target.value)
-  }}
+  placeholder='Digite a quantidade'
 />
 }
 
 
-export default InputMaskPercent
+export default InputMaskNumber

@@ -5,6 +5,7 @@ import { ContainerForProductsSearch } from "./ContainerForProductsSearch"
 
 import InputMaskPrice from "../../../components/InputMaskPrice";
 import InputMaskPercent from "../../../components/InputMaskPercent";
+import InputMaskNumber from "../../../components/InputMaskNumber";
 
 const api = new APICore();
 
@@ -12,9 +13,9 @@ export function ModalProductsSearch({showModalProducts, setShowModalProducts, co
   const [data, setData] = useState();
   const [isOpenProductValues, setIsOpenProductValues] = useState(false);
   const [productSelected, setProductSelected] = useState(null);
-  const [productValue, setProductValue] = useState(0);
-  const [discountValue, setDiscountValue] = useState(0);
-  const [disableInput, setDisableInput] = useState('price');
+  const [productValue, setProductValue] = useState('');
+  const [discountValue, setDiscountValue] = useState('0');
+  const [quantityValue, setQuantityValue] = useState(0);
   
 
   function getProducts () {
@@ -37,7 +38,8 @@ export function ModalProductsSearch({showModalProducts, setShowModalProducts, co
     onHideShowModalProducts()
     setIsOpenProductValues(true)
     setProductSelected(productSelected)
-    setProductValue( parseFloat(productSelected.sale_value).toFixed(2))
+    setProductValue(productSelected.sale_value)
+    console.log(productSelected.sale_value)
   }
 
   function onHideShowModalProductValues() {
@@ -45,8 +47,12 @@ export function ModalProductsSearch({showModalProducts, setShowModalProducts, co
   }
 
   function addSelectedProduct () {
-    handleChangeProductsData(productSelected)
-    console.log(productSelected)
+    handleChangeProductsData({
+      ...productSelected,
+      sale_value: productValue,
+      quantity: quantityValue,
+      discount_value: discountValue ?? "0"
+    })
     onHideShowModalProductValues()
     setProductSelected(null)
     setShowModalProducts(false)
@@ -54,66 +60,40 @@ export function ModalProductsSearch({showModalProducts, setShowModalProducts, co
 
   function calculateAmountDiscountValue(discount) {
     const price = parseFloat(productSelected?.sale_value).toFixed(2)    
-    if(discount.length < 1) {
-      return 0;
+    if(discount < 1 || discount.length < 1) {
+      setProductValue(productSelected?.sale_value);
+      return
     }
-    return parseFloat(price - (price * parseFloat(discount) / 100)).toFixed(2)     
+    setProductValue(parseFloat(price - (price * parseFloat(discount) / 100)).toFixed(2))     
   } 
 
   function calculatePercentDiscountValue(amount) {
+    console.log('amount', amount)
     if(!productSelected?.sale_value){
-      return 0
+      setDiscountValue(0)
+      return
     }
     const productValueReal = parseFloat(productSelected?.sale_value).toFixed(2)
-    if(amount < 1) {
-      return 100;
+    if(amount < 1 || amount.length < 1) {
+      setDiscountValue(0);
+      return
     }
-    return (productValueReal - parseFloat(amount)) * 100 / productValueReal  
+    setDiscountValue((productValueReal - parseFloat(amount)) * 100 / productValueReal)  
   } 
 
-  function handlePriceChange(e) {
-    let priceParser = parseFloat(e.target.value.replace(/,/g, '')).toFixed(2);
-    if(isNaN(priceParser)){
-      priceParser = 0
-    }
-
-
-    // console.log(parseFloat(priceParser).toFixed(2) > productSelected?.sale_value)
-    // console.log(parseFloat(priceParser).toFixed(2))
-    // console.log(productSelected?.sale_value)
-
-
-    if(priceParser > productSelected?.sale_value) {
-      console.log("não pode")
-      setDiscountValue(0)
-    }
-
-    if(true) {
-      setProductValue(0)
-    }
-
-    setProductValue(priceParser)
+  function handlePriceChange(value) {
+    console.log('price', value)
+   
+    setProductValue(value)
     
-    if(priceParser.length > 0 && parseFloat(priceParser).toFixed(2) <= productSelected?.sale_value) {
-      const valueDiscount = calculatePercentDiscountValue(priceParser)
-      setDiscountValue(valueDiscount)
-      setProductValue(parseFloat(priceParser).toFixed(2))
-    } else {
-      setDiscountValue(0)      
-    }
-    // console.log('discount', discountValue)
-    // console.log('price', discountValue)
   }
 
-  function handleDiscountChange(e) {
-    const discountParser = parseFloat(e.target.value).toFixed(2);
-    setDiscountValue(e.target.value)
-    if(discountParser.length > 0 && discountParser <= 100) {
-      const valueDiscount = calculateAmountDiscountValue(discountParser)
-      setProductValue(valueDiscount)
-    } else {
-      setProductValue(parseFloat(productSelected.sale_value).toFixed(2))      
-    }
+  function handleDiscountChange(value) {
+    setDiscountValue(value)
+  }
+
+  function handleSetAmountProduct(value) {
+    setQuantityValue(value)
   }
 
   return (
@@ -151,27 +131,37 @@ export function ModalProductsSearch({showModalProducts, setShowModalProducts, co
                     <div className="form-group">
                       <label>Valor:</label> <br />
                       <InputMaskPrice 
-                        className="form-control"
-                        type="text"
-                        placeholder="R$0.00"
-                        onChange={handlePriceChange}
-                        value={productValue}
-                      />
-                    </div>
-                  </Col>
-                  <Col>
-                    <div className="form-group">
-                      <label>Desconto:</label> <br />
-                      <InputMaskPercent 
-                        className="form-control"
-                        type="text"
-                        placeholder="00.00"
-                        onChange={handleDiscountChange}
-                        value={discountValue}
+                        handlePriceChange={handlePriceChange}
+                        // priceValue={productValue}
+                        priceActual={productSelected?.sale_value}
                       />
                     </div>
                   </Col>
                 </Row>
+                <Row>
+                <Col className='mt-2'>
+                <div className="form-group">
+                  <label>Quantidade:</label> <br />
+                  <InputMaskNumber 
+                    handleSetAmountProduct={handleSetAmountProduct}
+                    quantityValue={quantityValue}
+                  />
+                </div>
+              </Col>
+                </Row>
+                <Row>
+                <Col className='mt-2'>
+                <div className="form-group">
+                  <label>Desconto:</label> <br />
+                  <InputMaskPercent 
+                    handleDiscountChange={handleDiscountChange}
+                    discountValue={discountValue}
+                    calculateAmountDiscountValue={calculateAmountDiscountValue}
+                  />
+                </div>
+              </Col>
+                </Row>
+               
           </Modal.Body>
           <Modal.Footer>
             <Button

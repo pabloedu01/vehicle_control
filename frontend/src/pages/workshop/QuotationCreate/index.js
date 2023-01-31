@@ -19,6 +19,7 @@ import {ClaimsSearch} from "./ClaimsSearch"
 // Item Table
 const ClaimItems = (props) => {
     const items = props.items || [];
+
     return (
         <>
             <div className="table-responsive">
@@ -41,6 +42,17 @@ const ClaimItems = (props) => {
 };
 const ItemsSelected = (props) => {
     const items = props.items || [];
+    console.log(props)
+
+    function calculateAmountDiscountValue(amount, discount) {
+        const price = parseFloat(amount).toFixed(2)    
+        
+        return parseFloat(price - (price * parseFloat(discount) / 100)).toFixed(2)     
+    }
+    function calculateTotalNoDiscount(price, quantity) {
+        return (parseFloat(price) * parseInt(quantity)).toFixed(2)
+    }
+
     return (
         <>
             <div className="table-responsive">
@@ -56,14 +68,14 @@ const ItemsSelected = (props) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {items.map((item, idx) => {
+                        {items.length > 0 && items.map((item, idx) => {
                             return (
                                 <tr key={idx}>
                                     <td>{item.name}</td>
                                     <td>{item.quantity}</td>
-                                    <td>{item.price}</td>
-                                    <td>{item.price}</td>
-                                    <td>{item.price}</td>
+                                    <td>{item.sale_value}</td>
+                                    <td>{item.discount_value}</td>
+                                    <td>{calculateAmountDiscountValue(calculateTotalNoDiscount(item.sale_value,item.quantity), item.discount_value)}</td>
                                 </tr>
                             );
                         })}
@@ -315,7 +327,6 @@ export default function QuotationCreate() {
     }
 
     function handleClaimsData(data) {
-        console.log(data)
         setClaimsData( prevState => [...prevState, {...data, id: prevState.length + 1}])
         if(!isActiveSaveButton) {
             isSaveActive()
@@ -328,6 +339,29 @@ export default function QuotationCreate() {
 
     function isSaveActive() {
         setIsActiveSaveButton(true)
+    }
+
+    function saveQuotation() {
+      const dataQuotation = {
+            quotation_id: 24,
+            company_id: 1,
+            client_vehicle_id: 1,
+            client_id:"",
+            consultant_id: 1,
+            quotation_itens: itemsSelectedData.map(item => (
+                {
+                    "service_id": item.service_id ? item.service_id: null,
+                    "products_id": item.id,
+                    "price": item.sale_value,
+                    "price_discount": item.discount_value,
+                    "quantity": item.quantity
+                }
+            )),
+            claim_services: []
+        }
+
+        api.update(dataQuotation).then(response => console.log(response))
+        // console.log(dataQuotation)
     }
 
     useEffect(() => {
@@ -348,7 +382,8 @@ export default function QuotationCreate() {
     },[idQuotation])
 
     function handleItemsSelectedData(data) {
-        setItemsSelectedData(data)
+        setItemsSelectedData(prevState => [...prevState, data])
+        // setItemsSelectedData(prevState => [data])
         if(!isActiveSaveButton) {
             isSaveActive()
         }
@@ -432,7 +467,7 @@ export default function QuotationCreate() {
                                         type="button" 
                                         className='btn-md w-100 text-uppercase fw-bold' 
                                         variant="primary"
-                                        // style={{fontSize: "20px"}}
+                                        onClick={saveQuotation}
                                     >
                                         salvar
                                     </Button>
@@ -493,8 +528,7 @@ export default function QuotationCreate() {
     
                                         </Col>
                                     </Row>
-                                    {console.log('peças e serviços', itemsSelectedData)}
-                                    <ItemsSelected items={order.items} />
+                                    <ItemsSelected items={itemsSelectedData} />
                                 </Card.Body>
                             </Card>
                         </Col>

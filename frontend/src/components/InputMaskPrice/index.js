@@ -1,48 +1,42 @@
-import MaskedInput from 'react-text-mask'
-import createNumberMask from 'text-mask-addons/dist/createNumberMask'
+import { useEffect, useState } from 'react';
+import { useIMask } from 'react-imask';
 
-const defaultMaskOptions = {
-  prefix: '',
-  suffix: '',
-  includeThousandsSeparator: true,
-  thousandsSeparatorSymbol: ',',
-  allowDecimal: true,
-  decimalSymbol: '.',
-  decimalLimit: 2, 
-  integerLimit: 7, 
-  allowNegative: false,
-  allowLeadingZeroes: false,
+
+export default function InputMaskPrice ({ priceValue, handlePriceChange, priceActual }) {
+const [ opts, setOpts ] = useState({ 
+  mask: Number,
+  min: 0,
+  radix:".",
+});
+
+const {
+  ref,
+  maskRef,
+  value,
+  setValue,
+  unmaskedValue,
+  setUnmaskedValue,
+  typedValue,
+  setTypedValue,
+} = useIMask(opts, { onAccept:(valueOn, mask) =>{
+  setValue(valueOn)
+  handlePriceChange(valueOn)
+
+} } );
+
+  useEffect(() => {
+    setValue(`${priceActual}`)
+    handlePriceChange(priceActual)
+  },[priceActual])
+
+  return <input 
+  ref={ref}
+  value={value}
+  onChange={(e) => {
+    handlePriceChange(e.target.value)
+  }}
+  className="form-control"
+  placeholder='Digite o preço'
+/>
 }
 
-const InputMaskPrice = ({ maskOptions, ...inputProps }) => {
-  const currencyMask = createNumberMask({
-    ...defaultMaskOptions,
-    ...maskOptions,
-  })
-
-  return <MaskedInput mask={currencyMask} {...inputProps} />
-}
-
-InputMaskPrice.defaultProps = {
-  inputMode: 'numeric',
-  maskOptions: {},
-}
-
-// InputMaskPrice.propTypes = {
-//   inputmode: PropTypes.string,
-//   maskOptions: PropTypes.shape({
-//     prefix: PropTypes.string,
-//     suffix: PropTypes.string,
-//     includeThousandsSeparator: PropTypes.boolean,
-//     thousandsSeparatorSymbol: PropTypes.string,
-//     allowDecimal: PropTypes.boolean,
-//     decimalSymbol: PropTypes.string,
-//     decimalLimit: PropTypes.string,
-//     requireDecimal: PropTypes.boolean,
-//     allowNegative: PropTypes.boolean,
-//     allowLeadingZeroes: PropTypes.boolean,
-//     integerLimit: PropTypes.number,
-//   }),
-// }
-
-export default InputMaskPrice
