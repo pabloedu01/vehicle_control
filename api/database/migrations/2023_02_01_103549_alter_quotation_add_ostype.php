@@ -14,7 +14,7 @@ class AlterQuotationAddOstype extends Migration
     public function up()
     {
         Schema::table('quotation', function (Blueprint $table) {
-            $table->integer('os_type_id')->nullable();
+            $table->integer('os_type_id');
         });
     }
 

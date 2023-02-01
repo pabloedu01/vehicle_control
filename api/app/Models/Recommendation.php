@@ -46,6 +46,8 @@ class Recommendation extends Base
                 'required', 'string'
             ],
             'services'      => ['required', 'array', new ArrayIdsInDatabase(Service::class)],
+            'products'      => ['required', 'array', new ArrayIdsInDatabase(Service::class)],
+
         ];
     }
 
@@ -83,6 +85,12 @@ class Recommendation extends Base
     public function services()
     {
         return $this->belongsToMany('App\Models\Service', 'recommendation_service', 'recommendation_id', 'service_id')
+                    ->withPivot([ 'value' ])
+                    ->withTimestamps();
+    }
+    public function products()
+    {
+        return $this->belongsToMany('App\Models\Product', 'recommendation_product', 'recommendation_id', 'product_id')
                     ->withPivot([ 'value' ])
                     ->withTimestamps();
     }
