@@ -14,7 +14,7 @@ import {ModalClientSearch} from "../../../components/Client/ModalClientSearch"
 import {ModalServicesSearch} from "../../../components/quotation/ModalServicesSearch"
 import {ModalProductsSearch} from "../../../components/quotation/ModalProductsSearch"
 import {ClaimsSearch} from "./ClaimsSearch"
-
+import {formatMoneyPt_BR} from '../../../utils/formatMoneyPt_BR'
 
 // Item Table
 const ClaimItems = (props) => {
@@ -221,27 +221,27 @@ const OrderSummary = (props) => {
                 <tbody>
                     <tr>
                         <td>Valor dos itens :</td>
-                        <td>{}</td>
+                        <td>{formatMoneyPt_BR(summaryReducer.itemsValue)}</td>
                     </tr>
                     <tr>
                         <td>Descontos nos itens :</td>
-                        <td style={{color: 'red'}}>{}</td>
+                        <td style={{color: 'red'}}>{formatMoneyPt_BR(summaryReducer.discountItemsValue)}</td>
                     </tr>
                     <tr>
                         <td>Valor dos Serviços : </td>
-                        <td>{}</td>
+                        <td>{formatMoneyPt_BR(summaryReducer.servicesValue)}</td>
                     </tr>
                     <tr>
                         <td>Desconto nos Serviços : </td>
-                        <td style={{color: 'red'}}>{}</td>
+                        <td style={{color: 'red'}}>{formatMoneyPt_BR(summaryReducer.discountServicesValue)}</td>
                     </tr>
                     <tr>
                         <th>Total de descontos :</th>
-                        <td style={{color: 'red'}}>{}</td>
+                        <td style={{color: 'red'}}>{formatMoneyPt_BR(summaryReducer.discountTotalValue)}</td>
                     </tr>
                     <tr style={{fontSize: '18px'}}>
                         <th>Total liquido:</th>
-                        <td>{}</td>
+                        <td>{formatMoneyPt_BR(summaryReducer.total)}</td>
                     </tr>
                 </tbody>
             </table>
