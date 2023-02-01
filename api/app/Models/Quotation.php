@@ -26,6 +26,7 @@ class Quotation extends Model
         'consultant_id',
         'company_id',
         'user_id',
+        'os_type_id'
 
     ];
 
@@ -111,6 +112,12 @@ protected $filters = [
     }
     public function user() {
         return $this->belongsTo('App\Models\User', 'user_id', 'id');
+    }
+    public function OsType()
+    {
+        return $this->belongsTo('App\Models\OsType', 'os_type_id', 'id')->withTrashed();
+
+        // return $this->hasMany('App\Models\MaintenanceReview', 'maintenance_review_id', 'id');
     }
 
 

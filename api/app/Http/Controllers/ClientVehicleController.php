@@ -14,7 +14,7 @@ class ClientVehicleController extends Controller
     {
         if($request['search'])
         {
-            ClientVehicle::search($request['search']->with([ 'vehicle', 'vehicle.model', 'vehicle.model.brand' ])
+            ClientVehicle::search($request['search'])->with([ 'vehicle', 'vehicle.model', 'vehicle.model.brand' ])
             ->where('vehicle_id',  $request->vehicle_id)
             ->get();
         }
@@ -24,7 +24,7 @@ class ClientVehicleController extends Controller
             ->get();
         }
 
-   
+
 
         $clientVehicles->append('name');
 

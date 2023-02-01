@@ -8,7 +8,6 @@ class MaintenanceReview extends Base
 
     protected $fillable = [
         'company_id',
-        'brand_id',
         'model_id',
         'name',
     ];
