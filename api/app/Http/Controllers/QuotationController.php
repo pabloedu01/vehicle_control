@@ -34,6 +34,7 @@ class QuotationController extends Controller
         $quotation->client_vehicle_id = $request->client_vehicle_id;
         $quotation->maintenance_review_id = $request->maintenance_review_id;
         $quotation->consultant_id =  $consultant;
+        $quotation->os_type_id = $request->os_type_id;
         $quotation->company_id = $request->company_id;
         $quotation->user_id = auth()->user()->id;
         $quotation->save();
