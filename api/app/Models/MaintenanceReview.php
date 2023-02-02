@@ -29,12 +29,6 @@ class MaintenanceReview extends Base
     }
 
     #belongs to
-    public function brand()
-    {
-        return $this->belongsTo('App\Models\VehicleBrand', 'brand_id', 'id');
-    }
-
-    #belongs to
     public function model()
     {
         return $this->belongsTo('App\Models\VehicleModel', 'model_id', 'id');
