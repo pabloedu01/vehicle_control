@@ -123,11 +123,6 @@ const ClientInfo = (props) => {
     );
 };
 const QuotationInfo = ({details, technicalConsultantData}) => {
-    // const {details} = props.details || {};
-    // const {technicalConsultantData} = props.technicalConsultantData || {};
-    console.log(technicalConsultantData)
-    // technicalConsultantData ? technicalConsultantData.name :
-    console.log(details)
     return (
         <>
             <ul className="list-unstyled mb-0 mt-2">
@@ -139,7 +134,7 @@ const QuotationInfo = ({details, technicalConsultantData}) => {
                         <span className="fw-bold me-2">Data de emissão:</span> {details?.created_at && details.created_at}
                     </p>
                     <p className="mb-2">
-                        <span className="fw-bold me-2">Responsável:</span> {technicalConsultantData.name && technicalConsultantData.name}
+                        <span className="fw-bold me-2">Responsável:</span> {technicalConsultantData?.name && technicalConsultantData.name}
                     </p>
                     <p className="mb-0">
                         <span className="fw-bold me-2">Tipo de Orçamento:</span> {''}
@@ -222,23 +217,23 @@ const OrderSummary = (props) => {
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Valor dos itens :</td>
+                        <td>Valor dos itens:</td>
                         <td>{formatMoneyPt_BR(summaryReducer.itemsValue)}</td>
                     </tr>
                     <tr>
-                        <td>Descontos nos itens :</td>
+                        <td>Descontos nos itens:</td>
                         <td style={{color: 'red'}}>{formatMoneyPt_BR(summaryReducer.discountItemsValue)}</td>
                     </tr>
                     <tr>
-                        <td>Valor dos Serviços : </td>
+                        <td>Valor dos Serviços: </td>
                         <td>{formatMoneyPt_BR(summaryReducer.servicesValue)}</td>
                     </tr>
                     <tr>
-                        <td>Desconto nos Serviços : </td>
+                        <td>Desconto nos Serviços: </td>
                         <td style={{color: 'red'}}>{formatMoneyPt_BR(summaryReducer.discountServicesValue)}</td>
                     </tr>
                     <tr>
-                        <th>Total de descontos :</th>
+                        <th>Total de descontos:</th>
                         <td style={{color: 'red'}}>{formatMoneyPt_BR(summaryReducer.discountTotalValue)}</td>
                     </tr>
                     <tr style={{fontSize: '18px'}}>
@@ -312,20 +307,21 @@ export default function QuotationShow() {
     }
    
     function saveQuotation() {
+        console.log(itemsSelectedData)
       const dataQuotation = {
         quotation_id: parseInt(idQuotation),
         company_id: parseInt(companyId),
         client_vehicle_id: clientVehicleData.id,
         client_id:clientData.id,
         os_type_id:2,
-        consultant_id: 1,
-        quotation_itens: itemsSelectedData.map(item => ({
+        consultant_id: technicalConsultantData.id,
+        quotation_itens:itemsSelectedData.length > 0 ? itemsSelectedData.map(item => ({
             service_id: null,
             products_id: item.id,
             price: `${item.price}`,
             price_discount: `${item.price_discount}`,
             quantity: `${item.quantity}`
-        })),
+        })) : [],
             
         claim_services: [
             {
