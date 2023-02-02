@@ -21,9 +21,7 @@ Route::group([
         ]);
     });
 
-    Route::group([
-                     'middleware' => [ 'recommendation' ],
-                 ], function(){
+   
 
         Route::get('{id}', [
             'uses' => 'OsTypeController@show',
@@ -36,7 +34,7 @@ Route::group([
         Route::delete('{id}', [
             'uses' => 'OsTypeController@destroy',
         ]);
-    });
+
 
 
 });

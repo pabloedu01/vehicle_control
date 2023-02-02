@@ -20,7 +20,7 @@ class OsTypeController extends Controller
 
     public function show(Request $request, $id)
     {
-        $OsType = OsType::where('id', '=', $id)
+        $OsType = OsType::where('id', $id)
                                     ->first();
 
         return response()->json(   [
@@ -33,7 +33,7 @@ class OsTypeController extends Controller
     public function store(Request $request)
     {
 
-        $OsType = new OsType($request->only(OsType::getFillables()));
+        $OsType = new OsType($request->all());
 
         if(secureSave($OsType))
         {
