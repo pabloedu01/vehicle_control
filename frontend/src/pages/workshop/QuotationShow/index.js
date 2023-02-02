@@ -62,7 +62,6 @@ function calculateTotalNoDiscount(price, quantity) {
 
 const ItemsSelected = (props) => {
     const items = props.items || [];
-    console.log(items)
     return (
         <>
             <div className="table-responsive">
@@ -81,7 +80,7 @@ const ItemsSelected = (props) => {
                         {items.length > 0 && items.map((item, idx) => {
                             return (
                                 <tr key={idx}>
-                                    <td>{item.name || item.product.name}</td>
+                                    <td>{item?.name || item?.product?.name}</td>
                                     <td>{item.quantity}</td>
                                     <td>{formatMoneyPt_BR(parseFloat(item.price))}</td>
                                     <td>{formatMoneyPt_BR(parseFloat(item.price_discount))}</td>
@@ -123,20 +122,24 @@ const ClientInfo = (props) => {
         </>
     );
 };
-const QuotationInfo = (props) => {
-    const details = props.details || {};
+const QuotationInfo = ({details, technicalConsultantData}) => {
+    // const {details} = props.details || {};
+    // const {technicalConsultantData} = props.technicalConsultantData || {};
+    console.log(technicalConsultantData)
+    // technicalConsultantData ? technicalConsultantData.name :
+    console.log(details)
     return (
         <>
             <ul className="list-unstyled mb-0 mt-2">
                 <li>
                     <p className="mb-2">
-                        <span className="fw-bold me-2">Número do Orçamento:</span> {details.quotationNumber && details.quotationNumber}
+                        <span className="fw-bold me-2">Número do Orçamento:</span> {details?.quotationNumber && details.quotationNumber}
                     </p>
                     <p className="mb-2">
-                        <span className="fw-bold me-2">Data de emissão:</span> {details.created_at && details.created_at}
+                        <span className="fw-bold me-2">Data de emissão:</span> {details?.created_at && details.created_at}
                     </p>
                     <p className="mb-2">
-                        <span className="fw-bold me-2">Responsavel:</span> {details.technical_consultant && details.technical_consultant}
+                        <span className="fw-bold me-2">Responsável:</span> {technicalConsultantData.name && technicalConsultantData.name}
                     </p>
                     <p className="mb-0">
                         <span className="fw-bold me-2">Tipo de Orçamento:</span> {''}
@@ -342,14 +345,15 @@ export default function QuotationShow() {
         if(idQuotation) {
             api.get('/quotations/show/'+idQuotation).then((response) => {
                 console.log(response.data.data)
-                const {client, client_vehicle, quotation_itens,quotation_claim_service} = response.data.data
+                const {client, client_vehicle, quotation_itens,quotation_claim_service, technical_consultant} = response.data.data
                 setClientData(client)
+                console.log(quotation_itens)
+                setTechnicalConsultData(technical_consultant)
                 setClientVehicleData(client_vehicle)
                 setClaimsData(quotation_claim_service)
                 setQuotationData({
                     quotationNumber: response.data.data.id,
                     created_at: formatDateTimePresentation(response.data.data.updated_at),
-                    technical_consultant: response.data.data?.technical_consultant?.name,
                     typeQuotation: null,
                 })
                 setItemsSelectedData(quotation_itens)
@@ -397,7 +401,7 @@ export default function QuotationShow() {
                             Editar                                       
                         </Button>
                     </div>
-                        <QuotationInfo details={quotationData} />
+                        <QuotationInfo details={quotationData} technicalConsultantData={technicalConsultantData}/>
                     </Card.Body>
                 </Card>
                     <Card>
