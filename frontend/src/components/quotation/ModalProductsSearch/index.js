@@ -48,9 +48,9 @@ export function ModalProductsSearch({showModalProducts, setShowModalProducts, co
   function addSelectedProduct () {
     handleChangeProductsData({
       ...productSelected,
-      sale_value: productValue,
+      price: productValue,
       quantity: quantityValue,
-      discount_value: discountValue ?? "0"
+      price_discount: discountValue ?? "0"
     })
     onHideShowModalProductValues()
     setProductSelected(null)
@@ -122,42 +122,56 @@ export function ModalProductsSearch({showModalProducts, setShowModalProducts, co
           </Modal.Header>
           <Modal.Body className='py-3'>
               <h5>Selecione um Produto abaixo</h5>
+              <Row>
+              <Col >
+                <div className="form-group">
+                  <label>Quantidade:</label> <br />
+                    <InputMaskNumber 
+                      handleSetAmountProduct={handleSetAmountProduct}
+                      quantityValue={quantityValue}
+                    />
+                  </div>
+                </Col>
+              </Row>
                 <Row>
-                  <Col>
+                  <Col className='mt-2'>
                     <div className="form-group">
-                      <label>Valor:</label> <br />
+                      <label>Valor em R$:</label> <br />
                       <InputMaskPrice 
-                        handlePriceChange={handlePriceChange}
+                        handlePriceChange={handleDiscountChange}
                         // priceValue={productValue}
                         priceActual={productSelected?.sale_value}
                       />
                     </div>
                   </Col>
                 </Row>
+          
                 <Row>
                 <Col className='mt-2'>
                 <div className="form-group">
-                  <label>Quantidade:</label> <br />
-                  <InputMaskNumber 
-                    handleSetAmountProduct={handleSetAmountProduct}
-                    quantityValue={quantityValue}
+                  <label>Desconto unitário em R$:</label> <br />
+                  <InputMaskPrice 
+                    handlePriceChange={handleDiscountChange}
+                    priceActual={0}
                   />
                 </div>
               </Col>
                 </Row>
-                <Row>
+      
+           {/* 
+              <Row>
                 <Col className='mt-2'>
-                <div className="form-group">
-                  <label>Desconto:</label> <br />
-                  <InputMaskPercent 
-                    handleDiscountChange={handleDiscountChange}
-                    discountValue={discountValue}
-                    calculateAmountDiscountValue={calculateAmountDiscountValue}
-                  />
-                </div>
-              </Col>
-                </Row>
-               
+                  <div className="form-group">
+                    <label>Desconto em %:</label> <br />
+                    <InputMaskPercent 
+                      handleDiscountChange={handleDiscountChange}
+                      discountValue={discountValue}
+                      calculateAmountDiscountValue={calculateAmountDiscountValue}
+                    />
+                  </div>
+                </Col>
+              </Row>
+          */ }
           </Modal.Body>
           <Modal.Footer>
             <Button

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useIMask } from 'react-imask';
 
 
-export default function InputMaskPrice ({ priceValue, handlePriceChange, priceActual }) {
+export default function InputMaskPrice ({ handlePriceChange, priceActual = null }) {
 const [ opts, setOpts ] = useState({ 
   mask: Number,
   min: 0,
@@ -25,8 +25,10 @@ const {
 } } );
 
   useEffect(() => {
-    setValue(`${priceActual}`)
-    handlePriceChange(priceActual)
+    if(priceActual) {
+      setValue(`${priceActual}`)
+      handlePriceChange(priceActual)
+    }
   },[priceActual])
 
   return <input 

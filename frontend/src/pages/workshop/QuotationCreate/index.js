@@ -14,7 +14,7 @@ import {ModalClientSearch} from "../../../components/Client/ModalClientSearch"
 import {ModalServicesSearch} from "../../../components/quotation/ModalServicesSearch"
 import {ModalProductsSearch} from "../../../components/quotation/ModalProductsSearch"
 import {ClaimsSearch} from "./ClaimsSearch"
-
+import {formatMoneyPt_BR} from '../../../utils/formatMoneyPt_BR'
 
 // Item Table
 const ClaimItems = (props) => {
@@ -40,17 +40,27 @@ const ClaimItems = (props) => {
         </>
     );
 };
+
+
+function calculateAmountDiscountValue(amount, discount) {
+   
+    const price = parseFloat(amount).toFixed(2)    
+    
+    return parseFloat(price - (price * parseFloat(discount) / 100)).toFixed(2)     
+}
+
+function calculatePriceDiscountValue(amount, discount) {
+    const price = parseFloat(amount).toFixed(2)    
+    return parseFloat((price * parseFloat(discount) / 100)).toFixed(2)     
+}
+
+function calculateTotalNoDiscount(price, quantity) {
+    return (parseFloat(price) * parseInt(quantity)).toFixed(2)
+}
+
+
 const ItemsSelected = (props) => {
     const items = props.items || [];
-
-    function calculateAmountDiscountValue(amount, discount) {
-        const price = parseFloat(amount).toFixed(2)    
-        
-        return parseFloat(price - (price * parseFloat(discount) / 100)).toFixed(2)     
-    }
-    function calculateTotalNoDiscount(price, quantity) {
-        return (parseFloat(price) * parseInt(quantity)).toFixed(2)
-    }
 
     return (
         <>
@@ -81,24 +91,6 @@ const ItemsSelected = (props) => {
                     </tbody>
                 </table>
             </div>
-        </>
-    );
-};
-
-const ClientInfo3 = (props) => {
-    const details = props.details || {};
-    return (
-        <>
-            <h5>{details.name}</h5>
-
-            <address className="mb-0 font-14 address-lg">
-                {details.address && details.address}
-                <br />
-                {details.address_2}
-                <br />
-                <abbr title="Phone">P:</abbr> {details.phone && details.phone.map((item, index) => <span>{`${item}${index < details.phone.length? ' - ' : ''}`}</span>)} <br />
-                <abbr title="Email">E:</abbr> {details.email && details.email.map((item, index) => (<><span>{`${item}${index < details.phone.length? ' - ' : ''}`}</span><br /></>))}
-            </address>
         </>
     );
 };
@@ -192,7 +184,30 @@ const VehicleInfo = (props) => {
 };
 
 const OrderSummary = (props) => {
-    const summary = props.summary || {};
+    const summary = props.summary || [];
+    console.log(summary)
+    const summaryReducer = summary.reduce((acc, curr) =>{
+        const calcPriceDiscountCurrent = parseFloat(calculatePriceDiscountValue((parseFloat(curr.sale_value) * parseInt(curr.quantity)), curr.discount_value))
+        const calcPriceQuantityCurrent = (parseFloat(curr.sale_value) * parseInt(curr.quantity))
+ 
+        return {
+            itemsValue: acc.itemsValue + calcPriceQuantityCurrent,
+            discountItemsValue: acc.discountItemsValue + calcPriceDiscountCurrent,
+            servicesValue: 0,
+            discountServicesValue: 0,
+            discountTotalValue: acc.discountItemsValue + acc.discountServicesValue + calcPriceDiscountCurrent,
+            total: acc.total + calcPriceQuantityCurrent - calcPriceDiscountCurrent
+         }
+    }, {
+       itemsValue: 0,
+       discountItemsValue: 0,
+       servicesValue: 0,
+       discountServicesValue: 0,
+       discountTotalValue: 0,
+       total: 0
+    } )
+
+    console.log('Total ' ,summaryReducer)
 
     return (
         <div className="table-responsive">
@@ -206,27 +221,27 @@ const OrderSummary = (props) => {
                 <tbody>
                     <tr>
                         <td>Valor dos itens :</td>
-                        <td>{summary.gross_total}</td>
+                        <td>{formatMoneyPt_BR(summaryReducer.itemsValue)}</td>
                     </tr>
                     <tr>
                         <td>Descontos nos itens :</td>
-                        <td style={{color: 'red'}}>{summary.shipping_charge}</td>
+                        <td style={{color: 'red'}}>{formatMoneyPt_BR(summaryReducer.discountItemsValue)}</td>
                     </tr>
                     <tr>
                         <td>Valor dos Serviços : </td>
-                        <td>{summary.tax}</td>
+                        <td>{formatMoneyPt_BR(summaryReducer.servicesValue)}</td>
                     </tr>
                     <tr>
                         <td>Desconto nos Serviços : </td>
-                        <td style={{color: 'red'}}>{summary.tax}</td>
+                        <td style={{color: 'red'}}>{formatMoneyPt_BR(summaryReducer.discountServicesValue)}</td>
                     </tr>
                     <tr>
                         <th>Total de descontos :</th>
-                        <td style={{color: 'red'}}>{summary.net_total}</td>
+                        <td style={{color: 'red'}}>{formatMoneyPt_BR(summaryReducer.discountTotalValue)}</td>
                     </tr>
                     <tr style={{fontSize: '18px'}}>
                         <th>Total liquido:</th>
-                        <td>{summary.net_total}</td>
+                        <td>{formatMoneyPt_BR(summaryReducer.total)}</td>
                     </tr>
                 </tbody>
             </table>
@@ -256,61 +271,7 @@ export default function QuotationCreate() {
 
     const api = new APICore()
 
-    const order = {
-        id: '#BM31',
-        order_status: 'Packed',
-        items: [
-            {
-                id: 1,
-                name: 'The Military Duffle Bag',
-                quantity: 3,
-                price: '$128',
-                total: '$384',
-            },
-            {
-                id: 2,
-                name: 'Mountain Basket Ball',
-                quantity: 1,
-                price: '$199',
-                total: '$199',
-            },
-            {
-                id: 3,
-                name: 'Wavex Canvas Messenger Bag',
-                quantity: 5,
-                price: '$180',
-                total: '$900',
-            },
-            {
-                id: 4,
-                name: 'The Utility Shirt',
-                quantity: 2,
-                price: '$79',
-                total: '$158',
-            },
-        ],
-        gross_total: '$1641',
-        shipping_charge: '$23',
-        tax: '$19.22',
-        net_total: '$1683.22',
-        shipping: {
-            provider: 'Stanley Jones',
-            address_1: '795 Folsom Ave, Suite 600',
-            address_2: 'San Francisco, CA 94107',
-            phone: '(123) 456-7890 ',
-            mobile: '(+01) 12345 67890',
-        },
-        billing: {
-            type: 'Credit Card',
-            provider: 'Visa ending in 2851',
-            valid: '02/2020',
-        },
-        delivery: {
-            provider: 'UPS Delivery',
-            order_id: '#BM31',
-            payment_mode: 'COD',
-        },
-    };
+    
 
     function handleChangeClientVehicleData (data) {
         setClientVehicleData(data)
@@ -386,7 +347,6 @@ export default function QuotationCreate() {
         if(!isActiveSaveButton) {
             isSaveActive()
         }
-  
     }
 
 
@@ -454,7 +414,7 @@ export default function QuotationCreate() {
                     <Card>
                         <Card.Body>
                             <h4 className="header-title mb-3">Resumo do Orçamento</h4>
-                            <OrderSummary summary={order} />
+                            <OrderSummary summary={itemsSelectedData} />
                         </Card.Body>
                     </Card>
                 

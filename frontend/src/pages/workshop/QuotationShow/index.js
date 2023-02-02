@@ -10,6 +10,7 @@ import { formatDateTimePresentation } from '../../../utils/formatDateTimezone'
 // components
 import PageTitle from '../../../components/PageTitle';
 import {ModalVehicleSearch} from "../../../components/Vehicle/ModalVehicleSearch"
+import {ModalTechnicalConsultantSearch} from "../../../components/TechnicalConsultant/ModalTechnicalConsultantSearch"
 import {ModalClientSearch} from "../../../components/Client/ModalClientSearch"
 import {ModalServicesSearch} from "../../../components/quotation/ModalServicesSearch"
 import {ModalProductsSearch} from "../../../components/quotation/ModalProductsSearch"
@@ -61,7 +62,7 @@ function calculateTotalNoDiscount(price, quantity) {
 
 const ItemsSelected = (props) => {
     const items = props.items || [];
-
+    console.log(items)
     return (
         <>
             <div className="table-responsive">
@@ -71,7 +72,7 @@ const ItemsSelected = (props) => {
                             <th>Itens</th>
                             <th>Quantidade</th>
                             <th>Preço</th>
-                            <th>Desconto</th>
+                            <th>Desconto unitário</th>
                             <th>Total</th>
 
                         </tr>
@@ -80,11 +81,11 @@ const ItemsSelected = (props) => {
                         {items.length > 0 && items.map((item, idx) => {
                             return (
                                 <tr key={idx}>
-                                    <td>{item.name}</td>
+                                    <td>{item.name || item.product.name}</td>
                                     <td>{item.quantity}</td>
-                                    <td>{item.sale_value}</td>
-                                    <td>{item.discount_value}</td>
-                                    <td>{calculateAmountDiscountValue(calculateTotalNoDiscount(item.sale_value,item.quantity), item.discount_value)}</td>
+                                    <td>{formatMoneyPt_BR(parseFloat(item.price))}</td>
+                                    <td>{formatMoneyPt_BR(parseFloat(item.price_discount))}</td>
+                                    <td>{formatMoneyPt_BR(parseFloat((item.price - item.price_discount) * parseInt(item.quantity)))}</td>
                                 </tr>
                             );
                         })}
@@ -185,18 +186,18 @@ const VehicleInfo = (props) => {
 
 const OrderSummary = (props) => {
     const summary = props.summary || [];
-    console.log(summary)
     const summaryReducer = summary.reduce((acc, curr) =>{
-        const calcPriceDiscountCurrent = parseFloat(calculatePriceDiscountValue((parseFloat(curr.sale_value) * parseInt(curr.quantity)), curr.discount_value))
-        const calcPriceQuantityCurrent = (parseFloat(curr.sale_value) * parseInt(curr.quantity))
+        // const calcPriceDiscountCurrent = parseFloat(calculatePriceDiscountValue((parseFloat(curr.price) * parseInt(curr.quantity)), curr.price_discount))
+        const calcPriceQuantityCurrent = (parseFloat(curr.price) * parseInt(curr.quantity))
+        const calcPriceDiscountedCurrent = ((parseFloat(curr.price) - parseFloat(curr.price_discount)) * parseInt(curr.quantity))
  
         return {
             itemsValue: acc.itemsValue + calcPriceQuantityCurrent,
-            discountItemsValue: acc.discountItemsValue + calcPriceDiscountCurrent,
+            discountItemsValue: acc.discountItemsValue +(curr.price_discount * parseInt(curr.quantity)),
             servicesValue: 0,
             discountServicesValue: 0,
-            discountTotalValue: acc.discountItemsValue + acc.discountServicesValue + calcPriceDiscountCurrent,
-            total: acc.total + calcPriceQuantityCurrent - calcPriceDiscountCurrent
+            discountTotalValue: acc.discountItemsValue + acc.discountServicesValue +(curr.price_discount * parseInt(curr.quantity)),
+            total: acc.total + calcPriceDiscountedCurrent
          }
     }, {
        itemsValue: 0,
@@ -206,8 +207,6 @@ const OrderSummary = (props) => {
        discountTotalValue: 0,
        total: 0
     } )
-
-    console.log('Total ' ,summaryReducer)
 
     return (
         <div className="table-responsive">
@@ -261,7 +260,9 @@ export default function QuotationShow() {
 
 
     const [showModalSearchClient, setShowModalSearchClient] = useState(false)
+    const [showModalSearchTechnicalConsultants, setShowModalSearchTechnicalConsultants] = useState(false)
     const [clientData, setClientData] = useState(null)
+    const [technicalConsultantData, setTechnicalConsultData] = useState(null)
 
     const [showModalServices, setShowModalServices] = useState(false)
    
@@ -271,64 +272,16 @@ export default function QuotationShow() {
 
     const api = new APICore()
 
-    const order = {
-        id: '#BM31',
-        order_status: 'Packed',
-        items: [
-            {
-                id: 1,
-                name: 'The Military Duffle Bag',
-                quantity: 3,
-                price: '$128',
-                total: '$384',
-            },
-            {
-                id: 2,
-                name: 'Mountain Basket Ball',
-                quantity: 1,
-                price: '$199',
-                total: '$199',
-            },
-            {
-                id: 3,
-                name: 'Wavex Canvas Messenger Bag',
-                quantity: 5,
-                price: '$180',
-                total: '$900',
-            },
-            {
-                id: 4,
-                name: 'The Utility Shirt',
-                quantity: 2,
-                price: '$79',
-                total: '$158',
-            },
-        ],
-        gross_total: '$1641',
-        shipping_charge: '$23',
-        tax: '$19.22',
-        net_total: '$1683.22',
-        shipping: {
-            provider: 'Stanley Jones',
-            address_1: '795 Folsom Ave, Suite 600',
-            address_2: 'San Francisco, CA 94107',
-            phone: '(123) 456-7890 ',
-            mobile: '(+01) 12345 67890',
-        },
-        billing: {
-            type: 'Credit Card',
-            provider: 'Visa ending in 2851',
-            valid: '02/2020',
-        },
-        delivery: {
-            provider: 'UPS Delivery',
-            order_id: '#BM31',
-            payment_mode: 'COD',
-        },
-    };
+
 
     function handleChangeClientVehicleData (data) {
         setClientVehicleData(data)
+        if(!isActiveSaveButton) {
+            isSaveActive()
+        }
+    }
+    function handleChangeTechnicalConsultantData (data) {
+        setTechnicalConsultData(data)
         if(!isActiveSaveButton) {
             isSaveActive()
         }
@@ -354,34 +307,42 @@ export default function QuotationShow() {
     function isSaveActive() {
         setIsActiveSaveButton(true)
     }
-
+   
     function saveQuotation() {
       const dataQuotation = {
-            quotation_id: 24,
-            company_id: 1,
-            client_vehicle_id: 1,
-            client_id:"",
-            consultant_id: 1,
-            quotation_itens: itemsSelectedData.map(item => (
-                {
-                    "service_id": item.service_id ? item.service_id: null,
-                    "products_id": item.id,
-                    "price": item.sale_value,
-                    "price_discount": item.discount_value,
-                    "quantity": item.quantity
-                }
-            )),
-            claim_services: []
-        }
-
+        quotation_id: parseInt(idQuotation),
+        company_id: parseInt(companyId),
+        client_vehicle_id: clientVehicleData.id,
+        client_id:clientData.id,
+        os_type_id:2,
+        consultant_id: 1,
+        quotation_itens: itemsSelectedData.map(item => ({
+            service_id: null,
+            products_id: item.id,
+            price: `${item.price}`,
+            price_discount: `${item.price_discount}`,
+            quantity: `${item.quantity}`
+        })),
+            
+        claim_services: [
+            {
+                claim_service_id: 1
+            },
+            {
+                claim_service_id: 2
+            }
+        ]
+    }
+        
+        console.log(dataQuotation)
         api.update('/quotations',dataQuotation).then(response => console.log(response))
-        // console.log(dataQuotation)
     }
 
     useEffect(() => {
         if(idQuotation) {
             api.get('/quotations/show/'+idQuotation).then((response) => {
-                const {client, client_vehicle, quotation_claim_service} = response.data.data
+                console.log(response.data.data)
+                const {client, client_vehicle, quotation_itens,quotation_claim_service} = response.data.data
                 setClientData(client)
                 setClientVehicleData(client_vehicle)
                 setClaimsData(quotation_claim_service)
@@ -391,13 +352,13 @@ export default function QuotationShow() {
                     technical_consultant: response.data.data?.technical_consultant?.name,
                     typeQuotation: null,
                 })
+                setItemsSelectedData(quotation_itens)
             })    
         }
     },[idQuotation])
 
     function handleItemsSelectedData(data) {
         setItemsSelectedData(prevState => [...prevState, data])
-        // setItemsSelectedData(prevState => [data])
         if(!isActiveSaveButton) {
             isSaveActive()
         }
@@ -424,10 +385,18 @@ export default function QuotationShow() {
                     <Col lg={4}>
                     <Card>
                     <Card.Body>
-                        <div className='d-flex align-items-start justify-content-between'>
-                        
-                            <h4 className="header-title">Dados do Orcamento</h4>
-                        </div>
+                    <div className='d-flex align-items-start justify-content-between'>
+                            
+                    <h4 className="header-title">Orçamento</h4>
+                    <Button 
+                            type="button" 
+                            className='btn-sm px-2' 
+                            variant="primary"
+                            onClick={ () => setShowModalSearchTechnicalConsultants(true)}
+                        >
+                            Editar                                       
+                        </Button>
+                    </div>
                         <QuotationInfo details={quotationData} />
                     </Card.Body>
                 </Card>
@@ -549,18 +518,28 @@ export default function QuotationShow() {
                 </Col>
             </Row>
             
-            <ModalVehicleSearch 
+            <ModalTechnicalConsultantSearch 
                 company_id={companyId} 
-                showModalSearchVehicle={showModalSearchVehicle} 
-                setShowModalSearchVehicle={setShowModalSearchVehicle} 
-                handleChangeClientVehicleData={handleChangeClientVehicleData}
+                showModalSearchTechnicalConsultants={showModalSearchTechnicalConsultants} 
+                setShowModalSearchTechnicalConsultants={setShowModalSearchTechnicalConsultants} 
+                handleChangeTechnicalConsultantData={handleChangeTechnicalConsultantData}
             />
+            
             <ModalClientSearch 
                 company_id={companyId} 
                 showModalSearchClient={showModalSearchClient} 
                 setShowModalSearchClient={setShowModalSearchClient} 
                 handleChangeClientData={handleChangeClientData}
             />
+    
+
+            <ModalVehicleSearch 
+                company_id={companyId} 
+                showModalSearchVehicle={showModalSearchVehicle} 
+                setShowModalSearchVehicle={setShowModalSearchVehicle} 
+                handleChangeClientVehicleData={handleChangeClientVehicleData}
+            />
+    
 
             <ModalServicesSearch 
                 showModalServices={showModalServices}
