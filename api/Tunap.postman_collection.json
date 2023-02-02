@@ -1236,22 +1236,27 @@
 							"urlencoded": [
 								{
 									"key": "model_id",
-									"value": "1",
+									"value": "4",
 									"type": "text"
 								},
 								{
 									"key": "name",
-									"value": "1.6",
+									"value": "Aveo",
 									"type": "text"
 								},
 								{
 									"key": "model_year",
-									"value": "2008",
+									"value": "2009",
 									"type": "text"
 								},
 								{
 									"key": "active",
 									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "company_id",
+									"value": "2",
 									"type": "text"
 								}
 							]
@@ -2508,6 +2513,126 @@
 			"name": "Checklist Item",
 			"item": [
 				{
+					"name": "Checklist Item Copy",
+					"item": [
+						{
+							"name": "List",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/api/checklist-item",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"checklist-item"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Show",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/api/checklist-item/1",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"checklist-item",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Store",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"is_default\": 0,\n    \"name\": \"test\",\n    \"description\": null,\n    \"code\": \"test\",\n    \"active\": 1,\n    \"validation\": {\n        \"type\": \"string\",\n        \"rule\": \"required|integer|min:1|max:4\"\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/api/checklist-item",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"checklist-item"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"is_default\": 1,\n    \"name\": \"Luces Delanteras\",\n    \"description\": null,\n    \"code\": \"test\",\n    \"active\": 1,\n    \"validation\": {\n        \"type\": \"string\",\n        \"rule\": \"required|integer|min:0|max:4\"\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/api/checklist-item/1",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"checklist-item",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": []
+								},
+								"url": {
+									"raw": "{{host}}/api/checklist-item/1",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"checklist-item",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "List",
 					"request": {
 						"method": "GET",
@@ -3242,7 +3367,6 @@
 									"value": "1"
 								}
 							]
-
 						},
 						"description": "This route list all quotations of company"
 					},
@@ -3253,15 +3377,10 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://127.0.0.1:8000/api/quotations?company_id=1",
-									"protocol": "http",
+									"raw": "{{host}}/api/quotations?company_id=1",
 									"host": [
-										"127",
-										"0",
-										"0",
-										"1"
+										"{{host}}"
 									],
-									"port": "8000",
 									"path": [
 										"api",
 										"quotations"
@@ -3330,15 +3449,15 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/api/quotations/show/24",
+							"raw": "{{host}}/api/quotations/show/17",
 							"host": [
-								"{{URL}}"
+								"{{host}}"
 							],
 							"path": [
 								"api",
 								"quotations",
 								"show",
-								"24"
+								"17"
 							]
 						}
 					},
@@ -3374,9 +3493,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-
-							"raw": "{\n    \"company_id\": 1,\n    \"client_vehicle_id\": 1,\n    \"client_id\": null,\n    \"maintenance_review_id\": 1,\n    \"consultant_id\": 1,\n    \"quotation_itens\": [\n            {\n                \"service_id\": 1,\n                \"products_id\": null,\n                \"price\": \"2\",\n                \"price_discount\": \"1\",\n                \"quantity\": \"2\"\n            }\n        ],\n    \"claim_services\": [\n            {\n                \"claim_service_id\": 1\n            },\n            {\n                \"claim_service_id\": 2\n            }\n        ]\n}\n",
-
+							"raw": "{\n    \"company_id\": 1,\n    \"client_vehicle_id\": 1,\n    \"client_id\": null,\n    \"maintenance_review_id\": null,\n    \"consultant_id\": 3,\n    \"quotation_itens\": [\n            {\n                \"service_id\": 1,\n                \"products_id\": null,\n                \"price\": \"2\",\n                \"price_discount\": \"1\",\n                \"quantity\": \"2\"\n            }\n        ],\n    \"claim_services\": [\n            {\n                \"claim_service_id\": 1\n            },\n            {\n                \"claim_service_id\": 2\n            }\n        ]\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3403,9 +3520,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-
 							"raw": "{\n    \"quotation_id\": 24,\n    \"company_id\": 1,\n    \"client_vehicle_id\": 1,\n    \"client_id\": \"\",\n    \"maintenance_review_id\": 1,\n    \"consultant_id\": 1,\n    \"quotation_itens\": [\n            {\n                \"service_id\": 1,\n                \"products_id\": null,\n                \"price\": \"2\",\n                \"price_discount\": \"1\",\n                \"quantity\": \"2\"\n            }\n        ],\n    \"claim_services\": [\n            {\n                \"claim_service_id\": 1\n            },\n            {\n                \"claim_service_id\": 2\n            }\n        ]\n}\n",
-
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3420,6 +3535,384 @@
 							"path": [
 								"api",
 								"quotations"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "OsType",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/os?company_id=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"os"
+							],
+							"query": [
+								{
+									"key": "company_id",
+									"value": "1"
+								}
+							]
+						},
+						"description": "This route list all quotations of company"
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/os/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"os",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/os/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"os",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"company_id\": 1,\n     \"code\" : 1,\n     \"name\" : 1\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/os",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"os"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"company_id\": 1,\n     \"name\" : 1,\n     \"code\" : 1\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/os",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"os"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Maintenance Review",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/maintenance-review?company_id=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"maintenance-review"
+							],
+							"query": [
+								{
+									"key": "company_id",
+									"value": "1"
+								}
+							]
+						},
+						"description": "This route list all quotations of company"
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/maintenance-review/17",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"maintenance-review",
+								"17"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/maintenance-review/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"maintenance-review",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"company_id\": 1,\n     \"model_id\" : 1,\n     \"name\" : 1\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/maintenance-review",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"maintenance-review"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"company_id\": 1,\n     \"model_id\" : 1,\n     \"name\" : 1\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/maintenance-review",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"maintenance-review"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Recomendations",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/maintenance-review?company_id=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"maintenance-review"
+							],
+							"query": [
+								{
+									"key": "company_id",
+									"value": "1"
+								}
+							]
+						},
+						"description": "This route list all quotations of company"
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/maintenance-review/17",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"maintenance-review",
+								"17"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/maintenance-review/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"maintenance-review",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"company_id\": 1,\n     \"model_id\" : 1,\n     \"name\" : 1\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/maintenance-review",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"maintenance-review"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"company_id\": 1,\n     \"model_id\" : 1,\n     \"name\" : 1\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/maintenance-review",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"maintenance-review"
 							]
 						}
 					},
