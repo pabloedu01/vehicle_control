@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import {useNavigate, useParams} from "react-router-dom";
 import { Row, Col, Card, Button} from 'react-bootstrap';
 import Select from 'react-select';
+import moment from "moment";
 
 import { APICore } from '../../../helpers/api/apiCore';
 import { formatDateTimePresentation } from '../../../utils/formatDateTimezone'
@@ -10,6 +11,7 @@ import { formatDateTimePresentation } from '../../../utils/formatDateTimezone'
 // components
 import PageTitle from '../../../components/PageTitle';
 import {ModalVehicleSearch} from "../../../components/Vehicle/ModalVehicleSearch"
+import {ModalTechnicalConsultantSearch} from "../../../components/TechnicalConsultant/ModalTechnicalConsultantSearch"
 import {ModalClientSearch} from "../../../components/Client/ModalClientSearch"
 import {ModalServicesSearch} from "../../../components/quotation/ModalServicesSearch"
 import {ModalProductsSearch} from "../../../components/quotation/ModalProductsSearch"
@@ -61,7 +63,6 @@ function calculateTotalNoDiscount(price, quantity) {
 
 const ItemsSelected = (props) => {
     const items = props.items || [];
-
     return (
         <>
             <div className="table-responsive">
@@ -71,7 +72,7 @@ const ItemsSelected = (props) => {
                             <th>Itens</th>
                             <th>Quantidade</th>
                             <th>Preço</th>
-                            <th>Desconto</th>
+                            <th>Desconto unitário</th>
                             <th>Total</th>
 
                         </tr>
@@ -80,11 +81,11 @@ const ItemsSelected = (props) => {
                         {items.length > 0 && items.map((item, idx) => {
                             return (
                                 <tr key={idx}>
-                                    <td>{item.name}</td>
+                                    <td>{item?.name || item?.product?.name}</td>
                                     <td>{item.quantity}</td>
-                                    <td>{item.sale_value}</td>
-                                    <td>{item.discount_value}</td>
-                                    <td>{calculateAmountDiscountValue(calculateTotalNoDiscount(item.sale_value,item.quantity), item.discount_value)}</td>
+                                    <td>{formatMoneyPt_BR(parseFloat(item.price))}</td>
+                                    <td>{formatMoneyPt_BR(parseFloat(item.price_discount))}</td>
+                                    <td>{formatMoneyPt_BR(parseFloat((item.price - item.price_discount) * parseInt(item.quantity)))}</td>
                                 </tr>
                             );
                         })}
@@ -122,23 +123,36 @@ const ClientInfo = (props) => {
         </>
     );
 };
-const QuotationInfo = (props) => {
-    const details = props.details || {};
+const QuotationInfo = ({ technicalConsultantData, osTypes = []}) => {
     return (
         <>
             <ul className="list-unstyled mb-0 mt-2">
                 <li>
                     <p className="mb-2">
-                        <span className="fw-bold me-2">Número do Orçamento:</span> {details.quotationNumber && details.quotationNumber}
+                        <span className="fw-bold me-2">Data de emissão:</span> {moment().format('DD/MM/YYYY')}
                     </p>
                     <p className="mb-2">
-                        <span className="fw-bold me-2">Data de emissão:</span> {details.created_at && details.created_at}
-                    </p>
-                    <p className="mb-2">
-                        <span className="fw-bold me-2">Responsavel:</span> {details.technical_consultant && details.technical_consultant}
+                        <div className="mb-2">
+                        <label className="fw-bold">Responsável</label> <br />
+                        <Select
+                            className="react-select mt-1"
+                            classNamePrefix="react-select"
+                            options={technicalConsultantData.map( item => ({ value: item.id, label: item.name }))}
+                            placeholder="Selecione..."
+                        ></Select>
+                    </div>
                     </p>
                     <p className="mb-0">
-                        <span className="fw-bold me-2">Tipo de Orçamento:</span> {''}
+                        <div className="mb-3">
+                            <label className="fw-bold">Tipo de Orçamento</label> <br />
+                            <Select
+                                className="react-select mt-1"
+                                classNamePrefix="react-select"
+                                options={osTypes.map( item => ({ value: item.id, label: item.name }))}
+                                placeholder="Selecione..."
+                            ></Select>
+                        </div>
+
                     </p>
            
                 </li>
@@ -185,18 +199,18 @@ const VehicleInfo = (props) => {
 
 const OrderSummary = (props) => {
     const summary = props.summary || [];
-    console.log(summary)
     const summaryReducer = summary.reduce((acc, curr) =>{
-        const calcPriceDiscountCurrent = parseFloat(calculatePriceDiscountValue((parseFloat(curr.sale_value) * parseInt(curr.quantity)), curr.discount_value))
-        const calcPriceQuantityCurrent = (parseFloat(curr.sale_value) * parseInt(curr.quantity))
+        // const calcPriceDiscountCurrent = parseFloat(calculatePriceDiscountValue((parseFloat(curr.price) * parseInt(curr.quantity)), curr.price_discount))
+        const calcPriceQuantityCurrent = (parseFloat(curr.price) * parseInt(curr.quantity))
+        const calcPriceDiscountedCurrent = ((parseFloat(curr.price) - parseFloat(curr.price_discount)) * parseInt(curr.quantity))
  
         return {
             itemsValue: acc.itemsValue + calcPriceQuantityCurrent,
-            discountItemsValue: acc.discountItemsValue + calcPriceDiscountCurrent,
+            discountItemsValue: acc.discountItemsValue +(curr.price_discount * parseInt(curr.quantity)),
             servicesValue: 0,
             discountServicesValue: 0,
-            discountTotalValue: acc.discountItemsValue + acc.discountServicesValue + calcPriceDiscountCurrent,
-            total: acc.total + calcPriceQuantityCurrent - calcPriceDiscountCurrent
+            discountTotalValue: acc.discountItemsValue + acc.discountServicesValue +(curr.price_discount * parseInt(curr.quantity)),
+            total: acc.total + calcPriceDiscountedCurrent
          }
     }, {
        itemsValue: 0,
@@ -206,8 +220,6 @@ const OrderSummary = (props) => {
        discountTotalValue: 0,
        total: 0
     } )
-
-    console.log('Total ' ,summaryReducer)
 
     return (
         <div className="table-responsive">
@@ -220,27 +232,27 @@ const OrderSummary = (props) => {
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Valor dos itens :</td>
+                        <td>Valor dos itens:</td>
                         <td>{formatMoneyPt_BR(summaryReducer.itemsValue)}</td>
                     </tr>
                     <tr>
-                        <td>Descontos nos itens :</td>
+                        <td>Descontos nos itens:</td>
                         <td style={{color: 'red'}}>{formatMoneyPt_BR(summaryReducer.discountItemsValue)}</td>
                     </tr>
                     <tr>
-                        <td>Valor dos Serviços : </td>
+                        <td>Valor dos Serviços: </td>
                         <td>{formatMoneyPt_BR(summaryReducer.servicesValue)}</td>
                     </tr>
                     <tr>
-                        <td>Desconto nos Serviços : </td>
+                        <td>Desconto nos Serviços: </td>
                         <td style={{color: 'red'}}>{formatMoneyPt_BR(summaryReducer.discountServicesValue)}</td>
                     </tr>
                     <tr>
-                        <th>Total de descontos :</th>
+                        <th>Total de descontos:</th>
                         <td style={{color: 'red'}}>{formatMoneyPt_BR(summaryReducer.discountTotalValue)}</td>
                     </tr>
                     <tr style={{fontSize: '18px'}}>
-                        <th>Total liquido:</th>
+                        <th>Total líquido:</th>
                         <td>{formatMoneyPt_BR(summaryReducer.total)}</td>
                     </tr>
                 </tbody>
@@ -258,10 +270,14 @@ export default function QuotationCreate() {
     const [claimsData, setClaimsData] = useState([])
     const [isEditingClaims, setIsEditingClaims] = useState(false)
     const [itemsSelectedData, setItemsSelectedData] = useState([])
+    const [osTypeSelectedData, setOsTypeSelectedData] = useState([])
+    const [osTypes, setOsTypes] = useState([])
 
 
     const [showModalSearchClient, setShowModalSearchClient] = useState(false)
+    const [showModalSearchTechnicalConsultants, setShowModalSearchTechnicalConsultants] = useState(false)
     const [clientData, setClientData] = useState(null)
+    const [technicalConsultantData, setTechnicalConsultantData] = useState(null)
 
     const [showModalServices, setShowModalServices] = useState(false)
    
@@ -271,10 +287,16 @@ export default function QuotationCreate() {
 
     const api = new APICore()
 
-    
+
 
     function handleChangeClientVehicleData (data) {
         setClientVehicleData(data)
+        if(!isActiveSaveButton) {
+            isSaveActive()
+        }
+    }
+    function handleChangeTechnicalConsultantData (data) {
+        setTechnicalConsultantData(data)
         if(!isActiveSaveButton) {
             isSaveActive()
         }
@@ -300,50 +322,52 @@ export default function QuotationCreate() {
     function isSaveActive() {
         setIsActiveSaveButton(true)
     }
-
+   
     function saveQuotation() {
+        console.log(itemsSelectedData)
       const dataQuotation = {
-            quotation_id: 24,
-            company_id: 1,
-            client_vehicle_id: 1,
-            client_id:"",
-            consultant_id: 1,
-            quotation_itens: itemsSelectedData.map(item => (
-                {
-                    "service_id": item.service_id ? item.service_id: null,
-                    "products_id": item.id,
-                    "price": item.sale_value,
-                    "price_discount": item.discount_value,
-                    "quantity": item.quantity
-                }
-            )),
-            claim_services: []
-        }
-
+        quotation_id: parseInt(idQuotation),
+        company_id: parseInt(companyId),
+        client_vehicle_id: clientVehicleData.id,
+        client_id:clientData.id,
+        os_type_id:2,
+        consultant_id: technicalConsultantData.id,
+        quotation_itens:itemsSelectedData.length > 0 ? itemsSelectedData.map(item => ({
+            service_id: null,
+            products_id: item.id,
+            price: `${item.price}`,
+            price_discount: `${item.price_discount}`,
+            quantity: `${item.quantity}`
+        })) : [],
+            
+        claim_services: [
+            {
+                claim_service_id: 1
+            },
+            {
+                claim_service_id: 2
+            }
+        ]
+    }
+        
+        console.log(dataQuotation)
         api.update('/quotations',dataQuotation).then(response => console.log(response))
-        // console.log(dataQuotation)
     }
 
     useEffect(() => {
-        if(idQuotation) {
-            api.get('/quotations/show/'+idQuotation).then((response) => {
-                const {client, client_vehicle, quotation_claim_service} = response.data.data
-                setClientData(client)
-                setClientVehicleData(client_vehicle)
-                setClaimsData(quotation_claim_service)
-                setQuotationData({
-                    quotationNumber: response.data.data.id,
-                    created_at: formatDateTimePresentation(response.data.data.updated_at),
-                    technical_consultant: response.data.data?.technical_consultant?.name,
-                    typeQuotation: null,
-                })
-            })    
-        }
-    },[idQuotation])
+        api.get('/os?company_id='+companyId).then((response) => {
+            setOsTypes(response.data.data)
+        })    
+        api.get('/technical-consultant?company_id='+companyId).then((response) => {
+            setTechnicalConsultantData(response.data.data)
+        })    
+        
+    },[])
+
+
 
     function handleItemsSelectedData(data) {
         setItemsSelectedData(prevState => [...prevState, data])
-        // setItemsSelectedData(prevState => [data])
         if(!isActiveSaveButton) {
             isSaveActive()
         }
@@ -370,11 +394,11 @@ export default function QuotationCreate() {
                     <Col lg={4}>
                     <Card>
                     <Card.Body>
-                        <div className='d-flex align-items-start justify-content-between'>
-                        
-                            <h4 className="header-title">Dados do Orcamento</h4>
-                        </div>
-                        <QuotationInfo details={quotationData} />
+                    <div className='d-flex align-items-start justify-content-between'>
+                            
+                    <h4 className="header-title">Orçamento</h4>
+                    </div>
+                        <QuotationInfo technicalConsultantData={technicalConsultantData} osTypes={osTypes}/>
                     </Card.Body>
                 </Card>
                     <Card>
@@ -388,7 +412,7 @@ export default function QuotationCreate() {
                                     variant="primary"
                                     onClick={ () => setShowModalSearchClient(true)}
                                 >
-                                    {clientData ? "Editar" : "Adicionar"}                                       
+                                    Adicionar                                       
                                 </Button>
                             </div>
                             <ClientInfo details={clientData} />
@@ -404,7 +428,7 @@ export default function QuotationCreate() {
                                 variant="primary"
                                 onClick={() => setShowModalSearchVehicle(true)}
                             >
-                                {clientVehicleData ? "Editar" : "Adicionar"}                                       
+                                Adicionar                                       
                             </Button>
                         </div>
                             <VehicleInfo details={clientVehicleData} />
@@ -495,18 +519,28 @@ export default function QuotationCreate() {
                 </Col>
             </Row>
             
-            <ModalVehicleSearch 
+            <ModalTechnicalConsultantSearch 
                 company_id={companyId} 
-                showModalSearchVehicle={showModalSearchVehicle} 
-                setShowModalSearchVehicle={setShowModalSearchVehicle} 
-                handleChangeClientVehicleData={handleChangeClientVehicleData}
+                showModalSearchTechnicalConsultants={showModalSearchTechnicalConsultants} 
+                setShowModalSearchTechnicalConsultants={setShowModalSearchTechnicalConsultants} 
+                handleChangeTechnicalConsultantData={handleChangeTechnicalConsultantData}
             />
+            
             <ModalClientSearch 
                 company_id={companyId} 
                 showModalSearchClient={showModalSearchClient} 
                 setShowModalSearchClient={setShowModalSearchClient} 
                 handleChangeClientData={handleChangeClientData}
             />
+    
+
+            <ModalVehicleSearch 
+                company_id={companyId} 
+                showModalSearchVehicle={showModalSearchVehicle} 
+                setShowModalSearchVehicle={setShowModalSearchVehicle} 
+                handleChangeClientVehicleData={handleChangeClientVehicleData}
+            />
+    
 
             <ModalServicesSearch 
                 showModalServices={showModalServices}

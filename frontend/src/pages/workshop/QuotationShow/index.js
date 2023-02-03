@@ -237,7 +237,7 @@ const OrderSummary = (props) => {
                         <td style={{color: 'red'}}>{formatMoneyPt_BR(summaryReducer.discountTotalValue)}</td>
                     </tr>
                     <tr style={{fontSize: '18px'}}>
-                        <th>Total liquido:</th>
+                        <th>Total líquido:</th>
                         <td>{formatMoneyPt_BR(summaryReducer.total)}</td>
                     </tr>
                 </tbody>

@@ -209,7 +209,7 @@ export default function QuotationsList() {
                                 </Col>
                                 <Col sm={4}>
                                     <div className="text-end mt-xl-0 mt-2">
-                                        <Button variant="danger" onClick={toggleStandard}>
+                                        <Button variant="danger" onClick={() => { history(`/panel/company/2/workshop/quotation/create`) }}>
                                             <i className="mdi mdi-basket me-1" /> Novo orçamento
                                         </Button>
                                     </div>
@@ -307,6 +307,8 @@ export default function QuotationsList() {
                     </Card>
                 </Col>
             </Row>
+         
+         
             <Modal show={isStandardOpen} onHide={toggleStandard}>
             <Modal.Header onHide={toggleStandard} closeButton>
                 <h4 className="modal-title">Tipo de orçamento</h4>
