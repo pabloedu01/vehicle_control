@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useIMask } from 'react-imask';
 
 
-const InputMaskNumber = ({ quantityValue, handleSetAmountProduct,  }) => {
+const InputMaskNumber = ({ quantityValue, handleSetAmount,  }) => {
 const [ opts, setOpts ] = useState({ 
   mask: Number, 
   min: 0,
@@ -21,7 +21,7 @@ const {
   typedValue,
   setTypedValue,
 } = useIMask(opts, { onAccept :(valueOn) =>{
-  handleSetAmountProduct(valueOn)
+  handleSetAmount(valueOn)
 } });
 
   

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import {useNavigate, useParams} from "react-router-dom";
+import {useNavigate, useParams, Link} from "react-router-dom";
 import { Row, Col, Card, Button} from 'react-bootstrap';
 import Select from 'react-select';
 import moment from "moment";
@@ -61,8 +61,7 @@ function calculateTotalNoDiscount(price, quantity) {
 }
 
 
-const ItemsSelected = (props) => {
-    const items = props.items || [];
+const ItemsSelected = ({items = [], onDelete}) => {
     return (
         <>
             <div className="table-responsive">
@@ -74,11 +73,13 @@ const ItemsSelected = (props) => {
                             <th>Preço</th>
                             <th>Desconto unitário</th>
                             <th>Total</th>
+                            <th>Ações</th>
 
                         </tr>
                     </thead>
                     <tbody>
                         {items.length > 0 && items.map((item, idx) => {
+                            console.log(item)
                             return (
                                 <tr key={idx}>
                                     <td>{item?.name || item?.product?.name}</td>
@@ -86,6 +87,11 @@ const ItemsSelected = (props) => {
                                     <td>{formatMoneyPt_BR(parseFloat(item.price))}</td>
                                     <td>{formatMoneyPt_BR(parseFloat(item.price_discount))}</td>
                                     <td>{formatMoneyPt_BR(parseFloat((item.price - item.price_discount) * parseInt(item.quantity)))}</td>
+                                    <td align='center'>  
+                                        <Link to="#" className="action-icon" onClick={() => onDelete(item.service_id || item.products_id)}>
+                                            <i className="mdi mdi-delete"></i>
+                                        </Link>
+                                    </td>
                                 </tr>
                             );
                         })}
@@ -123,38 +129,40 @@ const ClientInfo = (props) => {
         </>
     );
 };
-const QuotationInfo = ({ technicalConsultantData, osTypes = []}) => {
+const QuotationInfo = ({ technicalConsultantData = [], osTypes = [], handleTechnicalConsultantSelectedData, handleOsTypeSelectedData}) => {
+    
+   const technicalConsultantDataFormatted = technicalConsultantData.map( item => ({ value: item.id, label: item.name }))
+    
     return (
         <>
-            <ul className="list-unstyled mb-0 mt-2">
+            <ul className="list-unstyled mb-0 mt-3">
                 <li>
                     <p className="mb-2">
                         <span className="fw-bold me-2">Data de emissão:</span> {moment().format('DD/MM/YYYY')}
                     </p>
-                    <p className="mb-2">
                         <div className="mb-2">
                         <label className="fw-bold">Responsável</label> <br />
                         <Select
                             className="react-select mt-1"
                             classNamePrefix="react-select"
-                            options={technicalConsultantData.map( item => ({ value: item.id, label: item.name }))}
+                            options={technicalConsultantData.length > 0 ? technicalConsultantDataFormatted: []}
+                            placeholder="Selecione..."
+                            onChange={handleTechnicalConsultantSelectedData}
+                            getValue={(ValueType, ActionTypes) => console.log(ValueType, ActionTypes)}
+                        ></Select>
+                    </div>
+                </li>
+                <li>
+                    <div className="mb-0">
+                        <label className="fw-bold">Tipo de Orçamento</label> <br />
+                        <Select
+                            className="react-select mt-1"
+                            classNamePrefix="react-select"
+                            options={osTypes.map( item => ({ value: item.id, label: item.name }))}
+                            onChange={handleOsTypeSelectedData}
                             placeholder="Selecione..."
                         ></Select>
                     </div>
-                    </p>
-                    <p className="mb-0">
-                        <div className="mb-3">
-                            <label className="fw-bold">Tipo de Orçamento</label> <br />
-                            <Select
-                                className="react-select mt-1"
-                                classNamePrefix="react-select"
-                                options={osTypes.map( item => ({ value: item.id, label: item.name }))}
-                                placeholder="Selecione..."
-                            ></Select>
-                        </div>
-
-                    </p>
-           
                 </li>
             </ul>
         </>
@@ -270,6 +278,7 @@ export default function QuotationCreate() {
     const [claimsData, setClaimsData] = useState([])
     const [isEditingClaims, setIsEditingClaims] = useState(false)
     const [itemsSelectedData, setItemsSelectedData] = useState([])
+   
     const [osTypeSelectedData, setOsTypeSelectedData] = useState([])
     const [osTypes, setOsTypes] = useState([])
 
@@ -277,13 +286,16 @@ export default function QuotationCreate() {
     const [showModalSearchClient, setShowModalSearchClient] = useState(false)
     const [showModalSearchTechnicalConsultants, setShowModalSearchTechnicalConsultants] = useState(false)
     const [clientData, setClientData] = useState(null)
-    const [technicalConsultantData, setTechnicalConsultantData] = useState(null)
+    
+    const [technicalConsultantData, setTechnicalConsultantData] = useState([])
+    const [technicalConsultantSelectedData, setTechnicalConsultantSelectedData] = useState([])
+    
 
     const [showModalServices, setShowModalServices] = useState(false)
    
     const [showModalProducts, setShowModalProducts] = useState(false)
     
-    const {companyId, idQuotation} = useParams()
+    const {companyId} = useParams()
 
     const api = new APICore()
 
@@ -314,7 +326,23 @@ export default function QuotationCreate() {
             isSaveActive()
         }
     }
-   
+
+    function handleTechnicalConsultantSelectedData(data) {
+        const technicalConsultant = technicalConsultantData.find( t => t.id === data.value)
+        setTechnicalConsultantSelectedData(technicalConsultant)
+        if(!isActiveSaveButton) {
+            isSaveActive()
+        }
+    }
+    function handleOsTypeSelectedData(data) {
+        const osType = osTypes.find( t => t.id === data.value)
+        console.log(osType)
+        setOsTypeSelectedData(osType)
+        if(!isActiveSaveButton) {
+            isSaveActive()
+        }
+    }
+    
     function toggleIsEditingClaims() {
         setIsEditingClaims(!isEditingClaims)
     }
@@ -324,34 +352,29 @@ export default function QuotationCreate() {
     }
    
     function saveQuotation() {
-        console.log(itemsSelectedData)
-      const dataQuotation = {
-        quotation_id: parseInt(idQuotation),
-        company_id: parseInt(companyId),
-        client_vehicle_id: clientVehicleData.id,
-        client_id:clientData.id,
-        os_type_id:2,
-        consultant_id: technicalConsultantData.id,
-        quotation_itens:itemsSelectedData.length > 0 ? itemsSelectedData.map(item => ({
-            service_id: null,
-            products_id: item.id,
-            price: `${item.price}`,
-            price_discount: `${item.price_discount}`,
-            quantity: `${item.quantity}`
-        })) : [],
-            
-        claim_services: [
-            {
-                claim_service_id: 1
-            },
-            {
-                claim_service_id: 2
-            }
-        ]
-    }
+        const dataQuotation = {
+            company_id: parseInt(companyId),
+            client_vehicle_id: clientVehicleData.id,
+            client_id:clientData.id,
+            os_type_id:osTypeSelectedData.id,
+            consultant_id: technicalConsultantSelectedData.id,
+            quotation_itens:itemsSelectedData.length > 0 ? itemsSelectedData.map(item => {
+                delete item.name
+                return item
+            }) : [],
+                
+            claim_services: [
+                {
+                    claim_service_id: 1
+                },
+                {
+                    claim_service_id: 2
+                }
+            ]
+        }
         
         console.log(dataQuotation)
-        api.update('/quotations',dataQuotation).then(response => console.log(response))
+        api.post('/quotations',dataQuotation).then(response => console.log(response))
     }
 
     useEffect(() => {
@@ -373,6 +396,12 @@ export default function QuotationCreate() {
         }
     }
 
+    function onDeleteItemsSelectedData(id) {
+       const itemsSelectedDataDeletedFiltered = itemsSelectedData.filter(item => (item.products_id !== id && item.service_id === null) || (item.service_id !== id && item.products_id === null))
+        console.log(itemsSelectedDataDeletedFiltered)
+        console.log(id)
+        setItemsSelectedData(itemsSelectedDataDeletedFiltered)
+    }
 
     return (
         <>
@@ -398,7 +427,12 @@ export default function QuotationCreate() {
                             
                     <h4 className="header-title">Orçamento</h4>
                     </div>
-                        <QuotationInfo technicalConsultantData={technicalConsultantData} osTypes={osTypes}/>
+                        <QuotationInfo 
+                            technicalConsultantData={technicalConsultantData}
+                            osTypes={osTypes}
+                            handleTechnicalConsultantSelectedData={handleTechnicalConsultantSelectedData}
+                            handleOsTypeSelectedData={handleOsTypeSelectedData}
+                        />
                     </Card.Body>
                 </Card>
                     <Card>
@@ -511,7 +545,7 @@ export default function QuotationCreate() {
     
                                         </Col>
                                     </Row>
-                                    <ItemsSelected items={itemsSelectedData} />
+                                    <ItemsSelected items={itemsSelectedData} onDelete={onDeleteItemsSelectedData}/>
                                 </Card.Body>
                             </Card>
                         </Col>
@@ -546,7 +580,7 @@ export default function QuotationCreate() {
                 showModalServices={showModalServices}
                 setShowModalServices={setShowModalServices}
                 company_id={companyId} 
-                handleChangeServicesData={() => {}}
+                handleChangeServicesData={handleItemsSelectedData}
             />
             <ModalProductsSearch 
                 showModalProducts={showModalProducts}

@@ -47,10 +47,12 @@ export function ModalProductsSearch({showModalProducts, setShowModalProducts, co
 
   function addSelectedProduct () {
     handleChangeProductsData({
-      ...productSelected,
-      price: productValue,
-      quantity: quantityValue,
-      price_discount: discountValue ?? "0"
+      service_id: null,
+      products_id: productSelected.id,
+      name: productSelected.name,
+      price: `${productValue}`,
+      quantity: `${quantityValue}`,
+      price_discount: `${discountValue ?? "0"}`
     })
     onHideShowModalProductValues()
     setProductSelected(null)
@@ -127,7 +129,7 @@ export function ModalProductsSearch({showModalProducts, setShowModalProducts, co
                 <div className="form-group">
                   <label>Quantidade:</label> <br />
                     <InputMaskNumber 
-                      handleSetAmountProduct={handleSetAmountProduct}
+                      handleSetAmount={handleSetAmountProduct}
                       quantityValue={quantityValue}
                     />
                   </div>
@@ -138,7 +140,7 @@ export function ModalProductsSearch({showModalProducts, setShowModalProducts, co
                     <div className="form-group">
                       <label>Valor em R$:</label> <br />
                       <InputMaskPrice 
-                        handlePriceChange={handleDiscountChange}
+                        handlePriceChange={handlePriceChange}
                         // priceValue={productValue}
                         priceActual={productSelected?.sale_value}
                       />

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import {useNavigate, useParams} from "react-router-dom";
+import {useNavigate, useParams,Link} from "react-router-dom";
 import { Row, Col, Card, Button} from 'react-bootstrap';
 import Select from 'react-select';
 
@@ -60,8 +60,8 @@ function calculateTotalNoDiscount(price, quantity) {
 }
 
 
-const ItemsSelected = (props) => {
-    const items = props.items || [];
+const ItemsSelected = ({items = [], onDelete }) => {
+    
     return (
         <>
             <div className="table-responsive">
@@ -73,6 +73,7 @@ const ItemsSelected = (props) => {
                             <th>Preço</th>
                             <th>Desconto unitário</th>
                             <th>Total</th>
+                            <th>Ações</th>
 
                         </tr>
                     </thead>
@@ -85,6 +86,11 @@ const ItemsSelected = (props) => {
                                     <td>{formatMoneyPt_BR(parseFloat(item.price))}</td>
                                     <td>{formatMoneyPt_BR(parseFloat(item.price_discount))}</td>
                                     <td>{formatMoneyPt_BR(parseFloat((item.price - item.price_discount) * parseInt(item.quantity)))}</td>
+                                    <td align='center'>  
+                                    <Link to="#" className="action-icon" onClick={() => onDelete(item.service_id || item.products_id)}>
+                                        <i className="mdi mdi-delete"></i>
+                                    </Link>
+                                </td>
                                 </tr>
                             );
                         })}
@@ -122,7 +128,8 @@ const ClientInfo = (props) => {
         </>
     );
 };
-const QuotationInfo = ({details, technicalConsultantData}) => {
+const QuotationInfo = ({details, technicalConsultantData, osTypes, handleTechnicalConsultantSelectedData, handleOsTypeSelectedData, showEditQuotationInfo, technicalConsultantDefault }) => {
+    const technicalConsultantDataFormatted = technicalConsultantData.map( item => ({ value: item.id, label: item.name }))
     return (
         <>
             <ul className="list-unstyled mb-0 mt-2">
@@ -133,14 +140,49 @@ const QuotationInfo = ({details, technicalConsultantData}) => {
                     <p className="mb-2">
                         <span className="fw-bold me-2">Data de emissão:</span> {details?.created_at && details.created_at}
                     </p>
+                    { !showEditQuotationInfo && (     
+                    <>
                     <p className="mb-2">
-                        <span className="fw-bold me-2">Responsável:</span> {technicalConsultantData?.name && technicalConsultantData.name}
+                        <span className="fw-bold me-2">Responsável:</span> {technicalConsultantDefault?.name && technicalConsultantDefault?.name}
                     </p>
+                    
                     <p className="mb-0">
                         <span className="fw-bold me-2">Tipo de Orçamento:</span> {''}
                     </p>
+                    
+                    </>
+                    )}
            
                 </li>
+                { showEditQuotationInfo && (
+                <>
+                    <li>
+                            <div className="mb-2">
+                            <label className="fw-bold">Responsável</label> <br />
+                            <Select
+                                className="react-select mt-1"
+                                classNamePrefix="react-select"
+                                options={technicalConsultantData.length > 0 ? technicalConsultantDataFormatted: []}
+                                placeholder="Selecione..."
+                                onChange={handleTechnicalConsultantSelectedData}
+                                defaultValue={{ value: technicalConsultantDefault.id, label: technicalConsultantDefault.name }}
+                            ></Select>
+                        </div>
+                    </li>
+                    <li>
+                        <div className="mb-0">
+                            <label className="fw-bold">Tipo de Orçamento</label> <br />
+                            <Select
+                                className="react-select mt-1"
+                                classNamePrefix="react-select"
+                                options={osTypes.map( item => ({ value: item.id, label: item.name }))}
+                                onChange={handleOsTypeSelectedData}
+                                placeholder="Selecione..."
+                            ></Select>
+                        </div>
+                    </li>
+                </>
+                )}
             </ul>
         </>
     );
@@ -256,12 +298,17 @@ export default function QuotationShow() {
     const [isEditingClaims, setIsEditingClaims] = useState(false)
     const [itemsSelectedData, setItemsSelectedData] = useState([])
 
+    const [technicalConsultantData, setTechnicalConsultantData] = useState([])
+    const [technicalConsultantSelectedData, setTechnicalConsultantSelectedData] = useState([])
+
+       
+    const [osTypeSelectedData, setOsTypeSelectedData] = useState([])
+    const [osTypes, setOsTypes] = useState([])
 
     const [showModalSearchClient, setShowModalSearchClient] = useState(false)
-    const [showModalSearchTechnicalConsultants, setShowModalSearchTechnicalConsultants] = useState(false)
+    const [showEditQuotationInfo, setShowEditQuotationInfo] = useState(false)
     const [clientData, setClientData] = useState(null)
-    const [technicalConsultantData, setTechnicalConsultData] = useState(null)
-
+    
     const [showModalServices, setShowModalServices] = useState(false)
    
     const [showModalProducts, setShowModalProducts] = useState(false)
@@ -279,7 +326,7 @@ export default function QuotationShow() {
         }
     }
     function handleChangeTechnicalConsultantData (data) {
-        setTechnicalConsultData(data)
+        setTechnicalConsultantData(data)
         if(!isActiveSaveButton) {
             isSaveActive()
         }
@@ -306,6 +353,11 @@ export default function QuotationShow() {
         setIsActiveSaveButton(true)
     }
    
+    
+
+    
+
+
     function saveQuotation() {
         console.log(itemsSelectedData)
       const dataQuotation = {
@@ -315,13 +367,10 @@ export default function QuotationShow() {
         client_id:clientData.id,
         os_type_id:2,
         consultant_id: technicalConsultantData.id,
-        quotation_itens:itemsSelectedData.length > 0 ? itemsSelectedData.map(item => ({
-            service_id: null,
-            products_id: item.id,
-            price: `${item.price}`,
-            price_discount: `${item.price_discount}`,
-            quantity: `${item.quantity}`
-        })) : [],
+        quotation_itens:itemsSelectedData.length > 0 ? itemsSelectedData.map(item => {
+            delete item.name
+            return item
+        }) : [],
             
         claim_services: [
             {
@@ -334,7 +383,7 @@ export default function QuotationShow() {
     }
         
         console.log(dataQuotation)
-        api.update('/quotations',dataQuotation).then(response => console.log(response))
+        // api.update('/quotations',dataQuotation).then(response => console.log(response))
     }
 
     useEffect(() => {
@@ -343,14 +392,15 @@ export default function QuotationShow() {
                 console.log(response.data.data)
                 const {client, client_vehicle, quotation_itens,quotation_claim_service, technical_consultant} = response.data.data
                 setClientData(client)
-                console.log(quotation_itens)
-                setTechnicalConsultData(technical_consultant)
+ 
+                // setTechnicalConsultantData([technical_consultant])
                 setClientVehicleData(client_vehicle)
                 setClaimsData(quotation_claim_service)
                 setQuotationData({
                     quotationNumber: response.data.data.id,
                     created_at: formatDateTimePresentation(response.data.data.updated_at),
                     typeQuotation: null,
+                    technical_consultant
                 })
                 setItemsSelectedData(quotation_itens)
             })    
@@ -364,6 +414,38 @@ export default function QuotationShow() {
         }
     }
 
+    function onDeleteItemsSelectedData(id) {
+        const itemsSelectedDataDeletedFiltered = itemsSelectedData.filter(item => (item.products_id !== id && item.service_id === null) || (item.service_id !== id && item.products_id === null))
+         console.log(itemsSelectedDataDeletedFiltered)
+         console.log(id)
+         setItemsSelectedData(itemsSelectedDataDeletedFiltered)
+     }
+
+     function handleTechnicalConsultantSelectedData(data) {
+        const technicalConsultant = technicalConsultantData.find( t => t.id === data.value)
+        setTechnicalConsultantSelectedData(technicalConsultant)
+        if(!isActiveSaveButton) {
+            isSaveActive()
+        }
+    }
+    function handleOsTypeSelectedData(data) {
+        const osType = osTypes.find( t => t.id === data.value)
+        console.log(osType)
+        setOsTypeSelectedData(osType)
+        if(!isActiveSaveButton) {
+            isSaveActive()
+        }
+    }
+
+    async function handleEditQuotationInfo() {
+        await api.get('/os?company_id='+companyId).then((response) => {
+            setOsTypes(response.data.data)
+        })    
+        await api.get('/technical-consultant?company_id='+companyId).then((response) => {
+            setTechnicalConsultantData(response.data.data)
+        })    
+        setShowEditQuotationInfo(true)
+    }
 
     return (
         <>
@@ -392,12 +474,20 @@ export default function QuotationShow() {
                             type="button" 
                             className='btn-sm px-2' 
                             variant="primary"
-                            onClick={ () => setShowModalSearchTechnicalConsultants(true)}
+                            onClick={ handleEditQuotationInfo}
                         >
                             Editar                                       
                         </Button>
                     </div>
-                        <QuotationInfo details={quotationData} technicalConsultantData={technicalConsultantData}/>
+                        <QuotationInfo 
+                            details={quotationData} 
+                            technicalConsultantData={technicalConsultantData}
+                            osTypes={osTypes}
+                            handleTechnicalConsultantSelectedData={handleTechnicalConsultantSelectedData}
+                            handleOsTypeSelectedData={handleOsTypeSelectedData}
+                            showEditQuotationInfo={showEditQuotationInfo}
+                            technicalConsultantDefault={quotationData?.technical_consultant}
+                        />
                     </Card.Body>
                 </Card>
                     <Card>
@@ -510,20 +600,13 @@ export default function QuotationShow() {
     
                                         </Col>
                                     </Row>
-                                    <ItemsSelected items={itemsSelectedData} />
+                                    <ItemsSelected items={itemsSelectedData} onDelete={onDeleteItemsSelectedData}/>
                                 </Card.Body>
                             </Card>
                         </Col>
                     </Row>
                 </Col>
             </Row>
-            
-            <ModalTechnicalConsultantSearch 
-                company_id={companyId} 
-                showModalSearchTechnicalConsultants={showModalSearchTechnicalConsultants} 
-                setShowModalSearchTechnicalConsultants={setShowModalSearchTechnicalConsultants} 
-                handleChangeTechnicalConsultantData={handleChangeTechnicalConsultantData}
-            />
             
             <ModalClientSearch 
                 company_id={companyId} 
