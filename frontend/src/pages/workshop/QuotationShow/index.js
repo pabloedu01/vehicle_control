@@ -128,8 +128,9 @@ const ClientInfo = (props) => {
         </>
     );
 };
-const QuotationInfo = ({details, technicalConsultantData, osTypes, handleTechnicalConsultantSelectedData, handleOsTypeSelectedData, showEditQuotationInfo, technicalConsultantDefault }) => {
+const QuotationInfo = ({details, technicalConsultantData, osTypes, handleTechnicalConsultantSelectedData, handleOsTypeSelectedData, showEditQuotationInfo, technicalConsultantDefault, osType }) => {
     const technicalConsultantDataFormatted = technicalConsultantData.map( item => ({ value: item.id, label: item.name }))
+    console.log(osType)
     return (
         <>
             <ul className="list-unstyled mb-0 mt-2">
@@ -147,7 +148,7 @@ const QuotationInfo = ({details, technicalConsultantData, osTypes, handleTechnic
                     </p>
                     
                     <p className="mb-0">
-                        <span className="fw-bold me-2">Tipo de Orçamento:</span> {''}
+                        <span className="fw-bold me-2">Tipo de Orçamento:</span> {osType && osType}
                     </p>
                     
                     </>
@@ -325,12 +326,12 @@ export default function QuotationShow() {
             isSaveActive()
         }
     }
-    function handleChangeTechnicalConsultantData (data) {
-        setTechnicalConsultantData(data)
-        if(!isActiveSaveButton) {
-            isSaveActive()
-        }
-    }
+    // function handleChangeTechnicalConsultantData (data) {
+    //     setTechnicalConsultantData(data)
+    //     if(!isActiveSaveButton) {
+    //         isSaveActive()
+    //     }
+    // }
     function handleChangeClientData (data) {
         setClientData(data)
         if(!isActiveSaveButton) {
@@ -365,8 +366,8 @@ export default function QuotationShow() {
         company_id: parseInt(companyId),
         client_vehicle_id: clientVehicleData.id,
         client_id:clientData.id,
-        os_type_id:2,
-        consultant_id: technicalConsultantData.id,
+        os_type_id:osTypeSelectedData.id,
+        consultant_id: technicalConsultantSelectedData.id,
         quotation_itens:itemsSelectedData.length > 0 ? itemsSelectedData.map(item => {
             delete item.name
             return item
@@ -383,14 +384,14 @@ export default function QuotationShow() {
     }
         
         console.log(dataQuotation)
-        // api.update('/quotations',dataQuotation).then(response => console.log(response))
+        api.update('/quotations',dataQuotation).then(response => console.log(response))
     }
 
     useEffect(() => {
         if(idQuotation) {
             api.get('/quotations/show/'+idQuotation).then((response) => {
                 console.log(response.data.data)
-                const {client, client_vehicle, quotation_itens,quotation_claim_service, technical_consultant} = response.data.data
+                const {client, client_vehicle, quotation_itens,quotation_claim_service, technical_consultant, os_type_id} = response.data.data
                 setClientData(client)
  
                 // setTechnicalConsultantData([technical_consultant])
@@ -400,7 +401,8 @@ export default function QuotationShow() {
                     quotationNumber: response.data.data.id,
                     created_at: formatDateTimePresentation(response.data.data.updated_at),
                     typeQuotation: null,
-                    technical_consultant
+                    technical_consultant,
+                    os_type_id
                 })
                 setItemsSelectedData(quotation_itens)
             })    
@@ -430,7 +432,6 @@ export default function QuotationShow() {
     }
     function handleOsTypeSelectedData(data) {
         const osType = osTypes.find( t => t.id === data.value)
-        console.log(osType)
         setOsTypeSelectedData(osType)
         if(!isActiveSaveButton) {
             isSaveActive()
@@ -487,6 +488,7 @@ export default function QuotationShow() {
                             handleOsTypeSelectedData={handleOsTypeSelectedData}
                             showEditQuotationInfo={showEditQuotationInfo}
                             technicalConsultantDefault={quotationData?.technical_consultant}
+                            osType={quotationData?.os_type_id}
                         />
                     </Card.Body>
                 </Card>

@@ -10,6 +10,7 @@ import { OrganizeDropdown } from './organizeDropdown'
 import useToggle from '../../../hooks/useToggle'
 import swal from "sweetalert";
 
+import {formatMoneyPt_BR} from '../../../utils/formatMoneyPt_BR'
 
 const filterValues = [
     {
@@ -247,6 +248,7 @@ export default function QuotationsList() {
                                 </thead>
                                 <tbody >
                                     {data && data?.map((record, index) => {
+                                        console.log(record)
                                         return (
                                             <tr key={index.toString()} onClick={(e) => {
                                                 e.stopPropagation();
@@ -258,9 +260,9 @@ export default function QuotationsList() {
                                                 <td>{record.client_vehicle?.plate ?? '-'}</td>
                                                 <td>{record.client_vehicle?.chasis ?? '-'}</td>
                                                 <td>{record.technical_consultant?.name ?? '-'}</td>
-                                                <td>{}</td>
-                                                <td>{record.TotalGeralDesconto ?? '-'}</td>
-                                                <td>{record.TotalGeral ?? '-'}</td>
+                                                <td>{record.os_type_id}</td>
+                                                <td>{formatMoneyPt_BR(record.TotalGeralDesconto) ?? '-'}</td>
+                                                <td>{formatMoneyPt_BR(record.TotalGeral) ?? '-'}</td>
                                             
                                                 <td onClick={e => e.stopPropagation()}>  
                                                     <Link to="#" className="action-icon" onClick={() => onDelete(record.id)}>
