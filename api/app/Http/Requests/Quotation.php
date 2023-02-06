@@ -34,7 +34,7 @@ class Quotation extends FormRequest
         return [
             'company_id' => 'required|integer',
             'client_vehicle_id' => [
-                'required', 'integer',
+                'nullable', 'integer',
                 Rule::exists('client_vehicles', 'id')->where('company_id', $company_id)
             ],
             'technical_consultant_id' => [
