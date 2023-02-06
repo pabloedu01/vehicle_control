@@ -40,7 +40,7 @@ class QuotationController extends Controller
         $quotation->save();
 
 
-        if($request->claim_services != null){
+        if($request->claim_services != null and $request->claim_services != []){
             foreach($request->claim_services as $claim ){
                 $quotationClaim = new QuotationClaimService();
                 $quotationClaim->quotation_id = $quotation->id;
@@ -50,7 +50,7 @@ class QuotationController extends Controller
         $quotation['claim_services'] = $quotationClaim;
 
         }
-       if($request->quotation_itens != null){
+       if($request->quotation_itens != null and $request->quotation_itens != []){
             foreach($request->quotation_itens as $item){
                 $quotationItem = new QuotationItens();
                 $quotationItem->quotation_id = $quotation->id;
@@ -194,15 +194,15 @@ class QuotationController extends Controller
     }
     public function listAll(Request $request) {
 
-        if($request->query('techinical_consultant_id') != null){
+        if($request['techinical_consultant_id'] != null){
             $quotations = Quotation::with(collect(self::$with)->take(5)->toArray())
                                            ->list()
-                                           ->where('consultant_id', $request->query('techinical_consultant_id'))
+                                           ->where('consultant_id', $request['techinical_consultant_id'])
                                            ->get();
-        }else if($request->query('user_login') != null){
+        }else if($request['user_login'] != null){
             $quotations = Quotation::with(collect(self::$with)->take(5)->toArray())
                                            ->list()
-                                           ->where('user_id', $request->query('user_login'))
+                                           ->where('user_id', $request['user_login'])
                                            ->get();
         }else {
             $quotations = Quotation::with(collect(self::$with)->take(5)->toArray())
