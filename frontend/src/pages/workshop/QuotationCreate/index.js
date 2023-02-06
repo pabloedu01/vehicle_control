@@ -363,6 +363,7 @@ export default function QuotationCreate() {
                 return item
             }) : [],
                 
+            
             claim_services: [
                 {
                     claim_service_id: 1
