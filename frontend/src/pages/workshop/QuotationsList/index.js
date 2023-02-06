@@ -248,7 +248,6 @@ export default function QuotationsList() {
                                 </thead>
                                 <tbody >
                                     {data && data?.map((record, index) => {
-                                        console.log(record)
                                         return (
                                             <tr key={index.toString()} onClick={(e) => {
                                                 e.stopPropagation();

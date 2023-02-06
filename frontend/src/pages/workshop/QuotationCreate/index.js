@@ -354,8 +354,8 @@ export default function QuotationCreate() {
    async function saveQuotation() {
         const dataQuotation = {
             company_id: parseInt(companyId),
-            client_vehicle_id: clientVehicleData.id,
-            client_id:clientData.id,
+            client_vehicle_id: clientVehicleData?.id || null,
+            client_id:clientData?.id || null,
             os_type_id:osTypeSelectedData.id,
             consultant_id: technicalConsultantSelectedData.id,
             quotation_itens:itemsSelectedData.length > 0 ? itemsSelectedData.map(item => {
@@ -374,7 +374,12 @@ export default function QuotationCreate() {
         }
         
         console.log(dataQuotation)
-        await api.post('/quotations',dataQuotation).then(response => setTimeout(() => {history(`/panel/company/${companyId}/workshop/quotation/list`)},2000))
+        await api.post('/quotations',dataQuotation).then(response => {
+            console.log('resposta create',response.data)
+        // setTimeout(() => {
+        //    history(`/panel/company/${companyId}/workshop/quotation/list`)
+        // },2000)
+        })
     }
 
     useEffect(() => {
