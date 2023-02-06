@@ -299,7 +299,7 @@ export default function QuotationCreate() {
 
     const api = new APICore()
 
-
+    const history = useNavigate();
 
     function handleChangeClientVehicleData (data) {
         setClientVehicleData(data)
@@ -351,7 +351,7 @@ export default function QuotationCreate() {
         setIsActiveSaveButton(true)
     }
    
-    function saveQuotation() {
+   async function saveQuotation() {
         const dataQuotation = {
             company_id: parseInt(companyId),
             client_vehicle_id: clientVehicleData.id,
@@ -374,7 +374,7 @@ export default function QuotationCreate() {
         }
         
         console.log(dataQuotation)
-        api.post('/quotations',dataQuotation).then(response => console.log(response))
+        await api.post('/quotations',dataQuotation).then(response => setTimeout(() => {history(`/panel/company/${companyId}/workshop/quotation/list`)},2000))
     }
 
     useEffect(() => {
