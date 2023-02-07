@@ -61,7 +61,6 @@ function calculateTotalNoDiscount(price, quantity) {
 
 
 const ItemsSelected = ({items = [], onDelete }) => {
-    
     return (
         <>
             <div className="table-responsive">
@@ -81,7 +80,7 @@ const ItemsSelected = ({items = [], onDelete }) => {
                         {items.length > 0 && items.map((item, idx) => {
                             return (
                                 <tr key={idx}>
-                                    <td>{item?.name || item?.product?.name}</td>
+                                    <td>{item?.name || (item?.product?.name || item?.service?.description)}</td>
                                     <td>{item.quantity}</td>
                                     <td>{formatMoneyPt_BR(parseFloat(item.price))}</td>
                                     <td>{formatMoneyPt_BR(parseFloat(item.price_discount))}</td>
@@ -130,7 +129,6 @@ const ClientInfo = (props) => {
 };
 const QuotationInfo = ({details, technicalConsultantData, osTypes, handleTechnicalConsultantSelectedData, handleOsTypeSelectedData, showEditQuotationInfo, technicalConsultantDefault, osType }) => {
     const technicalConsultantDataFormatted = technicalConsultantData.map( item => ({ value: item.id, label: item.name }))
-    console.log(osType)
     return (
         <>
             <ul className="list-unstyled mb-0 mt-2">
@@ -364,9 +362,9 @@ export default function QuotationShow() {
       const dataQuotation = {
         quotation_id: parseInt(idQuotation),
         company_id: parseInt(companyId),
-        client_vehicle_id: clientVehicleData.id,
-        client_id:clientData.id,
-        os_type_id:osTypeSelectedData.id,
+        client_vehicle_id: clientVehicleData?.id || null,
+        client_id:clientData?.id || null ,
+        os_type_id:osTypeSelectedData?.id || osTypeSelectedData,
         consultant_id: technicalConsultantSelectedData.id,
         quotation_itens:itemsSelectedData.length > 0 ? itemsSelectedData.map(item => {
             delete item.name
@@ -394,7 +392,8 @@ export default function QuotationShow() {
                 const {client, client_vehicle, quotation_itens,quotation_claim_service, technical_consultant, os_type_id} = response.data.data
                 setClientData(client)
  
-                // setTechnicalConsultantData([technical_consultant])
+                setTechnicalConsultantSelectedData(technical_consultant)
+                setOsTypeSelectedData(os_type_id)
                 setClientVehicleData(client_vehicle)
                 setClaimsData(quotation_claim_service)
                 setQuotationData({
@@ -630,7 +629,7 @@ export default function QuotationShow() {
                 showModalServices={showModalServices}
                 setShowModalServices={setShowModalServices}
                 company_id={companyId} 
-                handleChangeServicesData={() => {}}
+                handleChangeServicesData={handleItemsSelectedData}
             />
             <ModalProductsSearch 
                 showModalProducts={showModalProducts}

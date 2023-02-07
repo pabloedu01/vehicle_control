@@ -79,7 +79,6 @@ const ItemsSelected = ({items = [], onDelete}) => {
                     </thead>
                     <tbody>
                         {items.length > 0 && items.map((item, idx) => {
-                            console.log(item)
                             return (
                                 <tr key={idx}>
                                     <td>{item?.name || item?.product?.name}</td>
