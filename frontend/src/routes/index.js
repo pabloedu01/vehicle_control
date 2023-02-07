@@ -117,6 +117,7 @@ const ScheduleDetail = React.lazy(() => import('../pages/ScheduleDetail'));
 
 const QuotationsList = React.lazy(() => import('../pages/workshop/QuotationsList'));
 const QuotationCreate = React.lazy(() => import('../pages/workshop/QuotationCreate'));
+// const QuotationCreateServiceSchedule = React.lazy(() => import('../pages/workshop/QuotationCreate'));
 const QuotationShow = React.lazy(() => import('../pages/workshop/QuotationShow'));
 const SelectionPackage = React.lazy(() => import('../pages/workshop/SelectionPackage'));
 const EstimateConfirmation = React.lazy(() => import('../pages/workshop/EstimateConfirmation'));
@@ -631,6 +632,10 @@ const AllRoutes = () => {
                                 },
                                 {
                                     path: 'create',
+                                    element: <LoadComponent component={QuotationCreate} />,
+                                },
+                                {
+                                    path: 'create/:serviceScheduleId',
                                     element: <LoadComponent component={QuotationCreate} />,
                                 },
                                 {

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import {useNavigate, useParams, Link} from "react-router-dom";
 import { Row, Col, Card, Button} from 'react-bootstrap';
 import Select from 'react-select';
-import AsyncSelect from 'react-select/async'
 import moment from "moment";
 
 import { APICore } from '../../../helpers/api/apiCore';
@@ -129,41 +128,27 @@ const ClientInfo = (props) => {
         </>
     );
 };
-const QuotationInfo = ({ technicalConsultantData = [], osTypes = [], handleTechnicalConsultantSelectedData, handleOsTypeSelectedData, technicalConsultantSelectedDefault}) => {
+const QuotationInfo = ({ technicalConsultantData = [], osTypes = [], handleTechnicalConsultantSelectedData, handleOsTypeSelectedData}) => {
     
-    const technicalConsultantDataFormatted = technicalConsultantData.map( item => ({ value: item.id, label: item.name }))
-    const osTypesFormatted = osTypes.map( item => ({ value: item.id, label: item.name }))
-    const defaultValue = { value: technicalConsultantSelectedDefault?.id, label: technicalConsultantSelectedDefault?.name }
+   const technicalConsultantDataFormatted = technicalConsultantData.map( item => ({ value: item.id, label: item.name }))
+    
     return (
         <>
             <ul className="list-unstyled mb-0 mt-3">
                 <li>
-                    <p className="mb-2"> 
+                    <p className="mb-2">
                         <span className="fw-bold me-2">Data de emissão:</span> {moment().format('DD/MM/YYYY')}
                     </p>
-                    
-
-                    <div className="mb-2">
+                        <div className="mb-2">
                         <label className="fw-bold">Responsável</label> <br />
-                       {technicalConsultantSelectedDefault && (
                         <Select
                             className="react-select mt-1"
                             classNamePrefix="react-select"
-                            options={technicalConsultantDataFormatted}
+                            options={technicalConsultantData.length > 0 ? technicalConsultantDataFormatted: []}
                             placeholder="Selecione..."
                             onChange={handleTechnicalConsultantSelectedData}
-                            defaultValue={defaultValue}
-                        ></Select> )
-                        }
-                       {!technicalConsultantSelectedDefault && (
-                        <Select
-                            className="react-select mt-1"
-                            classNamePrefix="react-select"
-                            options={technicalConsultantDataFormatted}
-                            placeholder="Selecione..."
-                            onChange={handleTechnicalConsultantSelectedData}  
-                        ></Select> )
-                        }
+                            getValue={(ValueType, ActionTypes) => console.log(ValueType, ActionTypes)}
+                        ></Select>
                     </div>
                 </li>
                 <li>
@@ -172,7 +157,7 @@ const QuotationInfo = ({ technicalConsultantData = [], osTypes = [], handleTechn
                         <Select
                             className="react-select mt-1"
                             classNamePrefix="react-select"
-                            options={osTypesFormatted}
+                            options={osTypes.map( item => ({ value: item.id, label: item.name }))}
                             onChange={handleOsTypeSelectedData}
                             placeholder="Selecione..."
                         ></Select>
@@ -302,15 +287,14 @@ export default function QuotationCreate() {
     const [clientData, setClientData] = useState(null)
     
     const [technicalConsultantData, setTechnicalConsultantData] = useState([])
-    const [technicalConsultantSelectedData, setTechnicalConsultantSelectedData] = useState(null)
-    const [technicalConsultantSelectedDefault, setTechnicalConsultantSelectedDefault] = useState(null)
+    const [technicalConsultantSelectedData, setTechnicalConsultantSelectedData] = useState([])
     
 
     const [showModalServices, setShowModalServices] = useState(false)
    
     const [showModalProducts, setShowModalProducts] = useState(false)
     
-    const {companyId, serviceScheduleId} = useParams()
+    const {companyId} = useParams()
 
     const api = new APICore()
 
@@ -392,13 +376,9 @@ export default function QuotationCreate() {
         console.log(dataQuotation)
         await api.post('/quotations',dataQuotation).then(response => {
             console.log('resposta create',response.data)
-        setTimeout(() => {
-            if(serviceScheduleId) {
-                history(`/panel/company/${companyId}/service-schedules/${serviceScheduleId}/edit`)
-            } else {
-                history(`/panel/company/${companyId}/workshop/quotation/list`)
-            }
-        },2000)
+        // setTimeout(() => {
+        //    history(`/panel/company/${companyId}/workshop/quotation/list`)
+        // },2000)
         })
     }
 
@@ -408,17 +388,8 @@ export default function QuotationCreate() {
         })    
         api.get('/technical-consultant?company_id='+companyId).then((response) => {
             setTechnicalConsultantData(response.data.data)
-        })   
+        })    
         
-        if(serviceScheduleId) {
-            api.get('/service-schedule/'+serviceScheduleId).then((response) => {
-                const {technical_consultant, client, client_vehicle } = response.data.data
-                setTechnicalConsultantSelectedDefault(technical_consultant)
-                setTechnicalConsultantSelectedData(technical_consultant)
-                setClientData(client)
-                setClientVehicleData(client_vehicle)
-            })  
-        }
     },[])
 
 
@@ -466,8 +437,6 @@ export default function QuotationCreate() {
                             osTypes={osTypes}
                             handleTechnicalConsultantSelectedData={handleTechnicalConsultantSelectedData}
                             handleOsTypeSelectedData={handleOsTypeSelectedData}
-                            technicalConsultantSelectedData={technicalConsultantSelectedData}
-                            technicalConsultantSelectedDefault={technicalConsultantSelectedDefault}
                         />
                     </Card.Body>
                 </Card>
