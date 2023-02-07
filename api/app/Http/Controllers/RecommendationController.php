@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Recommendation;
+use App\Models\RecommendationClaimService;
+use App\Models\RecommendationProducts;
+use App\Models\RecommendationServices;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -49,74 +52,144 @@ class RecommendationController extends Controller
             );
         }
 
-        $recommendation = new Recommendation($request->only(Recommendation::getFillables()));
+        $recomendation = new Recommendation();
+        $recomendation->name = $request['description'];
+        $recomendation->vehicle_id = $request['vehicle_id'];
+        $recomendation->maintenance_review_id = $request['maintenance_review_id'];
+        $recomendation->service_type_id = $request['service_type_id'];
+        $recomendation->save();
 
-        if(secureSave($recommendation))
-        {
-            $recommendation->services()->sync(collect($request->services)->keyBy('id')->map(function($item){
-                return [ 'value' => @$item['value'] ];
-            })->toArray());
-
-            $recommendation->load('services');
-
-            return response()->json([
+        if($request['services'] != null or $request['services'] != []) {
+            foreach ($request['services'] as $service) {
+                $recomendationService = new RecommendationServices();
+                $recomendationService->recommendation_id = $recomendation->id;
+                $recomendationService->service_id = $service['id'];
+                $recomendationService->value = $service['value'];
+                $recomendationService->save();
+            }
+        }
+        if($request['products'] != null or $request['products'] != []) {
+            foreach ($request['products'] as $product) {
+                $recomendationProduct = new RecommendationProducts();
+                $recomendationProduct->recommendation_id = $recomendation->id;
+                $recomendationProduct->product_id = $product['id'];
+                $recomendationProduct->value = $product['value'];
+                $recomendationProduct->save();
+            }
+        }
+        if($request['claim_services'] != null or $request['claim_services'] != []) {
+            foreach ($request['claim_services'] as $claimService) {
+                $recomendationClaimService = new RecommendationClaimService();
+                $recomendationClaimService->recommendation_id = $recomendation->id;
+                $recomendationClaimService->claim_service_id = $claimService['id'];
+                $recomendationClaimService->save();
+            }
+        }
+       return response()->json([
                                         'msg'  => trans('general.msg.success'),
-                                        'data' => $recommendation,
+                                        'data' => $recomendation,
                                     ],
                                     Response::HTTP_CREATED
             );
-        }
-        else
-        {
-            return response()->json([
-                                        'msg' => trans('general.msg.error'),
-                                    ],
-                                    Response::HTTP_INTERNAL_SERVER_ERROR
-            );
-        }
+
     }
 
     public function update(Request $request, $id)
     {
-        $recommendation = Recommendation::where('id', '=', $id)->first();
+        $recommendation = Recommendation::where('id', $request['recommendation_id'])->first();
+        $recommendation->name = $request['description'];
+        $recommendation->vehicle_id = $request['vehicle_id'];
+        $recommendation->maintenance_review_id = $request['maintenance_review_id'];
+        $recommendation->service_type_id = $request['service_type_id'];
+        $recommendation->save();
 
-        $validator = validate($request->all(), Recommendation::rules($recommendation->company_id));
-
-        if($validator->fails())
-        {
-            return response()->json([
-                                        'msg'    => trans('general.msg.invalidData'),
-                                        'errors' => $validator->errors(),
-                                    ],
-                                    Response::HTTP_BAD_REQUEST
-            );
+        if($request['services'] != null or $request['services'] != []) {
+            foreach ($request['services'] as $service) {
+                $recomendationService = RecommendationServices::where('recommendation_id', $request['recommendation_id'])->where('service_id', $service['id'])->first();
+                if($recomendationService == null) {
+                    $recomendationService = new RecommendationServices();
+                    $recomendationService->recommendation_id = $recommendation->id;
+                    $recomendationService->service_id = $service['id'];
+                    $recomendationService->value = $service['value'];
+                    $recomendationService->save();
+                } else {
+                    $recomendationService->value = $service['value'];
+                    $recomendationService->save();
+                }
+            }
+                // verifica se o services recebido esta igual ao service persistido ao final se não deleta o service persistido
+                $services = RecommendationServices::where('recommendation_id', $request['recommendation_id'])->get();
+                foreach ($services as $service) {
+                    $serviceExist = false;
+                    foreach ($request['services'] as $serviceRequest) {
+                        if($serviceRequest['id'] == $service->service_id) {
+                            $serviceExist = true;
+                        }
+                    }
+                    if($serviceExist == false) {
+                        $service->delete();
+                    }
+                }
         }
-
-        $recommendation->fill(collect($request->except([ 'company_id' ]))->only(Recommendation::getFillables())->toArray());
-
-        if(!$recommendation->hasAppliedChanges() || secureSave($recommendation))
-        {
-            $recommendation->services()->sync(collect($request->services)->keyBy('id')->map(function($item){
-                return [ 'value' => @$item['value'] ];
-            })->toArray());
-
-            $recommendation->load('services');
-
-            return response()->json([
-                                        'msg'  => trans('general.msg.success'),
-                                        'data' => $recommendation,
-                                    ],
-                                    Response::HTTP_CREATED
-            );
+        if($request['products'] != null or $request['products'] != []) {
+            foreach ($request['products'] as $product) {
+                $recomendationProduct = RecommendationProducts::where('recommendation_id', $request['recommendation_id'])->where('product_id', $product['id'])->first();
+                if($recomendationProduct == null) {
+                    $recomendationProduct = new RecommendationProducts();
+                    $recomendationProduct->recommendation_id = $recommendation->id;
+                    $recomendationProduct->product_id = $product['id'];
+                    $recomendationProduct->value = $product['value'];
+                    $recomendationProduct->save();
+                } else {
+                    $recomendationProduct->value = $product['value'];
+                    $recomendationProduct->save();
+                }
+            }
+                // verifica se o products recebido esta igual ao product persistido ao final se não deleta o product persistido
+                $products = RecommendationProducts::where('recommendation_id', $request['recommendation_id'])->get();
+                foreach ($products as $product) {
+                    $productExist = false;
+                    foreach ($request['products'] as $productRequest) {
+                        if($productRequest['id'] == $product->product_id) {
+                            $productExist = true;
+                        }
+                    }
+                    if($productExist == false) {
+                        $product->delete();
+                    }
+                }
         }
-        else
-        {
-            return response()->json([
-                                        'msg' => trans('general.msg.error'),
-                                    ],
-                                    Response::HTTP_INTERNAL_SERVER_ERROR
-            );
+        if($request['claim_services'] != null or $request['claim_services'] != []) {
+            foreach ($request['claim_services'] as $claimService) {
+                $recomendationClaimService = RecommendationClaimService::where('recommendation_id', $request['recommendation_id'])->where('claim_service_id', $claimService['id'])->first();
+                if($recomendationClaimService == null) {
+                    $recomendationClaimService = new RecommendationClaimService();
+                    $recomendationClaimService->recommendation_id = $recommendation->id;
+                    $recomendationClaimService->claim_service_id = $claimService['id'];
+                    $recomendationClaimService->save();
+                }
+            }
+                // verifica se o claim_services recebido esta igual ao claim_service persistido ao final se não deleta o claim_service persistido
+                $claimServices = RecommendationClaimService::where('recommendation_id', $request['recommendation_id'])->get();
+                foreach ($claimServices as $claimService) {
+                    $claimServiceExist = false;
+                    foreach ($request['claim_services'] as $claimServiceRequest) {
+                        if($claimServiceRequest['id'] == $claimService->claim_service_id) {
+                            $claimServiceExist = true;
+                        }
+                    }
+                    if($claimServiceExist == false) {
+                        $claimService->delete();
+                    }
+                }
         }
+        return response()->json([
+                                            'msg'  => trans('general.msg.success'),
+                                            'data' => $recommendation,
+                                        ],
+                                        Response::HTTP_CREATED
+                );
+
     }
 
     public function destroy(Request $request, $id)

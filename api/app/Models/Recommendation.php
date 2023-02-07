@@ -23,22 +23,22 @@ class Recommendation extends Base
     {
         return [
             'vehicle_id'   => [
-                'required',
+                'nullable',
                 'integer',
                 Rule::exists('vehicles', 'id')->where('company_id', $company_id),
             ],
             'maintenance_review_id'   => [
-                'required',
+                'nullable',
                 'integer',
                 Rule::exists('maintenance_reviews', 'id')->where('company_id', $company_id),
             ],
             'claim_service_id'   => [
-                'required',
+                'nullable',
                 'integer',
                 Rule::exists('claims_service', 'id')->where('company_id', $company_id),
             ],
             'service_type_id'   => [
-                'required',
+                'nullable',
                 'integer',
                 Rule::exists('service_types', 'id')->where('company_id', $company_id),
             ],
@@ -60,7 +60,7 @@ class Recommendation extends Base
     #belongs to
     public function vehicle()
     {
-        return $this->belongsTo('App\Models\Vehicle', 'vehicle_id', 'id')->withTrashed();
+        return $this->belongsTo('App\Models\ClientVehicle', 'vehicle_id', 'id')->withTrashed();
     }
 
     #belongs to
