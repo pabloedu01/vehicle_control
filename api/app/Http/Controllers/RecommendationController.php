@@ -53,10 +53,11 @@ class RecommendationController extends Controller
         }
 
         $recomendation = new Recommendation();
+        $recomendation->company_id = $request['company_id'];
         $recomendation->name = $request['description'];
         $recomendation->vehicle_id = $request['vehicle_id'];
         $recomendation->maintenance_review_id = $request['maintenance_review_id'];
-        $recomendation->service_type_id = $request['service_type_id'];
+        $recomendation->os_type_id = $request['os_type_id'];
         $recomendation->save();
 
         if($request['services'] != null or $request['services'] != []) {
@@ -64,7 +65,7 @@ class RecommendationController extends Controller
                 $recomendationService = new RecommendationServices();
                 $recomendationService->recommendation_id = $recomendation->id;
                 $recomendationService->service_id = $service['id'];
-                $recomendationService->value = $service['value'];
+                $recomendationService->quantity = $service['quantity'];
                 $recomendationService->save();
             }
         }
@@ -73,7 +74,7 @@ class RecommendationController extends Controller
                 $recomendationProduct = new RecommendationProducts();
                 $recomendationProduct->recommendation_id = $recomendation->id;
                 $recomendationProduct->product_id = $product['id'];
-                $recomendationProduct->value = $product['value'];
+                $recomendationProduct->quantity = $product['quantity'];
                 $recomendationProduct->save();
             }
         }
@@ -81,7 +82,7 @@ class RecommendationController extends Controller
             foreach ($request['claim_services'] as $claimService) {
                 $recomendationClaimService = new RecommendationClaimService();
                 $recomendationClaimService->recommendation_id = $recomendation->id;
-                $recomendationClaimService->claim_service_id = $claimService['id'];
+                $recomendationClaimService->claims_service_id = $claimService['id'];
                 $recomendationClaimService->save();
             }
         }
@@ -161,11 +162,11 @@ class RecommendationController extends Controller
         }
         if($request['claim_services'] != null or $request['claim_services'] != []) {
             foreach ($request['claim_services'] as $claimService) {
-                $recomendationClaimService = RecommendationClaimService::where('recommendation_id', $request['recommendation_id'])->where('claim_service_id', $claimService['id'])->first();
+                $recomendationClaimService = RecommendationClaimService::where('recommendation_id', $request['recommendation_id'])->where('claims_service_id', $claimService['id'])->first();
                 if($recomendationClaimService == null) {
                     $recomendationClaimService = new RecommendationClaimService();
                     $recomendationClaimService->recommendation_id = $recommendation->id;
-                    $recomendationClaimService->claim_service_id = $claimService['id'];
+                    $recomendationClaimService->claims_service_id = $claimService['id'];
                     $recomendationClaimService->save();
                 }
             }
@@ -174,7 +175,7 @@ class RecommendationController extends Controller
                 foreach ($claimServices as $claimService) {
                     $claimServiceExist = false;
                     foreach ($request['claim_services'] as $claimServiceRequest) {
-                        if($claimServiceRequest['id'] == $claimService->claim_service_id) {
+                        if($claimServiceRequest['id'] == $claimService->claims_service_id) {
                             $claimServiceExist = true;
                         }
                     }

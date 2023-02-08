@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class RecommendationProducts extends Model
 {
     use HasFactory;
+    protected $table = 'recommendation_products';
+
+    protected $fillable = [
+        'recommendation_id',
+        'product_id',
+        'quantity',
+    ];
 }

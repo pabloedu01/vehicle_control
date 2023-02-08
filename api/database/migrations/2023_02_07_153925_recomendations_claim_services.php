@@ -17,8 +17,8 @@ class RecomendationsClaimServices extends Migration
             $table->id();
             $table->integer('recommendation_id')->unsigned();
             $table->foreign('recommendation_id')->references('id')->on('recommendations')->onDelete('cascade');
-            $table->integer('claim_service_id')->unsigned();
-            $table->foreign('claim_service_id')->references('id')->on('claim_service')->onDelete('cascade');
+            $table->integer('claims_service_id')->unsigned();
+            $table->foreign('claims_service_id')->references('id')->on('claims_service')->onDelete('cascade');
             $table->timestamps();
         });
     }
