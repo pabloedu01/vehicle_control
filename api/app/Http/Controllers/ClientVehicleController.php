@@ -14,19 +14,42 @@ class ClientVehicleController extends Controller
     {
         if($request['search'])
         {
-            ClientVehicle::search($request['search'])->with([ 'vehicle', 'vehicle.model', 'vehicle.model.brand' ])
-            ->where('vehicle_id',  $request->vehicle_id)
+            $clientVehicles =   ClientVehicle::leftJoin('vehicles', 'vehicles.id', '=', 'client_vehicles.vehicle_id')
+            //left joint with vehicle_models table
+            ->leftJoin('vehicle_models', 'vehicle_models.id', '=', 'vehicles.model_id')
+            //left joint with vehicle_brands table
+            ->leftJoin('vehicle_brands', 'vehicle_brands.id', '=', 'vehicle_models.brand_id')
+            //search
+            ->where(function($query) use ($request){
+                 $liked = '%' . strtolower($request->search) . '%';
+
+                return $query->where(\DB::raw('lower(plate)'), 'like', $liked )
+                             ->orWhere(\DB::raw('lower(chasis)'), 'like',  $liked)
+                             ->orWhere(\DB::raw('lower(vehicles.name)'), 'like',  $liked)
+                             ->orWhere(\DB::raw('lower(vehicle_models.name)'), 'like',  $liked)
+                             ->orWhere(\DB::raw('lower(vehicle_brands.name)'), 'like',  $liked);
+            })
+
+            ->where('client_vehicles.company_id', '=', $request->company_id)
+            ->select('client_vehicles.*')
             ->get();
+
+            foreach ($clientVehicles as $clientVehicle) {
+                $clientVehicle['model'] = $clientVehicle->vehicle->model->name;
+            }
+        //  $clientVehicles =  ClientVehicle::search($request['search'])->with([ 'vehicle', 'vehicle.model', 'vehicle.model.brand' ])
+        //     ->where('vehicle_id',  $request->vehicle_id)
+        //     ->get();
         }
         else {
             $clientVehicles = ClientVehicle::with([ 'vehicle', 'vehicle.model', 'vehicle.model.brand' ])
-            ->where('vehicle_id', '=', $request->vehicle_id)
+            ->where('company_id', '=', $request->company_id)
             ->get();
         }
 
 
 
-        $clientVehicles->append('name');
+        // $clientVehicles->append('name');
 
         return response()->json([
                                     'msg'  => trans('general.msg.success'),
@@ -85,7 +108,8 @@ class ClientVehicleController extends Controller
                                       })
                                       ->where(function($query) use ($request){
                                           return $query->where(\DB::raw('lower(plate)'), '=', strtolower($request->search))
-                                                       ->orWhere(\DB::raw('lower(chasis)'), '=', strtolower($request->search));
+                                                       ->orWhere(\DB::raw('lower(chasis)'), '=', strtolower($request->search))
+                                                       ->orWhere(\DB::raw('lower(vehicles.name)'), 'like', '%'.strtolower($request->search).'%');
                                       })
                                       ->first();
 

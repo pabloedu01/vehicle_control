@@ -111,10 +111,10 @@ class RecommendationController extends Controller
                     $recomendationService = new RecommendationServices();
                     $recomendationService->recommendation_id = $recommendation->id;
                     $recomendationService->service_id = $service['id'];
-                    $recomendationService->value = $service['value'];
+                    $recomendationService->quantity = $service['quantity'];
                     $recomendationService->save();
                 } else {
-                    $recomendationService->value = $service['value'];
+                    $recomendationService->quantity = $service['quantity'];
                     $recomendationService->save();
                 }
             }
@@ -139,10 +139,10 @@ class RecommendationController extends Controller
                     $recomendationProduct = new RecommendationProducts();
                     $recomendationProduct->recommendation_id = $recommendation->id;
                     $recomendationProduct->product_id = $product['id'];
-                    $recomendationProduct->value = $product['value'];
+                    $recomendationProduct->quantity = $product['quantity'];
                     $recomendationProduct->save();
                 } else {
-                    $recomendationProduct->value = $product['value'];
+                    $recomendationProduct->quantity = $product['quantity'];
                     $recomendationProduct->save();
                 }
             }

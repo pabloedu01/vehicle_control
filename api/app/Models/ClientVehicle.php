@@ -34,9 +34,9 @@ class ClientVehicle extends Base
     {
         return [
             'id' => $this->id,
-            'vehicle.model.name' => $this->$this->vehicle->model->name,
-            'vehicle.model.brand.name' => $this->vehicle->model->brand->name,
-            'vehicle.name' => $this->$this->vehicle->name,
+            'model' => $this->$this->vehicle->model->name,
+            'brand' => $this->vehicle->model->brand->name,
+            'vehicle' => $this->$this->vehicle->name,
             'plate' => $this->plate,
             'chasis' => $this->chasis,
         ];

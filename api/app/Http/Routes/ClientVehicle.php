@@ -16,7 +16,7 @@ Route::group([
     ]);
 
     Route::group([
-                     'middleware' => [ 'vehicle' ],
+                     'middleware' => [ 'company' ],
                  ], function(){
         Route::get('/', [
             'uses' => 'ClientVehicleController@index',

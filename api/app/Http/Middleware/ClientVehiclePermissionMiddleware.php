@@ -30,7 +30,7 @@ class ClientVehiclePermissionMiddleware extends BaseMiddleware
         }
 
         $validator = validate($data, [
-            'id' => 'required|integer',
+            'id' => 'nullable|integer',
         ]);
 
         if($validator->fails())
