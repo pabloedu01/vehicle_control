@@ -37,9 +37,7 @@ class ClientVehicleController extends Controller
             foreach ($clientVehicles as $clientVehicle) {
                 $clientVehicle['model'] = $clientVehicle->vehicle->model->name;
             }
-        //  $clientVehicles =  ClientVehicle::search($request['search'])->with([ 'vehicle', 'vehicle.model', 'vehicle.model.brand' ])
-        //     ->where('vehicle_id',  $request->vehicle_id)
-        //     ->get();
+         
         }
         else {
             $clientVehicles = ClientVehicle::with([ 'vehicle', 'vehicle.model', 'vehicle.model.brand' ])
