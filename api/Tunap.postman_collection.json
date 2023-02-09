@@ -402,7 +402,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/product?company_id=1",
+							"raw": "{{host}}/api/product?company_id=2&search=Produto 2",
 							"host": [
 								"{{host}}"
 							],
@@ -413,7 +413,11 @@
 							"query": [
 								{
 									"key": "company_id",
-									"value": "1"
+									"value": "2"
+								},
+								{
+									"key": "search",
+									"value": "Produto 2"
 								}
 							]
 						}
@@ -1020,6 +1024,31 @@
 					"response": []
 				},
 				{
+					"name": "Vehicle Models",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/company/vehicle-models?company_id=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"company",
+								"vehicle-models"
+							],
+							"query": [
+								{
+									"key": "company_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Show",
 					"request": {
 						"method": "GET",
@@ -1208,6 +1237,31 @@
 					"response": []
 				},
 				{
+					"name": "Vehicles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/company/vehicles?company_id=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"company",
+								"vehicles"
+							],
+							"query": [
+								{
+									"key": "company_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Show",
 					"request": {
 						"method": "GET",
@@ -1347,7 +1401,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/client-vehicle?vehicle_id=1",
+							"raw": "{{host}}/api/client-vehicle?company_id=1",
 							"host": [
 								"{{host}}"
 							],
@@ -1357,8 +1411,18 @@
 							],
 							"query": [
 								{
-									"key": "vehicle_id",
+									"key": "company_id",
 									"value": "1"
+								},
+								{
+									"key": "search",
+									"value": "editado",
+									"disabled": true
+								},
+								{
+									"key": "vehicle_id",
+									"value": "1",
+									"disabled": true
 								}
 							]
 						}
@@ -2022,81 +2086,6 @@
 			"name": "Company",
 			"item": [
 				{
-					"name": "Vehicles",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{host}}/api/company/vehicles?company_id=1",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"company",
-								"vehicles"
-							],
-							"query": [
-								{
-									"key": "company_id",
-									"value": "1"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Client Vehicles",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{host}}/api/company/client-vehicles?company_id=1",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"company",
-								"client-vehicles"
-							],
-							"query": [
-								{
-									"key": "company_id",
-									"value": "1"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Vehicle Models",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{host}}/api/company/vehicle-models?company_id=1",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"company",
-								"vehicle-models"
-							],
-							"query": [
-								{
-									"key": "company_id",
-									"value": "1"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Checklist Versions",
 					"request": {
 						"method": "GET",
@@ -2209,7 +2198,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/service?company_id=1",
+							"raw": "{{host}}/api/service?company_id=2&search=4",
 							"host": [
 								"{{host}}"
 							],
@@ -2220,7 +2209,11 @@
 							"query": [
 								{
 									"key": "company_id",
-									"value": "1"
+									"value": "2"
+								},
+								{
+									"key": "search",
+									"value": "4"
 								}
 							]
 						}
@@ -3493,7 +3486,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"company_id\": 1,\n    \"client_vehicle_id\": 1,\n    \"client_id\": null,\n    \"maintenance_review_id\": null,\n    \"consultant_id\": 3,\n    \"quotation_itens\": [\n            {\n                \"service_id\": 1,\n                \"products_id\": null,\n                \"price\": \"2\",\n                \"price_discount\": \"1\",\n                \"quantity\": \"2\"\n            }\n        ],\n    \"claim_services\": [\n            {\n                \"claim_service_id\": 1\n            },\n            {\n                \"claim_service_id\": 2\n            }\n        ]\n}\n",
+							"raw": "{\n    \"company_id\": 2,\n    \"client_vehicle_id\": 1,\n    \"client_id\": null,\n    \"os_type_id\":1,\n    \"maintenance_review_id\": null,\n    \"consultant_id\": 1,\n    \"quotation_itens\": [\n            {\n                \"service_id\": 5,\n                \"products_id\": null,\n                \"price\": \"2\",\n                \"price_discount\": \"1\",\n                \"quantity\": \"2\"\n            },\n            {\n                \"service_id\": null,\n                \"products_id\": 2,\n                \"price\": \"2\",\n                \"price_discount\": \"1\",\n                \"quantity\": \"2\"\n            }\n        ],\n    \"claim_services\": [\n            {\n                \"claim_service_id\": 1\n            },\n            {\n                \"claim_service_id\": 2\n            }\n        ]\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3745,7 +3738,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"company_id\": 1,\n     \"model_id\" : 1,\n     \"name\" : 1\n}\n",
+							"raw": "{\n    \"company_id\": 1,\n     \"model_id\" : 1,\n     \"name\" : \"Exemplo Xpto\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3803,13 +3796,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/maintenance-review?company_id=1",
+							"raw": "{{host}}/api/recommendation?company_id=1",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
-								"maintenance-review"
+								"recommendation"
 							],
 							"query": [
 								{
@@ -3828,13 +3821,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/maintenance-review/17",
+							"raw": "{{host}}/api/recommendation/17",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
-								"maintenance-review",
+								"recommendation",
 								"17"
 							]
 						}
@@ -3851,13 +3844,13 @@
 							"urlencoded": []
 						},
 						"url": {
-							"raw": "{{host}}/api/maintenance-review/1",
+							"raw": "{{host}}/api/recommendation/1",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
-								"maintenance-review",
+								"recommendation",
 								"1"
 							]
 						}
@@ -3871,7 +3864,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"company_id\": 1,\n     \"model_id\" : 1,\n     \"name\" : 1\n}\n",
+							"raw": "{\n     \"company_id\": 1,\n     \"name\":\" string\",\n     \"vehicle_id\": 1,\n     \"maintenance_review_id\": 5,\n     \"os_type_id\": null ,\n     \"services\": [\n         { \"service_id\": 2 ,\n           \"quantity\": 1  \n         }\n     ],\n     \"products\": [ \n         {\n                \"product_id\": 1 ,\n                \"quantity\": 1\n         }\n     ]\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3879,13 +3872,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/maintenance-review",
+							"raw": "{{host}}/api/recommendation",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
-								"maintenance-review"
+								"recommendation"
 							]
 						}
 					},
@@ -3919,6 +3912,31 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Client Vehicles",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/company/client-vehicles?company_id=1",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"company",
+						"client-vehicles"
+					],
+					"query": [
+						{
+							"key": "company_id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
 		},
 		{
 			"name": "Test",
