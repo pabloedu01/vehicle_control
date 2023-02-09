@@ -14,8 +14,8 @@ export function ModalProductsSearch({showModalProducts, setShowModalProducts, co
   const [isOpenProductValues, setIsOpenProductValues] = useState(false);
   const [productSelected, setProductSelected] = useState(null);
   const [productValue, setProductValue] = useState('');
-  const [discountValue, setDiscountValue] = useState('0');
-  const [quantityValue, setQuantityValue] = useState(0);
+  const [discountValue, setDiscountValue] = useState(0);
+  const [quantityValue, setQuantityValue] = useState(1);
   
 
   function getProducts () {
@@ -130,7 +130,7 @@ export function ModalProductsSearch({showModalProducts, setShowModalProducts, co
                   <label>Quantidade:</label> <br />
                     <InputMaskNumber 
                       handleSetAmount={handleSetAmountProduct}
-                      quantityValue={quantityValue}
+                      quantityInitial={1}
                     />
                   </div>
                 </Col>
@@ -141,7 +141,6 @@ export function ModalProductsSearch({showModalProducts, setShowModalProducts, co
                       <label>Valor em R$:</label> <br />
                       <InputMaskPrice 
                         handlePriceChange={handlePriceChange}
-                        // priceValue={productValue}
                         priceActual={productSelected?.sale_value}
                       />
                     </div>
@@ -154,7 +153,7 @@ export function ModalProductsSearch({showModalProducts, setShowModalProducts, co
                   <label>Desconto unitário em R$:</label> <br />
                   <InputMaskPrice 
                     handlePriceChange={handleDiscountChange}
-                    priceActual={0}
+                    priceActual={discountValue}
                   />
                 </div>
               </Col>

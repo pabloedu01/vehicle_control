@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useIMask } from 'react-imask';
 
 
-const InputMaskNumber = ({ quantityValue, handleSetAmount,  }) => {
+const InputMaskNumber = ({ quantityInitial, handleSetAmount,  }) => {
 const [ opts, setOpts ] = useState({ 
   mask: Number, 
   min: 0,
@@ -24,10 +24,18 @@ const {
   handleSetAmount(valueOn)
 } });
 
-  
+
+  useEffect(() => {
+    setValue(`${quantityInitial}`)
+    handleSetAmount(`${quantityInitial}`)
+  }, []);
 
   return <input 
   ref={ref}
+  value={value}
+  onChange={(e) => {
+    handleSetAmount(e.target.value)
+  }}
   className="form-control"
   placeholder='Digite a quantidade'
 />

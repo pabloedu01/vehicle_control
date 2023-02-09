@@ -14,8 +14,8 @@ export function ModalServicesSearch({showModalServices, setShowModalServices, co
   const [isOpenServiceValues, setIsOpenServiceValues] = useState(false);
   const [serviceSelected, setServiceSelected] = useState(null);
   const [serviceValue, setServiceValue] = useState('');
-  const [discountValue, setDiscountValue] = useState('0');
-  const [quantityValue, setQuantityValue] = useState(0);
+  const [discountValue, setDiscountValue] = useState(0);
+  const [quantityValue, setQuantityValue] = useState(1);
   
 
   function getServices () {
@@ -131,7 +131,7 @@ export function ModalServicesSearch({showModalServices, setShowModalServices, co
                   <label>Quantidade:</label> <br />
                     <InputMaskNumber 
                       handleSetAmount={handleSetAmountService}
-                      quantityValue={quantityValue}
+                      quantityInitial={quantityValue}
                     />
                   </div>
                 </Col>
@@ -155,7 +155,7 @@ export function ModalServicesSearch({showModalServices, setShowModalServices, co
                   <label>Desconto unitário em R$:</label> <br />
                   <InputMaskPrice 
                     handlePriceChange={handleDiscountChange}
-                    priceActual={0}
+                    priceActual={discountValue}
                   />
                 </div>
               </Col>

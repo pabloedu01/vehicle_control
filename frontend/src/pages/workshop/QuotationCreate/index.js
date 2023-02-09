@@ -537,7 +537,7 @@ export default function QuotationCreate() {
                                     disabled={isEditingClaims}
                                     onClick={toggleIsEditingClaims}
                                 >
-                                    Editar                                  
+                                    Adicionar                                  
                                 </Button>
                             </div>
                             {isEditingClaims && <Row>
