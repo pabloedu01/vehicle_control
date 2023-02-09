@@ -54,7 +54,7 @@ class RecommendationController extends Controller
 
         $recomendation = new Recommendation();
         $recomendation->company_id = $request['company_id'];
-        $recomendation->name = $request['description'];
+        $recomendation->name = $request['name'];
         $recomendation->vehicle_id = $request['vehicle_id'];
         $recomendation->maintenance_review_id = $request['maintenance_review_id'];
         $recomendation->os_type_id = $request['os_type_id'];
@@ -64,7 +64,7 @@ class RecommendationController extends Controller
             foreach ($request['services'] as $service) {
                 $recomendationService = new RecommendationServices();
                 $recomendationService->recommendation_id = $recomendation->id;
-                $recomendationService->service_id = $service['id'];
+                $recomendationService->service_id = $service['service_id'];
                 $recomendationService->quantity = $service['quantity'];
                 $recomendationService->save();
             }
@@ -73,7 +73,7 @@ class RecommendationController extends Controller
             foreach ($request['products'] as $product) {
                 $recomendationProduct = new RecommendationProducts();
                 $recomendationProduct->recommendation_id = $recomendation->id;
-                $recomendationProduct->product_id = $product['id'];
+                $recomendationProduct->product_id = $product['product_id'];
                 $recomendationProduct->quantity = $product['quantity'];
                 $recomendationProduct->save();
             }
@@ -82,7 +82,7 @@ class RecommendationController extends Controller
             foreach ($request['claim_services'] as $claimService) {
                 $recomendationClaimService = new RecommendationClaimService();
                 $recomendationClaimService->recommendation_id = $recomendation->id;
-                $recomendationClaimService->claims_service_id = $claimService['id'];
+                $recomendationClaimService->claims_service_id = $claimService['claim_service_id'];
                 $recomendationClaimService->save();
             }
         }

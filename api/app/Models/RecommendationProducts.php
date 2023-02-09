@@ -15,4 +15,18 @@ class RecommendationProducts extends Model
         'product_id',
         'quantity',
     ];
+
+
+    #belongs to
+    public function recommendation()
+    {
+        return $this->belongsTo('App\Models\Recommendation', 'recommendation_id', 'id')->withTrashed();
+    }
+
+    #belongs to
+    public function product()
+    {
+        return $this->belongsTo('App\Models\Product', 'product_id', 'id')->withTrashed();
+    }
+
 }

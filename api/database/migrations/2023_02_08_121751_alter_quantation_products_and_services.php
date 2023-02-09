@@ -14,10 +14,15 @@ class AlterQuantationProductsAndServices extends Migration
     public function up()
     {
         Schema::table('recommendation_products', function (Blueprint $table) {
-            $table->double('quantity',15,2)->nullable();
+            // add quantitiy column nullable in double 15 digits and 2 decimals
+            $table->double('quantity', 15, 2)->nullable()->after('price');
+
+
+
         });
-        Schema::table('recommendation_services', function (Blueprint $table) {
-            $table->double('quantity',15,2)->nullable();
+        Schema::table('recommendation_service', function (Blueprint $table) {
+            $table->double('quantity', 15, 2)->nullable()->after('price');
+
         });
     }
 

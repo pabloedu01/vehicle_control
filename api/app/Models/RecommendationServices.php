@@ -17,4 +17,19 @@ class RecommendationServices extends Model
     ];
 
 
+
+    #belongs to
+    public function recommendation()
+    {
+        return $this->belongsTo('App\Models\Recommendation', 'recommendation_id', 'id')->withTrashed();
+    }
+
+    #belongs to
+    public function service()
+    {
+        return $this->belongsTo('App\Models\Service', 'service_id', 'id')->withTrashed();
+    }
+
+
+
 }

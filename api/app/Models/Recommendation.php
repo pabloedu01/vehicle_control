@@ -12,10 +12,10 @@ class Recommendation extends Base
 
     protected $fillable = [
         'company_id',
-        'vehicle_id',
+        'client_vehicle_id',
         'maintenance_review_id',
         'claim_service_id',
-        'service_type_id',
+        'os_type_id',
         'name',
     ];
 
@@ -25,7 +25,7 @@ class Recommendation extends Base
             'vehicle_id'   => [
                 'nullable',
                 'integer',
-                Rule::exists('vehicles', 'id')->where('company_id', $company_id),
+                Rule::exists('client_vehicles', 'id')->where('company_id', $company_id),
             ],
             'maintenance_review_id'   => [
                 'nullable',
@@ -37,16 +37,14 @@ class Recommendation extends Base
                 'integer',
                 Rule::exists('claims_service', 'id')->where('company_id', $company_id),
             ],
-            'service_type_id'   => [
+            'os_type_id'   => [
                 'nullable',
                 'integer',
-                Rule::exists('service_types', 'id')->where('company_id', $company_id),
+                Rule::exists('os_type', 'id')->where('company_id', $company_id),
             ],
             'name'    =>  [
                 'required', 'string'
             ],
-            'services'      => ['required', 'array', new ArrayIdsInDatabase(Service::class)],
-            'products'      => ['required', 'array', new ArrayIdsInDatabase(Service::class)],
 
         ];
     }
@@ -60,7 +58,7 @@ class Recommendation extends Base
     #belongs to
     public function vehicle()
     {
-        return $this->belongsTo('App\Models\ClientVehicle', 'vehicle_id', 'id')->withTrashed();
+        return $this->belongsTo('App\Models\ClientVehicle', 'client_vehicle_id', 'id')->withTrashed();
     }
 
     #belongs to
@@ -76,9 +74,9 @@ class Recommendation extends Base
     }
 
     #belongs to
-    public function serviceType()
+    public function osType()
     {
-        return $this->belongsTo('App\Models\ServiceType', 'service_type_id', 'id')->withTrashed();
+        return $this->belongsTo('App\Models\OsType', 'os_type_id', 'id')->withTrashed();
     }
 
     #many to many
@@ -94,5 +92,6 @@ class Recommendation extends Base
                     ->withPivot([ 'value' ])
                     ->withTimestamps();
     }
+
 }
 
