@@ -41,6 +41,22 @@ class CompanyController extends Controller
         $vehicleModels = VehicleModel::with('brand')
                                      ->where('company_id', '=', $request->company_id)
                                      ->get();
+        // search by model name and brand name
+        if($request['search'])
+        {
+            $vehicleModels = VehicleModel::leftJoin('vehicle_brands', 'vehicle_brands.id', '=', 'vehicle_models.brand_id')
+                                         ->where('vehicle_models.company_id', '=', $request->company_id)
+                                         ->where(function($query) use ($request){
+                                             $liked = '%' . strtolower($request->search) . '%';
+
+                                             return $query->where(\DB::raw('lower(vehicle_models.name)'), 'like',  $liked)
+                                                          ->orWhere(\DB::raw('lower(vehicle_brands.name)'), 'like',  $liked);
+                                         })
+                                         ->get();
+                                         foreach ($vehicleModels as $vehicleModel) {
+                                             $vehicleModel['brand'] = $vehicleModel->brand;
+                                         }
+        }
 
         return response()->json([
                                     'msg'  => trans('general.msg.success'),
