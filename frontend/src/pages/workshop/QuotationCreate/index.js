@@ -12,6 +12,7 @@ import { formatDateTimePresentation } from '../../../utils/formatDateTimezone'
 // components
 import PageTitle from '../../../components/PageTitle';
 import {ModalVehicleSearch} from "../../../components/Vehicle/ModalVehicleSearch"
+import {ModalClientVehicleSearch} from "../../../components/Vehicle/ModalClientVehicleSearch"
 import {ModalTechnicalConsultantSearch} from "../../../components/TechnicalConsultant/ModalTechnicalConsultantSearch"
 import {ModalClientSearch} from "../../../components/Client/ModalClientSearch"
 import {ModalServicesSearch} from "../../../components/quotation/ModalServicesSearch"
@@ -604,10 +605,10 @@ export default function QuotationCreate() {
             />
     
 
-            <ModalVehicleSearch 
+            <ModalClientVehicleSearch 
                 company_id={companyId} 
-                showModalSearchVehicle={showModalSearchVehicle} 
-                setShowModalSearchVehicle={setShowModalSearchVehicle} 
+                showModalSearchClientVehicle={showModalSearchVehicle} 
+                setShowModalSearchClientVehicle={setShowModalSearchVehicle} 
                 handleChangeClientVehicleData={handleChangeClientVehicleData}
             />
     
