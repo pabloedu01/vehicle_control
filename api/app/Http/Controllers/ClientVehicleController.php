@@ -35,9 +35,12 @@ class ClientVehicleController extends Controller
             ->get();
 
             foreach ($clientVehicles as $clientVehicle) {
-                $clientVehicle['model'] = $clientVehicle->vehicle->model->name;
+                $clientVehicle->vehicle->model->name;
+                // brand
+                $clientVehicle->vehicle->model->brand->name;
+
             }
-         
+
         }
         else {
             $clientVehicles = ClientVehicle::with([ 'vehicle', 'vehicle.model', 'vehicle.model.brand' ])
