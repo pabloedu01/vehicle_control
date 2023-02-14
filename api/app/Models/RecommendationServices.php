@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class RecommendationServices extends Model
 {
     use HasFactory;
-    protected $table = 'recommendation_services';
+    protected $table = 'recommendation_service';
 
     protected $fillable = [
         'recommendation_id',
