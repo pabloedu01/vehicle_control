@@ -20,7 +20,7 @@ class AlterRecomendationOsType extends Migration
             $table->dropColumn('vehicle_id');
             $table->foreignId('maintenance_review_id')->nullable()->change();
             $table->foreignId('claim_service_id')->nullable()->change();
-            $table->foreignId('client_vehicle_id')->nullable()->constrained('client_vehicle');
+            $table->foreignId('client_vehicle_id')->nullable()->constrained('client_vehicles');
             $table->foreignId('os_type_id')->nullable()->constrained('os_type');
 
         });
