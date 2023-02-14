@@ -150,7 +150,7 @@ class QuotationController extends Controller
         $quotation->client_id = $request->client_id;
         $quotation->client_vehicle_id = $request->client_vehicle_id;
         $quotation->maintenance_review_id = $request->maintenance_review_id;
-        $quotation->os_type_id = $request->os_type_id;  
+        $quotation->os_type_id = $request->os_type_id;
         $quotation->consultant_id =  $consultant;
         $quotation->company_id = $request->company_id;
         $quotation->save();
@@ -194,6 +194,7 @@ class QuotationController extends Controller
     }
     public function listAll(Request $request) {
 
+
         if($request['techinical_consultant_id'] != null){
             $quotations = Quotation::with(collect(self::$with)->take(5)->toArray())
                                            ->list()
@@ -209,6 +210,28 @@ class QuotationController extends Controller
             ->list()
             ->get();
         }
+        if($request['search'] != null){
+            $quotations = Quotation::leftJoin('clients', 'quotation.client_id', '=', 'clients.id')
+            ->leftJoin('client_vehicles', 'quotation.client_vehicle_id', '=', 'client_vehicles.id')
+            ->leftJoin('companies', 'quotation.company_id', '=', 'companies.id')
+            ->select('quotation.*')
+            ->where('quotation.id', 'like', '%'.$request['search'].'%')
+            ->orWhere('clients.name', 'like', '%'.$request['search'].'%')
+            ->orWhere('clients.document', 'like', '%'.$request['search'].'%')
+            ->orWhere('client_vehicles.plate', 'like', '%'.$request['search'].'%')
+            ->orWhere('client_vehicles.chasis', 'like', '%'.$request['search'].'%')
+         ->get();
+
+         foreach ($quotations as $quotation) {
+                $quotation->client;
+                $quotation->client_vehicle;
+                $quotation->maintenance_review;
+                $quotation->technical_consultant;
+        }
+
+        }
+
+
 
 
 

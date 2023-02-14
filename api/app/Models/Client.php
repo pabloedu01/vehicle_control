@@ -68,5 +68,9 @@ class Client extends Base
     {
         return $this->hasMany('App\Models\VehicleServiceClientData', 'client_id', 'id');
     }
+    public function quotation()
+    {
+        return $this->hasMany('App\Models\Quotation', 'client_id', 'id');
+    }
 }
 
