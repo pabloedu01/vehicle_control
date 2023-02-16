@@ -13,11 +13,17 @@ class RecommendationController extends Controller
 {
     public function index(Request $request)
     {
-        $recommendations = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'claimService'])
+        if($request['model_id']){
+            $recommendations = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'claimService'])
                            ->where('company_id', '=', $request['company_id'])
                            ->where('model_id', '=', $request['model_id'])
-
                            ->get();
+        }else {
+            $recommendations = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'claimService'])
+                           ->where('company_id', '=', $request['company_id'])
+                           ->get();
+        }
+
 
         $recommendations->each(function($recommendation){
             $recommendation->vehicle->append('full_name');
