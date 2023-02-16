@@ -14,12 +14,12 @@ class RecommendationController extends Controller
     public function index(Request $request)
     {
         if($request['model_id']){
-            $recommendations = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'claimService'])
+            $recommendations = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'claimService','brand','model'])
                            ->where('company_id', '=', $request['company_id'])
                            ->where('model_id', '=', $request['model_id'])
                            ->get();
         }else {
-            $recommendations = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'claimService'])
+            $recommendations = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'claimService','brand','model'])
                            ->where('company_id', '=', $request['company_id'])
                            ->get();
         }
@@ -34,7 +34,7 @@ class RecommendationController extends Controller
 
     public function show(Request $request, $id)
     {
-        $recommendation = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'claimService',  'services'])
+        $recommendation = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'claimService',  'services' ,'brand','model'])
                           ->where('id', '=', $id)
                           ->first();
 
@@ -96,9 +96,15 @@ class RecommendationController extends Controller
                 $recomendationClaimService->save();
             }
         }
+
+
+        $show = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'claimService',  'services' , 'brand','model'])
+                          ->where('id', '=', $recomendation->id)
+                          ->first();
+
        return response()->json([
                                         'msg'  => trans('general.msg.success'),
-                                        'data' => $recomendation,
+                                        'data' => $show,
                                     ],
                                     Response::HTTP_CREATED
             );
