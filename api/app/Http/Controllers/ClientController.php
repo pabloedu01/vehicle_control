@@ -11,6 +11,8 @@ class ClientController extends Controller
     public function index(Request $request)
     {
         if($request['search']) {
+
+            $request['search'] = strtoupper($request['search']);
             $clients = Client::where('company_id', '=', $request->company_id)
                              ->where('name', 'like', '%' . $request['search'] . '%')
                                 ->orWhere('document', 'like', '%' . $request['search'] . '%')
