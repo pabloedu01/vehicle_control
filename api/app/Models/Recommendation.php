@@ -22,7 +22,7 @@ class Recommendation extends Base
     public static function rules($company_id)
     {
         return [
-            'vehicle_id'   => [
+            'client_vehicle_id'   => [
                 'nullable',
                 'integer',
                 Rule::exists('client_vehicles', 'id')->where('company_id', $company_id),

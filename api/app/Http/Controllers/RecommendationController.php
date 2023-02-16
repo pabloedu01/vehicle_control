@@ -55,7 +55,7 @@ class RecommendationController extends Controller
         $recomendation = new Recommendation();
         $recomendation->company_id = $request['company_id'];
         $recomendation->name = $request['name'];
-        $recomendation->vehicle_id = $request['vehicle_id'];
+        $recomendation->client_vehicle_id = $request['client_vehicle_id'];
         $recomendation->maintenance_review_id = $request['maintenance_review_id'];
         $recomendation->os_type_id = $request['os_type_id'];
         $recomendation->save();
