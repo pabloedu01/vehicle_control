@@ -202,9 +202,16 @@ class RecommendationController extends Controller
                     }
                 }
         }
+
+
+        $show = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'claimService',  'services' , 'brand','model'])
+                          ->where('id', '=', $request['recommendation_id'])
+                          ->first();
+
+
         return response()->json([
                                             'msg'  => trans('general.msg.success'),
-                                            'data' => $recommendation,
+                                            'data' => $show,
                                         ],
                                         Response::HTTP_CREATED
                 );
