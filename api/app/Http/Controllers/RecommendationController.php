@@ -13,8 +13,10 @@ class RecommendationController extends Controller
 {
     public function index(Request $request)
     {
-        $recommendations = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'claimService', 'serviceType'])
+        $recommendations = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'claimService'])
                            ->where('company_id', '=', $request->company_id)
+                           ->where('model_id', '=', $request->model_id)
+
                            ->get();
 
         $recommendations->each(function($recommendation){
@@ -26,7 +28,7 @@ class RecommendationController extends Controller
 
     public function show(Request $request, $id)
     {
-        $recommendation = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'claimService', 'serviceType', 'services'])
+        $recommendation = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'claimService',  'services'])
                           ->where('id', '=', $id)
                           ->first();
 
