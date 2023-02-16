@@ -49,5 +49,11 @@ class VehicleModel extends Base
     {
         return $this->hasMany('App\Models\Vehicle', 'model_id', 'id');
     }
+    #has many recomendations
+    public function recomendations()
+    {
+        return $this->hasMany('App\Models\Recommendation', 'model_id', 'id');
+    }
+    
 }
 
