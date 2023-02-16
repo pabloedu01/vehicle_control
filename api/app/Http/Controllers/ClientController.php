@@ -10,8 +10,17 @@ class ClientController extends Controller
 {
     public function index(Request $request)
     {
-        $clients = Client::where('company_id', '=', $request->company_id)
+        if($request['search']) {
+            $clients = Client::where('company_id', '=', $request->company_id)
+                             ->where('name', 'like', '%' . $request['search'] . '%')
+                                ->orWhere('document', 'like', '%' . $request['search'] . '%')
+                                ->orWhere('email', 'like', '%' . $request['search'] . '%')
+                             ->get();
+        }else {
+            $clients = Client::where('company_id', '=', $request->company_id)
                          ->get();
+
+        }
 
         return response()->json([
                                     'msg' => trans('general.msg.success'),
