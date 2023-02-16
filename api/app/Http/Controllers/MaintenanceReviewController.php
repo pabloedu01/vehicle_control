@@ -11,7 +11,7 @@ class MaintenanceReviewController extends Controller
 {
     public function index(Request $request)
     {
-        $maintenanceReviews = MaintenanceReview::where('model_id', '=', $request->model_id)
+        $maintenanceReviews = MaintenanceReview::where('model_id', '=', $request['model_id'])
                            ->get();
 
         return response()->json([ 'msg' => trans('general.msg.success'), 'data' => $maintenanceReviews, ], Response::HTTP_OK);

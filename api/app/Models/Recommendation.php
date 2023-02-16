@@ -12,7 +12,9 @@ class Recommendation extends Base
 
     protected $fillable = [
         'company_id',
-        'client_vehicle_id',
+        'vehicle_id',
+        'brand_id',
+        'model_id',
         'maintenance_review_id',
         'claim_service_id',
         'os_type_id',
@@ -22,10 +24,20 @@ class Recommendation extends Base
     public static function rules($company_id)
     {
         return [
-            'client_vehicle_id'   => [
+            'vehicle_id'   => [
                 'nullable',
                 'integer',
-                Rule::exists('client_vehicles', 'id')->where('company_id', $company_id),
+                Rule::exists('vehicles', 'id')->where('company_id', $company_id),
+            ],
+            'brand_id'   => [
+                'nullable',
+                'integer',
+                Rule::exists('vehicle_brands', 'id')->where('company_id', $company_id),
+            ],
+            'model_id'   => [
+                'nullable',
+                'integer',
+                Rule::exists('vehicle_models', 'id')->where('company_id', $company_id),
             ],
             'maintenance_review_id'   => [
                 'nullable',
@@ -58,9 +70,17 @@ class Recommendation extends Base
     #belongs to
     public function vehicle()
     {
-        return $this->belongsTo('App\Models\ClientVehicle', 'client_vehicle_id', 'id')->withTrashed();
+        return $this->belongsTo('App\Models\Vehicle', 'vehicle_id', 'id')->withTrashed();
     }
-
+     #belongs to
+     public function model()
+     {
+         return $this->belongsTo('App\Models\Models', 'model_id', 'id')->withTrashed();
+     }
+     public function brand()
+     {
+         return $this->belongsTo('App\Models\Brand', 'brand_id', 'id')->withTrashed();
+     }
     #belongs to
     public function maintenanceReview()
     {

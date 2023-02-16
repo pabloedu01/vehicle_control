@@ -14,8 +14,8 @@ class RecommendationController extends Controller
     public function index(Request $request)
     {
         $recommendations = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'claimService'])
-                           ->where('company_id', '=', $request->company_id)
-                           ->where('model_id', '=', $request->model_id)
+                           ->where('company_id', '=', $request['company_id'])
+                           ->where('model_id', '=', $request['model_id'])
 
                            ->get();
 
@@ -57,7 +57,9 @@ class RecommendationController extends Controller
         $recomendation = new Recommendation();
         $recomendation->company_id = $request['company_id'];
         $recomendation->name = $request['name'];
-        $recomendation->client_vehicle_id = $request['client_vehicle_id'];
+        $recomendation->brand_id = $request['brand_id'] ?? null;
+        $recomendation->model_id = $request['model_id'] ?? null;
+        $recomendation->vehicle_id = $request['vehicle_id'] ?? null;
         $recomendation->maintenance_review_id = $request['maintenance_review_id'];
         $recomendation->os_type_id = $request['os_type_id'];
         $recomendation->save();
@@ -102,6 +104,8 @@ class RecommendationController extends Controller
         $recommendation = Recommendation::where('id', $request['recommendation_id'])->first();
         $recommendation->name = $request['description'];
         $recommendation->vehicle_id = $request['vehicle_id'];
+        $recommendation->model_id = $request['model_id'] ?? null;
+        $recommendation->brand_id = $request['brand_id'] ?? null;
         $recommendation->maintenance_review_id = $request['maintenance_review_id'];
         $recommendation->service_type_id = $request['service_type_id'];
         $recommendation->save();
