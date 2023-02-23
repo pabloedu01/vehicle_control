@@ -27,6 +27,7 @@ const {
 
   useEffect(() => {
     setValue(`${quantityInitial}`)
+    handleSetAmount(quantityInitial)
   }, []);
 
   return <input 

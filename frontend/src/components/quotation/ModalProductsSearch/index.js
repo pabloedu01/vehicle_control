@@ -45,13 +45,13 @@ export function ModalProductsSearch({showModalProducts, setShowModalProducts, co
     setIsOpenProductValues(false)
   }
 
-  function addSelectedProduct () {
-    handleChangeProductsData({
+  async function addSelectedProduct() {
+    await handleChangeProductsData({
       service_id: null,
       products_id: productSelected.id,
       name: productSelected.name,
-      price: `${productValue}`,
-      quantity: `${quantityValue}`,
+      price: `${productValue ?? "0"}`,
+      quantity: `${quantityValue ?? "0"}`,
       price_discount: `${discountValue ?? "0"}`
     })
     onHideShowModalProductValues()
@@ -81,7 +81,8 @@ export function ModalProductsSearch({showModalProducts, setShowModalProducts, co
     setDiscountValue((productValueReal - parseFloat(amount)) * 100 / productValueReal)  
   } 
 
-  function handlePriceChange(value) {  
+  function handlePriceChange(value) { 
+    console.log('price', value)
     setProductValue(value)
     
   }
@@ -130,7 +131,7 @@ export function ModalProductsSearch({showModalProducts, setShowModalProducts, co
                   <label>Quantidade:</label> <br />
                     <InputMaskNumber 
                       handleSetAmount={handleSetAmountProduct}
-                      quantityInitial={1}
+                      quantityInitial={quantityValue}
                     />
                   </div>
                 </Col>

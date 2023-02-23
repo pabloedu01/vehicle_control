@@ -408,6 +408,7 @@ export default function QuotationShow() {
     },[idQuotation])
 
     function handleItemsSelectedData(data) {
+        console.log(data)
         setItemsSelectedData(prevState => [...prevState, data])
         if(!isActiveSaveButton) {
             isSaveActive()

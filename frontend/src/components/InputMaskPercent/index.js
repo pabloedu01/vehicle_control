@@ -25,7 +25,10 @@ const {
   handleDiscountChange(valueOn)
 } });
 
-  
+  useEffect(() => {
+    setValue(`${discountValue}`)
+    handleDiscountChange(discountValue)
+  },[])
 
   return <input 
   ref={ref}

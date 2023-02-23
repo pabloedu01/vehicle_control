@@ -26,6 +26,7 @@ const {
 
   useEffect(() => {
     setValue(`${priceActual}`)
+    handlePriceChange(priceActual)
   },[])
 
   return <input 

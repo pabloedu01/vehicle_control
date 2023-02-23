@@ -425,6 +425,7 @@ export default function QuotationCreate() {
 
 
     function handleItemsSelectedData(data) {
+        console.log(data)
         setItemsSelectedData(prevState => [...prevState, data])
         if(!isActiveSaveButton) {
             isSaveActive()
@@ -559,7 +560,7 @@ export default function QuotationCreate() {
                                             <h4 className="header-title">Items selecionado</h4>
                                             <div sm={4} className="d-flex align-content-center justify-content-end mb-2 mt-1 gap-1">
                                                 <Button type="button" className='btn-sm text-nowrap px-2' variant="primary">
-                                                    <i className="mdi mdi-plus"></i><span className=''>Pacotes</span>
+                                                    <i className="mdi mdi-plus"></i><span className=''>Kits</span>
                                                 </Button>
                                                 <Button 
                                                     type="button" 
