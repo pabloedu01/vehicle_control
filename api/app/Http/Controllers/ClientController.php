@@ -13,15 +13,28 @@ class ClientController extends Controller
         if($request['search']) {
 
             $request['search'] = strtoupper($request['search']);
+            // remove the special characters
+            $request['search'] = preg_replace('/[^A-Za-z0-9\-]/', '', $request['search']);
+
+
             $clients = Client::where('company_id', '=', $request->company_id)
-                             ->where('name', 'like', '%' . $request['search'] . '%')
-                                ->orWhere('document', 'like', '%' . $request['search'] . '%')
-                                ->orWhere('email', 'like', '%' . $request['search'] . '%')
+                                // in name force to uppercase and remove the special characters
+                             ->whereRaw('UPPER(REPLACE(name, \' \', \'\')) like \'%'. $request['search'] .'%\'')
+                             ->orWhere('document', 'like', '%' . $request['search'] . '%')
+                            //  ->orWhere('email', 'like', '%' . $request['search'] . '%')
                              ->get();
+
+
+
         }else {
             $clients = Client::where('company_id', '=', $request->company_id)
                          ->get();
 
+        }
+        // add email and phone to the client
+        foreach ($clients as $client) {
+            $client->append('email');
+            $client->append('phone');
         }
 
         return response()->json([
