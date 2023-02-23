@@ -12,6 +12,8 @@ import swal from 'sweetalert';
 
 const api = new APICore();
 
+console.log(`aqui`)
+
 const List = (props: {company?: any}): React$Element<React$FragmentType> => {
     const history = useNavigate();
     const [list, setList] = useState([]);
