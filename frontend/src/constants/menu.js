@@ -166,13 +166,13 @@ const MENU_ITEMS = [
     {
         key: 'workshop.index',
         label: 'Oficina',
-        url: '/workshop/estimate/list',
+        url: '/workshop/quotation/list',
         icon: 'mdi mdi-garage-open-variant',
         children: [
             {
                 key: 'estimate.index',
                 label: 'Orçamentos',
-                url: '/workshop/estimate/list',
+                url: '/workshop/quotation/list',
                 icon: 'mdi mdi-clipboard-text',
                 parentKey: 'workshop.index'
             },

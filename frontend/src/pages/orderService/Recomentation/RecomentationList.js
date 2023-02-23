@@ -225,7 +225,6 @@ export default function RecomentationList() {
       const [data, setData] = useState('');
       const childToParent = (childdata) => {
         setData(childdata);
-        console.log(childdata);
         onEdit(childdata)
       }
       const detectClick = (e) => {

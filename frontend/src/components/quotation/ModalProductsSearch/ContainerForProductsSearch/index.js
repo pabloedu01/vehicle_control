@@ -2,24 +2,26 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import classnames from 'classnames';
 import SimpleBar from 'simplebar-react';
+import {formatMoneyPt_BR } from "../../../../utils/formatMoneyPt_BR"
 
-
-export function ContainerForModalWithSearchClients({ onUserSelect, clientsData, setSelectedChangeClientData }) {
-    const [clients, setClients] = useState([]);
-    const [selectedClient, setSelectedClient] = useState(null);
+export function ContainerForProductsSearch({ productsData, setSelectedChangeProductsData }) {
+    const [products, setProducts] = useState([]);
+    const [selectedProduct, setSelectedProduct] = useState(null);
 
     function search (text) {
-        setClients(text ? [...clientsData].filter((u) => u.name.toLowerCase().indexOf(text.toLowerCase()) >= 0) : [...clientsData]);
+        setProducts(text ? [...productsData].filter((u) => u.name.toLowerCase().indexOf(text.toLowerCase()) >= 0) : [...productsData]);
     };
 
-    function activateUser(user) {
-        setSelectedClient(user);
-        setSelectedChangeClientData(user)
+    function activateUser(item) {
+        setSelectedProduct(item);
+        setSelectedChangeProductsData(item)
     };
 
     useEffect(() => {
-        setClients([...clientsData])
-    },[clientsData])
+        if(productsData) {
+            setProducts([...productsData])
+        }
+    },[productsData])
 
 
     return (
@@ -37,30 +39,30 @@ export function ContainerForModalWithSearchClients({ onUserSelect, clientsData, 
           </div>
 
           <SimpleBar className="px-3" style={{ maxHeight: '350px', width: '100%' }}>
-              {clients.length > 0 && clients.map((client, index) => {
+              {products.length > 0 && products.map((prod, index) => {
                   return (
                       <Link
                           to="#"
                           key={index}
                           className="text-body"
                           onClick={(e) => {
-                              activateUser(client);
+                              activateUser(prod);
                         
                           }}
                       >
                           <div
                               className={classnames('d-flex', 'align-items-start', 'mt-1', 'p-2', {
-                                  'bg-light': client.id === selectedClient?.id,
+                                  'bg-light': prod.id === selectedProduct?.id,
                               })}
                           >
                         
 
                               <div className="w-100 overflow-hidden p-1">
                                   <h5 className="mt-0 mb-0 font-14">
-                                      {client.name}
+                                      {prod.name}
                                   </h5>
                                   <p className="mt-1 mb-0 text-muted font-14">
-                                      <span className="w-75">Cpf: {client.document}</span>
+                                      <span className="w-75">valor:{ formatMoneyPt_BR(prod.sale_value ?? 0)}</span>
                                   </p>
                               </div>
                           </div>

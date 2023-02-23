@@ -183,7 +183,6 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
 
     useEffect(() => {
         methods.setValue('scheludesVisited', moment(data?.promised_date).format("yyyy-MM-DDThh:mm") ?? moment().format("yyyy-MM-DDThh:mm"));
-        console.log(data?.technicalConsultant)
         setTechnicalConsultantSelectedSearch(data?.technicalConsultant)
         setSelectedChangeClientData(data?.client)
     }, [data]);
@@ -535,7 +534,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                             </Button>
                         </Col>
                         <Col sm={4} md={4} xs={5}>
-                            <Button  variant="primary" onClick={onShowNewOrderModal} type="button" style={{width: '100%', minWidth: '62px', fontSize: '20px'}} >
+                            <Button  variant="primary" onClick={() => history(`/panel/company/2/workshop/quotation/create/${id}`)} type="button" style={{width: '100%', minWidth: '62px', fontSize: '20px'}} >
                             <i className='mdi mdi-clipboard-list-outline p-0' ></i> Novo
                             </Button>
                         </Col>

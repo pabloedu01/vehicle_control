@@ -1,14 +1,14 @@
 import {useEffect, useState} from 'react';
 import Select from 'react-select';
-import { Row, Col, Card, Button, Modal } from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap';
 import {APICore} from "../../../helpers/api/apiCore";
 import useToggle  from '../../../hooks/useToggle'
-import {ContainerForVehicleWithSearchVehicles} from "../../../components/ContainerForVehicleWithSearchVehicles"
+import {ContainerForVehicleWithSearchVehicles} from "../ContainerForVehicleWithSearchVehicles"
 
 
 const api = new APICore();
 
-export function ModalVehicleToggle({showModalSearchVehicle, setShowModalSearchVehicle, company_id, handleChangeClientVehicleData}) {
+export function ModalVehicleSearch({showModalSearchVehicle, setShowModalSearchVehicle, company_id, handleChangeClientVehicleData}) {
   const [data, setData] = useState();
   const [brands, setBrands] = useState([]);
   const [brandSelected, setBrandSelected] = useState();
@@ -40,8 +40,8 @@ export function ModalVehicleToggle({showModalSearchVehicle, setShowModalSearchVe
   }
   function getClientVehicle () {
     api.get('/client-vehicle?vehicle_id='+data.vehicle).then((response) => {
-
         setClientVehicles(response.data.data)
+        console.log(response.data.data)
     })
   }
 

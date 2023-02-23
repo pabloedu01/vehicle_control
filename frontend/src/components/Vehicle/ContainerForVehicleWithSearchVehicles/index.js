@@ -4,23 +4,22 @@ import classnames from 'classnames';
 import SimpleBar from 'simplebar-react';
 
 
-export function ContainerForModalWithSearchClients({ onUserSelect, clientsData, setSelectedChangeClientData }) {
-    const [clients, setClients] = useState([]);
-    const [selectedClient, setSelectedClient] = useState(null);
+export function ContainerForVehicleWithSearchVehicles({ vehiclesData, setSelectedVehicle }) {
+    const [vehicles, setVehicles] = useState([]);
+    const [selected, setSelected] = useState(null);
 
     function search (text) {
-        setClients(text ? [...clientsData].filter((u) => u.name.toLowerCase().indexOf(text.toLowerCase()) >= 0) : [...clientsData]);
+        setVehicles(text ? [...vehicles].filter((u) => u.name.toLowerCase().indexOf(text.toLowerCase()) >= 0) : [...vehicles]);
     };
 
-    function activateUser(user) {
-        setSelectedClient(user);
-        setSelectedChangeClientData(user)
+    function activateUser(vehicle) {
+        setSelected(vehicle);
+        setSelectedVehicle(vehicle)
     };
 
     useEffect(() => {
-        setClients([...clientsData])
-    },[clientsData])
-
+        setVehicles([...vehiclesData])
+    },[vehiclesData])
 
     return (
         <>
@@ -29,7 +28,7 @@ export function ContainerForModalWithSearchClients({ onUserSelect, clientsData, 
                   <input
                       type="text"
                       className="form-control"
-                      placeholder="Digite o nome do cliente..."
+                      placeholder="Digite o nome, chassi ou placa..."
                       onChange={(e) => search(e.target.value)}
                   />
                   <span className="mdi mdi-magnify search-icon"></span>
@@ -37,30 +36,29 @@ export function ContainerForModalWithSearchClients({ onUserSelect, clientsData, 
           </div>
 
           <SimpleBar className="px-3" style={{ maxHeight: '350px', width: '100%' }}>
-              {clients.length > 0 && clients.map((client, index) => {
+              {vehicles.length > 0 && vehicles.map((vehicle, index) => {
                   return (
                       <Link
                           to="#"
                           key={index}
                           className="text-body"
                           onClick={(e) => {
-                              activateUser(client);
-                        
+                              activateUser(vehicle);
                           }}
                       >
                           <div
                               className={classnames('d-flex', 'align-items-start', 'mt-1', 'p-2', {
-                                  'bg-light': client.id === selectedClient?.id,
+                                  'bg-light': vehicle.id === selected?.id,
                               })}
                           >
                         
 
                               <div className="w-100 overflow-hidden p-1">
                                   <h5 className="mt-0 mb-0 font-14">
-                                      {client.name}
+                                      {vehicle.name}
                                   </h5>
                                   <p className="mt-1 mb-0 text-muted font-14">
-                                      <span className="w-75">Cpf: {client.document}</span>
+                                      <span className="w-75">Placa: {vehicle.plate} - Chassi: {vehicle.chasis}</span>
                                   </p>
                               </div>
                           </div>
