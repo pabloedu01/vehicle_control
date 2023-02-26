@@ -17,6 +17,7 @@ import { getAllOptions } from "../../utils/selectOptionsForm";
 import HyperDatepicker from "../../components/Datepicker"
 
 import {ModalVehicleToggle} from "./ModalVehicleToggle"
+import {ModalListCheckLists} from "./ModalListCheckLists"
 import {ModalTechnicalConsultantToggle} from "./ModalTechnicalConsultantToggle"
 
 import {formatDateTimezone} from "../../utils/formatDateTimezone"
@@ -42,6 +43,8 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
     const [checklistVersions, setChecklistVersions] = useState([]);
     const [serviceTypes, setServiceTypes] = useState([]);
     const [showModalSearchTechnicalConsultant, setShowModalSearchTechnicalConsultant] = useState(false);
+
+    const [showModalCheckList, setShowModalCheckList] = useState(false);
 
     const [isActiveSaveButton,setIsActiveSaveButton ] = useState(false)
     const [technicalConsultantSelectedSearch, setTechnicalConsultantSelectedSearch] = useState({
@@ -257,8 +260,9 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
 
     function onClickChecklist(e){
         e.preventDefault();
-
-        history(`/panel/company/${props.company?.id}/service-schedules/${id}/checklist`);
+        setShowModalCheckList(true)
+        console.log('open checklist')
+        // history(`/panel/company/${props.company?.id}/service-schedules/${id}/checklist`);
     }
 
     function onClickServiceType(id){
@@ -632,6 +636,12 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                 </Modal.Footer>
             </Modal>
             
+            <ModalListCheckLists 
+                showModalCheckList={showModalCheckList} 
+                setShowModalCheckList={setShowModalCheckList}
+                company_id={props.company?.id}
+                id={id}
+            />
             <ModalVehicleToggle 
                 showModalSearchVehicle={showModalSearchVehicle} 
                 setShowModalSearchVehicle={setShowModalSearchVehicle}

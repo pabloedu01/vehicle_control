@@ -1,28 +1,27 @@
 // @flow
 import React, {useEffect, useState} from 'react';
-import PageTitle from "../../components/PageTitle";
+import PageTitle from "../../../components/PageTitle";
 import {Button, Card, Col, Row, Modal} from "react-bootstrap";
-import {APICore} from "../../helpers/api/apiCore";
+import {APICore} from "../../../helpers/api/apiCore";
 import {useNavigate, useParams} from "react-router-dom";
 import MUIDataTable from "mui-datatables";
-import TABLE_OPTIONS from "../../constants/tableOptions";
-import Actions from "../../components/table/actions";
-import Table from '../../components/Table';
+import TABLE_OPTIONS from "../../../constants/tableOptions";
+import Actions from "../../../components/table/actions";
+import Table from '../../../components/Table';
 import swal from 'sweetalert';
-import {getAllOptions} from "../../utils/selectOptionsForm";
-import {FormInput} from "../../components";
+import {getAllOptions} from "../../../utils/selectOptionsForm";
+import {FormInput} from "../../../components";
 import {yupResolver} from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import {useForm} from "react-hook-form";
 import moment from "moment";
-import Print from "./Print";
+import Print from "../../checklist/Print";
 
 const api = new APICore();
 
 const List = (props: {company?: any}): React$Element<React$FragmentType> => {
     const history = useNavigate();
-    const { id, type } = useParams();
-    console.log(id, type);
+    const { id, type } = props;
     const [showModal, setShowModal] = useState(false);
     const [showModalGenerateToken, setShowModalGenerateToken] = useState(false);
     const [showModalPrint, setShowModalPrint] = useState(false);
@@ -283,6 +282,7 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
             const code = (e.target?.parentNode?.innerText).split('	')[0]
             const data = list.find(item => item.id === Number(code))
             setShowModalActions(true);
+            console.log(code)
             setIdForActions({
                 vehicleServiceId:code,
                 nextStage: data?.nextStage,
@@ -442,33 +442,11 @@ const List = (props: {company?: any}): React$Element<React$FragmentType> => {
                     </Modal.Footer>
                 </Modal>
 
-
-
-            <PageTitle
-                breadCrumbItems={[
-                    { label: 'Checklist', path: `/panel/company/${props.company?.id}/${type}/${id}/checklist` },
-                    { label: 'Lista', path: `/panel/company/${props.company?.id}/${type}/${id}/checklist`, active: true },
-                ]}
-                title={'Checklist'}
-                company={props.company}
-            />
-
             <Row>
                 <Col xs={12}>
                     <Card>
                         <Card.Body>
-                            <Row className="mb-2">
-                                <Col xl={8}>
-                                    <Row className="gy-2 gx-2 align-items-center justify-content-xl-start justify-content-between"/>
-                                </Col>
-                                <Col xl={4}>
-                                    <div className="text-xl-end mt-xl-0 mt-2">
-                                        <Button variant="danger" className="mb-2 me-2" onClick={onShowModal}>
-                                            <i className="mdi mdi-basket me-1" /> Novo Checklist 1
-                                        </Button>
-                                    </div>
-                                </Col>
-                            </Row>
+
                             <Row>
                                {/* <Col>
                                     <MUIDataTable data={list} columns={tableFields} options={tableOptions}/>

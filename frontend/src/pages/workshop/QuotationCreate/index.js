@@ -16,6 +16,7 @@ import {ModalClientVehicleSearch} from "../../../components/Vehicle/ModalClientV
 import {ModalTechnicalConsultantSearch} from "../../../components/TechnicalConsultant/ModalTechnicalConsultantSearch"
 import {ModalClientSearch} from "../../../components/Client/ModalClientSearch"
 import {ModalServicesSearch} from "../../../components/quotation/ModalServicesSearch"
+import {ModalKitsSearch} from "../../../components/quotation/ModalKitsSearch"
 import {ModalProductsSearch} from "../../../components/quotation/ModalProductsSearch"
 import {ClaimsSearch} from "./ClaimsSearch"
 import {formatMoneyPt_BR} from '../../../utils/formatMoneyPt_BR'
@@ -309,6 +310,8 @@ export default function QuotationCreate() {
 
     const [showModalServices, setShowModalServices] = useState(false)
    
+    const [showModalKits, setShowModalKits] = useState(false)
+   
     const [showModalProducts, setShowModalProducts] = useState(false)
     
     const {companyId, serviceScheduleId} = useParams()
@@ -559,7 +562,15 @@ export default function QuotationCreate() {
                                         <Col className="d-flex align-items-center justify-content-between">
                                             <h4 className="header-title">Items selecionado</h4>
                                             <div sm={4} className="d-flex align-content-center justify-content-end mb-2 mt-1 gap-1">
-                                                <Button type="button" className='btn-sm text-nowrap px-2' variant="primary">
+                                                <Button
+                                                    type="button"
+                                                    className='btn-sm text-nowrap px-2'
+                                                    variant="primary"
+                                                    onClick={() => {
+                                                        console.log(showModalKits)
+                                                        setShowModalKits(true)
+                                                    }}
+                                                >
                                                     <i className="mdi mdi-plus"></i><span className=''>Kits</span>
                                                 </Button>
                                                 <Button 
@@ -614,6 +625,12 @@ export default function QuotationCreate() {
             />
     
 
+            <ModalKitsSearch 
+                showModalKits={showModalKits}
+                setShowModalKits={setShowModalKits}
+                company_id={companyId} 
+                handleChangeKitsData={handleItemsSelectedData}
+            />
             <ModalServicesSearch 
                 showModalServices={showModalServices}
                 setShowModalServices={setShowModalServices}

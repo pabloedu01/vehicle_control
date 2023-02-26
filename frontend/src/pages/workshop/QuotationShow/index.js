@@ -11,6 +11,7 @@ import { formatDateTimePresentation } from '../../../utils/formatDateTimezone'
 import PageTitle from '../../../components/PageTitle';
 import {ModalClientVehicleSearch} from "../../../components/Vehicle/ModalClientVehicleSearch"
 import {ModalClientSearch} from "../../../components/Client/ModalClientSearch"
+import {ModalKitsSearch} from "../../../components/quotation/ModalKitsSearch"
 import {ModalServicesSearch} from "../../../components/quotation/ModalServicesSearch"
 import {ModalProductsSearch} from "../../../components/quotation/ModalProductsSearch"
 import {ClaimsSearch} from "./ClaimsSearch"
@@ -306,6 +307,8 @@ export default function QuotationShow() {
     const [showModalSearchClient, setShowModalSearchClient] = useState(false)
     const [showEditQuotationInfo, setShowEditQuotationInfo] = useState(false)
     const [clientData, setClientData] = useState(null)
+
+    const [showModalKits, setShowModalKits] = useState(false)
     
     const [showModalServices, setShowModalServices] = useState(false)
    
@@ -624,6 +627,12 @@ export default function QuotationShow() {
                 handleChangeClientVehicleData={handleChangeClientVehicleData}
             />
 
+            <ModalKitsSearch 
+                showModalServices={showModalKits}
+                setShowModalServices={setShowModalKits}
+                company_id={companyId} 
+                handleChangeServicesData={handleItemsSelectedData}
+            />
     
 
             <ModalServicesSearch 
