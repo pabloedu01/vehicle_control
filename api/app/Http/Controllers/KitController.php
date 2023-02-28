@@ -32,8 +32,6 @@ class KitController extends Controller
 
             $products = [];
             foreach (KitProducts::where('kit_id', $kit->id)->get() as $key1 => $row) {
-                // $products[$key]['id'] = $row->id;
-                // $products[$key]['product_id'] = $row->product_id;
                 $products[$key1]['quantity'] = $row->quantity;
                 $products[$key1]['product'] = Product::where('id', $row->product_id)->first();
             }
@@ -41,8 +39,6 @@ class KitController extends Controller
             $array[$key]['products'] = $products;
             $services = [];
             foreach (KitServices::where('kit_id', $kit->id)->get() as $key2 => $row2) {
-                // $services[$key2]['id'] = $row2->id;
-                // $services[$key2]['service_id'] = $row2->service_id;
                 $services[$key2]['quantity'] = $row2->quantity;
                 $services[$key2]['service'] = Service::where('id', $row2->service_id)->first();
             }

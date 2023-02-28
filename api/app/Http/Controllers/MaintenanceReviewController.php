@@ -46,25 +46,51 @@ class MaintenanceReviewController extends Controller
         }
 
         $model   = VehicleModel::find($request->model_id);
-        $maintenanceReview = new MaintenanceReview($request->merge([ 'company_id' => $model->company_id, 'brand_id' => $model->brand_id ])->only(MaintenanceReview::getFillables()));
+        // check if exist company_id model_id and name
 
-        if(secureSave($maintenanceReview))
-        {
-            return response()->json([
-                                        'msg'  => trans('general.msg.success'),
-                                        'data' => $maintenanceReview,
-                                    ],
-                                    Response::HTTP_CREATED
-            );
+
+        try {
+
+            $exist = MaintenanceReview::where('company_id', '=', $model->company_id)
+            ->where('model_id', '=', $request->model_id)
+            ->where('name', '=', $request->name)
+            ->first();
+
+            if($exist){
+                throw new \Exception('ja existe um modelo com mesmo nome empresa');
+            }
+
+            $maintenanceReview = new MaintenanceReview($request->merge([ 'company_id' => $model->company_id, 'brand_id' => $model->brand_id ])->only(MaintenanceReview::getFillables()));
+
+            if(secureSave($maintenanceReview))
+            {
+                return response()->json([
+                                            'msg'  => trans('general.msg.success'),
+                                            'data' => $maintenanceReview,
+                                        ],
+                                        Response::HTTP_CREATED
+                );
+            }
+            else
+            {
+                return response()->json([
+                                            'msg' => trans('general.msg.error'),
+                                        ],
+                                        Response::HTTP_INTERNAL_SERVER_ERROR
+                );
+            }
+
+        } catch (\Throwable $th) {
+
+           $msg = $th->getMessage();
+           return response()->json([
+            'msg' => trans('general.msg.error'),
+        ],
+        Response::HTTP_INTERNAL_SERVER_ERROR
+);
         }
-        else
-        {
-            return response()->json([
-                                        'msg' => trans('general.msg.error'),
-                                    ],
-                                    Response::HTTP_INTERNAL_SERVER_ERROR
-            );
-        }
+
+
     }
 
     public function update(Request $request, $id)

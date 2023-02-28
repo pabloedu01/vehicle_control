@@ -17,6 +17,7 @@ class MaintenanceReview extends Base
         return [
             'name'    =>  [
                 'required', 'string'
+
             ],
 
         ];
