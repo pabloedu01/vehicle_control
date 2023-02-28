@@ -4,12 +4,12 @@ import classnames from 'classnames';
 import SimpleBar from 'simplebar-react';
 import {formatMoneyPt_BR } from "../../../../utils/formatMoneyPt_BR"
 
-export function ContainerForKitsSearch({ KitsData, setSelectedChangeKitsData }) {
+export function ContainerForKitsSearch({ kitsData, setSelectedChangeKitsData }) {
     const [kits, setKits] = useState([]);
     const [selectedKit, setSelectedKit] = useState(null);
-
+    console.log(kitsData)
     function search (text) {
-        setKits(text ? [...KitsData].filter((u) => u.name.toLowerCase().indexOf(text.toLowerCase()) >= 0) : [...KitsData]);
+        setKits(text ? [...kitsData].filter((u) => u.name.toLowerCase().indexOf(text.toLowerCase()) >= 0) : [...kitsData]);
     };
 
     function activateUser(item) {
@@ -18,10 +18,10 @@ export function ContainerForKitsSearch({ KitsData, setSelectedChangeKitsData }) 
     };
 
     useEffect(() => {
-        if(KitsData) {
-            setKits([...KitsData])
+        if(kitsData) {
+            setKits([...kitsData])
         }
-    },[KitsData])
+    },[kitsData])
 
 
     return (
@@ -39,31 +39,34 @@ export function ContainerForKitsSearch({ KitsData, setSelectedChangeKitsData }) 
           </div>
 
           <SimpleBar className="px-3" style={{ maxHeight: '350px', width: '100%' }}>
-              {kits.length > 0 && kits.map((prod, index) => {
+              {kits.length > 0 && kits.map((kit, index) => {
                   return (
                       <Link
                           to="#"
                           key={index}
                           className="text-body"
                           onClick={(e) => {
-                              activateUser(prod);
+                              activateUser(kit);
                         
                           }}
                       >
                           <div
                               className={classnames('d-flex', 'align-items-start', 'mt-1', 'p-2', {
-                                  'bg-light': prod.id === selectedKit?.id,
+                                  'bg-light': kit.kit_id === selectedKit?.kit_id,
                               })}
                           >
                         
 
                               <div className="w-100 overflow-hidden p-1">
                                   <h5 className="mt-0 mb-0 font-14">
-                                      {prod.name}
+                                      {kit.name}
                                   </h5>
-                                  <p className="mt-1 mb-0 text-muted font-14">
-                                      <span className="w-75">valor:{ formatMoneyPt_BR(prod.sale_value ?? 0)}</span>
-                                  </p>
+                               {/*
+                                <p className="mt-1 mb-0 text-muted font-14">
+                                    <span className="w-75">valor:{ formatMoneyPt_BR(kit.sale_value ?? 0)}</span>
+                                </p>
+                                */}
+                                  
                               </div>
                           </div>
                       </Link>

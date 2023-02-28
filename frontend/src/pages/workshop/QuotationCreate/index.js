@@ -630,6 +630,8 @@ export default function QuotationCreate() {
                 setShowModalKits={setShowModalKits}
                 company_id={companyId} 
                 handleChangeKitsData={handleItemsSelectedData}
+                handleChangeProductsData={handleItemsSelectedData}
+                handleChangeServicesData={handleItemsSelectedData}
             />
             <ModalServicesSearch 
                 showModalServices={showModalServices}
