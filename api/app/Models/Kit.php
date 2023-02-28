@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Traits\DynamicFiltersTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
@@ -10,7 +9,6 @@ use Laravel\Scout\Searchable;
 class Kit extends Model
 {
     use Searchable;
-    use DynamicFiltersTrait;
 
     use HasFactory;
 
