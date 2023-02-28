@@ -1,9 +1,11 @@
 import {useEffect, useState} from 'react';
 import { Row, Col, Card, Table, Pagination, Button, Badge, Modal } from 'react-bootstrap';
-import {useNavigate, Link} from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import swal from "sweetalert";
 
 import { APICore } from "../../../helpers/api/apiCore";
 import {formatMoneyPt_BR} from '../../../utils/formatMoneyPt_BR'
+import { formatDateTimePresentation } from '../../../utils/formatDateTimezone'
 
 const api = new APICore()
 
@@ -17,11 +19,42 @@ export function ModalQuotationList({ openModalQuotationList, setOpenModalQuotati
   }
 
   useEffect(() => { 
-    if (openModalQuotationList) {
-        api.get(`/quotations?company_id=${company_id}&search=${plateVehicle}`).then(res => { console.log(res.data) })
-    
+      if (openModalQuotationList) {
+        console.log('entrou', openModalQuotationList)
+          api.get(`/quotations?company_id=${company_id}&search=${plateVehicle}`)
+            .then(res => {
+                console.log(res.data.data)
+                setData(res.data.data)
+            })
     }    
-  },[company_id,plateVehicle])
+  }, [openModalQuotationList])
+    
+     const onDelete = (registerId, newList) => {
+        swal({
+            title: 'Você tem certeza!',
+            text: 'Irá excluir este registro',
+            icon: 'warning',
+            buttons: {
+                cancel: 'Cancelar',
+                confirm: {
+                    text: 'Excluir',
+                    value: 'confirm'
+                }
+            },
+            dangerMode: true,
+        }).then((confirm) => {
+            if(confirm){
+                api.delete('/quotations/' + registerId).then((response) => {
+                    console.log(response)
+                    if(response.status === 201) {
+                        setData(prevState => prevState.filter(item => item.id!== registerId))
+                    }
+                }, () => {
+
+                });
+            }
+        });
+    };
   
   return (
       <Modal
@@ -40,9 +73,7 @@ export function ModalQuotationList({ openModalQuotationList, setOpenModalQuotati
                       <thead >
                           <tr>
                               <th>Numero</th>
-                              <th>Cliente</th>
-                              <th>Placa</th>
-                              <th>Chassi</th>
+                              <th>Data de criação</th>
                               <th>Responsável</th>
                               <th>Tipo Orçamento</th>
                               <th>Total Desconto</th>
@@ -59,20 +90,18 @@ export function ModalQuotationList({ openModalQuotationList, setOpenModalQuotati
                                   }}>
                                       
                                       <td>{record.id ?? ' - '}</td>
-                                      <td>{record.client?.name ?? ' - '}</td>
-                                      <td>{record.client_vehicle?.plate ?? '-'}</td>
-                                      <td>{record.client_vehicle?.chasis ?? '-'}</td>
-                                      <td>{record.technical_consultant?.name ?? '-'}</td>
-                                      <td>{record.os_type_id}</td>
+                                      <td>{formatDateTimePresentation(record.created_at) ?? ' - '}</td>
+                                      <td>{record.consultant_id ?? '-'}</td>
+                                      <td>{record.os_type_id ?? '-'}</td>
                                       <td>{formatMoneyPt_BR(record.TotalGeralDesconto) ?? '-'}</td>
                                       <td>{formatMoneyPt_BR(record.TotalGeral) ?? '-'}</td>
-                                      {/*
+                                   
                                         <td onClick={e => e.stopPropagation()}>  
                                             <Link to="#" className="action-icon" onClick={() => onDelete(record.id)}>
                                                 <i className="mdi mdi-delete"></i>
                                             </Link>
                                         </td>
-                                      */}
+                                    
                                   </tr>
                               );
                           })}
