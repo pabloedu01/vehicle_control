@@ -17,6 +17,7 @@ import { getAllOptions } from "../../utils/selectOptionsForm";
 import HyperDatepicker from "../../components/Datepicker"
 
 import {ModalVehicleToggle} from "./ModalVehicleToggle"
+import {ModalQuotationList} from "./ModalQuotationList"
 import {ModalListCheckLists} from "./ModalListCheckLists"
 import {ModalTechnicalConsultantToggle} from "./ModalTechnicalConsultantToggle"
 import {ModalSelectTypeMaintenanceReview} from "./ModalSelectTypeMaintenanceReview"
@@ -48,6 +49,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
     const [showModalCheckList, setShowModalCheckList] = useState(false);
 
     const [openModalSelectTypeMaintenanceReview, setOpenModalSelectTypeMaintenanceReview] = useState(false);
+    const [openModalQuotationList, setOpenModalQuotationList] = useState(false);
 
     const [isActiveSaveButton,setIsActiveSaveButton ] = useState(false)
     const [technicalConsultantSelectedSearch, setTechnicalConsultantSelectedSearch] = useState({
@@ -535,6 +537,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                                 type="button"
                                 style={{ width: '100%', minWidth: '62px', fontSize: '20px' }}
                                 onClick={() => {
+                                    setOpenModalQuotationList(true)
                                         }}
                             >
                                 Listar orçamentos
@@ -647,6 +650,13 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                 setShowModalCheckList={setShowModalCheckList}
                 company_id={props.company?.id}
                 id={id}
+            />
+            <ModalQuotationList 
+                openModalQuotationList={openModalQuotationList}
+                setOpenModalQuotationList={setOpenModalQuotationList}
+                plateVehicle={data?.clientVehicle.plate}
+                company_id={props.company?.id}
+    
             />
             <ModalVehicleToggle 
                 showModalSearchVehicle={showModalSearchVehicle} 

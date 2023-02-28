@@ -8,7 +8,7 @@ import InputMaskNumber from "../../InputMaskNumber";
 
 const api = new APICore();
 
-export function ModalKitsSearch({showModalKits, setShowModalKits, company_id, handleChangeProductsData, handleChangeServicesData}) {
+export function ModalKitsSearch({showModalKits, setShowModalKits, company_id, handleChangeKitsData}) {
   const [data, setData] = useState();
   const [isOpenKitValues, setIsOpenKitValues] = useState(false);
   const [kitSelected, setKitSelected] = useState(null);
@@ -40,26 +40,29 @@ export function ModalKitsSearch({showModalKits, setShowModalKits, company_id, ha
   }
   
   async function addSelectedKit() {
-    // await handleChangeKitsData({
-      //   service_id: null,
-      //   products_id: productSelected.id,
-      //   name: productSelected.name,
-      //   price: `${productValue ?? "0"}`,
-      //   quantity: `${quantityValue ?? "0"}`,
-      //   price_discount: `${discountValue ?? "0"}`
-      // })
+     const productsFormatted = kitSelected.products.map(product => ({
+          service_id: null,
+          products_id: product.product.id,
+          name: product.product.name,
+          price: `${product.product.sale_value ?? "0"}`,
+          quantity: `${product.quantity ?? "0"}`,
+          price_discount: `${"0"}`
+      }))
+      
+      const servicesFormatted = kitSelected.services.map(service => ({
+            name: service.service.description,
+            service_id: service.service.id,
+            products_id: null,
+            price: `${service.service.standard_value ?? "0"}`,
+            quantity: `${service.quantity ?? "0"}`,
+            price_discount: `${"0"}`
+          
+        }))
     
     
-      if(kitSelected.products.length > 0) {
-        kitSelected.products.map(product => {
-          handleChangeProductsData(product)
-        })
-      }
-      if(kitSelected.services.length > 0) {
-        kitSelected.services.map(service => {
-          handleChangeServicesData(service)
-        })
-      }
+      console.log(servicesFormatted)
+      await handleChangeKitsData([...productsFormatted,...servicesFormatted])
+
 
       onHideShowModalKitValues()
       setKitSelected(null)

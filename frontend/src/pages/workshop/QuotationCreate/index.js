@@ -434,6 +434,13 @@ export default function QuotationCreate() {
             isSaveActive()
         }
     }
+    function handleKitItemsSelectedData(data) {
+        console.log(data)
+        setItemsSelectedData(prevState => [...prevState, ...data])
+        if(!isActiveSaveButton) {
+            isSaveActive()
+        }
+    }
 
     function onDeleteItemsSelectedData(id) {
        const itemsSelectedDataDeletedFiltered = itemsSelectedData.filter(item => (item.products_id !== id && item.service_id === null) || (item.service_id !== id && item.products_id === null))
@@ -629,9 +636,7 @@ export default function QuotationCreate() {
                 showModalKits={showModalKits}
                 setShowModalKits={setShowModalKits}
                 company_id={companyId} 
-                handleChangeKitsData={handleItemsSelectedData}
-                handleChangeProductsData={handleItemsSelectedData}
-                handleChangeServicesData={handleItemsSelectedData}
+                handleChangeKitsData={handleKitItemsSelectedData}
             />
             <ModalServicesSearch 
                 showModalServices={showModalServices}
