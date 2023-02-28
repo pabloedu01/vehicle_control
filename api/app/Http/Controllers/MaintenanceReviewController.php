@@ -47,8 +47,6 @@ class MaintenanceReviewController extends Controller
 
         $model   = VehicleModel::find($request->model_id);
         // check if exist company_id model_id and name
-
-
         try {
 
             $exist = MaintenanceReview::where('company_id', '=', $model->company_id)
@@ -83,11 +81,11 @@ class MaintenanceReviewController extends Controller
         } catch (\Throwable $th) {
 
            $msg = $th->getMessage();
-           return response()->json([
-            'msg' => trans('general.msg.error'),
-        ],
-        Response::HTTP_INTERNAL_SERVER_ERROR
-);
+            return response()->json([
+                'msg' => trans('general.msg.error'),
+            ],
+            Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
 
 
