@@ -125,7 +125,7 @@ class KitController extends Controller
             foreach ($kits[0]['products'] as $key => $product) {
                 $kits[0]['products'][$key]['product_info'] = Product::where('id', $product->product_id)->first();
             }
-            foreach ($kits[0]['products'] as $key => $product) {
+            foreach ($kits[0]['services'] as $key => $product) {
                 $kits[0]['services'][$key]['service_info'] = Service::where('id', $product->product_id)->first();
             }
             DB::commit();
