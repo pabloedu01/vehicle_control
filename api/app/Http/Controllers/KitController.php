@@ -190,7 +190,7 @@ class KitController extends Controller
 
         if ($request->products != [] or $request->products != null) {
             foreach ($request->products as $product) {
-                $KitProduct = KitProducts::where('kit_id', $request['kit_id'])->where('service_id', $product['product_id'])->first();
+                $KitProduct = KitProducts::where('kit_id', $request['kit_id'])->where('product_id', $product['product_id'])->first();
                 if ($KitProduct == null) {
                     $KitProduct = new KitProducts();
                     $KitProduct->kit_id = $kit->id;
