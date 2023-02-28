@@ -98,7 +98,7 @@ class RecommendationController extends Controller
         }
 
 
-        $show = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'claimService',  'services' , 'brand','model'])
+        $show = Recommendation::with(['vehicle', 'vehicle.model',  'maintenanceReview', 'claimService',  'services' , 'brand','model'])
                           ->where('id', '=', $recomendation->id)
                           ->first();
 
