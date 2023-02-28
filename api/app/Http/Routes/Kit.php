@@ -21,7 +21,7 @@ Route::group([
                             'uses' => 'KitController@store',
                         ]);
                   });
-                    Route::get('/show/{id}', [
+                    Route::get('/{id}', [
                         'uses' => 'KitController@show',
                     ]);
                     Route::delete('/{id}', [
