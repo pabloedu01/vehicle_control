@@ -218,29 +218,24 @@ class RecommendationController extends Controller
 
     public function destroy(Request $request, $id)
     {
-        $recommendation = Recommendation::where('id', '=', $id)->first();
+        try {
+            $recommendation = Recommendation::where('id', '=', $id)->first();
+            if($recommendation){
+                    RecommendationServices::where('recommendation_id', '=', $id)->delete();
+                    RecommendationProducts::where('recommendation_id', '=', $id)->delete();
+                    RecommendationClaimService::where('recommendation_id', '=', $id)->delete();
 
-        if(!$recommendation->canBeDeleted())
-        {
-            return response()->json([
-                                        'msg' => trans('general.msg.hasDependencies'),
-                                    ],
-                                    Response::HTTP_BAD_REQUEST
-            );
-        }
+                    $recommendation->delete();
 
-        if($recommendation->secureDelete())
-        {
+            }
             return response()->json([
                                         'msg' => trans('general.msg.success'),
                                     ], Response::HTTP_OK
             );
-        }
-        else
-        {
+        } catch (\Exception $e) {
             return response()->json([
                                         'msg' => trans('general.msg.error'),
-                                    ], Response::HTTP_INTERNAL_SERVER_ERROR
+                                    ], Response::HTTP_BAD_REQUEST
             );
         }
     }
