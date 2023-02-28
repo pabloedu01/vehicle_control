@@ -22,7 +22,7 @@ Route::group([
                         ]);
                   });
                     Route::get('/show/{id}', [
-                        'uses' => 'KitController@index',
+                        'uses' => 'KitController@show',
                     ]);
                     Route::delete('/{id}', [
                         'uses' => 'KitController@destroy',
