@@ -435,7 +435,6 @@ export default function QuotationCreate() {
         }
     }
     function handleKitItemsSelectedData(data) {
-        console.log(data)
         setItemsSelectedData(prevState => [...prevState, ...data])
         if(!isActiveSaveButton) {
             isSaveActive()
@@ -574,7 +573,7 @@ export default function QuotationCreate() {
                                                     className='btn-sm text-nowrap px-2'
                                                     variant="primary"
                                                     onClick={() => {
-                                                        console.log(showModalKits)
+                                                     
                                                         setShowModalKits(true)
                                                     }}
                                                 >

@@ -450,6 +450,14 @@ export default function QuotationShow() {
         setShowEditQuotationInfo(true)
     }
 
+    function handleKitItemsSelectedData(data) {
+        console.log(data)
+        setItemsSelectedData(prevState => [...prevState, ...data])
+        if(!isActiveSaveButton) {
+            isSaveActive()
+        }
+    }
+
     return (
         <>
             <PageTitle
@@ -580,8 +588,16 @@ export default function QuotationShow() {
                                         <Col className="d-flex align-items-center justify-content-between">
                                             <h4 className="header-title">Items selecionado</h4>
                                             <div sm={4} className="d-flex align-content-center justify-content-end mb-2 mt-1 gap-1">
-                                                <Button type="button" className='btn-sm text-nowrap px-2' variant="primary">
-                                                    <i className="mdi mdi-plus"></i><span className=''>Pacotes</span>
+                                                <Button
+                                                    type="button"
+                                                    className='btn-sm text-nowrap px-2'
+                                                    variant="primary"
+                                                    onClick={() => {
+                                                        console.log(showModalKits)
+                                                        setShowModalKits(true)
+                                                    }}
+                                                >
+                                                    <i className="mdi mdi-plus"></i><span className=''>Kits</span>
                                                 </Button>
                                                 <Button 
                                                     type="button" 
@@ -627,11 +643,11 @@ export default function QuotationShow() {
                 handleChangeClientVehicleData={handleChangeClientVehicleData}
             />
 
-            <ModalKitsSearch 
-                showModalServices={showModalKits}
-                setShowModalServices={setShowModalKits}
+           <ModalKitsSearch 
+                showModalKits={showModalKits}
+                setShowModalKits={setShowModalKits}
                 company_id={companyId} 
-                handleChangeServicesData={handleItemsSelectedData}
+                handleChangeKitsData={handleKitItemsSelectedData}
             />
     
 
