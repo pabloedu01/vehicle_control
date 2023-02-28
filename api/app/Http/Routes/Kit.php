@@ -20,10 +20,11 @@ Route::group([
                         Route::post('/', [
                             'uses' => 'KitController@store',
                         ]);
+                        Route::get('/{id}', [
+                            'uses' => 'KitController@show',
+                        ]);
                   });
-                    Route::get('/{id}', [
-                        'uses' => 'KitController@show',
-                    ]);
+
                     Route::delete('/{id}', [
                         'uses' => 'KitController@destroy',
                     ]);

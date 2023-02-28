@@ -146,10 +146,12 @@ class KitController extends Controller
 
 
     }
-    public function show($id)
+    public function show($id,Request $request)
     {
 
-        $kits = Kit::where('id', $id)->get();
+        $kits = Kit::where('id', $id)->where('company_id',$request['company_id'])->get();
+        /// validate if kit of company
+
         $array = [];
         foreach ($kits as $key => $kit) {
 
