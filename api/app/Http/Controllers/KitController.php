@@ -77,10 +77,10 @@ class KitController extends Controller
             if ($request->products != [] or $request->products != null) {
                 foreach ($request->products as $product) {
                     // check product
-                    $product = Product::where('id', $product['product_id'])
+                    $productcheck = Product::where('id', $product['product_id'])
                                         ->where('company_id',$request->company_id)
                                         ->first();
-                    if(!$product){
+                    if(!$productcheck){
                         // trow execption
                         throw new \Exception("Product not found in this Company");
 
@@ -99,10 +99,10 @@ class KitController extends Controller
 
                 foreach ($request->services as $service) {
                     // check service
-                    $service = Service::where('id', $service['service_id'])
+                    $servicecheck = Service::where('id', $service['service_id'])
                                         ->where('company_id',$request->company_id)
                                         ->first();
-                    if(!$service){
+                    if(!$servicecheck){
                         // trow execption
                         throw new \Exception("Service not found in this Company");
 
