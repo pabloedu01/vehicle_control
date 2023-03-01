@@ -7,7 +7,9 @@ import {useNavigate, useParams} from "react-router-dom";
 import {yupResolver} from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import {useForm} from "react-hook-form";
-import {FormInput} from "../../components";
+import { FormInput } from "../../components";
+import { InputPrice } from "../../components/InputPrice";
+ 
 
 const api = new APICore();
 
@@ -23,8 +25,8 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         yup.object().shape({
             name: yup.string().nullable().required('Por favor, digite Nome do Produto'),
             product_code: yup.string().nullable().required('Por favor, digite Código do Produto'),
-            sale_value: yup.number().nullable().required('Por favor, digite Valor de Venda'),
-            guarantee_value: yup.number().nullable().required('Por favor, digite Valor da Garantia'),
+            sale_value: yup.object().nullable().required('Por favor, digite Valor de Venda'),
+            guarantee_value: yup.object().nullable().required('Por favor, digite Valor da Garantia'),
             unique_code: yup.string().nullable().nullable(),
             active: yup.boolean(),
         })
@@ -46,8 +48,14 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
       register,errors,control
     };
 
-    const onSubmit = (formData) => {
+    const onSubmit = (data) => {
         let ajaxCall;
+        const formData = {
+            ...data,
+            guarantee_value: data.guarantee_value.floatValue,
+            sale_value: data.sale_value.floatValue,
+        }
+       
 
         if(id){
             ajaxCall = api.update('/product/' + id,formData);
@@ -72,8 +80,8 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
         const defaultData = {
             name: null,
             product_code: null,
-            sale_value: null,
-            guarantee_value: null,
+            sale_value:  {},
+            guarantee_value:  {},
             unique_code: null,
             active: true,
         };
@@ -100,8 +108,14 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
     useEffect(() => {
         methods.setValue('name', data?.name ?? null);
         methods.setValue('product_code', data?.product_code ?? null);
-        methods.setValue('sale_value', data?.sale_value ?? null);
-        methods.setValue('guarantee_value', data?.guarantee_value ?? null);
+        methods.setValue('sale_value', data?.sale_value ? {
+            "formattedValue":  `${data?.sale_value}`,
+            "value": `${data?.sale_value}`,
+        } : null);
+        methods.setValue('guarantee_value', data?.guarantee_value ? {
+            "formattedValue":  `${data?.guarantee_value}`,
+            "value": `${data?.guarantee_value}`,
+        } :  null);
         methods.setValue('unique_code', data?.unique_code ?? null);
         methods.setValue('active', data?.active ?? true);
     }, [data]);
@@ -141,28 +155,48 @@ const Form = (props: {company?: any}): React$Element<React$FragmentType> => {
                                             {...otherProps}
                                         />
 
-                                        <FormInput
-                                            label="Valor de Venda"
-                                            type="text"
-                                            name="sale_value"
-                                            placeholder="Digite Valor de Venda"
-                                            containerClass={'mb-3'}
-                                            {...otherProps}
-                                        />
+                                        {/*
+                                            <FormInput
+                                                label="Valor de Venda do produto"
+                                                type="text"
+                                                name="sale_value"
+                                                placeholder="Digite Valor de Venda"
+                                                containerClass={'mb-3'}
+                                                {...otherProps}
+                                            />
+                                        */}
+                                            <InputPrice
+                                                label="Valor de Venda do produto"
+                                                name="sale_value"
+                                                placeholder="Digite Valor de Venda"
+                                                control={control}
+                                                errors={errors}
+                                                containerClass={'mb-3'}
+                                            />
+                                    
 
                                     </Col>
 
                                     <Col md={6}>
-
-                                        <FormInput
+                                        {/*
+                                            <FormInput
+                                                label="Valor da Garantia"
+                                                type="text"
+                                                name="guarantee_value"
+                                                placeholder="Digite Valor da Garantia"
+                                                containerClass={'mb-3'}
+                                                {...otherProps}
+                                            />
+                                          */}
+                                        <InputPrice
                                             label="Valor da Garantia"
-                                            type="text"
                                             name="guarantee_value"
                                             placeholder="Digite Valor da Garantia"
+                                            control={control}
+                                            errors={errors}
                                             containerClass={'mb-3'}
-                                            {...otherProps}
                                         />
-
+                                        
                                         <FormInput
                                             label="Código Único"
                                             type="text"
