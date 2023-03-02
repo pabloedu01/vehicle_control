@@ -16,7 +16,18 @@ class RecommendationServices extends Model
         'quantity',
     ];
 
+    // quando criar verifique se ja existe um registro com o mesmo produto e recomendação
+    public static function rules($id = null, $company_id = null)
+    {
+        return [
+            'recommendation_id' => 'required|exists:recommendations,id',
+            'service_id' => 'required|exists:services,id',
+            'quantity' => 'required|integer',
+        ];
+    }
 
+
+    
 
     #belongs to
     public function recommendation()

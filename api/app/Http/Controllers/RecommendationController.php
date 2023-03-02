@@ -8,6 +8,7 @@ use App\Models\RecommendationProducts;
 use App\Models\RecommendationServices;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\DB;
 
 class RecommendationController extends Controller
 {
@@ -58,8 +59,10 @@ class RecommendationController extends Controller
                                     Response::HTTP_BAD_REQUEST
             );
         }
+        DB::beginTransaction();
 
-        $recomendation = new Recommendation();
+        try {
+       $recomendation = new Recommendation();
         $recomendation->company_id = $request['company_id'];
         $recomendation->name = $request['name'];
         $recomendation->brand_id = $request['brand_id'] ?? null;
@@ -71,15 +74,35 @@ class RecommendationController extends Controller
 
         if($request['services'] != null or $request['services'] != []) {
             foreach ($request['services'] as $service) {
+                // Verifica se ja existe serviços iguais nesta recomendação
+                $checkexist = RecommendationServices::where('recommendation_id', $recomendation->id)
+                ->where('service_id', $service['service_id'])
+                ->first();
+                if($checkexist){
+                    // trow new exception
+                    throw new \Exception("Service has been added in this recomendations");
+                }else {
                 $recomendationService = new RecommendationServices();
                 $recomendationService->recommendation_id = $recomendation->id;
                 $recomendationService->service_id = $service['service_id'];
                 $recomendationService->quantity = $service['quantity'];
                 $recomendationService->save();
+                }
+
             }
         }
         if($request['products'] != null or $request['products'] != []) {
             foreach ($request['products'] as $product) {
+                // Verifica se ja existe Produtos iguais nesta recomendação
+                $checkexists = RecommendationProducts::where('recommendation_id', $recomendation->id)
+                ->where('product_id', $product['product_id'])
+                ->first();
+                if($checkexists){
+                    // trow new exception
+                    throw new \Exception("Product not found in this Company");
+                }
+
+
                 $recomendationProduct = new RecommendationProducts();
                 $recomendationProduct->recommendation_id = $recomendation->id;
                 $recomendationProduct->product_id = $product['product_id'];
@@ -96,16 +119,32 @@ class RecommendationController extends Controller
             }
         }
 
+        DB::commit();
+
+
 
         $show = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'claimService', 'products','products.product','services','services.service','model'])
         ->where('id', '=', $recomendation->id)
         ->first();
+
+
        return response()->json([
                                         'msg'  => trans('general.msg.success'),
                                         'data' => $show,
                                     ],
                                     Response::HTTP_CREATED
             );
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response()->json([
+                'msg'    => trans('general.msg.invalidData'),
+                'errors' => $th->getMessage(),
+            ],
+            Response::HTTP_BAD_REQUEST
+);
+        }
+
+
 
     }
 
