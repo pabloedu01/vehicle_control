@@ -164,11 +164,11 @@ class RecommendationController extends Controller
         $recommendation->save();
 
         try {
+            RecommendationServices::where('recommendation_id', $id)->delete();
 
         if($request['services'] != null or $request['services'] != []) {
 
         /// delete services
-        RecommendationServices::where('recommendation_id', $id)->delete();
 
             foreach ($request['services'] as $service) {
                 $checkexist = RecommendationServices::where('recommendation_id', $id)
@@ -187,9 +187,11 @@ class RecommendationController extends Controller
 
 
         }
+
+        RecommendationProducts::where('recommendation_id', $id)->delete();
+
         if($request['products'] != null or $request['products'] != []) {
             // delete products
-            RecommendationProducts::where('recommendation_id', $id)->delete();
 
             foreach ($request['products'] as $product) {
                     $checkexists = RecommendationProducts::where('recommendation_id', $id)
@@ -232,6 +234,8 @@ class RecommendationController extends Controller
                     }
                 }
          }
+        DB::commit();
+         
         }} catch (\Throwable $th) {
             DB::rollBack();
             return response()->json([
@@ -242,7 +246,6 @@ class RecommendationController extends Controller
             );
          }
 
-        DB::commit();
         $show = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'claimService',  'products','products.product','services','services.service','model'])
         ->where('id', '=', $id)
         ->first();
