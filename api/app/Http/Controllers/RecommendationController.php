@@ -14,27 +14,27 @@ class RecommendationController extends Controller
     public function index(Request $request)
     {
         if($request['model_id']){
-            $recommendations = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'claimService','brand','model'])
+            $recommendations = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'claimService','model'])
                            ->where('company_id', '=', $request['company_id'])
                            ->where('model_id', '=', $request['model_id'])
                            ->get();
         }else {
-            $recommendations = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'claimService','brand','model'])
+            $recommendations = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'claimService','model'])
                            ->where('company_id', '=', $request['company_id'])
                            ->get();
         }
 
 
-        $recommendations->each(function($recommendation){
-            $recommendation->vehicle->append('full_name');
-        });
+        // $recommendations->each(function($recommendation){
+        //     $recommendation->vehicle->append('full_name');
+        // });
 
         return response()->json([ 'msg' => trans('general.msg.success'), 'data' => $recommendations, ], Response::HTTP_OK);
     }
 
     public function show(Request $request, $id)
     {
-        $recommendation = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'claimService',  'services' ,'brand','model'])
+        $recommendation = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'claimService',  'services' ,'model'])
                           ->where('id', '=', $id)
                           ->first();
 

@@ -75,11 +75,11 @@ class Recommendation extends Base
      #belongs to
      public function model()
      {
-         return $this->belongsTo('App\Models\Models', 'model_id', 'id')->withTrashed();
+         return $this->belongsTo('App\Models\VehicleModel', 'model_id', 'id')->withTrashed();
      }
      public function brand()
      {
-         return $this->belongsTo('App\Models\Brand', 'brand_id', 'id')->withTrashed();
+         return $this->belongsTo('App\Models\VehicleBrand', 'brand_id', 'id')->withTrashed();
      }
     #belongs to
     public function maintenanceReview()
