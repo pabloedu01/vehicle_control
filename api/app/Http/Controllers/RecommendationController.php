@@ -234,9 +234,9 @@ class RecommendationController extends Controller
                     }
                 }
          }
+        }
         DB::commit();
-         
-        }} catch (\Throwable $th) {
+    } catch (\Throwable $th) {
             DB::rollBack();
             return response()->json([
                 'msg'    => trans('general.msg.invalidData'),
