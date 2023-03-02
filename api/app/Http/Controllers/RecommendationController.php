@@ -24,7 +24,6 @@ class RecommendationController extends Controller
                            ->get();
         }
 
-
         // $recommendations->each(function($recommendation){
         //     $recommendation->vehicle->append('full_name');
         // });
@@ -34,7 +33,7 @@ class RecommendationController extends Controller
 
     public function show(Request $request, $id)
     {
-        $recommendation = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'claimService',  'services' ,'model'])
+        $recommendation = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'claimService',  'services' ,'products' ,'model'])
                           ->where('id', '=', $id)
                           ->first();
 
@@ -98,8 +97,9 @@ class RecommendationController extends Controller
         }
 
 
-        $show = Recommendation::where('id', '=', $recomendation->id)->first();
-
+        $show = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'claimService',  'services' ,'products' ,'model'])
+        ->where('id', '=', $recomendation->id)
+        ->first();
        return response()->json([
                                         'msg'  => trans('general.msg.success'),
                                         'data' => $show,
@@ -202,9 +202,9 @@ class RecommendationController extends Controller
         }
 
 
-        $show = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'claimService',  'services' , 'brand','model'])
-                          ->where('id', '=', $request['recommendation_id'])
-                          ->first();
+        $show = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'claimService',  'services' ,'products' ,'model'])
+        ->where('id', '=', $request['recommendation_id'])
+        ->first();
 
 
         return response()->json([
