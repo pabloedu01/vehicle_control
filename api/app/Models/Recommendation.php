@@ -98,19 +98,15 @@ class Recommendation extends Base
     {
         return $this->belongsTo('App\Models\OsType', 'os_type_id', 'id')->withTrashed();
     }
-
-    #many to many
-    public function services()
-    {
-        return $this->belongsToMany('App\Models\Service', 'recommendation_service', 'recommendation_id', 'service_id')
-                    ->withPivot([ 'value' ])
-                    ->withTimestamps();
-    }
+    #has many products
     public function products()
     {
-        return $this->belongsToMany('App\Models\Product', 'recommendation_product', 'recommendation_id', 'product_id')
-                    ->withPivot([ 'value' ])
-                    ->withTimestamps();
+        return $this->hasMany('App\Models\RecommendationProducts', 'recommendation_id', 'id');
+    }
+    #has many services
+    public function services()
+    {
+        return $this->hasMany('App\Models\RecommendationServices', 'recommendation_id', 'id');
     }
 
 }
