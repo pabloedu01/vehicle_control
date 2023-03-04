@@ -119,7 +119,8 @@ const QuotationsList = React.lazy(() => import('../pages/workshop/QuotationsList
 const QuotationCreate = React.lazy(() => import('../pages/workshop/QuotationCreate'));
 // const QuotationCreateServiceSchedule = React.lazy(() => import('../pages/workshop/QuotationCreate'));
 const QuotationShow = React.lazy(() => import('../pages/workshop/QuotationShow'));
-const SelectionPackage = React.lazy(() => import('../pages/workshop/SelectionPackage'));
+const RecommendationConfirmation = React.lazy(() => import('../pages/workshop/RecommendationConfirmation'));
+// const SelectionPackage = React.lazy(() => import('../pages/workshop/SelectionPackage'));
 const EstimateConfirmation = React.lazy(() => import('../pages/workshop/EstimateConfirmation'));
 
 // Users Manager
@@ -639,8 +640,8 @@ const AllRoutes = () => {
                                     element: <LoadComponent component={QuotationCreate} />,
                                 },
                                 {
-                                    path: 'selection-package',
-                                    element: <LoadComponent component={SelectionPackage} />,
+                                    path: 'maintenance-review/:maintenanceReviewId/:modelVehicleId',
+                                    element: <LoadComponent component={RecommendationConfirmation} />,
                                 },
                                 {
                                     path: 'confirmation',

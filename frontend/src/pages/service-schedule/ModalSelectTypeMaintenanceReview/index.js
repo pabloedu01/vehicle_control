@@ -12,7 +12,8 @@ export function ModalSelectTypeMaintenanceReview({
     openModalSelectTypeMaintenanceReview,
     setOpenModalSelectTypeMaintenanceReview,
     company_id,
-    id
+    modelVehicleId,
+    serviceScheduleId
 }) {
 
 
@@ -26,7 +27,7 @@ export function ModalSelectTypeMaintenanceReview({
 
     useEffect(() => {
         if (openModalSelectTypeMaintenanceReview) {
-            api.get(`/maintenance-review?company_id=2&model_id=1`).then(response => { setMaintenanceReviewButtons(response.data.data) })
+            api.get(`/maintenance-review?company_id=${company_id}&model_id=${modelVehicleId}`).then(response => { setMaintenanceReviewButtons(response.data.data) })
         }
     },[openModalSelectTypeMaintenanceReview])
 
@@ -41,8 +42,8 @@ export function ModalSelectTypeMaintenanceReview({
                     <Button 
                         variant="Primary"                             
                         className="btn btn-primary w-100 mb-2"
-                        onClick={() => { history(`/panel/company/${maintenanceReview.company_id}/workshop/quotation/create/${id}`) }}
-                        disabled
+                        // onClick={() => { history(`/panel/company/${maintenanceReview.company_id}/workshop/quotation/create/${id}`) }}
+                        onClick={() => { history(`/panel/company/${maintenanceReview.company_id}/workshop/quotation/maintenance-review/${maintenanceReview.id}/${modelVehicleId}`) }}
                         key={maintenanceReview.name + maintenanceReview.id + index}
                     >
                         {maintenanceReview.name}
@@ -51,7 +52,7 @@ export function ModalSelectTypeMaintenanceReview({
                     <Button 
                         variant="Primary"                             
                         className="btn btn-primary w-100 mb-2"
-                        onClick={() => { history(`/panel/company/2/workshop/quotation/create/${id}`) }}>
+                        onClick={() => { history(`/panel/company/${company_id}/workshop/quotation/create/${serviceScheduleId}`) }}>
                         Outros Serviços
                     </Button>
                 </Modal.Body>

@@ -330,7 +330,7 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         setIsActiveSaveButton(true)
         setShowModalSearchTechnicalConsultant(false)
     }
-
+    console.log(data?.clientVehicle.vehicle.model)
     return (
         <>
             <PageTitle
@@ -670,14 +670,17 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
                 showModalSearchTechnicalConsultant={showModalSearchTechnicalConsultant}
                 handleChangeTechnicalConsultantData={handleChangeTechnicalConsultantData}
             />
+
             <ModalSelectTypeMaintenanceReview 
                 company_id={props.company?.id}
-                id={id}
+                serviceScheduleId={id}
+                modelVehicleId={data?.clientVehicle.vehicle.model.id}
                 openModalSelectTypeMaintenanceReview={openModalSelectTypeMaintenanceReview}
                 setOpenModalSelectTypeMaintenanceReview={setOpenModalSelectTypeMaintenanceReview}
             />
         </>
     );
+
 };
 
 export default FormEdit;

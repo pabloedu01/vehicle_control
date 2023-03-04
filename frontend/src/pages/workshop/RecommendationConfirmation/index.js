@@ -1,9 +1,11 @@
 
-import { useState } from 'react';
-import {useNavigate} from "react-router-dom";
+import { useState, useEffect } from 'react';
+import {useNavigate, useParams} from "react-router-dom";
 import { Row, Col, Card, Table, Button } from 'react-bootstrap';
 import PageTitle from '../../../components/PageTitle';
 import { formatMoneyPt_BR } from '../../../utils/formatMoneyPt_BR'
+
+import { APICore } from "../../../helpers/api/apiCore";
 
 const data = [
   {
@@ -64,15 +66,28 @@ const data = [
   },
 ]
 
-export default function SelectionPackage () {
+
+
+
+const api = new APICore();
+
+export default function RecommendationConfirmation () {
   const [packageSelected, setPackageSelected] = useState(null)
   const history = useNavigate();
+
+  const { companyId, modelVehicleId,maintenanceReviewId } = useParams()
+  console.log(companyId, modelVehicleId, maintenanceReviewId)
+
 
   function handlePackages(pack) {
     setPackageSelected(prevState => 
       prevState === pack ? null : pack
     )
   }
+
+  useEffect(() => {
+        api.get(`/recommendation?company_id=${companyId}&model_id=${modelVehicleId}&maintenance_review_id=${maintenanceReviewId}`).then(response => { console.log(response.data.data) })
+  },[companyId, modelVehicleId, maintenanceReviewId])
 
   return (
     <>
