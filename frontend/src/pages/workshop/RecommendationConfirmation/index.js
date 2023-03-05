@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import {useNavigate, useParams} from "react-router-dom";
 import { Row, Col, Card, Table, Button } from 'react-bootstrap';
@@ -7,7 +6,7 @@ import { formatMoneyPt_BR } from '../../../utils/formatMoneyPt_BR'
 
 import { APICore } from "../../../helpers/api/apiCore";
 
-const data = [
+const dataFacker = [
   {
     product: '4ª Revisão',
     quantidade: 1,
@@ -66,17 +65,82 @@ const data = [
   },
 ]
 
-
-
-
 const api = new APICore();
 
 export default function RecommendationConfirmation () {
   const [packageSelected, setPackageSelected] = useState(null)
+  const [data, setData] = useState([]);
+  // const [itemsList, setItemsList] = useState([])
+
+
+
   const history = useNavigate();
 
   const { companyId, modelVehicleId,maintenanceReviewId } = useParams()
-  console.log(companyId, modelVehicleId, maintenanceReviewId)
+
+  function createOrderPreview(recommendations = []) {
+    const itemsList = {
+      products: [],
+      services: [],
+    } 
+    const packagesListNameOrder = recommendations.map(item => {
+      let amountItems = 0
+      item.products.forEach(product => {
+        if (!itemsList.products.some(pro => pro.id === product.id)) {
+          itemsList.products.push({id: product.id, name: product?.product.name, repeatInPackages: 1 ,  fullDetails: product})
+        } else {
+          const productFind = itemsList.products.find(p => p.id === product.id);
+          productFind.repeatInPackages++
+        }
+        amountItems++
+      });
+      item.services.forEach(service => {
+        if (!itemsList.services.some(serv => serv.id === service.id)) {
+          itemsList.services.push({id: service.id, name: service?.service?.description ,repeatInPackages: 1, fullDetails: service})
+        } else {
+          const serviceFind = itemsList.services.find(s => s.id === service.id);
+          serviceFind.repeatInPackages++
+        }
+        amountItems++
+      });
+      return {
+        name: item.name,
+        amountItems 
+      }
+    })
+
+    return {
+      packagesListNameOrder: packagesListNameOrder.sort(function (a, b) {
+        if (a.amountItems < b.amountItems) {
+          return 1;
+        }
+        if (a.amountItems > b.amountItems) {
+          return -1;
+        }
+        return 0;
+      }),
+      itemsList : {
+        products: itemsList.products.sort(function (a, b) {
+          if (a.repeatInPackages < b.repeatInPackages) {
+            return 1;
+          }
+          if (a.repeatInPackages > b.repeatInPackages) {
+            return -1;
+          }
+          return 0;
+        }),
+        services: itemsList.services.sort(function (a, b) {
+          if (a.repeatInPackages < b.repeatInPackages) {
+            return 1;
+          }
+          if (a.repeatInPackages > b.repeatInPackages) {
+            return -1;
+          }
+          return 0;
+        }),
+      }
+    }
+  }
 
 
   function handlePackages(pack) {
@@ -86,7 +150,12 @@ export default function RecommendationConfirmation () {
   }
 
   useEffect(() => {
-        api.get(`/recommendation?company_id=${companyId}&model_id=${modelVehicleId}&maintenance_review_id=${maintenanceReviewId}`).then(response => { console.log(response.data.data) })
+        api.get(`/recommendation?company_id=${companyId}&model_id=${modelVehicleId}&maintenance_review_id=${maintenanceReviewId}`).then(response => { 
+          setData(response.data.data)
+          const itemForPreviewsInOrder = createOrderPreview(response.data.data)
+          console.log(itemForPreviewsInOrder) 
+          console.log(response.data.data) 
+        })
   },[companyId, modelVehicleId, maintenanceReviewId])
 
   return (
@@ -138,7 +207,7 @@ export default function RecommendationConfirmation () {
                       </thead>
                       <tbody >
                         {
-                          data.length > 0 && data.map((item, index) => (
+                          dataFacker.length > 0 && dataFacker.map((item, index) => (
                             <tr key={item.product + index} className="">
                               <td>{item.product}</td>
                               <td>
