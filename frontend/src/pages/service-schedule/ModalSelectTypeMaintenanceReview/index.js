@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import { Modal, Button } from 'react-bootstrap'
-import  { useNavigate} from 'react-router-dom'
+import  { Link, useNavigate} from 'react-router-dom'
 
 import { APICore } from "../../../helpers/api/apiCore";
 
@@ -39,15 +39,19 @@ export function ModalSelectTypeMaintenanceReview({
                 </Modal.Header>
             <Modal.Body>
                 {maintenanceReviewButtons.map((maintenanceReview, index) => (
-                    <Button 
-                        variant="Primary"                             
-                        className="btn btn-primary w-100 mb-2"
-                        // onClick={() => { history(`/panel/company/${maintenanceReview.company_id}/workshop/quotation/create/${id}`) }}
-                        onClick={() => { history(`/panel/company/${maintenanceReview.company_id}/workshop/quotation/maintenance-review/${maintenanceReview.id}/${modelVehicleId}`) }}
-                        key={maintenanceReview.name + maintenanceReview.id + index}
-                    >
-                        {maintenanceReview.name}
-                    </Button>
+                    <Link to={`/panel/company/${maintenanceReview.company_id}/workshop/quotation/maintenance-review/${maintenanceReview.id}/${modelVehicleId}`} key={index + "_"+maintenanceReview.id} state={{serviceScheduleId}}> 
+                        <a 
+                            key={index + "_"+maintenanceReview.id}
+                            href='#'    
+                            variant="Primary"                             
+                            className="btn btn-primary w-100 mb-2"
+                            // onClick={() => { history(`/panel/company/${maintenanceReview.company_id}/workshop/quotation/create/${id}`) }}
+                            //onClick={() => { history(`/panel/company/${maintenanceReview.company_id}/workshop/quotation/maintenance-review/${maintenanceReview.id}/${modelVehicleId}`) }}
+                            key={maintenanceReview.name + maintenanceReview.id + index}
+                        >
+                            {maintenanceReview.name}
+                        </a>
+                    </Link>
                 ))}
                     <Button 
                         variant="Primary"                             

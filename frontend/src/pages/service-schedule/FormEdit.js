@@ -330,7 +330,6 @@ const FormEdit = (props: { company?: any, clientVehicle?: any, client?: any, han
         setIsActiveSaveButton(true)
         setShowModalSearchTechnicalConsultant(false)
     }
-    console.log(data?.clientVehicle.vehicle.model)
     return (
         <>
             <PageTitle

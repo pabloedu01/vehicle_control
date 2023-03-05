@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
-import {useNavigate, useParams} from "react-router-dom";
+import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
 import { Row, Col, Card, Table, Button } from 'react-bootstrap';
 import PageTitle from '../../../components/PageTitle';
 import { formatMoneyPt_BR } from '../../../utils/formatMoneyPt_BR'
 
 import { APICore } from "../../../helpers/api/apiCore";
+
+import styles from "./RecommendationConfirmation.module.css"
 
 const dataFacker = [
   {
@@ -70,41 +72,70 @@ const api = new APICore();
 export default function RecommendationConfirmation () {
   const [packageSelected, setPackageSelected] = useState(null)
   const [data, setData] = useState([]);
-  // const [itemsList, setItemsList] = useState([])
+  const [itemsRecommendations, setItemsRecommendations] = useState([])
 
+  let { state } = useLocation();
 
-
-  const history = useNavigate();
+  console.log(state)
 
   const { companyId, modelVehicleId,maintenanceReviewId } = useParams()
+
+  function calculateAmountPackages(packageServices = [], packageProducts=[], name) {
+   
+    const servicesAmount = packageServices.reduce((acc, curr) => {
+      return +acc + parseFloat(curr.service.standard_value).toFixed(2) * curr.quantity
+    }, 
+    0 )
+    const productsAmount = packageProducts.reduce((acc, curr) => {
+      return +acc + parseFloat(curr.product.sale_value).toFixed(2) * curr.quantity
+    }, 
+    0 )
+    return servicesAmount + productsAmount
+  }
+
 
   function createOrderPreview(recommendations = []) {
     const itemsList = {
       products: [],
       services: [],
     } 
+
+
+
     const packagesListNameOrder = recommendations.map(item => {
       let amountItems = 0
-      item.products.forEach(product => {
-        if (!itemsList.products.some(pro => pro.id === product.id)) {
-          itemsList.products.push({id: product.id, name: product?.product.name, repeatInPackages: 1 ,  fullDetails: product})
-        } else {
-          const productFind = itemsList.products.find(p => p.id === product.id);
-          productFind.repeatInPackages++
-        }
-        amountItems++
-      });
+      
+      const total = calculateAmountPackages(item.services, item.products)
+
+ 
       item.services.forEach(service => {
         if (!itemsList.services.some(serv => serv.id === service.id)) {
-          itemsList.services.push({id: service.id, name: service?.service?.description ,repeatInPackages: 1, fullDetails: service})
+          itemsList.services.push({id: service.id, name: service?.service?.description , price: service?.service?.standard_value,repeatInPackages: 1, serviceInRecommendations: {recommendationId: item.id,[item.name]:service}})
         } else {
           const serviceFind = itemsList.services.find(s => s.id === service.id);
           serviceFind.repeatInPackages++
+          serviceFind[item.name] = service
+          serviceFind.recommendationId = item.id
         }
         amountItems++
       });
+
+      item.products.forEach(product => {
+        if (!itemsList.products.some(pro => pro.id === product.id)) {
+          itemsList.products.push({id: product.id, name: product?.product.name, price: product?.product.sale_value, repeatInPackages: 1 ,  productInRecommendations: {recommendationId: item.id,[item.name]:product}})
+        } else {
+          const productFind = itemsList.products.find(p => p.id === product.id);
+          productFind.repeatInPackages++
+          productFind[item.name] = product
+          productFind.recommendationId = item.id
+        }
+        amountItems++
+      });
+
       return {
+        id: item.id,
         name: item.name,
+        total,
         amountItems 
       }
     })
@@ -148,11 +179,12 @@ export default function RecommendationConfirmation () {
       prevState === pack ? null : pack
     )
   }
-
+  
   useEffect(() => {
         api.get(`/recommendation?company_id=${companyId}&model_id=${modelVehicleId}&maintenance_review_id=${maintenanceReviewId}`).then(response => { 
           setData(response.data.data)
           const itemForPreviewsInOrder = createOrderPreview(response.data.data)
+          setItemsRecommendations(itemForPreviewsInOrder) 
           console.log(itemForPreviewsInOrder) 
           console.log(response.data.data) 
         })
@@ -181,80 +213,94 @@ export default function RecommendationConfirmation () {
                       Add <code>hover</code> attribute to enable a hover state on table rows
                   </p> */}
 
-                  <Table responsive="md" size="sm" hover className="mb-0" >
-                      <thead >
-                          <tr>
-                              <th>Produto</th>
-                              <th>Quantidade</th>
-                              <th 
+                  <Table hover responsive className="mb-0" >
+                      <thead>
+                          <tr> 
+                          <th>Produto</th>                        
+                          {itemsRecommendations.packagesListNameOrder && itemsRecommendations.packagesListNameOrder.map((header, index) => (
+                            <th 
+                                key={index}
                                 className='cursor-pointer'
-                                onClick={() => handlePackages('gold')}
-                              >Ouro</th>
-                              <th
-                                className='cursor-pointer'
-                                onClick={() => handlePackages('silver')}
-                              >
-                              Prata
-                              </th>
-                              <th
-                                className='cursor-pointer'
-                                onClick={() => handlePackages('bronze')}
-                              >
-                              Bronze
-                              </th>
+                                onClick={() => handlePackages(header.id)}
+                              >{header.name}
+                            </th>
+                            
+                          )) } 
                               <th>Valor</th>
                           </tr>
                       </thead>
                       <tbody >
                         {
-                          dataFacker.length > 0 && dataFacker.map((item, index) => (
-                            <tr key={item.product + index} className="">
-                              <td>{item.product}</td>
-                              <td>
-                                {item.quantidade}
-                              </td>
-                              <td>
-                                {item.gold && <i className={`mdi mdi-check-bold ${ packageSelected === 'gold' && 'bg-success'} p-2`} />}
-                              </td>
-                              <td >
-                                  {item.silver && <i className={`mdi mdi-check-bold ${ packageSelected === 'silver' && 'bg-success'} p-2`} />}                        
+                          itemsRecommendations.itemsList?.services.length > 0 && itemsRecommendations.itemsList?.services.map((item, index) => (
+                            <tr key={item.id + item.name + index} className="">
+                              <td>{item.name}</td>
+                              {itemsRecommendations.packagesListNameOrder.length > 0 && itemsRecommendations.packagesListNameOrder.map((recommendation, index) => (
+                                <td key={recommendation.name + recommendation.id +'_'+index} className={`${ packageSelected === recommendation.id && 'table-success'}`} style={{backgroundColor: 'red'}}>
+                                    <span className=''>{item.serviceInRecommendations[recommendation.name]?.quantity ?? '-'}</span>
                                 </td>
-                              <td>{item.bronze && <i className={`mdi mdi-check-bold ${ packageSelected === 'bronze' && 'bg-success'} p-2`} />}</td>
-                              <td>{formatMoneyPt_BR(item.amount)}</td>
+                              ))}
+                              <td>{formatMoneyPt_BR(item.price)}</td>
                             </tr>
                           ))
                         }
+                        
+                        {
+                          itemsRecommendations.itemsList?.services.length > 0 && itemsRecommendations.itemsList?.products.map((item, index) => (
+                            <tr key={item.id + item.name + index} className="">
+                              <td>{item.name}</td>
+                            
+                              {itemsRecommendations.packagesListNameOrder.length > 0 && itemsRecommendations.packagesListNameOrder.map((recommendation, index) => (
+                                <td key={recommendation.name + recommendation.id +'_'+index} className={`${ packageSelected === recommendation.id && 'table-success'}`}>
+                                  <span>{item.productInRecommendations[recommendation.name]?.quantity ?? '-'}</span>
+                                </td>
+                              ))}
+                              <td>{formatMoneyPt_BR(item.price)}</td>
+                            </tr>
+                          ))
+                        }
+                        </tbody>
+                        <tfoot>
                         <tr>
                           <td></td>
-                          <td></td>
-                          <td>
-                            <div className={(packageSelected === 'gold' || packageSelected === null) ? 'visible' : 'invisible' }>
-                              {formatMoneyPt_BR(1160.90)}
-                            </div>
-                          </td>
-                          <td>
-                            <div className={(packageSelected === 'silver' || packageSelected === null) ? 'visible' : 'invisible' }>
-                              {formatMoneyPt_BR(519.85)}
-                            </div>
-                          </td>
-                          <td>
-                            <div className={(packageSelected === 'bronze' || packageSelected === null) ? 'visible' : 'invisible' }>
-                              {formatMoneyPt_BR(335.15)}
-                            </div>
-                          </td>
-                          
+                          {itemsRecommendations.packagesListNameOrder && itemsRecommendations.packagesListNameOrder.map((packageItem, index) => (
+                            <td key={packageItem.id +'_'+ index}>
+                              <div className={(packageSelected === packageItem.id || packageSelected === null) ? 'visible' : 'invisible' }>
+                                {formatMoneyPt_BR(packageItem.total)}
+                              </div>
+                            </td>
+                            
+                          )) } 
                           <td></td>
                         </tr>
-                      </tbody>
+                        </tfoot>
+                      
                   </Table>
                   <Row>
                       <Col className='d-flex align-items-end justify-content-end mt-2'>
-                        <Button 
+                      {
+                        packageSelected ? (
+                          <Link to={`/panel/company/${companyId}/workshop/quotation/create/${state.serviceScheduleId}`} state={{state: {recommendationId: packageSelected}}} > 
+                          <a 
+                            href='#'
                             variant="Primary"                             
                             className="btn btn-primary align-items-end"
-                            onClick={() => { history(`/panel/company/2/workshop/estimate/confirmation`) }}>
+                            disabled
+                          >
                             prosseguir
+                          </a>
+                        </Link>
+                        ) : (
+                          <Button 
+                            variant="Primary"                             
+                            className="btn btn-primary align-items-end"
+                            disabled
+                          >
+                          prosseguir
                         </Button>
+                        ) 
+                        
+                      }
+                  
                       </Col>
                   </Row>
               </Card.Body>

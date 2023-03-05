@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import {useNavigate, useParams, Link} from "react-router-dom";
+import {useNavigate, useParams, Link, useLocation} from "react-router-dom";
 import { Row, Col, Card, Button} from 'react-bootstrap';
 import Select from 'react-select';
 import AsyncSelect from 'react-select/async'
@@ -315,6 +315,7 @@ export default function QuotationCreate() {
     const [showModalProducts, setShowModalProducts] = useState(false)
     
     const {companyId, serviceScheduleId} = useParams()
+    let { state } = useLocation();
 
     const api = new APICore()
 
@@ -355,7 +356,6 @@ export default function QuotationCreate() {
     }
     function handleOsTypeSelectedData(data) {
         const osType = osTypes.find( t => t.id === data.value)
-        console.log(osType)
         setOsTypeSelectedData(osType)
         if(!isActiveSaveButton) {
             isSaveActive()
@@ -392,10 +392,7 @@ export default function QuotationCreate() {
                 }
             ]
         }
-        
-        console.log(dataQuotation)
         await api.post('/quotations',dataQuotation).then(response => {
-            console.log('resposta create',response.data)
         setTimeout(() => {
             if(serviceScheduleId) {
                 history(`/panel/company/${companyId}/service-schedules/${serviceScheduleId}/edit`)
@@ -428,7 +425,6 @@ export default function QuotationCreate() {
 
 
     function handleItemsSelectedData(data) {
-        console.log(data)
         setItemsSelectedData(prevState => [...prevState, data])
         if(!isActiveSaveButton) {
             isSaveActive()
@@ -443,10 +439,40 @@ export default function QuotationCreate() {
 
     function onDeleteItemsSelectedData(id) {
        const itemsSelectedDataDeletedFiltered = itemsSelectedData.filter(item => (item.products_id !== id && item.service_id === null) || (item.service_id !== id && item.products_id === null))
-        console.log(itemsSelectedDataDeletedFiltered)
-        console.log(id)
         setItemsSelectedData(itemsSelectedDataDeletedFiltered)
     }
+
+    function addRemmendations(products, services) {
+        const productsFormatted = products.map(product => ({
+            service_id: null,
+            products_id: product.product.id,
+            name: product.product.name,
+            price: `${product.product.sale_value ?? "0"}`,
+            quantity: `${product.quantity ?? "0"}`,
+            price_discount: `${"0"}`
+        }))
+        
+        const servicesFormatted = services.map(service => ({
+              name: service.service.description,
+              service_id: service.service.id,
+              products_id: null,
+              price: `${service.service.standard_value ?? "0"}`,
+              quantity: `${service.quantity ?? "0"}`,
+              price_discount: `${"0"}`
+            
+          }))
+          handleKitItemsSelectedData([...servicesFormatted,...productsFormatted])
+    }
+
+    useEffect(() => {
+        if(state.state.recommendationId) {
+            console.log('aqui')
+            api.get('/recommendation/'+state.state.recommendationId).then(res => {
+                const {products, services} = res.data.data
+                addRemmendations(products, services)
+            })
+        }
+    }, [state.state.recommendationId])
 
     return (
         <>
