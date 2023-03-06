@@ -8,65 +8,6 @@ import { APICore } from "../../../helpers/api/apiCore";
 
 import styles from "./RecommendationConfirmation.module.css"
 
-const dataFacker = [
-  {
-    product: '4ª Revisão',
-    quantidade: 1,
-    gold: true,
-    silver: true,
-    bronze: true,
-    amount: 519.85
-  },
-  {
-    product: 'Elemento Filtro de ar',
-    quantidade: 1,
-    gold: true,
-    silver: true,
-    bronze: true,
-    amount: 75.85
-  },
-  {
-    product: 'Fluido de freio',
-    quantidade: 2,
-    gold: true,
-    silver: true,
-    bronze: true,
-    amount: 99.00
-  },
-  {
-    product: 'Óleo lubrificante',
-    quantidade: 42,
-    gold: true,
-    silver: true,
-    bronze: false,
-    amount: 302.40
-  },
-  {
-    product: 'Elemento filtrante',
-    quantidade: 1,
-    gold: true,
-    silver: true,
-    bronze: false,
-    amount: 97.82
-  },
-  {
-    product: 'Filtro de combustível',
-    quantidade: 1,
-    gold: true,
-    silver: false,
-    bronze: false,
-    amount: 55.50
-  },
-  {
-    product: 'Junta de alumínio',
-    quantidade: 1,
-    gold: true,
-    silver: false,
-    bronze: false,
-    amount: 11.50
-  },
-]
-
 const api = new APICore();
 
 export default function RecommendationConfirmation () {
@@ -81,15 +22,14 @@ export default function RecommendationConfirmation () {
   const { companyId, modelVehicleId,maintenanceReviewId } = useParams()
 
   function calculateAmountPackages(packageServices = [], packageProducts=[], name) {
+    console.log(packageServices)
    
     const servicesAmount = packageServices.reduce((acc, curr) => {
-      return +acc + parseFloat(curr.service.standard_value).toFixed(2) * curr.quantity
-    }, 
-    0 )
+      return acc + parseFloat(curr.priceAmount)
+    },0 )
     const productsAmount = packageProducts.reduce((acc, curr) => {
-      return +acc + parseFloat(curr.product.sale_value).toFixed(2) * curr.quantity
-    }, 
-    0 )
+      return acc + parseFloat(curr.priceAmount)
+    },0)
     return servicesAmount + productsAmount
   }
 
@@ -99,39 +39,52 @@ export default function RecommendationConfirmation () {
       products: [],
       services: [],
     } 
-
-
-
     const packagesListNameOrder = recommendations.map(item => {
       let amountItems = 0
+      let total = 0
       
-      const total = calculateAmountPackages(item.services, item.products)
 
  
       item.services.forEach(service => {
-        if (!itemsList.services.some(serv => serv.id === service.id)) {
-          itemsList.services.push({id: service.id, name: service?.service?.description , price: service?.service?.standard_value,repeatInPackages: 1, serviceInRecommendations: {recommendationId: item.id,[item.name]:service}})
+        if (!itemsList.services.some(serv => serv.id === service.service.id)) {
+          
+          itemsList.services.push({
+            id: service.service.id, 
+            name: service?.service?.description , 
+            price: service?.service?.standard_value,
+            repeatInPackages: 1,
+            priceAmount:  +service?.service?.standard_value * +service?.service?.standard_quantity,
+            serviceInRecommendations: {recommendationId: item.id,[item.name]:service}
+          })
         } else {
-          const serviceFind = itemsList.services.find(s => s.id === service.id);
+          const serviceFind = itemsList.services.find(s => s.id === service.service.id);
           serviceFind.repeatInPackages++
-          serviceFind[item.name] = service
-          serviceFind.recommendationId = item.id
+          serviceFind.serviceInRecommendations[item.name] = service
+          serviceFind.serviceInRecommendations.recommendationId =  item.id
         }
+        total += (+service?.service?.standard_value * +service?.quantity)
         amountItems++
       });
 
       item.products.forEach(product => {
-        if (!itemsList.products.some(pro => pro.id === product.id)) {
-          itemsList.products.push({id: product.id, name: product?.product.name, price: product?.product.sale_value, repeatInPackages: 1 ,  productInRecommendations: {recommendationId: item.id,[item.name]:product}})
+        if (!itemsList.products.some(pro => pro.id === product.product.id)) {
+          itemsList.products.push({
+            id: product.product.id, 
+            name: product?.product.name, 
+            price: product?.product.sale_value,
+            priceAmount: +product?.product?.sale_value * +product?.quantity, 
+            repeatInPackages: 1 ,  
+            productInRecommendations: {recommendationId: item.id,[item.name]:product}
+        })
         } else {
-          const productFind = itemsList.products.find(p => p.id === product.id);
+          const productFind = itemsList.products.find(p => p.id === product.product.id);
           productFind.repeatInPackages++
-          productFind[item.name] = product
-          productFind.recommendationId = item.id
+          productFind.productInRecommendations[item.name] = product
+          productFind.productInRecommendations.recommendationId =  item.id
         }
+        total += (+product?.product?.sale_value * +product?.quantity)
         amountItems++
       });
-
       return {
         id: item.id,
         name: item.name,

@@ -39,18 +39,8 @@ export function ModalSelectTypeMaintenanceReview({
                 </Modal.Header>
             <Modal.Body>
                 {maintenanceReviewButtons.map((maintenanceReview, index) => (
-                    <Link to={`/panel/company/${maintenanceReview.company_id}/workshop/quotation/maintenance-review/${maintenanceReview.id}/${modelVehicleId}`} key={index + "_"+maintenanceReview.id} state={{serviceScheduleId}}> 
-                        <a 
-                            key={index + "_"+maintenanceReview.id}
-                            href='#'    
-                            variant="Primary"                             
-                            className="btn btn-primary w-100 mb-2"
-                            // onClick={() => { history(`/panel/company/${maintenanceReview.company_id}/workshop/quotation/create/${id}`) }}
-                            //onClick={() => { history(`/panel/company/${maintenanceReview.company_id}/workshop/quotation/maintenance-review/${maintenanceReview.id}/${modelVehicleId}`) }}
-                            key={maintenanceReview.name + maintenanceReview.id + index}
-                        >
-                            {maintenanceReview.name}
-                        </a>
+                    <Link className="btn btn-primary w-100 mb-2" to={`/panel/company/${maintenanceReview.company_id}/workshop/quotation/maintenance-review/${maintenanceReview.id}/${modelVehicleId}`} key={index + "_"+maintenanceReview.id} state={{serviceScheduleId}}> 
+                        {maintenanceReview.name}
                     </Link>
                 ))}
                     <Button 
