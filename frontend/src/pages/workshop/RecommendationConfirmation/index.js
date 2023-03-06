@@ -232,16 +232,9 @@ export default function RecommendationConfirmation () {
                       <Col className='d-flex align-items-end justify-content-end mt-2'>
                       {
                         packageSelected ? (
-                          <Link to={`/panel/company/${companyId}/workshop/quotation/create/${state.serviceScheduleId}`} state={{state: {recommendationId: packageSelected}}} > 
-                          <a 
-                            href='#'
-                            variant="Primary"                             
-                            className="btn btn-primary align-items-end"
-                            disabled
-                          >
+                          <Link className="btn btn-primary align-items-end" to={`/panel/company/${companyId}/workshop/quotation/create/${state.serviceScheduleId}`} state={{state: {recommendationId: packageSelected}}} > 
                             prosseguir
-                          </a>
-                        </Link>
+                          </Link>
                         ) : (
                           <Button 
                             variant="Primary"                             

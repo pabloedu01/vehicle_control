@@ -465,14 +465,14 @@ export default function QuotationCreate() {
     }
 
     useEffect(() => {
-        if(state.state.recommendationId) {
+        if(state?.state.recommendationId) {
             console.log('aqui')
             api.get('/recommendation/'+state.state.recommendationId).then(res => {
                 const {products, services} = res.data.data
                 addRemmendations(products, services)
             })
         }
-    }, [state.state.recommendationId])
+    }, [state?.state.recommendationId])
 
     return (
         <>
