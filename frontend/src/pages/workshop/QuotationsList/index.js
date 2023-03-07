@@ -267,6 +267,9 @@ export default function QuotationsList() {
                                                     <Link to="#" className="action-icon" onClick={() => onDelete(record.id)}>
                                                         <i className="mdi mdi-delete"></i>
                                                     </Link>
+                                                    <Link to={`/panel/company/${companyId}/workshop/quotation/preview/${record.id}`} className="action-icon" >
+                                                        <i className="mdi mdi-eye"></i>
+                                                    </Link>
                                                 </td>
                                             </tr>
                                         );

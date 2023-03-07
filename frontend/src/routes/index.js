@@ -117,7 +117,7 @@ const ScheduleDetail = React.lazy(() => import('../pages/ScheduleDetail'));
 
 const QuotationsList = React.lazy(() => import('../pages/workshop/QuotationsList'));
 const QuotationCreate = React.lazy(() => import('../pages/workshop/QuotationCreate'));
-// const QuotationCreateServiceSchedule = React.lazy(() => import('../pages/workshop/QuotationCreate'));
+const QuotationPreview = React.lazy(() => import('../pages/workshop/Preview'));
 const QuotationShow = React.lazy(() => import('../pages/workshop/QuotationShow'));
 const RecommendationConfirmation = React.lazy(() => import('../pages/workshop/RecommendationConfirmation'));
 // const SelectionPackage = React.lazy(() => import('../pages/workshop/SelectionPackage'));
@@ -638,6 +638,10 @@ const AllRoutes = () => {
                                 {
                                     path: 'create/:serviceScheduleId',
                                     element: <LoadComponent component={QuotationCreate} />,
+                                },
+                                {
+                                    path: 'preview/:idQuotation',
+                                    element: <LoadComponent component={QuotationPreview} />,
                                 },
                                 {
                                     path: 'maintenance-review/:maintenanceReviewId/:modelVehicleId',

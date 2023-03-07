@@ -1,0 +1,76 @@
+div.scrollmenu {
+    /* background-color: #333; */
+    overflow: auto;
+    white-space: nowrap;
+  }
+  
+  div.scrollmenu div {
+    display: inline-block;
+    /* color: white; */
+    text-align: left;
+    padding: 14px;
+    text-decoration: none;
+  }
+  /*
+  div.scrollmenu div:hover {
+     background-color: #777; 
+  }*/
+  div.scrollmenu::-webkit-scrollbar {
+  display:none;
+}
+
+.cabecalho { 
+  height: 100px;
+  width: 100%;
+  position: relative;
+}
+
+.center {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+
+.button-markups {
+  flex-flow: column;
+}
+
+.observationsContainer {
+  flex-flow: 'column'; 
+  flex: 1;
+  max-height: 270px; 
+  overflow-y: auto; 
+  position: relative;
+  min-width: 380px;
+}
+
+/* @media only screen and (min-device-width: 380px) 
+                   and (max-device-width: 640px) 
+                   and (orientation: landscape) {
+
+  .button-markups {
+    background: red;
+  }
+} */
+@media only screen and (min-width: 380px) and (max-width: 760px) and (orientation: portrait) {
+  .button-markups {
+    display: flex;
+    flex-flow: row;
+    font-size: 12px;
+    gap: 30px;
+  }
+  .observationsContainer {
+    max-height: 350px; 
+  }
+}
+
+@media only screen and (min-width: 761px) and (max-width: 1000px) and (orientation: portrait) {
+  .observationsContainer {
+    max-height: 600px; 
+  }
+
+}
