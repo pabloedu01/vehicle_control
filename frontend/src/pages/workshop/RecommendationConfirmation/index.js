@@ -214,11 +214,17 @@ export default function RecommendationConfirmation () {
                         </tbody>
                         <tfoot>
                         <tr>
-                          <td></td>
+                          <td>
+                            <p className='fw-bold'>Total parcelado</p>
+                            <p className='fw-bold'>Total a vista</p>
+                          </td>
                           {itemsRecommendations.packagesListNameOrder && itemsRecommendations.packagesListNameOrder.map((packageItem, index) => (
                             <td key={packageItem.id +'_'+ index}>
                               <div className={(packageSelected === packageItem.id || packageSelected === null) ? 'visible' : 'invisible' }>
-                                {formatMoneyPt_BR(packageItem.total)}
+                                <p className=''>3 x {formatMoneyPt_BR(packageItem.total / 3) }</p>
+                                <p className='fw-bold'>
+                                  {formatMoneyPt_BR(packageItem.total)}
+                                </p>
                               </div>
                             </td>
                             
