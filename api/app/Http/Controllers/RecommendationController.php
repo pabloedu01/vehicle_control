@@ -146,7 +146,7 @@ class RecommendationController extends Controller
 
     public function update(Request $request, $id)
     {
-        DB::beginTransaction();
+        // DB::beginTransaction();
         $recommendation = Recommendation::where('id', $id)->first();
         $recommendation->name = $request['description'];
         $recommendation->vehicle_id = $request['vehicle_id'];
@@ -157,49 +157,64 @@ class RecommendationController extends Controller
         $recommendation->save();
 
         try {
+            // first delete
             RecommendationServices::where('recommendation_id', $id)->delete();
-
             if ($request['services'] != null or $request['services'] != []) {
 
                 /// delete services
+                try {
+                    foreach ($request['services'] as $service) {
+                        $checkexist = RecommendationServices::where('recommendation_id', $id)
+                            ->where('service_id', $service['service_id'])
+                            ->first();
+                        if ($checkexist) {
+                            throw new \Exception("Service has been added in this recomendations");
+                        } else {
+                            $recomendationService = new RecommendationServices();
+                            $recomendationService->recommendation_id = $id;
+                            $recomendationService->service_id = $service['id'];
+                            $recomendationService->quantity = $service['quantity'];
+                            $recomendationService->save();
+                        }
 
-                foreach ($request['services'] as $service) {
-                    $checkexist = RecommendationServices::where('recommendation_id', $id)
-                        ->where('service_id', $service['service_id'])
-                        ->first();
-                    if ($checkexist) {
-                        // trow new exception
-                        throw new \Exception("Service has been added in this recomendations");
-                    } else {
-                        $recomendationService = new RecommendationServices();
-                        $recomendationService->recommendation_id = $id;
-                        $recomendationService->service_id = $service['id'];
-                        $recomendationService->quantity = $service['quantity'];
-                        $recomendationService->save();
                     }
-
+                } catch (\Throwable $th) {
+                    return response()->json([
+                        'msg' => trans('general.msg.invalidData'),
+                        'errors' => $th->getMessage(),
+                    ],
+                        Response::HTTP_BAD_REQUEST
+                    );
                 }
+
             }
             RecommendationProducts::where('recommendation_id', $id)->delete();
-
             if ($request['products'] != null or $request['products'] != []) {
                 // delete products
+                try {
+                    foreach ($request['products'] as $product) {
 
-                foreach ($request['products'] as $product) {
-                    $checkexists = RecommendationProducts::where('recommendation_id', $id)
-                        ->where('product_id', $product['product_id'])
-                        ->first();
-                    if ($checkexists) {
-                        // trow new exception
-                        throw new \Exception("Product has been added in this recomendations");
+                        $checkexists = RecommendationProducts::where('recommendation_id', $id)
+                            ->where('product_id', $product['product_id'])
+                            ->first();
+                        if ($checkexists) {
+                            throw new \Exception("Product has been added in this recomendations");
+                        }
+                        $recomendationProduct = new RecommendationProducts();
+                        $recomendationProduct->recommendation_id = $id;
+                        $recomendationProduct->product_id = $product['id'];
+                        $recomendationProduct->quantity = $product['quantity'];
+                        $recomendationProduct->save();
                     }
-                    $recomendationProduct = new RecommendationProducts();
-                    $recomendationProduct->recommendation_id = $id;
-                    $recomendationProduct->product_id = $product['id'];
-                    $recomendationProduct->quantity = $product['quantity'];
-                    $recomendationProduct->save();
-
+                } catch (\Throwable $th) {
+                    return response()->json([
+                        'msg' => trans('general.msg.invalidData'),
+                        'errors' => $th->getMessage(),
+                    ],
+                        Response::HTTP_BAD_REQUEST
+                    );
                 }
+
 
             }
             if ($request['claim_services'] != null or $request['claim_services'] != []) {
