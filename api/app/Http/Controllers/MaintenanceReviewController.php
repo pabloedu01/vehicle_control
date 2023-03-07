@@ -19,7 +19,7 @@ class MaintenanceReviewController extends Controller
 
     public function show(Request $request, $id)
     {
-        $maintenanceReview = MaintenanceReview::with('model', 'model.brand', 'brand')
+        $maintenanceReview = MaintenanceReview::with('model', 'model.brand')
                           ->where('id', '=', $id)
                           ->first();
 
