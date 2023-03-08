@@ -68,7 +68,7 @@ const ItemsSelected = ({items = [], onDelete}) => {
     return (
         <>
             <div className="table-responsive">
-                <table className="table mb-0">
+                <table className="table table-hover mb-0">
                     <thead className="table-light">
                         <tr>
                             <th>Itens</th>
@@ -94,6 +94,39 @@ const ItemsSelected = ({items = [], onDelete}) => {
                                             <i className="mdi mdi-delete"></i>
                                         </Link>
                                     </td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
+            </div>
+        </>
+    );
+};
+
+const RecommendationsSelected = ({items = []}) => {
+    return (
+        <>
+            <div className="table-responsive">
+                <table className="table mb-0 table-hover">
+                    <thead className="table-light">
+                        <tr>
+                            <th>Itens</th>
+                            <th>Quantidade</th>
+                            <th>Preço</th>
+                            <th>Desconto unitário</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {items.length > 0 && items.map((item, idx) => {
+                            return (
+                                <tr key={idx} onClick={() => console.log(item)}>
+                                    <td>{item?.name || item?.product?.name}</td>
+                                    <td>{item.quantity}</td>
+                                    <td>{formatMoneyPt_BR(parseFloat(item.price))}</td>
+                                    <td>{formatMoneyPt_BR(parseFloat(item.price_discount))}</td>
+                                    <td>{formatMoneyPt_BR(parseFloat((item.price - item.price_discount) * parseInt(item.quantity)))}</td>
                                 </tr>
                             );
                         })}
@@ -294,6 +327,7 @@ export default function QuotationCreate() {
     const [claimsData, setClaimsData] = useState([])
     const [isEditingClaims, setIsEditingClaims] = useState(false)
     const [itemsSelectedData, setItemsSelectedData] = useState([])
+    const [recommendationsItemsSelectedData, setRecommendationsItemsSelectedData] = useState([])
    
     const [osTypeSelectedData, setOsTypeSelectedData] = useState([])
     const [osTypes, setOsTypes] = useState([])
@@ -420,6 +454,7 @@ export default function QuotationCreate() {
                 setClientVehicleData(client_vehicle)
             })  
         }
+        
     },[])
 
 
@@ -461,7 +496,10 @@ export default function QuotationCreate() {
               price_discount: `${"0"}`
             
           }))
-          handleKitItemsSelectedData([...servicesFormatted,...productsFormatted])
+          setRecommendationsItemsSelectedData([...servicesFormatted,...productsFormatted])
+          if(!isActiveSaveButton) {
+            isSaveActive()
+        }
     }
 
     useEffect(() => {
@@ -585,6 +623,17 @@ export default function QuotationCreate() {
                             }
                      
                                     <ClaimItems items={claimsData} />
+                                </Card.Body>
+                            </Card>
+                            <Card>
+                                <Card.Body>
+
+                                    <Row className='mt-2 mb-2'>
+                                        <Col className="d-flex align-items-center justify-content-between ">
+                                            <h4 className="header-title">Pacote selecionado</h4>
+                                        </Col>
+                                    </Row>
+                                    <RecommendationsSelected items={recommendationsItemsSelectedData} />
                                 </Card.Body>
                             </Card>
                             <Card>
