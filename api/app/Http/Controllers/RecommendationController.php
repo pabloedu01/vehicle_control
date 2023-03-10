@@ -25,6 +25,15 @@ class RecommendationController extends Controller
 
         } if($request['search']){
             $search = $request['search'];
+            // force search to lowercase
+            $search = strtolower($search);
+            // remove all non-alphanumeric characters
+            $search = preg_replace("/[^a-z0-9_\s-]/", "", $search);
+            // clean multiple dashes or whitespaces
+            $search = preg_replace("/[\s-]+/", " ", $search);
+            // convert whitespaces and underscore to dash
+            $search = preg_replace("/[\s_]/", "-", $search);
+            // remove all leading and trailing whitespaces
 
           $recomendation =   $recomendation->where('maintenance_review.name', 'like', '%'.$search.'%')
           ->orWhere('services.service.name', 'like', '%'.$search.'%')
