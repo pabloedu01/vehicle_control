@@ -14,22 +14,39 @@ class RecommendationController extends Controller
 {
     public function index(Request $request)
     {
+        $recomendation =  Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'products', 'products.product', 'services', 'services.service', 'claimService', 'model'])
+        ->where('company_id', '=', $request['company_id']);
         if ($request['model_id']) {
-            $recommendations = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'products', 'products.product', 'services', 'services.service', 'claimService', 'model'])
-                ->where('company_id', '=', $request['company_id'])
-                ->where('model_id', '=', $request['model_id'])
-                ->get();
-        } else {
-            $recommendations = Recommendation::with(['vehicle', 'vehicle.model', 'vehicle.model.brand', 'maintenanceReview', 'products', 'products.product', 'services', 'services.service', 'claimService', 'model'])
-                ->where('company_id', '=', $request['company_id'])
-                ->get();
+
+          $recomendation =   $recomendation->where('model_id', '=', $request['model_id']);
+        } if($request['maintenance_review_id']){
+
+          $recomendation =   $recomendation->where('maintenance_review_id', '=', $request['maintenance_review_id']);
+
+        } if($request['search']){
+            $search = $request['search'];
+
+          $recomendation =   $recomendation->where('maintenance_review.name', 'like', '%'.$search.'%')
+          ->orWhere('services.service.name', 'like', '%'.$search.'%')
+          ->orWhere('products.product.name', 'like', '%'.$search.'%')
+            ->orWhere('service.service_code', 'like', '%'.$search.'%')
+            ->orWhere('product.product_code', 'like', '%'.$search.'%')
+            ->orWhere('recommendations.name', 'like', '%'.$search.'%');
+
+
         }
+        $recommendations = $recomendation->get();
 
-        // $recommendations->each(function($recommendation){
-        //     $recommendation->vehicle->append('full_name');
-        // });
-
-        return response()->json(['msg' => trans('general.msg.success'), 'data' => $recommendations], Response::HTTP_OK);
+        return response()->json([
+            'msg' => trans('general.msg.success'),
+            'total_results' => $recommendations->count(),
+            'current_page'  => intval(@$request->current_page && is_numeric($request->current_page) ? $request->current_page : 1),
+            'total_pages'   => ceil(Recommendation::list()->limit(null)->offset(0)->count()/( @$request->limit ?? 50 )),
+            'data'          => $recommendations,
+        ],
+        Response::HTTP_OK
+);
+        // return response()->json(['msg' => trans('general.msg.success'), 'data' => $recommendations], Response::HTTP_OK);
     }
 
     public function show(Request $request, $id)
@@ -191,6 +208,8 @@ class RecommendationController extends Controller
             RecommendationProducts::where('recommendation_id', $id)->delete();
             if ($request['products'] != null or $request['products'] != []) {
                 // delete products
+                DB::beginTransaction();
+
                 try {
                     foreach ($request['products'] as $product) {
 
@@ -207,6 +226,7 @@ class RecommendationController extends Controller
                         $recomendationProduct->save();
                     }
                 } catch (\Throwable $th) {
+                    DB::rollBack();
                     return response()->json([
                         'msg' => trans('general.msg.invalidData'),
                         'errors' => $th->getMessage(),
@@ -214,6 +234,8 @@ class RecommendationController extends Controller
                         Response::HTTP_BAD_REQUEST
                     );
                 }
+                DB::commit();
+
 
 
             }
