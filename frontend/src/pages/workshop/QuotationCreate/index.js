@@ -18,6 +18,7 @@ import {ModalClientSearch} from "../../../components/Client/ModalClientSearch"
 import {ModalServicesSearch} from "../../../components/quotation/ModalServicesSearch"
 import {ModalKitsSearch} from "../../../components/quotation/ModalKitsSearch"
 import {ModalProductsSearch} from "../../../components/quotation/ModalProductsSearch"
+import {ModalEditItemsSelected} from "../../../components/quotation/ModalEditItemsSelected"
 import {ClaimsSearch} from "./ClaimsSearch"
 import {formatMoneyPt_BR} from '../../../utils/formatMoneyPt_BR'
 
@@ -104,7 +105,11 @@ const ItemsSelected = ({items = [], onDelete}) => {
     );
 };
 
-const RecommendationsSelected = ({items = []}) => {
+const RecommendationsSelected = ({
+    items = [], 
+    setShowModalEditRecommendationsItemsSelected,
+    setRecommendationsItemsSelectedIsEditing 
+}) => {
     return (
         <>
             <div className="table-responsive">
@@ -121,7 +126,11 @@ const RecommendationsSelected = ({items = []}) => {
                     <tbody>
                         {items.length > 0 && items.map((item, idx) => {
                             return (
-                                <tr key={idx} onClick={() => console.log(item)}>
+                                <tr key={idx} onClick={
+                                    () => {
+                                        setShowModalEditRecommendationsItemsSelected(true)
+                                        setRecommendationsItemsSelectedIsEditing(item)
+                                    }}>
                                     <td>{item?.name || item?.product?.name}</td>
                                     <td>{item.quantity}</td>
                                     <td>{formatMoneyPt_BR(parseFloat(item.price))}</td>
@@ -327,7 +336,7 @@ export default function QuotationCreate() {
     const [claimsData, setClaimsData] = useState([])
     const [isEditingClaims, setIsEditingClaims] = useState(false)
     const [itemsSelectedData, setItemsSelectedData] = useState([])
-    const [recommendationsItemsSelectedData, setRecommendationsItemsSelectedData] = useState([])
+    const [recommendationsSelectedData, setRecommendationsSelectedData] = useState([])
    
     const [osTypeSelectedData, setOsTypeSelectedData] = useState([])
     const [osTypes, setOsTypes] = useState([])
@@ -347,6 +356,10 @@ export default function QuotationCreate() {
     const [showModalKits, setShowModalKits] = useState(false)
    
     const [showModalProducts, setShowModalProducts] = useState(false)
+    
+    const [showModalEditRecommendationsItemsSelected, setShowModalEditRecommendationsItemsSelected] = useState(false)
+    const [recommendationsItemsSelectedIsEditing,  setRecommendationsItemsSelectedIsEditing] = useState(false)
+     
     
     const {companyId, serviceScheduleId} = useParams()
     let { state } = useLocation();
@@ -496,10 +509,33 @@ export default function QuotationCreate() {
               price_discount: `${"0"}`
             
           }))
-          setRecommendationsItemsSelectedData([...servicesFormatted,...productsFormatted])
+          setRecommendationsSelectedData([...servicesFormatted,...productsFormatted])
           if(!isActiveSaveButton) {
             isSaveActive()
         }
+    }
+
+    function handleRecommendationsItemsSelected (data) {
+        setShowModalEditRecommendationsItemsSelected(false)
+        console.log('salvou dados', data)
+        
+        const recommendation = recommendationsSelectedData.find(item => item.id === recommendationsItemsSelectedIsEditing.id)
+        console.log('---', recommendation)
+
+        recommendation.price = data.price.value
+        recommendation.quantity = data.quantity
+        recommendation.price_discount = data.discount.value
+
+        const newsRecommendations = [...recommendationsSelectedData]
+
+        console.log(newsRecommendations)
+
+        setRecommendationsSelectedData(newsRecommendations)
+        
+        if(!isActiveSaveButton) {
+            isSaveActive()
+        }
+
     }
 
     useEffect(() => {
@@ -633,7 +669,11 @@ export default function QuotationCreate() {
                                             <h4 className="header-title">Pacote selecionado</h4>
                                         </Col>
                                     </Row>
-                                    <RecommendationsSelected items={recommendationsItemsSelectedData} />
+                                    <RecommendationsSelected 
+                                        items={recommendationsSelectedData} 
+                                        setShowModalEditRecommendationsItemsSelected={setShowModalEditRecommendationsItemsSelected} 
+                                        setRecommendationsItemsSelectedIsEditing={setRecommendationsItemsSelectedIsEditing}
+                                    />
                                 </Card.Body>
                             </Card>
                             <Card>
@@ -724,6 +764,13 @@ export default function QuotationCreate() {
                 company_id={companyId} 
                 handleChangeProductsData={handleItemsSelectedData}
             />
+            <ModalEditItemsSelected 
+                showModal={showModalEditRecommendationsItemsSelected}
+                setShowModalEditRecommendationsItemsSelected={setShowModalEditRecommendationsItemsSelected}
+                data={recommendationsItemsSelectedIsEditing}
+                handleData={handleRecommendationsItemsSelected}
+            />
+
         </>
     );
 };
