@@ -20,7 +20,6 @@ export function ModalServicesSearch({showModalServices, setShowModalServices, co
 
   function getServices () {
     api.get('/service?company_id='+company_id).then((response) => {
-      console.log(response.data.data)
       setData(response.data.data)
     })
   }

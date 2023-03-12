@@ -13,7 +13,6 @@ export function ModalEditItemsSelected ({ showModal, setShowModalEditRecommendat
     setValue,
     formState: { errors },
 } = useForm({ defaultValues: {
-  price: '',
   quantity: '',	
   discount: '',
 } });
@@ -25,10 +24,6 @@ export function ModalEditItemsSelected ({ showModal, setShowModalEditRecommendat
 
   useEffect(() => {
     console.log(data)
-    setValue('price', data?.price ? {
-      'formattedValue':  `${data?.price}`,
-      'value': `${data?.price}`,
-    } : null);
     setValue('quantity', data?.quantity ?? null);
     setValue('discount', data?.price_discount ? {
         'formattedValue':  `${data?.price_discount}`,
@@ -41,18 +36,9 @@ export function ModalEditItemsSelected ({ showModal, setShowModalEditRecommendat
     <Modal show={showModal} onHide={onHideModal}>
     <form action="" onSubmit={handleSubmit(handleData)}>
     <Modal.Header closeButton>
-        <h4 className="modal-title">Item {''}</h4>
+        <h4 className="modal-title">{data.name}</h4>
     </Modal.Header>
     <Modal.Body className='py-3'>
-   
-    <InputPrice
-      label="Valor"
-      name="price"
-      placeholder="Digite o valor"
-      control={control}
-      errors={errors}
-      containerClass={'mb-3'}
-    />
     <InputQuantity
     label="Quantidade"
     name="quantity"
@@ -68,6 +54,7 @@ export function ModalEditItemsSelected ({ showModal, setShowModalEditRecommendat
       control={control}
       errors={errors}
       containerClass={'mb-3'}
+      MAX_LIMIT={8}
     />
 
     </Modal.Body>

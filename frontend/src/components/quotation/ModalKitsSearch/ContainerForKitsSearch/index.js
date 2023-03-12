@@ -7,7 +7,6 @@ import {formatMoneyPt_BR } from "../../../../utils/formatMoneyPt_BR"
 export function ContainerForKitsSearch({ kitsData, setSelectedChangeKitsData }) {
     const [kits, setKits] = useState([]);
     const [selectedKit, setSelectedKit] = useState(null);
-    console.log(kitsData)
     function search (text) {
         setKits(text ? [...kitsData].filter((u) => u.name.toLowerCase().indexOf(text.toLowerCase()) >= 0) : [...kitsData]);
     };

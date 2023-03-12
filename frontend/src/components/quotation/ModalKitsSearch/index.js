@@ -19,7 +19,6 @@ export function ModalKitsSearch({showModalKits, setShowModalKits, company_id, ha
 
   function getKits () {
     api.get('/kit?search=&company_id='+company_id).then((response) => {
-      console.log(response.data.data)
       setData(response.data.data)
     })
   }

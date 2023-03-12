@@ -2,7 +2,7 @@ import { Controller } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 import Form from 'react-bootstrap/Form';
 
-export function InputPrice({ control, className = '', name, placeholder, errors, containerClass, label }) {
+export function InputPrice({ control, className = '', name, placeholder, errors, containerClass, label, MAX_LIMIT = 100 }) {
   return (
         <div className={containerClass}>
           {label && <label htmlFor={name} className="form-label">{label}</label>}
@@ -11,7 +11,6 @@ export function InputPrice({ control, className = '', name, placeholder, errors,
             control={control}
             rules={{ required: true }}
         render={({ ref, field }) => {
-          // console.log(field);
           return (
                   <NumericFormat
                     type="text"

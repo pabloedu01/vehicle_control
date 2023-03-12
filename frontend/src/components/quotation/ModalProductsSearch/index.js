@@ -24,8 +24,6 @@ export function ModalProductsSearch({showModalProducts, setShowModalProducts, co
     })
   }
 
-  console.log(data);
-
   useEffect(() => {
     if (showModalProducts) { 
       getProducts()

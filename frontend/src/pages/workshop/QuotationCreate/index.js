@@ -473,13 +473,49 @@ export default function QuotationCreate() {
 
 
     function handleItemsSelectedData(data) {
-        setItemsSelectedData(prevState => [...prevState, data])
+
+        setItemsSelectedData(prevState => {
+            const prevStateAux = [...prevState]
+            const itemIsFound = prevStateAux.find(item => {
+                return (item.service_id === data.service_id && data.products_id === null) || 
+                    (item.products_id === data.products_id && data.service_id === null)}
+            )
+            console.log(itemIsFound)
+            if(itemIsFound) {
+                itemIsFound.quantity =`${+itemIsFound.quantity + +data.quantity}`
+                
+                return prevStateAux
+            } else {
+                return [...prevState, data]
+            }
+        })
         if(!isActiveSaveButton) {
             isSaveActive()
         }
     }
     function handleKitItemsSelectedData(data) {
-        setItemsSelectedData(prevState => [...prevState, ...data])
+        console.log(data)
+
+        setItemsSelectedData(prevState => {
+            let dataFormatted = []
+            const prevStateAux = [...prevState]
+
+            data.forEach(item => {
+                const isExist = prevStateAux.find(itemPrevState => {
+                    console.log(itemPrevState)
+                    return (itemPrevState.service_id === item.service_id && item.products_id === null) || 
+                        (itemPrevState.products_id === item.products_id && item.service_id === null)}
+                )
+                console.log(isExist)
+                if(isExist) {
+                    isExist.quantity =`${+isExist.quantity + +item.quantity}`
+                } else {
+                    console.log('entrou no else')
+                    dataFormatted.push(item)
+                }
+            })
+            return [...prevStateAux, ...dataFormatted]
+        })
         if(!isActiveSaveButton) {
             isSaveActive()
         }
@@ -517,18 +553,18 @@ export default function QuotationCreate() {
 
     function handleRecommendationsItemsSelected (data) {
         setShowModalEditRecommendationsItemsSelected(false)
-        console.log('salvou dados', data)
         
-        const recommendation = recommendationsSelectedData.find(item => item.id === recommendationsItemsSelectedIsEditing.id)
-        console.log('---', recommendation)
+        //console.log(recommendationsSelectedData)
 
-        recommendation.price = data.price.value
+        const recommendation = recommendationsSelectedData.find(item => {
+            return (item.service_id === recommendationsItemsSelectedIsEditing.service_id && recommendationsItemsSelectedIsEditing.products_id === null) || 
+                (item.products_id === recommendationsItemsSelectedIsEditing.products_id && recommendationsItemsSelectedIsEditing.service_id === null)}
+        )
+
         recommendation.quantity = data.quantity
         recommendation.price_discount = data.discount.value
 
         const newsRecommendations = [...recommendationsSelectedData]
-
-        console.log(newsRecommendations)
 
         setRecommendationsSelectedData(newsRecommendations)
         
