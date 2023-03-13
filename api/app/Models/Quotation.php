@@ -98,12 +98,15 @@ protected $filters = [
     {
         return $this->belongsTo('App\Models\MaintenanceReview', 'maintenance_review_id', 'id')->withTrashed();
 
-        // return $this->hasMany('App\Models\MaintenanceReview', 'maintenance_review_id', 'id');
     }
     // has many quotation itens
     public function quotationItens()
     {
         return $this->hasMany('App\Models\QuotationItens', 'quotation_id', 'id');
+    }
+    public function quotationMandatoryItens()
+    {
+        return $this->hasMany('App\Models\QuotationMandatoryItens', 'quotation_id', 'id');
     }
     // has many quotation claimservice
     public function quotationClaimService()

@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Quotation;
 use App\Models\QuotationClaimService;
 use App\Models\QuotationItens;
+use App\Models\QuotationMandatoryItens;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -66,6 +67,22 @@ class QuotationController extends Controller
         $quotation['quotation_itens'] = $quotationItem;
 
         }
+        if($request->quotation_mandatory_itens != null and $request->quotation_mandatory_itens != []){
+            foreach($request->quotation_mandatory_itens as $mandatory_itens){
+                $quotationmandatory_itens = new QuotationMandatoryItens();
+                $quotationmandatory_itens->quotation_id = $quotation->id;
+                $quotationmandatory_itens->service_id = $mandatory_itens['service_id'];
+                $quotationmandatory_itens->products_id = $mandatory_itens['products_id'];
+                $quotationmandatory_itens->quantity = $mandatory_itens['quantity'];
+                $quotationmandatory_itens->price = $mandatory_itens['price'];
+                $quotationmandatory_itens->price_discount = $mandatory_itens['price_discount'];
+
+                // return $quotationItem;
+                $quotationmandatory_itens->save();
+            }
+        $quotation['quotation_mandatory_itens'] = $quotationmandatory_itens;
+
+        }
 
         // use showQuotation($id)
         $quotation = $this->showQuotation($quotation->id);
@@ -113,6 +130,22 @@ class QuotationController extends Controller
                 $quotation->quotationItens[$itemKey]['product'] = null;
             }
             $quotation->quotationItens[$itemKey]['total'] = $itemRow['quantity'] * ( $itemRow['price'] - $itemRow['price_discount']);
+        }
+        foreach($quotation->QuotationMandatoryItens as $mandatoryItemKey => $mandatoryItem) {
+            if($mandatoryItem->service_id != null) {
+                $service = Service::find($mandatoryItem->service_id);
+                $quotation->quotationItens[$itemKey]['service'] = $service;
+            }else {
+                $quotation->quotationItens[$itemKey]['service'] = null;
+            }
+            if($mandatoryItem->products_id != null) {
+                $product = Product::find($mandatoryItem->products_id);
+                $quotation->quotationItens[$itemKey]['product'] = $product;
+            }else {
+                $quotation->quotationItens[$itemKey]['product'] = null;
+            }
+            $quotation->quotationItens[$itemKey]['total'] = $mandatoryItem['quantity'] * ( $mandatoryItem['price'] - $mandatoryItem['price_discount']);
+        
         }
         // $quotation['maintenance_review'] = $quotation->review;  MaintenanceReview
         // $quotation['quotation_itens'] = $quotation->quotationItens;
@@ -179,7 +212,18 @@ class QuotationController extends Controller
                 // return $quotationItem;
                 $quotationItem->save();
             }
-
+            QuotationMandatoryItens::where('quotation_id',$request->quotation_id)->delete();
+                foreach($request->quotation_mandatory_itens as $mandatory_itens){
+                    $quotationmandatory_itens = new QuotationMandatoryItens();
+                    $quotationmandatory_itens->quotation_id = $quotation->id;
+                    $quotationmandatory_itens->service_id = $mandatory_itens['service_id'];
+                    $quotationmandatory_itens->products_id = $mandatory_itens['products_id'];
+                    $quotationmandatory_itens->quantity = $mandatory_itens['quantity'];
+                    $quotationmandatory_itens->price = $mandatory_itens['price'];
+                    $quotationmandatory_itens->price_discount = $mandatory_itens['price_discount'];
+                    $quotationmandatory_itens->save();
+                }
+        $quotation['quotation_mandatory_itens'] = $quotationmandatory_itens;
         $quotation['quotation_itens'] = $quotationItem;
         $quotation['claim_services'] = $quotationClaim;
 
