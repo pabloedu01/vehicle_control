@@ -65,7 +65,7 @@ function calculateTotalNoDiscount(price, quantity) {
 }
 
 
-const ItemsSelected = ({items = [], onDelete}) => {
+const ItemsSelected = ({items = [], onDelete, setShowModalEditItemsSelected, setItemsSelectedIsEditing}) => {
     return (
         <>
             <div className="table-responsive">
@@ -84,7 +84,13 @@ const ItemsSelected = ({items = [], onDelete}) => {
                     <tbody>
                         {items.length > 0 && items.map((item, idx) => {
                             return (
-                                <tr key={idx}>
+                                <tr key={idx}
+                                onClick={
+                                    () => {
+                                        setShowModalEditItemsSelected(true)
+                                        setItemsSelectedIsEditing(item)
+                                    }}
+                                >
                                     <td>{item?.name || item?.product?.name}</td>
                                     <td>{item.quantity}</td>
                                     <td>{formatMoneyPt_BR(parseFloat(item.price))}</td>
@@ -358,8 +364,11 @@ export default function QuotationCreate() {
     const [showModalProducts, setShowModalProducts] = useState(false)
     
     const [showModalEditRecommendationsItemsSelected, setShowModalEditRecommendationsItemsSelected] = useState(false)
+    
     const [recommendationsItemsSelectedIsEditing,  setRecommendationsItemsSelectedIsEditing] = useState(false)
-     
+    
+    const [showModalEditItemsSelected, setShowModalEditItemsSelected] = useState(false)
+    const [itemsSelectedIsEditing,  setItemsSelectedIsEditing] = useState(false)
     
     const {companyId, serviceScheduleId} = useParams()
     let { state } = useLocation();
@@ -574,6 +583,27 @@ export default function QuotationCreate() {
 
     }
 
+    function handleEditItemsSelected (data) {
+        setShowModalEditItemsSelected(false)
+
+        const newItemsSelectedData = [...itemsSelectedData]
+
+        const itemIsEditing = newItemsSelectedData.find(item => {
+            return (item.service_id === itemsSelectedIsEditing.service_id && itemsSelectedIsEditing.products_id === null) || 
+                (item.products_id === itemsSelectedIsEditing.products_id && itemsSelectedIsEditing.service_id === null)}
+        )
+
+        itemIsEditing.quantity = data.quantity
+        itemIsEditing.price_discount = data.discount.value
+
+        setItemsSelectedData([...newItemsSelectedData])
+        
+        if(!isActiveSaveButton) {
+            isSaveActive()
+        }
+
+    }
+
     useEffect(() => {
         if(state?.state.recommendationId) {
             console.log('aqui')
@@ -751,7 +781,12 @@ export default function QuotationCreate() {
     
                                         </Col>
                                     </Row>
-                                    <ItemsSelected items={itemsSelectedData} onDelete={onDeleteItemsSelectedData}/>
+                                    <ItemsSelected 
+                                        items={itemsSelectedData} 
+                                        onDelete={onDeleteItemsSelectedData} 
+                                        setItemsSelectedIsEditing={setItemsSelectedIsEditing}
+                                        setShowModalEditItemsSelected={setShowModalEditItemsSelected}
+                                    />
                                 </Card.Body>
                             </Card>
                         </Col>
@@ -805,6 +840,12 @@ export default function QuotationCreate() {
                 setShowModalEditRecommendationsItemsSelected={setShowModalEditRecommendationsItemsSelected}
                 data={recommendationsItemsSelectedIsEditing}
                 handleData={handleRecommendationsItemsSelected}
+            />
+            <ModalEditItemsSelected 
+                showModal={showModalEditItemsSelected}
+                setShowModalEditRecommendationsItemsSelected={setShowModalEditItemsSelected}
+                data={itemsSelectedIsEditing}
+                handleData={handleEditItemsSelected}
             />
 
         </>
